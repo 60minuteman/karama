@@ -71,7 +71,7 @@ export default function PetScreen() {
   };
 
   const handleNext = () => {
-    router.push('/(auth)/screens/onboarding/family/interest');
+    router.push('/(auth)/screens/onboarding/family/Allergies');
   };
 
   return (
@@ -92,7 +92,7 @@ export default function PetScreen() {
 
         <View style={styles.scrollViewContainer}>
           <LinearGradient
-            colors={['rgba(255,255,255,1)', 'rgba(255,255,255,0)']}
+            colors={[Colors.light.background, 'rgba(255,255,255,0)']}
             style={styles.topGradient}
           />
           <Animated.ScrollView 
@@ -111,17 +111,18 @@ export default function PetScreen() {
                 />
               ))}
             </View>
+            <View style={styles.bottomPadding} />
           </Animated.ScrollView>
 
           <LinearGradient
-            colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
+            colors={['rgba(255,255,255,0)', Colors.light.background]}
             style={styles.buttonGradient}
           >
             <View style={styles.buttonContainer}>
               <Button
                 label="Skip"
                 onPress={handleNext}
-                variant="compact"
+                variant="skip"
               />
               <Button
                 label="Next"
@@ -156,11 +157,12 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     marginBottom: 8,
     fontWeight: '500',
+    marginTop: 20,
   },
   subtitle: {
     fontFamily: 'Poppins',
     fontSize: 16,
-    color: '#666',
+    color: Colors.light.text,
     marginBottom: 40,
   },
   scrollViewContainer: {
@@ -186,6 +188,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 12,
+  },
+  bottomPadding: {
+    height: 100,
   },
   buttonGradient: {
     position: 'absolute',

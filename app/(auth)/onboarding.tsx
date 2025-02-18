@@ -17,7 +17,7 @@ export default function OnboardingScreen() {
   };
 
   const handleSignIn = () => {
-    router.push('/(auth)/auth');
+    router.push('/(app)/discover');
   };
 
   return (
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)', // Made the overlay darker by increasing opacity from 0.4 to 0.6
+    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Made the overlay darker by increasing opacity from 0.4 to 0.6
   },
   content: {
     flex: 1,
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 178,
-    height: 34,
+    height: 36,
     marginBottom: 24
   },
   buttonContainer: {

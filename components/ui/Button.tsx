@@ -34,7 +34,7 @@ export function Button({
       style={[
         styles.button,
         styles[buttonVariant],
-        variant === 'compact' && styles.compactButton
+        (variant === 'compact' || variant === 'skip') && styles.compactButton
       ]}
     >
       <View style={styles.content}>
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins',
     fontSize: 16,
     lineHeight: 22,
-    fontWeight: '600',
+    fontWeight: '400', // Changed from 600 to 400 for regular weight
   },
   // Variants
   primary: {
@@ -140,9 +140,6 @@ const styles = StyleSheet.create({
   },
   skip: {
     backgroundColor: '#F5F5F5',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    minWidth: 100,
   },
   skipText: {
     color: Colors.light.text,

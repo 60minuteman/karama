@@ -1,12 +1,28 @@
 import { Redirect } from 'expo-router';
 import { useOnboarding } from '@/hooks/useOnboarding';
+import { View, StyleSheet } from 'react-native';
 
 export default function InitialScreen() {
   const { isFirstLaunch } = useOnboarding();
 
   if (isFirstLaunch) {
-    return <Redirect href="/(auth)/onboarding" />;
+    return (
+      <View style={styles.container}>
+        <Redirect href="/(auth)/onboarding" />
+      </View>
+    );
   }
 
-  return <Redirect href="/(auth)/auth" />;
+  return (
+    <View style={styles.container}>
+      <Redirect href="/(auth)/auth" />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F6F6F6',
+  },
+});

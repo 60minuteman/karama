@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Karama",
-    "slug": "karama",
+    "slug": "karama", 
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,6 +15,8 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.karama.karama",
+      "buildNumber": "1.0.0",
       "supportsTablet": true
     },
     "android": {
@@ -22,6 +24,25 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your caregiver."
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "439c483b-7ef1-4a7b-b7ca-eaa6937c6ed3"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/439c483b-7ef1-4a7b-b7ca-eaa6937c6ed3"
     }
   }
 }

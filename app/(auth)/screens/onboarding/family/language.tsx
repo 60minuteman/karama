@@ -21,7 +21,7 @@ export default function LanguageScreen() {
   const [selectedLanguages, setSelectedLanguages] = useState<Language[]>([]);
 
   const languages: Language[] = [
-    'Spanish', 'French', 'English', 'German', 'Hausa', 'Italian',
+    'English', 'Spanish', 'French', 'German', 'Hausa', 'Italian',
     'Russian', 'Arabic', 'Chinese', 'Korean', 'Japanese', 'Yoruba',
     'Afrikaans', 'Hindi', 'Dutch', 'Estonian', 'Croatian', 'Swedish',
     'Portugese', 'Other'
@@ -49,20 +49,21 @@ export default function LanguageScreen() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.85} />
         
+        <ThemedText style={styles.title}>
+          What language(s){'\n'}does your family{'\n'}speak?
+        </ThemedText>
+
         <View style={styles.scrollViewContainer}>
           <LinearGradient
-            colors={['rgba(255,255,255,1)', 'rgba(255,255,255,0)']}
+            colors={[Colors.light.background, 'rgba(255,255,255,0)']}
             style={styles.topGradient}
+            pointerEvents="none"
           />
           <ScrollView 
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
           >
-            <ThemedText style={styles.title}>
-              What language(s){'\n'}does your family{'\n'}speak?
-            </ThemedText>
-
             <View style={styles.pillsContainer}>
               {languages.map((language) => (
                 <Pill
@@ -74,21 +75,22 @@ export default function LanguageScreen() {
                 />
               ))}
             </View>
+            <View style={styles.scrollBottomPadding} />
           </ScrollView>
 
           <LinearGradient
-            colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
+            colors={['rgba(255,255,255,0)', Colors.light.background]}
             style={styles.buttonGradient}
-          >
-            <View style={styles.buttonContainer}>
-              <Button
-                label="Next"
-                onPress={handleNext}
-                variant="compact"
-                disabled={selectedLanguages.length === 0}
-              />
-            </View>
-          </LinearGradient>
+            pointerEvents="none"
+          />
+          <View style={styles.buttonContainer}>
+            <Button
+              label="Next"
+              onPress={handleNext}
+              variant="compact"
+              disabled={selectedLanguages.length === 0}
+            />
+          </View>
         </View>
       </View>
     </ThemedView>
@@ -107,6 +109,15 @@ const styles = StyleSheet.create({
   spacerTop: {
     height: 120,
   },
+  title: {
+    fontFamily: 'Poppins',
+    fontSize: 32,
+    lineHeight: 40,
+    color: Colors.light.text,
+    marginBottom: 40,
+    marginTop: 20,
+    fontWeight: '500',
+  },
   scrollViewContainer: {
     flex: 1,
     position: 'relative',
@@ -124,20 +135,14 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 20,
-    paddingTop: 20,
-  },
-  title: {
-    fontFamily: 'Poppins',
-    fontSize: 32,
-    lineHeight: 40,
-    color: Colors.light.text,
-    marginBottom: 40,
-    fontWeight: '500',
   },
   pillsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 12,
+  },
+  scrollBottomPadding: {
+    height: 100,
   },
   buttonGradient: {
     position: 'absolute',
@@ -145,7 +150,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 120,
-    paddingHorizontal: 20,
   },
   buttonContainer: {
     position: 'absolute',

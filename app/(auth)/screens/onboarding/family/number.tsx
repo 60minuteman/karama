@@ -70,6 +70,7 @@ export default function FamilyNumberScreen() {
               value={group.count}
               onIncrement={() => handleIncrement(index)}
               onDecrement={() => handleDecrement(index)}
+              isActive={group.count > 0}
             />
           ))}
         </View>
@@ -106,6 +107,7 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     marginBottom: 40,
     fontWeight: '500',
+    marginTop: 20,
   },
   countersContainer: {
     marginBottom: 40,

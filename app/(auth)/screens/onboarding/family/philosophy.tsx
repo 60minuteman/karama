@@ -55,7 +55,7 @@ export default function PhilosophyScreen() {
     if (selectedPhilos.includes('Other')) {
       router.push('/(auth)/screens/onboarding/family/otherPhilo');
     } else {
-      router.push('/(auth)/screens/onboarding/family/next-screen');
+      router.push('/(auth)/screens/onboarding/family/intermission');
     }
   };
 
@@ -76,7 +76,7 @@ export default function PhilosophyScreen() {
 
         <View style={styles.scrollViewContainer}>
           <LinearGradient
-            colors={['rgba(255,255,255,1)', 'rgba(255,255,255,0)']}
+            colors={[Colors.light.background, `${Colors.light.background}00`]}
             style={styles.topGradient}
           />
           
@@ -111,7 +111,7 @@ export default function PhilosophyScreen() {
           </ScrollView>
 
           <LinearGradient
-            colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
+            colors={[`${Colors.light.background}00`, Colors.light.background]}
             style={styles.buttonGradient}
           >
             <View style={styles.buttonContainer}>
@@ -169,11 +169,13 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   title: {
-    fontFamily: 'Poppins-Medium',
+    fontFamily: 'Poppins',
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,
     marginBottom: 40,
+    marginTop: 20,
+    fontWeight: '500',
   },
   pillsContainer: {
     flexDirection: 'row',

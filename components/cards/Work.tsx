@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Pill2 } from '@/components/ui/Pill2';
+import { useFonts } from 'expo-font';
 
 interface WorkProps {
   animals?: Array<{
@@ -17,6 +18,14 @@ export const Work = ({
     { icon: '🐮', label: 'Cow' },
   ]
 }: WorkProps) => {
+  let [fontsLoaded] = useFonts({
+    'Bogart-Regular': require('../../assets/fonts/bogart/Bogart-Regular-trial.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.section}>
@@ -47,7 +56,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Regular',
     fontWeight: '400',
     color: 'rgba(38, 29, 42, 0.4)',
     marginBottom: 8,

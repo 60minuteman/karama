@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Pill2 } from '@/components/ui/Pill2';
+import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
 
 interface InterestsProps {
   interests: string[];
@@ -20,6 +21,11 @@ export const Interests = ({
     "Drama"
   ]
 }: InterestsProps) => {
+  let [fontsLoaded] = useFonts({
+    Poppins_400Regular,
+    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf')
+  });
+
   const interestIcons: {[key: string]: string} = {
     "Dance": "🩰",
     "DIY": "✨",
@@ -31,6 +37,10 @@ export const Interests = ({
     "Piano": "🎹",
     "Drama": "🎭"
   };
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
@@ -75,8 +85,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontFamily: 'Poppins',
-    fontWeight: '400',
+    fontFamily: 'Bogart-Regular',
     color: 'rgba(38, 29, 42, 0.4)',
     marginBottom: 12,
     marginTop: 12,

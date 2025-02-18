@@ -1,48 +1,107 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
-import { useOnboarding } from '@/hooks/useOnboarding';
-
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
+import { Image } from 'react-native';
 import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-  const { isFirstLaunch } = useOnboarding();
+const navImages = {
+  You: require('@/assets/nav/You.png'),
+  'active-You': require('@/assets/nav/You-active.png'),
+  Liked: require('@/assets/nav/Liked.png'),
+  'active-Liked': require('@/assets/nav/Liked-active.png'),
+  Discover: require('@/assets/nav/Discover.png'),
+  'active-Discover': require('@/assets/nav/Discover-active.png'),
+  Matches: require('@/assets/nav/Matches.png'),
+  'active-Matches': require('@/assets/nav/Matches-active.png'),
+  Community: require('@/assets/nav/Community.png'),
+  'active-Community': require('@/assets/nav/Community-active.png'),
+};
 
+export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        // Hide the tab bar during onboarding
         tabBarStyle: {
-          ...Platform.select({
-            ios: {
-              position: 'absolute',
-            },
-            default: {},
-          }),
-          display: isFirstLaunch ? 'none' : 'flex',
+          backgroundColor: Colors.light.background,
+          borderTopColor: '#EEEEEE',
+          height: 65,
+          paddingBottom: 10,
+          paddingTop: 10,
         },
-      }}>
+        tabBarActiveTintColor: '#FF4B55',
+        tabBarInactiveTintColor: '#666666',
+        tabBarLabelStyle: {
+          fontFamily: 'Poppins_400Regular',
+          fontSize: 12,
+        },
+        headerShown: false,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'For You',
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={focused ? navImages['active-You'] : navImages.You}
+              style={{ width: 24, height: 24 }}
+              resizeMode="contain"
+            />
+          ),
         }}
       />
+      
       <Tabs.Screen
-        name="explore"
+        name="liked-you"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Liked you',
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={focused ? navImages['active-Liked'] : navImages.Liked}
+              style={{ width: 24, height: 24 }}
+              resizeMode="contain"
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="discover"
+        options={{
+          title: 'Discover',
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={focused ? navImages['active-Discover'] : navImages.Discover}
+              style={{ width: 24, height: 24 }}
+              resizeMode="contain"
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="matches"
+        options={{
+          title: 'Matches',
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={focused ? navImages['active-Matches'] : navImages.Matches}
+              style={{ width: 24, height: 24 }}
+              resizeMode="contain"
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="community"
+        options={{
+          title: 'Community',
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={focused ? navImages['active-Community'] : navImages.Community}
+              style={{ width: 24, height: 24 }}
+              resizeMode="contain"
+            />
+          ),
         }}
       />
     </Tabs>

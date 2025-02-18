@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     marginBottom: 40,
     fontWeight: '500',
+    marginTop: 20,
   },
   pillsContainer: {
     flexWrap: 'wrap',

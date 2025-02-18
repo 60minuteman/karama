@@ -6,8 +6,8 @@
 export const Colors = {
   light: {
     primary: '#EB4430',
-    background: '#FFFDF7',
-    white: '#FFFFFF',
+    background: '#F6F6F6',
+    white: '#F6F6F6',
     black: '#000000',
     text: '#1A1A1A',
     tint: '#0a7ea4',

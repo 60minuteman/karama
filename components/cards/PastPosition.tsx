@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Pill2 } from '@/components/ui/Pill2';
+import { useFonts, Poppins_400Regular, Poppins_500Medium } from '@expo-google-fonts/poppins';
 
 interface PastPositionProps {
   positionName: string;
@@ -10,6 +11,17 @@ interface PastPositionProps {
 export const PastPosition = ({
   positionName
 }: PastPositionProps) => {
+  const [fontsLoaded] = useFonts({
+    Poppins_400Regular,
+    Poppins_500Medium,
+    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
+    'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf')
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   // Mock data - in real app would come from API/database
   const positionData = {
     title: "First position",
@@ -113,26 +125,24 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   title: {
-    fontSize: 20,
-    fontFamily: 'Poppins',
-    fontWeight: '500',
+    fontSize: 16,
+    fontFamily: 'Bogart-Regular',
     color: '#261D2A',
     marginBottom: 8,
   },
   familyName: {
-    fontSize: 28,
-    fontFamily: 'Poppins',
-    fontWeight: '600',
+    fontSize: 32,
+    fontFamily: 'Bogart-Bold',
     color: '#261D2A',
     marginBottom: 32,
+    lineHeight: 38,
   },
   section: {
     marginBottom: 24,
   },
   sectionTitle: {
     fontSize: 16,
-    fontFamily: 'Poppins',
-    fontWeight: '500',
+    fontFamily: 'Bogart-Regular',
     color: '#261D2A',
     opacity: 0.6,
     marginBottom: 12,

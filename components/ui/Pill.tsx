@@ -24,10 +24,13 @@ export function Pill({ icon, label, selected = false, onPress, disabled = false 
       {icon && (
         <ThemedText style={styles.icon}>{icon}</ThemedText>
       )}
-      <ThemedText style={[
-        styles.label,
-        selected && styles.labelSelected,
-      ]}>
+      <ThemedText 
+        style={[
+          styles.label,
+          selected && styles.labelSelected,
+        ]}
+        numberOfLines={2}
+      >
         {label}
       </ThemedText>
     </TouchableOpacity>
@@ -38,8 +41,9 @@ const styles = StyleSheet.create({
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    paddingVertical: 12,
+    backgroundColor: 'rgba(38, 29, 42, 0.05)',
+    minHeight: 38,
+    paddingVertical: 4,
     paddingHorizontal: 20,
     borderRadius: 100,
     gap: 8,
@@ -55,9 +59,10 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: 'Poppins',
-    fontSize: 16,
+    fontSize: 14,
     color: Colors.light.text,
-    fontWeight: '500',
+    fontWeight: '400',
+    flexShrink: 1,
   },
   labelSelected: {
     color: Colors.light.background,

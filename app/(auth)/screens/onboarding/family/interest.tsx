@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { useState } from 'react';
+import { StyleSheet, View, ScrollView, Animated } from 'react-native';
+import { useState, useRef, useEffect } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -16,6 +16,15 @@ type Interest = { label: string; icon: string; category: Category };
 export default function InterestScreen() {
   const router = useRouter();
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, []);
 
   const interests: Record<Category, Interest[]> = {
     Creative: [
@@ -119,11 +128,12 @@ export default function InterestScreen() {
 
         <View style={styles.scrollViewContainer}>
           <LinearGradient
-            colors={['rgba(255,255,255,1)', 'rgba(255,255,255,0)']}
+            colors={[Colors.light.background, 'rgba(255,255,255,0)']}
             style={styles.topGradient}
+            pointerEvents="none"
           />
-          <ScrollView 
-            style={styles.scrollView}
+          <Animated.ScrollView 
+            style={[styles.scrollView, { opacity: fadeAnim }]}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
           >
@@ -145,25 +155,26 @@ export default function InterestScreen() {
                 </View>
               </View>
             ))}
-          </ScrollView>
+            <View style={styles.spacerBottom} />
+          </Animated.ScrollView>
           <LinearGradient
-            colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
+            colors={['rgba(255,255,255,0)', Colors.light.background]}
             style={styles.buttonGradient}
-          >
-            <View style={styles.buttonContainer}>
-              <Button
-                label="Skip"
-                onPress={handleNext}
-                variant="compact"
-              />
-              <Button
-                label="Next"
-                onPress={handleNext}
-                variant="compact"
-                disabled={selectedInterests.length === 0}
-              />
-            </View>
-          </LinearGradient>
+            pointerEvents="none"
+          />
+          <View style={styles.buttonContainer}>
+            <Button
+              label="Skip"
+              onPress={handleNext}
+              variant="compact"
+            />
+            <Button
+              label="Next"
+              onPress={handleNext}
+              variant="compact"
+              disabled={selectedInterests.length === 0}
+            />
+          </View>
         </View>
       </View>
     </ThemedView>
@@ -211,6 +222,7 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     marginBottom: 40,
     fontWeight: '500',
+    marginTop: 20,
   },
   categoryContainer: {
     marginBottom: 32,
@@ -233,7 +245,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 120,
-    paddingHorizontal: 20,
   },
   buttonContainer: {
     position: 'absolute',

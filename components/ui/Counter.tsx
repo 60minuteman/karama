@@ -21,9 +21,9 @@ export function Counter({
 }: CounterProps) {
   return (
     <View style={styles.container}>
-      <View style={styles.labelContainer}>
-        <ThemedText style={styles.icon}>{icon}</ThemedText>
-        <ThemedText style={styles.label}>{label}</ThemedText>
+      <View style={[styles.labelContainer, value > 0 && styles.labelContainerActive]}>
+        <ThemedText style={[styles.icon, value > 0 && styles.textActive]}>{icon}</ThemedText>
+        <ThemedText style={[styles.label, value > 0 && styles.textActive]}>{label}</ThemedText>
       </View>
       
       <View style={styles.counterContainer}>
@@ -58,11 +58,14 @@ const styles = StyleSheet.create({
   labelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'rgba(38, 29, 42, 0.05)',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 100,
     gap: 8,
+  },
+  labelContainerActive: {
+    backgroundColor: Colors.light.primary,
   },
   icon: {
     fontSize: 16,
@@ -73,6 +76,9 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     fontWeight: '500',
   },
+  textActive: {
+    color: Colors.light.background,
+  },
   counterContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -82,7 +88,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'rgba(38, 29, 42, 0.05)',
     alignItems: 'center',
     justifyContent: 'center',
   },

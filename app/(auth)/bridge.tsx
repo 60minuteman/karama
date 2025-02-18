@@ -83,15 +83,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   spacer: {
-    height: 120,
+    height: 140,
   },
   title: {
     fontFamily: 'Poppins',
     fontSize: 32,
-    lineHeight: 40,
+    lineHeight: 44,
     color: Colors.light.text,
     marginBottom: 40,
     fontWeight: '500',
+    marginTop: 20,
   },
   optionsContainer: {
     flexDirection: 'row',
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.primary,
   },
   unselectedOption: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'rgba(38, 29, 42, 0.05)',
   },
   optionText: {
     fontFamily: 'Poppins',

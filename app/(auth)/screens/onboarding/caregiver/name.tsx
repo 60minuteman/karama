@@ -15,7 +15,7 @@ export default function CaregiverNameScreen() {
   const handleNext = () => {
     if (name.trim()) {
       // Navigate to next screen in caregiver flow
-      router.push('/(auth)/screens/onboarding/caregiver/next-screen'); // Update with actual next screen
+      router.push('/(auth)/screens/onboarding/caregiver/dob'); // Update with actual next screen
     }
   };
 
@@ -77,6 +77,7 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     marginBottom: 40,
     fontWeight: '500',
+    marginTop: 20,
   },
   inputContainer: {
     marginBottom: 40,

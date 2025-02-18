@@ -87,7 +87,7 @@ export default function HouseholdScreen() {
 
         <View style={styles.scrollViewContainer}>
           <LinearGradient
-            colors={['rgba(255,255,255,1)', 'rgba(255,255,255,0)']}
+            colors={[Colors.light.background, `${Colors.light.background}00`]}
             style={styles.topGradient}
           />
           
@@ -134,7 +134,7 @@ export default function HouseholdScreen() {
           </ScrollView>
 
           <LinearGradient
-            colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
+            colors={[`${Colors.light.background}00`, Colors.light.background]}
             style={styles.buttonGradient}
           >
             <View style={styles.buttonContainer}>
@@ -198,6 +198,7 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     marginBottom: 40,
     fontWeight: '500',
+    marginTop: 20,
   },
   categoryContainer: {
     marginBottom: 32,

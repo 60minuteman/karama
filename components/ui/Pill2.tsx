@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, ViewStyle } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
+import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
 
 interface Pill2Props {
   label: string;
@@ -10,6 +11,14 @@ interface Pill2Props {
 }
 
 export const Pill2 = ({ label, icon, style, onPress }: Pill2Props) => {
+  const [fontsLoaded] = useFonts({
+    Poppins_400Regular,
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   const Component = onPress ? TouchableOpacity : View;
   
   return (
@@ -32,17 +41,17 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     backgroundColor: '#F4F3F4',
     borderRadius: 100,
-    paddingTop: 8,
-    paddingBottom: 8,
+    paddingTop: 4,
+    paddingBottom: 4,
     paddingHorizontal: 16,
   },
   icon: {
-    fontSize: 16,
+    fontSize: 14,
     marginRight: 8,
   },
   label: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '400',
-    fontFamily: 'Poppins',
+    fontFamily: 'Poppins_400Regular',
   },
 }); 
