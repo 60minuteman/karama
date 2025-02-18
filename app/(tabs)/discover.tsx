@@ -1,9 +1,15 @@
-import React from 'react';
-import { StyleSheet, View, SafeAreaView, Image, useWindowDimensions } from 'react-native';
+import { Container } from '@/components/home/Container';
 import { HomeHeader } from '@/components/home/HomeHeader';
 import { HomeNav } from '@/components/home/HomeNav';
-import { Container } from '@/components/home/Container';
 import { FloatingButton } from '@/components/ui/FloatingButton';
+import React from 'react';
+import {
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
 export default function Discover() {
   const { width: windowWidth } = useWindowDimensions();
@@ -22,8 +28,19 @@ export default function Discover() {
     lookingFor: ['Full Time', 'Long Term', 'Live In'],
     hourlyRate: '$20 - $35',
     languages: ['Hausa', 'Arbic', 'Hindu'],
-    interests: ['Dance', 'DIY', 'Magic', 'Gaming', 'Painting', 'Film Making', 'Trumpet', 'Piano', 'Drama'],
-    obsession: 'Chickens! The kids love them and we just got two chicks named Bo & Sam.',
+    interests: [
+      'Dance',
+      'DIY',
+      'Magic',
+      'Gaming',
+      'Painting',
+      'Film Making',
+      'Trumpet',
+      'Piano',
+      'Drama',
+    ],
+    obsession:
+      'Chickens! The kids love them and we just got two chicks named Bo & Sam.',
     religion: 'Buddhism',
     personality: ['Chill', 'Patient', 'Wacky'],
     disabilities: ['Dyslexia', 'ADHD'],
@@ -38,17 +55,27 @@ export default function Discover() {
             <Container profileData={profileData} />
           </View>
           <FloatingButton
-            icon={<Image source={require('@/assets/picker/xmark.png')} style={[styles.icon, styles.xmarkIcon]} />}
+            icon={
+              <Image
+                source={require('@/assets/picker/xmark.png')}
+                style={[styles.icon, styles.xmarkIcon]}
+              />
+            }
             style={[styles.rejectButton, { width: buttonWidth }]}
             onPress={() => console.log('rejected')}
           />
           <FloatingButton
-            icon={<Image source={require('@/assets/picker/heart.png')} style={[styles.icon, styles.heartIcon]} />}
+            icon={
+              <Image
+                source={require('@/assets/picker/heart.png')}
+                style={[styles.icon, styles.heartIcon]}
+              />
+            }
             style={[styles.likeButton, { width: buttonWidth }]}
             onPress={() => console.log('liked')}
           />
         </View>
-        <HomeNav />
+        {/* <HomeNav /> */}
       </View>
     </SafeAreaView>
   );
@@ -77,19 +104,19 @@ const styles = StyleSheet.create({
     height: 24,
   },
   xmarkIcon: {
-    tintColor: '#212329'
+    tintColor: '#212329',
   },
   heartIcon: {
-    tintColor: '#FF1818'
+    tintColor: '#FF1818',
   },
   rejectButton: {
     position: 'absolute',
     left: 40,
-    bottom: 60
+    bottom: 60,
   },
   likeButton: {
     position: 'absolute',
     right: 40,
-    bottom: 60
-  }
+    bottom: 60,
+  },
 });

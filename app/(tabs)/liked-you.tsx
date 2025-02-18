@@ -1,9 +1,15 @@
-import React from 'react';
-import { StyleSheet, View, SafeAreaView, TouchableOpacity, Dimensions } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import { HomeNav } from '@/components/home/HomeNav';
 import { LikedYouCard } from '@/components/cards/LikedYouCard';
-import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import { HomeNav } from '@/components/home/HomeNav';
+import { Poppins_400Regular, useFonts } from '@expo-google-fonts/poppins';
+import React from 'react';
+import {
+  Dimensions,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { opacity } from 'react-native-reanimated/lib/typescript/Colors';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -42,27 +48,27 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
       salary: '$120,000 / Year',
       rating: 4.5,
       gender: 'He / Him',
-      image: require('@/assets/images/profile-placeholder.jpg')
+      image: require('@/assets/images/profile-placeholder.jpg'),
     },
     {
-      id: '2', 
+      id: '2',
       name: 'Sarah',
       age: 28,
       location: 'Brooklyn, New York',
       salary: '$95,000 / Year',
       rating: 4.8,
       gender: 'She / Her',
-      image: require('@/assets/images/profile-placeholder.jpg')
+      image: require('@/assets/images/profile-placeholder.jpg'),
     },
     {
       id: '3',
       name: 'Michael',
       age: 31,
       location: 'Queens, New York',
-      salary: '$110,000 / Year', 
+      salary: '$110,000 / Year',
       rating: 4.2,
       gender: 'He / Him',
-      image: require('@/assets/images/profile-placeholder.jpg')
+      image: require('@/assets/images/profile-placeholder.jpg'),
     },
     {
       id: '4',
@@ -72,8 +78,8 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
       salary: '$105,000 / Year',
       rating: 4.6,
       gender: 'She / Her',
-      image: require('@/assets/images/profile-placeholder.jpg')
-    }
+      image: require('@/assets/images/profile-placeholder.jpg'),
+    },
   ];
 
   return (
@@ -107,7 +113,9 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
               <View style={styles.upgradeContainer}>
                 <View style={styles.upgradeRow}>
                   <TouchableOpacity style={styles.upgradeButton}>
-                    <ThemedText style={styles.upgradeButtonText}>Upgrade</ThemedText>
+                    <ThemedText style={styles.upgradeButtonText}>
+                      Upgrade
+                    </ThemedText>
                   </TouchableOpacity>
                   <View style={styles.upgradeTextContainer}>
                     <ThemedText style={styles.upgradeText}>
@@ -119,7 +127,7 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
             </>
           )}
         </View>
-        <HomeNav />
+        {/* <HomeNav /> */}
       </View>
     </SafeAreaView>
   );

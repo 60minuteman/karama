@@ -1,7 +1,12 @@
 import { Stack } from 'expo-router';
-import { View, StyleSheet, Platform, StatusBar } from 'react-native';
+import {
+  Platform,
+  StatusBar,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useWindowDimensions } from 'react-native';
 
 export default function AppLayout() {
   const insets = useSafeAreaInsets();
@@ -11,19 +16,23 @@ export default function AppLayout() {
   const isDesktop = width >= 1024;
 
   return (
-    <View style={[
-      styles.container,
-      {
-        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-      }
-    ]}>
-      <View style={[
-        styles.content,
+    <View
+      style={[
+        styles.container,
         {
-          maxWidth: isDesktop ? 1200 : isTablet ? 768 : '100%',
-          paddingHorizontal: isLargeScreen ? 16 : 0,
-        }
-      ]}>
+          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+        },
+      ]}
+    >
+      <View
+        style={[
+          styles.content,
+          {
+            maxWidth: isDesktop ? 1200 : isTablet ? 768 : '100%',
+            paddingHorizontal: isLargeScreen ? 16 : 0,
+          },
+        ]}
+      >
         <Stack
           screenOptions={{
             headerShown: false,
@@ -31,12 +40,14 @@ export default function AppLayout() {
               paddingBottom: insets.bottom,
               paddingLeft: insets.left,
               paddingRight: insets.right,
-              backgroundColor: '#F6F6F6'
+              backgroundColor: '#F6F6F6',
             },
             animation: Platform.OS === 'ios' ? 'default' : 'fade',
             animationDuration: 200,
           }}
-        />
+        >
+          <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+        </Stack>
       </View>
     </View>
   );
@@ -52,4 +63,4 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: '100%',
   },
-}); 
+});

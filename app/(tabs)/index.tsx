@@ -1,8 +1,9 @@
-import React from 'react';
-import { StyleSheet, View, SafeAreaView } from 'react-native';
-import { Colors } from '@/constants/Colors';
 import { ThemedText } from '@/components/ThemedText';
 import { HomeHeader } from '@/components/home/HomeHeader';
+import { HomeNav } from '@/components/home/HomeNav';
+import { Colors } from '@/constants/Colors';
+import React from 'react';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
 
 export default function ForYouScreen() {
   return (
@@ -10,13 +11,15 @@ export default function ForYouScreen() {
       <View style={styles.container}>
         <HomeHeader />
         <View style={styles.content}>
-          <ThemedText style={styles.title}>For You</ThemedText>
+          <ThemedText style={styles.title}>People who liked you</ThemedText>
+
           <View style={styles.emptyState}>
             <ThemedText style={styles.emptyText}>
-              No matches yet. Keep checking back!
+              No one has liked you yet. Keep checking back!
             </ThemedText>
           </View>
         </View>
+        {/* <HomeNav /> */}
       </View>
     </SafeAreaView>
   );
@@ -50,7 +53,7 @@ const styles = StyleSheet.create({
     paddingBottom: 48,
   },
   emptyText: {
-    fontFamily: 'Poppins', 
+    fontFamily: 'Poppins',
     fontSize: 18,
     lineHeight: 28,
     color: Colors.light.text,

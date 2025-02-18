@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, SafeAreaView, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import { SearchBar } from '@/components/matches/SearchBar';
-import { MatchCircle } from '@/components/matches/MatchCircle';
-import { ConversationItem } from '@/components/matches/ConversationItem';
 import { HomeNav } from '@/components/home/HomeNav';
-import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
+import { ConversationItem } from '@/components/matches/ConversationItem';
+import { MatchCircle } from '@/components/matches/MatchCircle';
+import { SearchBar } from '@/components/matches/SearchBar';
+import {
+  Poppins_400Regular,
+  Poppins_600SemiBold,
+  useFonts,
+} from '@expo-google-fonts/poppins';
+import React, { useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
 export default function Matches() {
   const [searchQuery, setSearchQuery] = useState('');
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
-    Poppins_600SemiBold
+    Poppins_600SemiBold,
   });
 
   if (!fontsLoaded) {
@@ -21,12 +25,12 @@ export default function Matches() {
   // Array of pastel colors to use as placeholders
   const pastelColors = [
     'https://via.placeholder.com/150/FFB3BA', // Pastel pink
-    'https://via.placeholder.com/150/BAFFC9', // Pastel green  
+    'https://via.placeholder.com/150/BAFFC9', // Pastel green
     'https://via.placeholder.com/150/BAE1FF', // Pastel blue
     'https://via.placeholder.com/150/FFFFBA', // Pastel yellow
     'https://via.placeholder.com/150/FFB3FF', // Pastel purple
     'https://via.placeholder.com/150/FFD9BA', // Pastel orange
-    'https://via.placeholder.com/150/E5CCFF'  // Pastel lavender
+    'https://via.placeholder.com/150/E5CCFF', // Pastel lavender
   ];
 
   const matches = [
@@ -38,7 +42,7 @@ export default function Matches() {
       time: '11:04 AM',
     },
     {
-      id: '2', 
+      id: '2',
       imageUrl: pastelColors[1],
       name: 'Sarah Miller',
       lastMessage: 'Are you available next week?',
@@ -78,14 +82,14 @@ export default function Matches() {
       name: 'The Andersons',
       lastMessage: 'Looking forward to meeting you',
       time: '2 days ago',
-    }
+    },
   ];
 
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ThemedText style={styles.title}>Matches</ThemedText>
-        
+
         <SearchBar
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -94,8 +98,8 @@ export default function Matches() {
 
         <View style={styles.section}>
           <ThemedText style={styles.sectionTitle}>Matches</ThemedText>
-          <ScrollView 
-            horizontal 
+          <ScrollView
+            horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.matchesScroll}
           >
@@ -114,7 +118,7 @@ export default function Matches() {
             <ThemedText style={styles.sectionTitle}>Conversations</ThemedText>
             <ThemedText style={styles.filterText}>All</ThemedText>
           </View>
-          
+
           <ScrollView>
             {matches.map((match) => (
               <ConversationItem
@@ -129,7 +133,7 @@ export default function Matches() {
           </ScrollView>
         </View>
       </SafeAreaView>
-      <HomeNav />
+      {/* <HomeNav /> */}
     </View>
   );
 }

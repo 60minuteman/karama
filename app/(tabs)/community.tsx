@@ -1,18 +1,23 @@
-import React from 'react';
-import { StyleSheet, View, SafeAreaView, FlatList } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { HomeHeader } from '@/components/home/HomeHeader';
 import { HomeNav } from '@/components/home/HomeNav';
+import { Colors } from '@/constants/Colors';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
 
 export default function Community() {
   const router = useRouter();
   const messages = []; // This would be populated with actual messages
 
   const renderMessage = ({ item }) => (
-    <View style={[styles.messageBubble, item.isMine ? styles.myMessage : styles.theirMessage]}>
+    <View
+      style={[
+        styles.messageBubble,
+        item.isMine ? styles.myMessage : styles.theirMessage,
+      ]}
+    >
       <ThemedText style={styles.messageText}>{item.text}</ThemedText>
     </View>
   );
@@ -39,7 +44,7 @@ export default function Community() {
             />
           )}
         </View>
-        <HomeNav />
+        {/* <HomeNav /> */}
       </View>
     </SafeAreaView>
   );

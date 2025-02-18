@@ -1,11 +1,12 @@
 {
   "expo": {
     "name": "Karama",
-    "slug": "karama", 
+    "slug": "karama",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -31,7 +32,8 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your caregiver."
         }
-      ]
+      ],
+      "expo-router"
     ],
     "extra": {
       "eas": {

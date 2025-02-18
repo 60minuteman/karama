@@ -1,11 +1,11 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { useState } from 'react';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
+import { Colors } from '@/constants/Colors';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function PhoneNumberScreen() {
   const router = useRouter();
@@ -28,34 +28,39 @@ export default function PhoneNumberScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="close" />
-      
+      <Header variant='close' />
+
       <View style={styles.content}>
         <View style={styles.spacer} />
         <ThemedText style={styles.title}>What's your phone number?</ThemedText>
-        
+
         <View style={styles.inputWrapper}>
-          <View style={[styles.inputContainer, phoneNumber.length > 0 && styles.inputActive]}>
+          <View
+            style={[
+              styles.inputContainer,
+              phoneNumber.length > 0 && styles.inputActive,
+            ]}
+          >
             <ThemedText style={styles.countryCode}>+1</ThemedText>
             <TextInput
               style={styles.input}
-              placeholder="(555) 555-5555"
-              placeholderTextColor="#999"
-              keyboardType="phone-pad"
+              placeholder='(555) 555-5555'
+              placeholderTextColor='#999'
+              keyboardType='phone-pad'
               autoFocus
               value={phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')}
               onChangeText={handlePhoneNumberChange}
-              accessibilityLabel="Phone number input"
-              accessibilityHint="Enter your phone number"
+              accessibilityLabel='Phone number input'
+              accessibilityHint='Enter your phone number'
             />
           </View>
         </View>
 
         <View style={styles.checkboxContainer}>
-          <TouchableOpacity 
-            style={[styles.checkbox, !isChecked && styles.checkboxInactive]} 
+          <TouchableOpacity
+            style={[styles.checkbox, !isChecked && styles.checkboxInactive]}
             onPress={() => setIsChecked(!isChecked)}
-            accessibilityRole="checkbox"
+            accessibilityRole='checkbox'
             accessibilityState={{ checked: isChecked }}
           >
             {isChecked && <View style={styles.checkmark} />}
@@ -66,9 +71,9 @@ export default function PhoneNumberScreen() {
         </View>
 
         <Button
-          label="Next"
+          label='Next'
           onPress={handleNext}
-          variant={phoneNumber.length === 10 ? "primary" : "disabled"}
+          variant={phoneNumber.length === 10 ? 'primary' : 'disabled'}
           disabled={phoneNumber.length !== 10}
         />
       </View>
@@ -164,5 +169,5 @@ const styles = StyleSheet.create({
   },
   inputActive: {
     borderBottomColor: Colors.light.primary,
-  }
+  },
 });
