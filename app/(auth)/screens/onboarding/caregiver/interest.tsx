@@ -107,7 +107,7 @@ export default function InterestScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   title: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart',
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,

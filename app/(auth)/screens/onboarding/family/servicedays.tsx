@@ -81,7 +81,7 @@ export default function ServiceDaysScreen() {
         <ProgressBar progress={0.8} />
 
         <View style={styles.titleContainer}>
-          <ThemedText style={styles.title}>
+          <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
             What days and{'\n'}hours would you{'\n'}need a caregiver?
           </ThemedText>
         </View>
@@ -152,7 +152,6 @@ export default function ServiceDaysScreen() {
             label="Next"
             onPress={() => router.push('/(auth)/screens/onboarding/family/responsibilities')}
             variant="compact"
-            style={styles.nextButton}
           />
         </LinearGradient>
       </View>

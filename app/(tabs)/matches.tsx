@@ -10,10 +10,13 @@ import {
 } from '@expo-google-fonts/poppins';
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { router } from 'expo-router';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function Matches() {
   const [searchQuery, setSearchQuery] = useState('');
   const [fontsLoaded] = useFonts({
+    'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
     Poppins_400Regular,
     Poppins_600SemiBold,
   });
@@ -24,61 +27,61 @@ export default function Matches() {
 
   // Array of pastel colors to use as placeholders
   const pastelColors = [
-    'https://via.placeholder.com/150/FFB3BA', // Pastel pink
-    'https://via.placeholder.com/150/BAFFC9', // Pastel green
-    'https://via.placeholder.com/150/BAE1FF', // Pastel blue
-    'https://via.placeholder.com/150/FFFFBA', // Pastel yellow
-    'https://via.placeholder.com/150/FFB3FF', // Pastel purple
-    'https://via.placeholder.com/150/FFD9BA', // Pastel orange
-    'https://via.placeholder.com/150/E5CCFF', // Pastel lavender
+    'https://via.placeholder.com/150/FFB3BA/FFFFFF?text=', // Pastel pink
+    'https://via.placeholder.com/150/BAFFC9/FFFFFF?text=', // Pastel green
+    'https://via.placeholder.com/150/BAE1FF/FFFFFF?text=', // Pastel blue
+    'https://via.placeholder.com/150/FFFFBA/FFFFFF?text=', // Pastel yellow
+    'https://via.placeholder.com/150/FFB3FF/FFFFFF?text=', // Pastel purple
+    'https://via.placeholder.com/150/FFD9BA/FFFFFF?text=', // Pastel orange
+    'https://via.placeholder.com/150/E5CCFF/FFFFFF?text=', // Pastel lavender
   ];
 
   const matches = [
     {
       id: '1',
-      imageUrl: pastelColors[0],
+      imageUrl: pastelColors[0] + "W",
       name: "The Won's",
       lastMessage: 'We love your food art...',
       time: '11:04 AM',
     },
     {
       id: '2',
-      imageUrl: pastelColors[1],
+      imageUrl: pastelColors[1] + "SM",
       name: 'Sarah Miller',
       lastMessage: 'Are you available next week?',
       time: '10:45 AM',
     },
     {
       id: '3',
-      imageUrl: pastelColors[2],
+      imageUrl: pastelColors[2] + "JF",
       name: 'Johnson Family',
       lastMessage: 'Thanks for the great session yesterday!',
       time: '9:30 AM',
     },
     {
       id: '4',
-      imageUrl: pastelColors[3],
+      imageUrl: pastelColors[3] + "ET",
       name: 'Emma Thompson',
       lastMessage: 'The kids had so much fun...',
       time: 'Yesterday',
     },
     {
       id: '5',
-      imageUrl: pastelColors[4],
+      imageUrl: pastelColors[4] + "P",
       name: 'The Patels',
       lastMessage: 'See you on Saturday!',
       time: 'Yesterday',
     },
     {
       id: '6',
-      imageUrl: pastelColors[5],
+      imageUrl: pastelColors[5] + "MG",
       name: 'Maria Garcia',
       lastMessage: 'Perfect, that works for us',
       time: '2 days ago',
     },
     {
       id: '7',
-      imageUrl: pastelColors[6],
+      imageUrl: pastelColors[6] + "A",
       name: 'The Andersons',
       lastMessage: 'Looking forward to meeting you',
       time: '2 days ago',
@@ -86,7 +89,7 @@ export default function Matches() {
   ];
 
   return (
-    <View style={styles.container}>
+    <GestureHandlerRootView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ThemedText style={styles.title}>Matches</ThemedText>
 
@@ -127,14 +130,14 @@ export default function Matches() {
                 name={match.name}
                 lastMessage={match.lastMessage}
                 time={match.time}
-                onPress={() => {}}
+                onPress={() => router.push(`/messages/${match.id}?name=${match.name}`)}
               />
             ))}
           </ScrollView>
         </View>
       </SafeAreaView>
       {/* <HomeNav /> */}
-    </View>
+    </GestureHandlerRootView>
   );
 }
 
@@ -148,8 +151,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontFamily: 'Poppins_600SemiBold',
-    lineHeight: 34,
+    fontFamily: 'Bogart-Bold',
+    lineHeight: 38,
     color: '#002140',
     marginTop: 16,
     marginLeft: 16,
@@ -159,7 +162,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontFamily: 'Poppins_600SemiBold',
+    fontFamily: 'Bogart-Bold',
     color: '#002140',
     marginLeft: 16,
     marginBottom: 12,

@@ -8,6 +8,8 @@ import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { useFonts } from 'expo-font';
+import * as Font from 'expo-font';
 
 const pronounOptions = [
   {
@@ -27,6 +29,9 @@ const pronounOptions = [
 export default function Page() {
   const [selectedPronouns, setSelectedPronouns] = useState<string | null>(null);
   const [showOnProfile, setShowOnProfile] = useState(false);
+  const [fontsLoaded] = useFonts({
+    'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
+  });
 
   return (
     <ThemedView style={styles.container}>
@@ -36,7 +41,7 @@ export default function Page() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
 
-        <ThemedText style={styles.title}>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
           What are your{'\n'}pronouns?
         </ThemedText>
 
@@ -47,7 +52,6 @@ export default function Page() {
               label={`${option.emoji} ${option.label}`}
               onPress={() => setSelectedPronouns(option.label)}
               selected={selectedPronouns === option.label}
-              style={styles.pill}
             />
           ))}
         </View>
@@ -95,7 +99,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 44,
-    fontFamily: 'Poppins',
     fontWeight: '600',
     color: '#002140',
     marginBottom: 40,

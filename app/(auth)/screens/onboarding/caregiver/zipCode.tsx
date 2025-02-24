@@ -7,11 +7,16 @@ import { Colors } from '@/constants/Colors';
 import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Button } from '@/components/ui/Button';
+import { useFonts } from 'expo-font';
+import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
 
 export default function ZipCodeScreen() {
   const router = useRouter();
   const [zipCode, setZipCode] = useState('');
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [fontsLoaded] = useFonts({
+    'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
+  });
 
   useEffect(() => {
     const keyboardWillShow = Keyboard.addListener('keyboardWillShow', (e) => {
@@ -42,8 +47,8 @@ export default function ZipCodeScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-
+        <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+      
       <View style={styles.content}>
         <View style={styles.spacer} />
         <ProgressBar progress={0.9} />
@@ -95,7 +100,7 @@ const styles = StyleSheet.create({
     height: 120,
   },
   title: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart',
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,

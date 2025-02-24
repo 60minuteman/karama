@@ -7,9 +7,15 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
+import { useFonts } from 'expo-font';
+import { Poppins_400Regular, Poppins_500Medium } from '@expo-google-fonts/poppins';
+import { Bogart_400Regular, Bogart_500Medium } from '@expo-google-fonts/bogart';
 
 export default function Page() {
   const [date, setDate] = useState('');
+  const [fontsLoaded] = useFonts({
+    'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
+  });
 
   const handleDateChange = (text: string) => {
     // Format input as MM/DD/YYYY
@@ -38,7 +44,7 @@ export default function Page() {
           <View style={styles.spacerTop} />
           <ProgressBar progress={0.2} />
 
-          <ThemedText style={styles.title}>
+          <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
             What is your date of{'\n'}birth?
           </ThemedText>
 
@@ -84,7 +90,6 @@ const styles = StyleSheet.create({
     height: 120,
   },
   title: {
-    fontFamily: 'Poppins',
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,
@@ -101,7 +106,6 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.light.primary,
   },
   input: {
-    fontFamily: 'Poppins',
     fontSize: 24,
     color: Colors.light.text,
     paddingVertical: 8,

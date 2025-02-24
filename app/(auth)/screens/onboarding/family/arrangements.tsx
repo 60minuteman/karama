@@ -115,8 +115,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Poppins',
-    fontWeight: '600',
+    fontFamily: 'Bogart-Bold',
+    fontWeight: '500',
     marginBottom: 40,
     color: Colors.light.text,
     marginTop: 20,

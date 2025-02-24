@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 44,
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Bold', // Changed to 'Bogart-Bold' for the header text
     fontWeight: '600',
     color: '#002140',
     marginBottom: 40,

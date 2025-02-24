@@ -165,7 +165,7 @@ export default function CommitmentScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.mainContent}>
-            <ThemedText style={styles.title}>
+            <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
               What do you expect{'\n'}in terms of{'\n'}commitment?
             </ThemedText>
 
@@ -177,13 +177,6 @@ export default function CommitmentScreen() {
                   icon={option.icon}
                   selected={selected === option.label}
                   onPress={() => setSelected(option.label)}
-                  style={[
-                    styles.pill,
-                    selected === option.label && { backgroundColor: Colors.light.primary }
-                  ]}
-                  textStyle={[
-                    selected === option.label && { color: '#FFFFFF' }
-                  ]}
                 />
               ))}
             </View>

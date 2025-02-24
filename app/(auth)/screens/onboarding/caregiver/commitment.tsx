@@ -153,7 +153,7 @@ export default function CommitmentScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
       
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart',
     fontWeight: '600',
     marginBottom: 40,
     color: '#002140',

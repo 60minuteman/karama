@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Bold',
     fontWeight: '600',
     marginBottom: 30,
     color: Colors.light.text,

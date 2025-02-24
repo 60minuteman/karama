@@ -1,14 +1,15 @@
 import React from 'react';
 import { StyleSheet, View, SafeAreaView, TouchableOpacity, Image } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import { HomeNav } from '@/components/home/HomeNav';
 import { router, useRouter } from 'expo-router';
-import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
 
 export default function Profile() {
   const router = useRouter();
   const [fontsLoaded] = useFonts({
+    'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
     Poppins_400Regular,
+    Poppins_600SemiBold,
   });
 
   if (!fontsLoaded) {
@@ -110,8 +111,6 @@ export default function Profile() {
             ))}
           </View>
         </View>
-
-        <HomeNav />
       </View>
     </SafeAreaView>
   );
@@ -130,8 +129,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontFamily: 'Poppins_400Regular',
-    fontWeight: '600',
+    fontFamily: 'Bogart-Bold',
     color: '#002140',
     lineHeight: 38,
     marginTop: 16,
@@ -174,7 +172,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 24,
-    fontFamily: 'Poppins_400Regular',
+    fontFamily: 'Poppins_600Bold',
     fontWeight: '600',
     lineHeight: 34,
     color: '#002140',

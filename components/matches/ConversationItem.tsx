@@ -1,95 +1,140 @@
 import React from 'react';
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
+import { Swipeable } from 'react-native-gesture-handler';
+import { Ionicons } from '@expo/vector-icons';
 
-interface ConversationItemProps {
-  imageUrl?: string;
+type ConversationItemProps = {
+  imageUrl: string;
   name: string;
   lastMessage: string;
   time: string;
   onPress: () => void;
-}
+};
 
-export const ConversationItem = ({ 
-  imageUrl, 
-  name, 
-  lastMessage, 
-  time,
-  onPress 
-}: ConversationItemProps) => {
-  // Array of pastel placeholder colors
-  const pastelColors = [
-    'https://via.placeholder.com/150/FFB3BA', // Pastel pink
-    'https://via.placeholder.com/150/BAFFC9', // Pastel green  
-    'https://via.placeholder.com/150/BAE1FF', // Pastel blue
-    'https://via.placeholder.com/150/FFFFBA', // Pastel yellow
-    'https://via.placeholder.com/150/FFB3FF', // Pastel purple
-    'https://via.placeholder.com/150/FFD9BA', // Pastel orange
-    'https://via.placeholder.com/150/E5CCFF'  // Pastel lavender
-  ];
-
-  // Get random pastel placeholder if no image provided
-  const getRandomPastelPlaceholder = () => {
-    const randomIndex = Math.floor(Math.random() * pastelColors.length);
-    return pastelColors[randomIndex];
+export function ConversationItem({ imageUrl, name, lastMessage, time, onPress }: ConversationItemProps) {
+  const renderRightActions = () => {
+    return (
+      <View style={styles.rightActions}>
+        <TouchableOpacity style={[styles.action, styles.removeAction]}>
+          <Ionicons name="close" size={24} color="#fff" />
+          <Text style={styles.actionText}>Remove</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.action, styles.hideAction]}>
+          <Ionicons name="eye-off" size={24} color="#fff" />
+          <Text style={styles.actionText}>Hide</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.action, styles.metAction]}>
+          <Ionicons name="people" size={24} color="#fff" />
+          <Text style={styles.actionText}>We Met</Text>
+        </TouchableOpacity>
+      </View>
+    );
   };
 
   return (
-    <TouchableOpacity onPress={onPress} style={styles.container}>
-      <View style={styles.avatarContainer}>
-        <Image 
-          source={imageUrl ? { uri: imageUrl } : require('@/assets/images/profile-placeholder.png')}
-          style={styles.avatar}
-        />
-      </View>
-      <View style={styles.content}>
-        <ThemedText style={styles.name}>{name}</ThemedText>
-        <ThemedText style={styles.message}>{lastMessage}</ThemedText>
-      </View>
-      <ThemedText style={styles.time}>{time}</ThemedText>
-    </TouchableOpacity>
+    <>
+      <Swipeable
+        renderRightActions={renderRightActions}
+        overshootRight={false}
+        enabled={true}
+        onSwipeableOpen={() => {}}
+        onSwipeableClose={() => {}}
+      >
+        <View style={styles.container}>
+          <Image source={{ uri: imageUrl }} style={styles.avatar} />
+          <TouchableOpacity 
+            onPress={onPress} 
+            style={styles.touchableContent}
+            activeOpacity={0.7}
+          >
+            <View style={styles.content}>
+              <View style={styles.header}>
+                <ThemedText style={styles.name}>{name}</ThemedText>
+                <ThemedText style={styles.time}>{time}</ThemedText>
+              </View>
+              <ThemedText style={styles.message} numberOfLines={1}>
+                {lastMessage}
+              </ThemedText>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </Swipeable>
+      <View style={styles.separator} />
+    </>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
+    backgroundColor: 'transparent',
+    paddingLeft: 16,
   },
-  avatarContainer: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-    borderWidth: 2,
-    borderColor: '#FF4B55',
+  touchableContent: {
+    flex: 1,
+    flexDirection: 'row',
+    padding: 16,
+    paddingLeft: 12,
     alignItems: 'center',
-    justifyContent: 'center',
   },
   avatar: {
     width: 48,
     height: 48,
     borderRadius: 24,
+    backgroundColor: '#002333',
   },
   content: {
     flex: 1,
-    marginLeft: 12,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
   },
   name: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: 'Poppins_600SemiBold',
     color: '#002140',
-    marginBottom: 4,
+  },
+  time: {
+    fontSize: 12,
+    color: '#666666',
   },
   message: {
     fontSize: 14,
     color: '#666666',
   },
-  time: {
-    fontSize: 12,
-    color: '#999999',
-    marginLeft: 8,
+  rightActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: '100%',
   },
-}); 
+  action: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 90,
+    height: '100%',
+  },
+  actionText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    marginTop: 4,
+  },
+  removeAction: {
+    backgroundColor: '#FF4B55',
+  },
+  hideAction: {
+    backgroundColor: '#999999',
+  },
+  metAction: {
+    backgroundColor: '#002140',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#EEEEEE',
+    marginLeft: 76, // avatar width (48) + left padding (16) + additional space (12)
+  },
+});

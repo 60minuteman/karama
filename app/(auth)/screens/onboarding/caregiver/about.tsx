@@ -104,7 +104,7 @@ export default function AboutScreen() {
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" />
-
+      
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.75} />
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   title: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Bold',
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,

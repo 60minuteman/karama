@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useFonts } from 'expo-font';
+import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
 
 const positionTypes = [
   { id: 'night_nurse', label: 'Night Nurse', icon: '👩‍⚕️' },
@@ -49,6 +51,9 @@ const PastPosition: React.FC = () => {
   const [endDate, setEndDate] = useState('');
   const [familyName, setFamilyName] = useState('');
   const [selectedPositionNumber, setSelectedPositionNumber] = useState<'first'|'second'>('first');
+  const [fontsLoaded] = useFonts({
+    'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
+  });
 
   const handleNext = () => {
     router.push('/(auth)/screens/onboarding/caregiver/prompt');
@@ -56,7 +61,7 @@ const PastPosition: React.FC = () => {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
       
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -216,7 +221,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Bold',
     fontWeight: '600',
     color: Colors.light.text,
     marginBottom: 24,
@@ -278,7 +283,7 @@ const styles = StyleSheet.create({
   inputCursor: {
     width: 2,
     height: 24,
-    backgroundColor: Colors.light.orange,
+    backgroundColor: Colors.light.primary,
     marginRight: 4,
   },
   input: {

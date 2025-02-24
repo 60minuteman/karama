@@ -9,6 +9,8 @@ import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { useFonts } from 'expo-font';
+import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
 
 const PETS = [
   { label: 'Cat', emoji: '🐱' },
@@ -137,7 +139,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 44,
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Bold', // Changed to use Bogart-Bold font
     fontWeight: '600',
     color: '#002140',
     marginBottom: 40,

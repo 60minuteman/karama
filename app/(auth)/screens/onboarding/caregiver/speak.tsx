@@ -24,7 +24,7 @@ export default function SpeakScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
       
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     height: 120,
   },
   title: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart',
     fontSize: 32,
     lineHeight: 44,
     color: Colors.light.text,
