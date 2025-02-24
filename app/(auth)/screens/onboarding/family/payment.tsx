@@ -44,7 +44,7 @@ export default function PaymentScreen() {
         <ProgressBar progress={0.95} />
 
         <View style={styles.mainContent}>
-          <ThemedText style={styles.title}>
+          <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
             How do you plan to{'\n'}pay your caregiver?
           </ThemedText>
 
@@ -118,7 +118,6 @@ export default function PaymentScreen() {
             onPress={handleNext}
             variant="compact"
             disabled={!selected}
-            style={styles.button}
           />
         </View>
       </View>

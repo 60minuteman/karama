@@ -62,7 +62,7 @@ export default function Prompt2() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
 
-        <ThemedText style={styles.title}>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
           Choose your prompt.
         </ThemedText>
 
@@ -137,7 +137,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Poppins',
     fontWeight: '600',
     color: '#002140',
     marginBottom: 24,

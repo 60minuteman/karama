@@ -19,11 +19,11 @@ export default function Discover() {
     image: 'URL_TO_PROFILE_IMAGE',
     name: 'Madison',
     age: 26,
+    role: '🧢 Caregiver/Household Manager',
     location: 'Manhattan, New York',
-    address: 'Manhattan, New York', // Added address field to match ProfileCard requirements
+    address: '📍 Manhattan, New York', // Added address field to match ProfileCard requirements
     pronouns: 'She/Her',
     rating: 4.5,
-    role: 'Caregiver/Household Manager',
     experience: ['School Age', 'Toddler', 'Pre Schooler'],
     lookingFor: ['Full Time', 'Long Term', 'Live In'],
     hourlyRate: '$20 - $35',

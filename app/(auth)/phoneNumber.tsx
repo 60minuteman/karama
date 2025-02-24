@@ -32,7 +32,7 @@ export default function PhoneNumberScreen() {
 
       <View style={styles.content}>
         <View style={styles.spacer} />
-        <ThemedText style={styles.title}>What's your phone number?</ThemedText>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>What's your phone number?</ThemedText>
 
         <View style={styles.inputWrapper}>
           <View

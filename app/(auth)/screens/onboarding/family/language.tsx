@@ -72,6 +72,7 @@ export default function LanguageScreen() {
                   icon="💬"
                   selected={selectedLanguages.includes(language)}
                   onPress={() => toggleLanguage(language)}
+                  style={styles.pill}
                 />
               ))}
             </View>
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
     height: 120,
   },
   title: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Bold',
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,
@@ -140,6 +141,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 12,
+    marginLeft: 10,
+    marginRight: 10,
+    marginTop: 24,
+  },
+  pill: {
+    marginBottom: 10,
   },
   scrollBottomPadding: {
     height: 100,

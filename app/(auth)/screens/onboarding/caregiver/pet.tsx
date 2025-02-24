@@ -8,13 +8,18 @@ import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { useFonts } from 'expo-font';
+import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
 
 export default function Page() {
   const [selection, setSelection] = useState<'yes' | 'no' | null>(null);
+  const [fontsLoaded] = useFonts({
+    'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
+  });
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
       
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.spacerTop} />

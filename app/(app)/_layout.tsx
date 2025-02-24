@@ -16,14 +16,7 @@ export default function AppLayout() {
   const isDesktop = width >= 1024;
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-        },
-      ]}
-    >
+    <View style={styles.container}>
       <View
         style={[
           styles.content,

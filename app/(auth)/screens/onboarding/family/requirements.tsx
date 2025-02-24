@@ -96,7 +96,7 @@ export default function RequirementsScreen() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.8} />
 
-        <ThemedText style={styles.title}>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
           What requirements do you need caregivers to have?
         </ThemedText>
 

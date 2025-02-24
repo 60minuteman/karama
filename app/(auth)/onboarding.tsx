@@ -17,7 +17,7 @@ export default function OnboardingScreen() {
   };
 
   const handleSignIn = () => {
-    router.push('/(tabs)/matches');
+    router.push('/(tabs)/discover');
   };
 
   return (

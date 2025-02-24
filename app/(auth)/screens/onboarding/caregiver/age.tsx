@@ -8,6 +8,8 @@ import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { useFonts } from 'expo-font';
+import { Bogart_400Regular, Bogart_500Medium } from '@expo-google-fonts/bogart';
 
 const ageGroups = [
   ['Newborn', 'Infant'],
@@ -26,6 +28,9 @@ const ageIcons = {
 
 export default function Page() {
   const [selectedAge, setSelectedAge] = useState<string | null>(null);
+  const [fontsLoaded] = useFonts({
+    'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
+  });
 
   return (
     <ThemedView style={styles.container}>
@@ -35,7 +40,7 @@ export default function Page() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
 
-        <ThemedText style={styles.title}>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
           What ages do you{'\n'}have the most{'\n'}experience working{'\n'}with?
         </ThemedText>
 
@@ -49,7 +54,6 @@ export default function Page() {
                   icon={ageIcons[age as keyof typeof ageIcons]}
                   onPress={() => setSelectedAge(age)}
                   selected={selectedAge === age}
-                  style={styles.option}
                 />
               ))}
             </View>
@@ -86,7 +90,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 44,
-    fontFamily: 'Poppins',
     fontWeight: '600',
     color: '#002140',
     marginBottom: 40,

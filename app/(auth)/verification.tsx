@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     paddingTop: 120,
   },
   title: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Bold',
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,

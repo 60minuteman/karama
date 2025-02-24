@@ -8,6 +8,8 @@ import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { useFonts } from 'expo-font';
+import { Bogart_400Regular, Bogart_500Medium, Bogart_600SemiBold } from '@expo-google-fonts/bogart';
 
 const genderOptions = [
   ['Cisgender Female', 'Non Binary'],
@@ -20,16 +22,19 @@ const genderOptions = [
 
 export default function Page() {
   const [selectedGender, setSelectedGender] = useState<string | null>(null);
+  const [fontsLoaded] = useFonts({
+    'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
+  });
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
       
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
 
-        <ThemedText style={styles.title}>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
           What best describes{'\n'}your gender?
         </ThemedText>
 

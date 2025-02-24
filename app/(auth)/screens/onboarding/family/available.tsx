@@ -86,7 +86,6 @@ export default function AvailabilityScreen() {
               onPress={handleNext}
               variant="compact"
               disabled={!selected}
-              style={styles.button}
             />
           </View>
         </LinearGradient>
@@ -121,7 +120,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Bold',
     fontWeight: '600',
     marginBottom: 40,
     color: Colors.light.text,
@@ -158,7 +157,4 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-  button: {
-    alignSelf: 'flex-end'
-  }
 });

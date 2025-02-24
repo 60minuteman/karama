@@ -18,7 +18,7 @@ export default function MoreInfo() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
       
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart',
     fontWeight: '600',
     color: Colors.light.text,
     marginBottom: 24,

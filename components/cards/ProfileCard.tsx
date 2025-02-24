@@ -11,9 +11,10 @@ interface ProfileCardProps {
   address: string;
   pronouns: string;
   rating: number;
+  role: string;
 }
 
-export const ProfileCard = ({ name, age, address = "123 Lain St, New York, NY", pronouns, rating }: ProfileCardProps) => {
+export const ProfileCard = ({ name, age, address = "123 Lain St, New York, NY", pronouns, rating, role }: ProfileCardProps) => {
   const { height: windowHeight } = useWindowDimensions();
   const [fadeAnim] = React.useState(new Animated.Value(0));
   const [fontsLoaded] = useFonts({
@@ -59,6 +60,7 @@ export const ProfileCard = ({ name, age, address = "123 Lain St, New York, NY", 
           <View style={styles.infoOverlay}>
             <View style={styles.infoContainer}>
               <ThemedText style={styles.nameAge}>{name}, {age}</ThemedText>
+              <ThemedText style={styles.role}>{role}</ThemedText>
               <ThemedText style={styles.address}>{address}</ThemedText>
             </View>
           </View>
@@ -130,6 +132,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Bogart-Bold',
     color: '#FFFFFF',
     lineHeight: 38,
+  },
+  role: {
+    fontSize: 16,
+    color: '#FFFFFF',
+    fontFamily: 'Bogart-Regular',
   },
   address: {
     fontSize: 16,

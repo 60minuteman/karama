@@ -19,7 +19,7 @@ export default function Page() {
 
         <View style={styles.mainContent}>
           <ThemedText style={styles.title}>
-            Lets explore amazing{'\n'}caregivers! 🤩
+            Let's explore amazing{'\n'}caregivers! 🤩
           </ThemedText>
         </View>
 
@@ -37,7 +37,7 @@ export default function Page() {
         <View style={styles.buttonContainer}>
           <Button
             label="Finish"
-            onPress={() => router.push('/(app)/discover')}
+            onPress={() => router.push('/(tabs)/discover')}
             variant="compact"
           />
         </View>
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     lineHeight: 44,
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Bold',
     fontWeight: '600',
     color: '#002140',
     textAlign: 'left',

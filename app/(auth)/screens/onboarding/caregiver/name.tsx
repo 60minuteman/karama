@@ -27,7 +27,7 @@ export default function CaregiverNameScreen() {
         <View style={styles.spacer} />
         <ProgressBar progress={0.4} />
         
-        <ThemedText style={styles.title}>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
           What's your{'\n'}name?
         </ThemedText>
 

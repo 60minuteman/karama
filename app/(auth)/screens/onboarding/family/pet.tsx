@@ -82,7 +82,7 @@ export default function PetScreen() {
         <View style={styles.spacer} />
         <ProgressBar progress={0.9} />
         
-        <ThemedText style={styles.title}>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
           What pets are{'\n'}a part of your{'\n'}family?
         </ThemedText>
 
@@ -151,7 +151,6 @@ const styles = StyleSheet.create({
     height: 120,
   },
   title: {
-    fontFamily: 'Poppins',
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,

@@ -65,7 +65,7 @@ export default function TraitScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.mainContent}>
-            <ThemedText style={styles.title}>
+            <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
               What personality{'\n'}traits would you like{'\n'}your caregiver to{'\n'}have ?
             </ThemedText>
 
@@ -77,13 +77,6 @@ export default function TraitScreen() {
                   icon={trait.icon}
                   onPress={() => handleTraitSelect(trait.label)}
                   selected={selectedTraits.includes(trait.label)}
-                  style={[
-                    styles.traitPill,
-                    (trait.label === 'Extroverted' || 
-                     trait.label === 'Thoughtful' ||
-                     trait.label === 'Adventurous') && 
-                    styles.highlightedPill
-                  ]}
                 />
               ))}
             </View>

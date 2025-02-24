@@ -57,7 +57,7 @@ export default function GenderScreen() {
           <ProgressBar progress={0.3} />
 
           <View style={styles.mainContent}>
-            <ThemedText style={styles.title}>
+            <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
               Do you have a preference when it comes to the gender of your caregiver?
             </ThemedText>
             

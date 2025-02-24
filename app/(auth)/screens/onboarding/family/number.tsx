@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 import { useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -52,7 +52,7 @@ export default function FamilyNumberScreen() {
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" />
-
+      
       <View style={styles.content}>
         <View style={styles.spacer} />
         <ProgressBar progress={0.6} />
@@ -61,19 +61,20 @@ export default function FamilyNumberScreen() {
           How many children{'\n'}do you have and{'\n'}what are their age{'\n'}ranges?
         </ThemedText>
 
-        <View style={styles.countersContainer}>
-          {ageGroups.map((group, index) => (
-            <Counter
-              key={group.label}
-              icon={group.icon}
-              label={group.label}
-              value={group.count}
-              onIncrement={() => handleIncrement(index)}
-              onDecrement={() => handleDecrement(index)}
-              isActive={group.count > 0}
-            />
-          ))}
-        </View>
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+          <View style={styles.countersContainer}>
+            {ageGroups.map((group, index) => (
+              <Counter
+                key={group.label}
+                icon={group.icon}
+                label={group.label}
+                value={group.count}
+                onIncrement={() => handleIncrement(index)}
+                onDecrement={() => handleDecrement(index)}
+              />
+            ))}
+          </View>
+        </ScrollView>
 
         <View style={[styles.buttonContainer, { paddingHorizontal: 22 }]}>
           <Button
@@ -101,7 +102,7 @@ const styles = StyleSheet.create({
     height: 120,
   },
   title: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Bold',
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,
@@ -116,5 +117,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 50,
     right: 0,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingVertical: 20,
   },
 });
