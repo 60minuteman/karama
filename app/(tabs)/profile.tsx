@@ -1,9 +1,15 @@
-import React from 'react';
-import { StyleSheet, View, SafeAreaView, TouchableOpacity, Image } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { HomeNav } from '@/components/home/HomeNav';
+import { Poppins_400Regular, useFonts } from '@expo-google-fonts/poppins';
 import { router, useRouter } from 'expo-router';
-import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import React from 'react';
+import {
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 export default function Profile() {
   const router = useRouter();
@@ -23,7 +29,7 @@ export default function Profile() {
     },
     {
       icon: require('@/assets/icons/preferences.png'),
-      label: 'Preferences', 
+      label: 'Preferences',
       route: '/preferences',
     },
     {
@@ -58,10 +64,10 @@ export default function Profile() {
                 <ThemedText style={styles.percentageText}>90%</ThemedText>
               </View>
             </View>
-            
+
             <View style={styles.profileInfo}>
               <ThemedText style={styles.name}>Sako Reuben</ThemedText>
-              <TouchableOpacity 
+              <TouchableOpacity
                 onPress={() => handleNavigation('/view-profile')}
                 activeOpacity={0.7}
               >
@@ -70,7 +76,7 @@ export default function Profile() {
             </View>
           </View>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.karamaPlus}
             onPress={() => handleNavigation('/subscribe')}
             activeOpacity={0.7}
@@ -111,7 +117,7 @@ export default function Profile() {
           </View>
         </View>
 
-        <HomeNav />
+        {/* <HomeNav /> */}
       </View>
     </SafeAreaView>
   );
