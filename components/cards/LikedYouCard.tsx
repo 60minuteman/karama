@@ -46,10 +46,9 @@ export const LikedYouCard = ({
       >
         <View style={styles.overlay}>
           <View style={styles.header}>
-            <View style={styles.genderPill}>
-              <ThemedText style={styles.genderEmoji}>👩</ThemedText>
+            <BlurView intensity={20} style={styles.genderPill}>
               <ThemedText style={styles.genderText}>{profile.gender}</ThemedText>
-            </View>
+            </BlurView>
             <View style={styles.ratingPill}>
               <ThemedText style={styles.rating}>{profile.rating}</ThemedText>
               <ThemedText style={styles.starIcon}>⭐</ThemedText>
@@ -109,33 +108,27 @@ const styles = StyleSheet.create({
   genderPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E8F4F8', // Pastel blue
     borderRadius: 100,
     paddingHorizontal: 6,
     paddingVertical: 4,
-  },
-  genderEmoji: {
-    fontSize: 10,
-    marginRight: 4,
+    overflow: 'hidden'
   },
   genderText: {
-    fontSize: 10,
-    color: '#5B7B8C', // Darker blue for contrast
-    fontFamily: 'Bogart-Regular',
+    fontSize: 12,
+    color: '#FFFFFF',
+    fontFamily: 'Poppins',
   },
   ratingPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8E8E8', // Pastel red
-    borderRadius: 100,
-    paddingHorizontal: 6,
+    paddingHorizontal: 0,
     paddingVertical: 4,
   },
   rating: {
-    fontSize: 10,
-    color: '#B47B84', // Darker red for contrast
-    marginRight: 4,
-    fontFamily: 'Bogart-Regular',
+    fontSize: 14,
+    color: '#FFFFFF',
+    marginRight: 0,
+    fontFamily: 'Poppins',
   },
   starIcon: {
     fontSize: 12,
@@ -147,7 +140,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
-    fontFamily: 'Bogart-Regular',
+    fontFamily: 'Bogart-Bold',
   },
   location: {
     fontSize: 12,

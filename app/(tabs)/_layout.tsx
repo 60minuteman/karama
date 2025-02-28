@@ -23,15 +23,14 @@ export default function TabsLayout() {
           backgroundColor: Colors.light.background,
           borderTopColor: '#F6F6F6',
           height: 92,
-          // marginHorizontal: 28,
-          // paddingBottom: 32.5,
-          // paddingTop: 24,
         },
         tabBarActiveTintColor: '#FF4B55',
         tabBarInactiveTintColor: '#666666',
         tabBarLabelStyle: {
           fontFamily: 'Poppins_400Regular',
           fontSize: 12,
+          width: 'auto',
+          flexWrap: 'nowrap'
         },
         headerShown: false,
       }}
@@ -103,13 +102,6 @@ export default function TabsLayout() {
               resizeMode='contain'
             />
           ),
-          tabBarLabelStyle: {
-            fontSize: 12, // Adjust size if needed
-            width: 'auto', // Ensures the label takes its natural width
-          },
-          // tabBarItemStyle: {
-          //   minWidth: 80, // Adjust the minimum width of the tab
-          // },
         }}
       />
       <Tabs.Screen
