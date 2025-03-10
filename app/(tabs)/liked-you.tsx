@@ -1,7 +1,6 @@
 import { ThemedText } from '@/components/ThemedText';
 import { LikedYouCard } from '@/components/cards/LikedYouCard';
 import { HomeNav } from '@/components/home/HomeNav';
-import { Poppins_400Regular, useFonts } from '@expo-google-fonts/poppins';
 import React from 'react';
 import {
   Dimensions,
@@ -9,11 +8,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from 'react-native';
 import { opacity } from 'react-native-reanimated/lib/typescript/Colors';
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const CARD_WIDTH = (SCREEN_WIDTH - 48) / 2; // 16px padding on each side, 16px gap
 
 interface Profile {
   id: string;
@@ -31,13 +28,16 @@ interface LikedYouProps {
 }
 
 export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
-  const [fontsLoaded] = useFonts({
-    Poppins_400Regular,
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
+  const { width, height } = useWindowDimensions();
+  
+  // Responsive calculations
+  const horizontalPadding = width * 0.04; // 4% of screen width
+  const cardGap = width * 0.04;
+  const cardWidth = (width - (horizontalPadding * 2) - cardGap) / 2;
+  const titleSize = width * 0.08; // 8% of screen width
+  const titleLineHeight = titleSize * 1.2;
+  const upgradeButtonPadding = width * 0.06;
+  const upgradeContainerBottom = height * 0.03;
 
   const profiles: Profile[] = [
     {
@@ -85,10 +85,17 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <ThemedText style={styles.title}>Liked you</ThemedText>
-        <View style={styles.content}>
+        <ThemedText style={[styles.title, { 
+          fontSize: titleSize,
+          lineHeight: titleLineHeight,
+          marginLeft: horizontalPadding,
+          marginTop: height * 0.02
+        }]}>
+          Liked you
+        </ThemedText>
+        <View style={[styles.content, { padding: horizontalPadding }]}>
           {isSubscribed ? (
-            <View style={styles.profileGrid}>
+            <View style={[styles.profileGrid, { gap: cardGap }]}>
               {profiles.map((profile) => (
                 <LikedYouCard
                   key={profile.id}
@@ -100,25 +107,34 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
             </View>
           ) : (
             <>
-              <View style={styles.profileGrid}>
+              <View style={[styles.profileGrid, { gap: cardGap }]}>
                 {profiles.map((profile) => (
                   <LikedYouCard
                     key={profile.id}
                     profile={profile}
-                    isBlurred={true}
+                    isBlurred={profile.id !== '1'} // Only the first card is unblurred
                     onPress={() => {}}
                   />
                 ))}
               </View>
-              <View style={styles.upgradeContainer}>
-                <View style={styles.upgradeRow}>
-                  <TouchableOpacity style={styles.upgradeButton}>
-                    <ThemedText style={styles.upgradeButtonText}>
+              <View style={[styles.upgradeContainer, { bottom: upgradeContainerBottom }]}>
+                <View style={[styles.upgradeRow, { 
+                  width: width - (horizontalPadding * 2),
+                  height: height * 0.07
+                }]}>
+                  <TouchableOpacity style={[styles.upgradeButton, {
+                    paddingHorizontal: upgradeButtonPadding
+                  }]}>
+                    <ThemedText style={[styles.upgradeButtonText, {
+                      fontSize: width * 0.035
+                    }]}>
                       Upgrade
                     </ThemedText>
                   </TouchableOpacity>
                   <View style={styles.upgradeTextContainer}>
-                    <ThemedText style={styles.upgradeText}>
+                    <ThemedText style={[styles.upgradeText, {
+                      fontSize: width * 0.035
+                    }]}>
                       Upgrade to Karama +{'\n'}to get your profile seen
                     </ThemedText>
                   </View>
@@ -127,7 +143,6 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
             </>
           )}
         </View>
-        {/* <HomeNav /> */}
       </View>
     </SafeAreaView>
   );
@@ -143,34 +158,24 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 16,
   },
   title: {
-    fontSize: 32,
-    fontFamily: 'Poppins_400Regular',
-    fontWeight: '600',
-    marginTop: 16,
-    marginLeft: 16,
-    lineHeight: 38,
+    fontFamily: 'Bogart-Bold',
     color: '#000000',
   },
   profileGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   upgradeContainer: {
     position: 'absolute',
-    bottom: 20,
-    left: 16,
-    right: 16,
+    left: 0,
+    right: 0,
     alignItems: 'center',
   },
   upgradeRow: {
-    width: 358,
-    height: 52,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(38, 29, 42, 0.05)',
@@ -180,13 +185,11 @@ const styles = StyleSheet.create({
   upgradeButton: {
     backgroundColor: '#EB4430',
     borderRadius: 100,
-    paddingHorizontal: 24,
     paddingVertical: 8,
     marginRight: 14,
   },
   upgradeButtonText: {
     color: '#FFFFFF',
-    fontSize: 14,
     fontWeight: '600',
     fontFamily: 'Poppins_400Medium',
   },
@@ -194,7 +197,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   upgradeText: {
-    fontSize: 14,
     color: '#261D2A',
     lineHeight: 20,
     fontFamily: 'Poppins_400Regular',

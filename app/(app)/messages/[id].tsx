@@ -5,7 +5,7 @@ import { MessageHeader } from '@/components/messages/MessageHeader';
 import { MessageInput } from '@/components/messages/MessageInput';
 import { ChatBubble } from '@/components/messages/ChatBubble';
 import { ThemedText } from '@/components/ThemedText';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Container } from '@/components/home/Container';
 
 interface Message {
   id: string;
@@ -44,7 +44,27 @@ export default function MessageScreen() {
       type: 'sent'
     }
   ]);
-  const insets = useSafeAreaInsets();
+
+  // Mock profile data to pass to Container component
+  const profileData = {
+    image: 'URL_TO_PROFILE_IMAGE',
+    name: name as string,
+    age: 26,
+    role: '🧢 Caregiver/Household Manager',
+    location: 'Manhattan, New York',
+    address: '📍 Manhattan, New York',
+    pronouns: 'She/Her',
+    rating: 4.5,
+    experience: ['School Age', 'Toddler', 'Pre Schooler'],
+    lookingFor: ['Full Time', 'Long Term', 'Live In'],
+    hourlyRate: '$20 - $35',
+    languages: ['English', 'Spanish'],
+    interests: ['Dance', 'DIY', 'Magic'],
+    obsession: 'Chickens! The kids love them.',
+    religion: 'Buddhism',
+    personality: ['Chill', 'Patient', 'Wacky'],
+    disabilities: ['Dyslexia', 'ADHD']
+  };
 
   const handleSend = () => {
     if (message.trim()) {
@@ -76,37 +96,52 @@ export default function MessageScreen() {
   };
 
   return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 25}
-    >
+    <View style={styles.container}>
       <MessageHeader 
         name={name as string} 
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />
       
-      <FlatList<Message>
-        style={styles.messagesList}
-        data={messages}
-        renderItem={renderMessage}
-        keyExtractor={(item: Message) => item.id}
-        inverted={false}
-        contentContainerStyle={[
-          styles.messagesContent,
-          { paddingBottom: 100 }
-        ]}
-      />
-
-      <View style={[styles.inputContainer]}>
-        <MessageInput
-          value={message}
-          onChangeText={setMessage}
-          onSend={handleSend}
+      {activeTab === 'chat' ? (
+        <FlatList<Message>
+          style={styles.messagesList}
+          data={messages}
+          renderItem={renderMessage}
+          keyExtractor={(item: Message) => item.id}
+          inverted={false}
+          contentContainerStyle={[
+            styles.messagesContent,
+            { paddingBottom: 100 }
+          ]}
         />
-      </View>
-    </KeyboardAvoidingView>
+      ) : (
+        <View style={{height: '80%'}}>
+          <Container profileData={profileData} />
+        </View>
+      )}
+
+      {activeTab === 'chat' && (
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'position' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+          }}
+        >
+          <View style={[styles.inputContainer]}>
+            <MessageInput
+              value={message}
+              onChangeText={setMessage}
+              onSend={handleSend}
+            />
+          </View>
+        </KeyboardAvoidingView>
+      )}
+    </View>
   );
 }
 
@@ -129,13 +164,10 @@ const styles = StyleSheet.create({
     paddingBottom: 120,
   },
   inputContainer: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderTopColor: '#F0F0F0',
+    width: '100%',
   },
   systemContainer: {
     alignItems: 'center',

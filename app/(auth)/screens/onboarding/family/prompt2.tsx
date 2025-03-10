@@ -62,7 +62,7 @@ export default function Prompt2() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
 
-        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
           Choose your prompt.
         </ThemedText>
 

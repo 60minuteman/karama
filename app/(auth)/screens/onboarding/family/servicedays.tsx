@@ -81,7 +81,7 @@ export default function ServiceDaysScreen() {
         <ProgressBar progress={0.8} />
 
         <View style={styles.titleContainer}>
-          <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
+          <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
             What days and{'\n'}hours would you{'\n'}need a caregiver?
           </ThemedText>
         </View>

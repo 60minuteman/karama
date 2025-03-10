@@ -1,4 +1,5 @@
 import { Colors } from '@/constants/Colors';
+import { FontProvider } from '@/providers/FontProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { useUserStore } from '@/services/state/user';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

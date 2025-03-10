@@ -1,63 +1,81 @@
 import { ThemedText } from '@/components/ThemedText';
-import { HomeHeader } from '@/components/home/HomeHeader';
-import { HomeNav } from '@/components/home/HomeNav';
-import { Colors } from '@/constants/Colors';
 import React from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function ForYouScreen() {
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <HomeHeader />
-        <View style={styles.content}>
-          <ThemedText style={styles.title}>People who liked you</ThemedText>
-
-          <View style={styles.emptyState}>
-            <ThemedText style={styles.emptyText}>
-              No one has liked you yet. Keep checking back!
-            </ThemedText>
-          </View>
-        </View>
-        {/* <HomeNav /> */}
+    <LinearGradient
+      colors={['#FF8A00', '#FF4B55']}
+      style={styles.container}
+    >
+      <View style={styles.content}>
+        <Image 
+          source={require('@/assets/icons/check-badge.png')} 
+          style={styles.icon}
+        />
+        <ThemedText style={styles.title}>For You</ThemedText>
+        <ThemedText style={styles.subtitle}>Coming Soon</ThemedText>
+        <ThemedText style={styles.description}>
+          Here you get top recommendations based on your profile
+        </ThemedText>
       </View>
-    </SafeAreaView>
+      <View style={styles.phoneContainer}>
+        <Image
+          source={require('@/assets/images/phone.png')}
+          style={styles.phoneImage}
+          resizeMode="contain"
+        />
+      </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
   container: {
     flex: 1,
   },
   content: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 24,
-  },
-  title: {
-    fontFamily: 'Poppins',
-    fontSize: 28,
-    fontWeight: '600',
-    lineHeight: 36,
-    color: Colors.light.text,
-    marginBottom: 32,
-  },
-  emptyState: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 48,
+    paddingHorizontal: 40,
   },
-  emptyText: {
-    fontFamily: 'Poppins',
+  icon: {
+    width: 64,
+    height: 64,
+    marginBottom: 24,
+  },
+  title: {
+    fontSize: 32,
+    fontFamily: 'Bogart-Bold',
+    color: '#FFFFFF',
+    marginBottom: 8,
+    lineHeight: 38,
+  },
+  subtitle: {
+    fontSize: 24,
+    fontFamily: 'Poppin',
+    color: '#FFFFFF',
+    marginBottom: 16,
+  },
+  description: {
     fontSize: 18,
-    lineHeight: 28,
-    color: Colors.light.text,
+    fontFamily: 'Poppins',
+    color: '#FFFFFF',
     textAlign: 'center',
-    maxWidth: '70%',
+    lineHeight: 28,
+  },
+  phoneContainer: {
+    width: '100%',
+    height: 300,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginBottom: -40,
+  },
+  phoneImage: {
+    width: 342,
+    height: 701,
+    marginBottom: -300,
   },
 });

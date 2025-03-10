@@ -165,7 +165,7 @@ export default function CommitmentScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.mainContent}>
-            <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
+            <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
               What do you expect{'\n'}in terms of{'\n'}commitment?
             </ThemedText>
 

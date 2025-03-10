@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { useFonts } from 'expo-font';
-import { Bogart_400Regular, Bogart_500Medium } from '@expo-google-fonts/bogart';
+import { router } from 'expo-router';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 const ageGroups = [
   ['Newborn', 'Infant'],
@@ -18,12 +17,12 @@ const ageGroups = [
 ];
 
 const ageIcons = {
-  'Newborn': '👶',
-  'Infant': '🍼',
-  'Toddler': '🧸',
+  Newborn: '👶',
+  Infant: '🍼',
+  Toddler: '🧸',
   'Pre Schooler': '✏️',
   'School Age': '🛴',
-  'Teenager': '🌈',
+  Teenager: '🌈',
 };
 
 export default function Page() {
@@ -34,8 +33,8 @@ export default function Page() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
@@ -64,9 +63,11 @@ export default function Page() {
       <View style={styles.bottomNav}>
         <View style={styles.buttonContainer}>
           <Button
-            label="Next"
-            onPress={() => router.push('/(auth)/screens/onboarding/caregiver/number')}
-            variant="compact"
+            label='Next'
+            onPress={() =>
+              router.push('/(auth)/screens/onboarding/caregiver/number')
+            }
+            variant='compact'
             disabled={!selectedAge}
           />
         </View>
@@ -113,5 +114,5 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-  }
-}); 
+  },
+});

@@ -1,113 +1,81 @@
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { HomeHeader } from '@/components/home/HomeHeader';
-import { HomeNav } from '@/components/home/HomeNav';
-import { Colors } from '@/constants/Colors';
-import { useRouter } from 'expo-router';
 import React from 'react';
-import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
-export default function Community() {
-  const router = useRouter();
-  const messages = []; // This would be populated with actual messages
-
-  const renderMessage = ({ item }) => (
-    <View
-      style={[
-        styles.messageBubble,
-        item.isMine ? styles.myMessage : styles.theirMessage,
-      ]}
-    >
-      <ThemedText style={styles.messageText}>{item.text}</ThemedText>
-    </View>
-  );
-
+export default function CommunityScreen() {
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <HomeHeader />
-        <View style={styles.content}>
-          <ThemedText style={styles.title}>Community Chat</ThemedText>
-
-          {messages.length === 0 ? (
-            <View style={styles.emptyState}>
-              <ThemedText style={styles.emptyText}>
-                No messages yet. Start a conversation!
-              </ThemedText>
-            </View>
-          ) : (
-            <FlatList
-              data={messages}
-              renderItem={renderMessage}
-              keyExtractor={(item) => item.id}
-              contentContainerStyle={styles.messageList}
-            />
-          )}
-        </View>
-        {/* <HomeNav /> */}
+    <LinearGradient
+      colors={['#FF8A00', '#FF4B55']}
+      style={styles.container}
+    >
+      <View style={styles.content}>
+        <Image 
+          source={require('@/assets/icons/user-group.png')} 
+          style={styles.icon}
+        />
+        <ThemedText style={styles.title}>Community</ThemedText>
+        <ThemedText style={styles.subtitle}>Coming Soon</ThemedText>
+        <ThemedText style={styles.description}>
+        Get answers to your every question and give solutions to child related problems
+        </ThemedText>
       </View>
-    </SafeAreaView>
+      <View style={styles.phoneContainer}>
+        <Image
+          source={require('@/assets/images/xphone.png')}
+          style={styles.phoneImage}
+          resizeMode="contain"
+        />
+      </View>
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
   container: {
     flex: 1,
   },
   content: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 24,
-  },
-  title: {
-    fontFamily: 'Poppins',
-    fontSize: 28,
-    fontWeight: '600',
-    lineHeight: 36,
-    color: Colors.light.text,
-    marginBottom: 24,
-  },
-  messageList: {
-    paddingVertical: 16,
-  },
-  messageBubble: {
-    maxWidth: '80%',
-    padding: 12,
-    borderRadius: 16,
-    marginVertical: 4,
-  },
-  myMessage: {
-    backgroundColor: Colors.light.primary,
-    alignSelf: 'flex-end',
-    borderBottomRightRadius: 4,
-  },
-  theirMessage: {
-    backgroundColor: Colors.light.gray,
-    alignSelf: 'flex-start',
-    borderBottomLeftRadius: 4,
-  },
-  messageText: {
-    fontFamily: 'Poppins',
-    fontSize: 16,
-    lineHeight: 24,
-    color: Colors.light.text,
-  },
-  emptyState: {
-    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 48,
+    paddingHorizontal: 40,
   },
-  emptyText: {
-    fontFamily: 'Poppins',
+  icon: {
+    width: 64,
+    height: 64,
+    marginBottom: 24,
+  },
+  title: {
+    fontSize: 32,
+    fontFamily: 'Bogart-Bold',
+    color: '#FFFFFF',
+    marginBottom: 8,
+    lineHeight: 38,
+  },
+  subtitle: {
+    fontSize: 24,
+    fontFamily: 'Poppin',
+    color: '#FFFFFF',
+    marginBottom: 16,
+  },
+  description: {
     fontSize: 18,
-    lineHeight: 28,
-    color: Colors.light.text,
+    fontFamily: 'Poppins',
+    color: '#FFFFFF',
     textAlign: 'center',
-    maxWidth: '70%',
+    lineHeight: 28,
+  },
+  phoneContainer: {
+    width: '100%',
+    height: 300,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    marginBottom: -40,
+  },
+  phoneImage: {
+    width: 500,
+    height: 701,
+    marginBottom: -300,
   },
 });

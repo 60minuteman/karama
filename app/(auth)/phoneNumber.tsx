@@ -81,7 +81,7 @@ export default function PhoneNumberScreen() {
 
       <View style={styles.content}>
         <View style={styles.spacer} />
-        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
           What's your phone number?
         </ThemedText>
 

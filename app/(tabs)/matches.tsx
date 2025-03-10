@@ -3,11 +3,6 @@ import { HomeNav } from '@/components/home/HomeNav';
 import { ConversationItem } from '@/components/matches/ConversationItem';
 import { MatchCircle } from '@/components/matches/MatchCircle';
 import { SearchBar } from '@/components/matches/SearchBar';
-import {
-  Poppins_400Regular,
-  Poppins_600SemiBold,
-  useFonts,
-} from '@expo-google-fonts/poppins';
 import React, { useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
@@ -15,15 +10,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function Matches() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [fontsLoaded] = useFonts({
-    'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
-    Poppins_400Regular,
-    Poppins_600SemiBold,
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
 
   // Array of pastel colors to use as placeholders
   const pastelColors = [

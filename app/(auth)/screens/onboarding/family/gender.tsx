@@ -50,21 +50,20 @@ export default function GenderScreen() {
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" />
+      <View style={styles.titleContainer}>
+        <ProgressBar progress={0.3} />
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
+          Do you have a preference when it comes to the gender of your caregiver?
+        </ThemedText>
+        
+        <ThemedText style={styles.subtitle}>
+          (This will not be visible on your profile)
+        </ThemedText>
+      </View>
       
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
-          <View style={styles.spacerTop} />
-          <ProgressBar progress={0.3} />
-
           <View style={styles.mainContent}>
-            <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
-              Do you have a preference when it comes to the gender of your caregiver?
-            </ThemedText>
-            
-            <ThemedText style={styles.subtitle}>
-              (This will not be visible on your profile)
-            </ThemedText>
-
             <View style={[styles.optionsContainer, { justifyContent: 'flex-end' }]}>
               <Pill
                 label="Yes"
@@ -127,14 +126,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.background,
   },
+  titleContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 120,
+  },
   scrollView: {
     flex: 1,
   },
   content: {
     paddingHorizontal: 20,
-  },
-  spacerTop: {
-    height: 120,
   },
   bottomSpacer: {
     height: 100,

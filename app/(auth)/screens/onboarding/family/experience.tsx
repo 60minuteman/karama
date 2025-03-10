@@ -36,16 +36,16 @@ export default function ExperienceScreen() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.6} />
 
+        <ThemedText style={styles.title}>
+          How many years of{'\n'}experience do you{'\n'}require your{'\n'}caregiver to have?
+        </ThemedText>
+
         <ScrollView 
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.mainContent}>
-            <ThemedText style={styles.title}>
-              How many years of{'\n'}experience do you{'\n'}require your{'\n'}caregiver to have?
-            </ThemedText>
-
             <View style={styles.optionsContainer}>
               {experienceOptions.map((option, index) => (
                 <Pill
@@ -118,11 +118,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Bogart-Bold',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    marginBottom: 40,
+    marginBottom: 20,
     color: Colors.light.text,
-    marginTop: 20,
   },
   optionsContainer: {
     flexDirection: 'row',

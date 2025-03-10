@@ -55,16 +55,16 @@ export default function TypeScreen() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.3} />
 
+        <ThemedText style={styles.title}>
+          What type of{'\n'}caregiver are you{'\n'}seeking?
+        </ThemedText>
+
         <ScrollView 
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.mainContent}>
-            <ThemedText style={styles.title}>
-              What type of{'\n'}caregiver are you{'\n'}seeking?
-            </ThemedText>
-
             <View style={styles.typesContainer}>
               {caregiverTypes.map((type, index) => (
                 <Pill
@@ -136,13 +136,12 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    paddingTop: 40,
     paddingBottom: 100,
   },
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Bogart-Bold',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
     marginBottom: 30,
     color: Colors.light.text,
