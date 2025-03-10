@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Bogart-Bold',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
     color: Colors.light.text,
     marginBottom: 24,

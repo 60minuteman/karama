@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Bogart-Bold', // Changed to use 'Bogart-Bold' font
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
     color: '#002140',
     marginBottom: 24,

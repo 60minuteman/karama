@@ -66,8 +66,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     lineHeight: 44,
-    fontFamily: 'Bogart-Bold',
-    fontWeight: '600',
+    fontFamily: 'Bogart-Semibold',
     color: '#002140',
     textAlign: 'left',
   },

@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   title: {
-    fontFamily: 'Bogart-Bold',
+    fontFamily: 'Bogart-Semibold',
     fontSize: 32,
     lineHeight: 38,
     color: Colors.light.text,

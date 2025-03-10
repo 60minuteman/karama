@@ -1,5 +1,6 @@
 import { Colors } from '@/constants/Colors';
 import { ThemeProvider } from '@/providers/ThemeProvider';
+import { FontProvider } from '@/providers/FontProvider';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
@@ -39,20 +40,22 @@ export default function RootLayout() {
     <View style={{ flex: 1, backgroundColor: Colors.light.background }}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ThemeProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              contentStyle: { backgroundColor: Colors.light.background },
-            }}
-          >
-            <Stack.Screen
-              name='(auth)'
-              options={{
-                presentation: 'fullScreenModal',
+          <FontProvider>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: { backgroundColor: Colors.light.background },
               }}
-            />
-            <Stack.Screen name='(app)' options={{ headerShown: false }} />
-          </Stack>
+            >
+              <Stack.Screen
+                name='(auth)'
+                options={{
+                  presentation: 'fullScreenModal',
+                }}
+              />
+              <Stack.Screen name='(app)' options={{ headerShown: false }} />
+            </Stack>
+          </FontProvider>
         </ThemeProvider>
       </GestureHandlerRootView>
     </View>

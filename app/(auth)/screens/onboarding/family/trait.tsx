@@ -59,16 +59,16 @@ export default function TraitScreen() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.3} />
 
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
+          What personality{'\n'}traits would you like{'\n'}your caregiver to{'\n'}have ?
+        </ThemedText>
+
         <ScrollView 
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.mainContent}>
-            <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
-              What personality{'\n'}traits would you like{'\n'}your caregiver to{'\n'}have ?
-            </ThemedText>
-
             <View style={styles.traitsContainer}>
               {personalityTraits.map((trait, index) => (
                 <Pill
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    paddingTop: 40,
+    paddingTop: 20,
     paddingBottom: 100,
   },
   title: {

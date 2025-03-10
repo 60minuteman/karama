@@ -57,27 +57,26 @@ export default function AgeScreen() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.4} />
 
+        <ThemedText style={styles.title}>
+          Do you require your{'\n'}caregiver to be{'\n'}within a certain age{'\n'}range?
+        </ThemedText>
+            
+        <ThemedText style={styles.subtitle}>
+          (This will not be visible on your profile)
+        </ThemedText>
+
         <ScrollView 
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.mainContent}>
-            <ThemedText style={styles.title}>
-              Do you require your{'\n'}caregiver to be{'\n'}within a certain age{'\n'}range?
-            </ThemedText>
-            
-            <ThemedText style={styles.subtitle}>
-              (This will not be visible on your profile)
-            </ThemedText>
-
             <View style={styles.initialChoiceContainer}>
               <View style={styles.spacer} />
               <Pill
                 label="Yes"
                 onPress={() => handleInitialChoice('yes')}
                 selected={initialChoice === 'yes'}
-                variant={initialChoice === 'yes' ? 'highlighted' : undefined}
               />
               <Pill
                 label="No Preference"
@@ -159,13 +158,12 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    paddingTop: 40,
     paddingBottom: 100,
   },
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Bogart-Bold',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
     marginBottom: 8,
     color: Colors.light.text,

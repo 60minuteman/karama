@@ -216,13 +216,14 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   title: {
-    fontFamily: 'Bogart-Bold',
+    fontFamily: 'Bogart-Semibold',
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,
     marginBottom: 40,
     fontWeight: '500',
     marginTop: 20,
+    color: '#002140',
   },
   categoryContainer: {
     marginBottom: 32,
