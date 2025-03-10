@@ -1,20 +1,27 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, Switch } from 'react-native';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import { StyleSheet, Switch, View } from 'react-native';
 
-type FamilyType = 'Mom' | 'Dad' | 'Mom & Dad' | 'Moms' | 'Dads' | 'Guardian' | 'Other';
+type FamilyType =
+  | 'Mom'
+  | 'Dad'
+  | 'Mom & Dad'
+  | 'Moms'
+  | 'Dads'
+  | 'Guardian'
+  | 'Other';
 
 export default function FamilyDescriptionScreen() {
   const router = useRouter();
-  const [selectedType, setSelectedType] = useState<FamilyType | null>(null);
-  const [showOnProfile, setShowOnProfile] = useState(false);
+  const { setFamilyDescription, family_description, setOnboardingScreen } =
+    useUserStore();
 
   const familyTypes: { type: FamilyType; icon: string }[] = [
     { type: 'Mom', icon: '👩' },
@@ -27,19 +34,20 @@ export default function FamilyDescriptionScreen() {
   ];
 
   const handleNext = () => {
-    if (selectedType) {
+    if (family_description?.type) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/number');
       router.push('/(auth)/screens/onboarding/family/number');
     }
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
 
       <View style={styles.content}>
         <View style={styles.spacer} />
         <ProgressBar progress={0.5} />
-        
+
         <ThemedText style={styles.title}>
           Which best{'\n'}describes your{'\n'}family?
         </ThemedText>
@@ -50,8 +58,8 @@ export default function FamilyDescriptionScreen() {
               key={item.type}
               icon={item.icon}
               label={item.type}
-              selected={selectedType === item.type}
-              onPress={() => setSelectedType(item.type)}
+              selected={family_description?.type === item.type}
+              onPress={() => setFamilyDescription({ type: item.type })}
             />
           ))}
         </View>
@@ -59,19 +67,23 @@ export default function FamilyDescriptionScreen() {
         <View style={styles.toggleContainer}>
           <ThemedText style={styles.toggleText}>Show on profile</ThemedText>
           <Switch
-            value={showOnProfile}
-            onValueChange={setShowOnProfile}
+            value={family_description?.showOnProfile}
+            onValueChange={() =>
+              setFamilyDescription({
+                showOnProfile: !family_description?.showOnProfile,
+              })
+            }
             trackColor={{ false: '#E5E5E5', true: Colors.light.primary }}
-            thumbColor="#FFFFFF"
+            thumbColor='#FFFFFF'
           />
         </View>
 
         <View style={styles.buttonContainer}>
           <Button
-            label="Next"
+            label='Next'
             onPress={handleNext}
-            variant="compact"
-            disabled={!selectedType}
+            variant='compact'
+            disabled={!family_description?.type}
           />
         </View>
       </View>
@@ -121,5 +133,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 50,
     right: 20,
-  }
+  },
 });

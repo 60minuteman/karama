@@ -1,13 +1,14 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Counter } from '@/components/ui/Counter';
+import { Header } from '@/components/ui/Header';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 type AgeGroup = {
   icon: string;
@@ -17,6 +18,8 @@ type AgeGroup = {
 
 export default function FamilyNumberScreen() {
   const router = useRouter();
+  const { family_age_groups, setFamilyAgeGroups, setOnboardingScreen } =
+    useUserStore();
   const [ageGroups, setAgeGroups] = useState<AgeGroup[]>([
     { icon: '🐣', label: 'Expecting', count: 0 },
     { icon: '👶', label: 'Newborn', count: 0 },
@@ -27,10 +30,18 @@ export default function FamilyNumberScreen() {
     { icon: '👑', label: 'Teenager', count: 0 },
   ]);
 
+  useEffect(() => {
+    // Initialize from stored state if it exists
+    if (family_age_groups) {
+      setAgeGroups(family_age_groups);
+    }
+  }, []);
+
   const handleIncrement = (index: number) => {
     const newGroups = [...ageGroups];
     newGroups[index].count += 1;
     setAgeGroups(newGroups);
+    setFamilyAgeGroups(newGroups);
   };
 
   const handleDecrement = (index: number) => {
@@ -38,6 +49,7 @@ export default function FamilyNumberScreen() {
     if (newGroups[index].count > 0) {
       newGroups[index].count -= 1;
       setAgeGroups(newGroups);
+      setFamilyAgeGroups(newGroups);
     }
   };
 
@@ -45,23 +57,28 @@ export default function FamilyNumberScreen() {
 
   const handleNext = () => {
     if (totalChildren > 0) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/behaviour');
       router.push('/(auth)/screens/onboarding/family/behaviour');
     }
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacer} />
         <ProgressBar progress={0.6} />
-        
+
         <ThemedText style={styles.title}>
-          How many children{'\n'}do you have and{'\n'}what are their age{'\n'}ranges?
+          How many children{'\n'}do you have and{'\n'}what are their age{'\n'}
+          ranges?
         </ThemedText>
 
-        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+        >
           <View style={styles.countersContainer}>
             {ageGroups.map((group, index) => (
               <Counter
@@ -78,9 +95,9 @@ export default function FamilyNumberScreen() {
 
         <View style={[styles.buttonContainer, { paddingHorizontal: 22 }]}>
           <Button
-            label="Next"
+            label='Next'
             onPress={handleNext}
-            variant="compact"
+            variant='compact'
             disabled={totalChildren === 0}
           />
         </View>

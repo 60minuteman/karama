@@ -1,25 +1,32 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, TextInput, Keyboard } from 'react-native';
-import { useState, useEffect } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
+import { ThemedView } from '@/components/ThemedView';
+import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
-import { Button } from '@/components/ui/Button';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { Keyboard, StyleSheet, TextInput, View } from 'react-native';
 
 export default function ZipCodeScreen() {
   const router = useRouter();
-  const [zipCode, setZipCode] = useState('');
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const {
+    family_zipcode,
+    setFamilyZipcode,
+    family_keyboard_height,
+    setFamilyKeyboardHeight,
+    setOnboardingScreen,
+  } = useUserStore();
+  const [zipCode, setZipCode] = useState(family_zipcode);
 
   useEffect(() => {
     const keyboardWillShow = Keyboard.addListener('keyboardWillShow', (e) => {
-      setKeyboardHeight(e.endCoordinates.height);
+      setFamilyKeyboardHeight(e.endCoordinates.height);
     });
 
     const keyboardWillHide = Keyboard.addListener('keyboardWillHide', () => {
-      setKeyboardHeight(0);
+      setFamilyKeyboardHeight(0);
     });
 
     return () => {
@@ -31,49 +38,52 @@ export default function ZipCodeScreen() {
   const handleZipCodeChange = (text: string) => {
     // Only allow numbers and limit to 5 digits
     const cleaned = text.replace(/[^0-9]/g, '');
-    setZipCode(cleaned.slice(0, 5));
+    const newZipCode = cleaned.slice(0, 5);
+    setZipCode(newZipCode);
+    setFamilyZipcode(newZipCode);
   };
 
   const handleNext = () => {
     if (zipCode.length === 5) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/language');
       router.push('/(auth)/screens/onboarding/family/language');
     }
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
 
       <View style={styles.content}>
         <View style={styles.spacer} />
         <ProgressBar progress={0.9} />
-        
-        <ThemedText style={styles.title}>
-          What's your{'\n'}zip code?
-        </ThemedText>
+
+        <ThemedText style={styles.title}>What's your{'\n'}zip code?</ThemedText>
 
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Enter zip code"
-            placeholderTextColor="#666"
+            placeholder='Enter zip code'
+            placeholderTextColor='#666'
             value={zipCode}
             onChangeText={handleZipCodeChange}
-            keyboardType="numeric"
+            keyboardType='numeric'
             maxLength={5}
           />
         </View>
 
-        <View style={[
-          styles.buttonContainer,
-          keyboardHeight > 0 && {
-            bottom: keyboardHeight + 20,
-          }
-        ]}>
+        <View
+          style={[
+            styles.buttonContainer,
+            family_keyboard_height > 0 && {
+              bottom: family_keyboard_height + 20,
+            },
+          ]}
+        >
           <Button
-            label="Next"
+            label='Next'
             onPress={handleNext}
-            variant="compact"
+            variant='compact'
             disabled={zipCode.length !== 5}
           />
         </View>

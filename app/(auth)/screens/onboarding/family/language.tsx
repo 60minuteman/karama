@@ -1,54 +1,65 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { useState } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
-type Language = 
-  | 'Spanish' | 'French' | 'English' | 'German' | 'Hausa' | 'Italian'
-  | 'Russian' | 'Arabic' | 'Chinese' | 'Korean' | 'Japanese' | 'Yoruba'
-  | 'Afrikaans' | 'Hindi' | 'Dutch' | 'Estonian' | 'Croatian' | 'Swedish'
-  | 'Portugese' | 'Other';
+const languages = [
+  'English',
+  'Spanish',
+  'French',
+  'German',
+  'Hausa',
+  'Italian',
+  'Russian',
+  'Arabic',
+  'Chinese',
+  'Korean',
+  'Japanese',
+  'Yoruba',
+  'Afrikaans',
+  'Hindi',
+  'Dutch',
+  'Estonian',
+  'Croatian',
+  'Swedish',
+  'Portugese',
+  'Other',
+] as const;
 
 export default function LanguageScreen() {
   const router = useRouter();
-  const [selectedLanguages, setSelectedLanguages] = useState<Language[]>([]);
+  const { family_languages, setFamilyLanguages, setOnboardingScreen } =
+    useUserStore();
 
-  const languages: Language[] = [
-    'English', 'Spanish', 'French', 'German', 'Hausa', 'Italian',
-    'Russian', 'Arabic', 'Chinese', 'Korean', 'Japanese', 'Yoruba',
-    'Afrikaans', 'Hindi', 'Dutch', 'Estonian', 'Croatian', 'Swedish',
-    'Portugese', 'Other'
-  ];
-
-  const toggleLanguage = (language: Language) => {
-    setSelectedLanguages(prev => 
-      prev.includes(language)
-        ? prev.filter(l => l !== language)
-        : [...prev, language]
-    );
+  const toggleLanguage = (language: (typeof languages)[number]) => {
+    const newLanguages = family_languages.includes(language)
+      ? family_languages.filter((l) => l !== language)
+      : [...family_languages, language];
+    setFamilyLanguages(newLanguages);
   };
 
   const handleNext = () => {
-    if (selectedLanguages.length > 0) {
+    if (family_languages.length > 0) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/pet');
       router.push('/(auth)/screens/onboarding/family/pet');
     }
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.85} />
-        
+
         <ThemedText style={styles.title}>
           What language(s){'\n'}does your family{'\n'}speak?
         </ThemedText>
@@ -57,9 +68,9 @@ export default function LanguageScreen() {
           <LinearGradient
             colors={[Colors.light.background, 'rgba(255,255,255,0)']}
             style={styles.topGradient}
-            pointerEvents="none"
+            pointerEvents='none'
           />
-          <ScrollView 
+          <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
@@ -69,8 +80,8 @@ export default function LanguageScreen() {
                 <Pill
                   key={language}
                   label={language}
-                  icon="💬"
-                  selected={selectedLanguages.includes(language)}
+                  icon='💬'
+                  selected={family_languages.includes(language)}
                   onPress={() => toggleLanguage(language)}
                   style={styles.pill}
                 />
@@ -82,14 +93,14 @@ export default function LanguageScreen() {
           <LinearGradient
             colors={['rgba(255,255,255,0)', Colors.light.background]}
             style={styles.buttonGradient}
-            pointerEvents="none"
+            pointerEvents='none'
           />
           <View style={styles.buttonContainer}>
             <Button
-              label="Next"
+              label='Next'
               onPress={handleNext}
-              variant="compact"
-              disabled={selectedLanguages.length === 0}
+              variant='compact'
+              disabled={family_languages.length === 0}
             />
           </View>
         </View>

@@ -1,18 +1,19 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
-type Condition = 
-  | 'Dyslexia' 
-  | 'ADHD' 
+type Condition =
+  | 'Dyslexia'
+  | 'ADHD'
   | 'Autistic Spectrum'
   | 'Tourette Syndrome'
   | 'Down Syndrome'
@@ -23,10 +24,10 @@ type Condition =
   | 'Bipolar'
   | 'Other';
 
-export default function BehaviourScreen() {
+export default function FamilyBehaviourScreen() {
   const router = useRouter();
-  const [selected, setSelected] = useState<'Yes' | 'No' | null>(null);
-  const [selectedConditions, setSelectedConditions] = useState<Condition[]>([]);
+  const { family_behaviour, setFamilyBehaviour, setOnboardingScreen } =
+    useUserStore();
 
   const conditions: Condition[] = [
     'Dyslexia',
@@ -39,58 +40,74 @@ export default function BehaviourScreen() {
     'Hearing Impaired',
     'Vision Impaired',
     'Bipolar',
-    'Other'
+    'Other',
   ];
 
+  const handleSelect = (value: 'Yes' | 'No') => {
+    setFamilyBehaviour({
+      has_condition: value,
+      conditions: value === 'No' ? [] : family_behaviour.conditions,
+    });
+  };
+
+  const handleConditionToggle = (condition: Condition) => {
+    const newConditions = family_behaviour.conditions.includes(condition)
+      ? family_behaviour.conditions.filter((c) => c !== condition)
+      : [...family_behaviour.conditions, condition];
+
+    setFamilyBehaviour({ conditions: newConditions });
+  };
+
   const handleNext = () => {
-    if (selected === 'No' || (selected === 'Yes' && selectedConditions.length > 0)) {
+    if (
+      family_behaviour.has_condition === 'No' ||
+      (family_behaviour.has_condition === 'Yes' &&
+        family_behaviour.conditions.length > 0)
+    ) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/hear');
       router.push('/(auth)/screens/onboarding/family/hear');
     }
   };
 
-  const toggleCondition = (condition: Condition) => {
-    setSelectedConditions(prev => 
-      prev.includes(condition)
-        ? prev.filter(c => c !== condition)
-        : [...prev, condition]
-    );
-  };
-
-  const isNextDisabled = !selected || (selected === 'Yes' && selectedConditions.length === 0);
+  const isNextDisabled =
+    !family_behaviour.has_condition ||
+    (family_behaviour.has_condition === 'Yes' &&
+      family_behaviour.conditions.length === 0);
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
 
       <View style={styles.content}>
         <View style={styles.spacer} />
         <ProgressBar progress={0.7} />
-        
+
         <ThemedText style={styles.title}>
-          Are there any{'\n'}developmental,{'\n'}learning, or{'\n'}behavioural{'\n'}differences in your{'\n'}child?
+          Are there any{'\n'}developmental,{'\n'}learning, or{'\n'}behavioural
+          {'\n'}differences in your{'\n'}child?
         </ThemedText>
 
         <View style={styles.optionsContainer}>
           <Pill
-            label="Yes"
-            selected={selected === 'Yes'}
-            onPress={() => setSelected('Yes')}
+            label='Yes'
+            selected={family_behaviour.has_condition === 'Yes'}
+            onPress={() => handleSelect('Yes')}
           />
           <Pill
-            label="No"
-            selected={selected === 'No'}
-            onPress={() => setSelected('No')}
+            label='No'
+            selected={family_behaviour.has_condition === 'No'}
+            onPress={() => handleSelect('No')}
           />
         </View>
 
-        {selected === 'Yes' && (
+        {family_behaviour.has_condition === 'Yes' && (
           <View style={styles.conditionsContainer}>
             {conditions.map((condition) => (
               <Pill
                 key={condition}
                 label={condition}
-                selected={selectedConditions.includes(condition)}
-                onPress={() => toggleCondition(condition)}
+                selected={family_behaviour.conditions.includes(condition)}
+                onPress={() => handleConditionToggle(condition)}
               />
             ))}
           </View>
@@ -103,18 +120,14 @@ export default function BehaviourScreen() {
           >
             <View style={styles.buttonContainer}>
               <View style={styles.buttonWrapper}>
-                {selected === 'Yes' && (
-                  <Button
-                    label="Skip"
-                    onPress={handleNext}
-                    variant="skip"
-                  />
+                {family_behaviour.has_condition === 'Yes' && (
+                  <Button label='Skip' onPress={handleNext} variant='skip' />
                 )}
               </View>
               <Button
-                label="Next"
+                label='Next'
                 onPress={handleNext}
-                variant="compact"
+                variant='compact'
                 disabled={isNextDisabled}
               />
             </View>

@@ -1,24 +1,32 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, ScrollView, Switch } from 'react-native';
-import { useState } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 type Category = 'Diet' | 'Rules' | 'Religion';
 type Selection = { [key: string]: boolean };
 
 export default function HouseholdScreen() {
   const router = useRouter();
-  const [selections, setSelections] = useState<Selection>({});
-  const [showDiet, setShowDiet] = useState(false);
-  const [showRules, setShowRules] = useState(false);
-  const [showReligion, setShowReligion] = useState(false);
+  const {
+    family_selections,
+    setFamilySelections,
+    family_show_diet,
+    family_show_rules,
+    family_show_religion,
+    setFamilyShowDiet,
+    setFamilyShowRules,
+    setFamilyShowReligion,
+    setOnboardingScreen,
+  } = useUserStore();
 
   const categories = {
     Diet: [
@@ -60,27 +68,29 @@ export default function HouseholdScreen() {
   };
 
   const toggleSelection = (category: string, label: string) => {
-    setSelections(prev => ({
-      ...prev,
-      [`${category}-${label}`]: !prev[`${category}-${label}`],
-    }));
+    setFamilySelections({
+      ...family_selections,
+      [`${category}-${label}`]: !family_selections[`${category}-${label}`],
+    });
   };
 
   const handleNext = () => {
-    if (selections['Diet-Other']) {
+    if (family_selections['Diet-Other']) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
       router.push('/(auth)/screens/onboarding/family/otherDiet');
     } else {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/philosophy');
       router.push('/(auth)/screens/onboarding/family/philosophy');
     }
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.95} />
-        
+
         <ThemedText style={styles.title}>
           Tell us about your{'\n'}household.
         </ThemedText>
@@ -90,8 +100,8 @@ export default function HouseholdScreen() {
             colors={[Colors.light.background, `${Colors.light.background}00`]}
             style={styles.topGradient}
           />
-          
-          <ScrollView 
+
+          <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
@@ -105,31 +115,38 @@ export default function HouseholdScreen() {
                       key={item.label}
                       label={item.label}
                       icon={item.icon}
-                      selected={selections[`${category}-${item.label}`]}
+                      selected={family_selections[`${category}-${item.label}`]}
                       onPress={() => toggleSelection(category, item.label)}
                     />
                   ))}
                 </View>
                 <View style={styles.toggleContainer}>
-                  <ThemedText style={styles.toggleText}>Show on profile</ThemedText>
+                  <ThemedText style={styles.toggleText}>
+                    Show on profile
+                  </ThemedText>
                   <Switch
                     value={
-                      category === 'Diet' ? showDiet :
-                      category === 'Rules' ? showRules :
-                      showReligion
+                      category === 'Diet'
+                        ? family_show_diet
+                        : category === 'Rules'
+                        ? family_show_rules
+                        : family_show_religion
                     }
                     onValueChange={(value) => {
-                      if (category === 'Diet') setShowDiet(value);
-                      if (category === 'Rules') setShowRules(value);
-                      if (category === 'Religion') setShowReligion(value);
+                      if (category === 'Diet') setFamilyShowDiet(value);
+                      if (category === 'Rules') setFamilyShowRules(value);
+                      if (category === 'Religion') setFamilyShowReligion(value);
                     }}
-                    trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
-                    thumbColor="#FFFFFF"
+                    trackColor={{
+                      false: '#E8E8E8',
+                      true: Colors.light.primary,
+                    }}
+                    thumbColor='#FFFFFF'
                   />
                 </View>
               </View>
             ))}
-            
+
             <View style={styles.spacerBottom} />
           </ScrollView>
 
@@ -138,16 +155,12 @@ export default function HouseholdScreen() {
             style={styles.buttonGradient}
           >
             <View style={styles.buttonContainer}>
+              <Button label='Skip' onPress={handleNext} variant='compact' />
               <Button
-                label="Skip"
+                label='Next'
                 onPress={handleNext}
-                variant="compact"
-              />
-              <Button
-                label="Next"
-                onPress={handleNext}
-                variant="compact"
-                disabled={Object.keys(selections).length === 0}
+                variant='compact'
+                disabled={Object.keys(family_selections).length === 0}
               />
             </View>
           </LinearGradient>

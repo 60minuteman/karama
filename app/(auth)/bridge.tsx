@@ -1,22 +1,24 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
+import { ThemedView } from '@/components/ThemedView';
 import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
-
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 export default function BridgeScreen() {
   const router = useRouter();
-  const [selectedType, setSelectedType] = useState<'family' | 'caregiver' | null>(null);
+  const { selectedType, setSelectedType, setOnboardingScreen } = useUserStore();
 
   const handleSelection = (type: 'family' | 'caregiver') => {
     setSelectedType(type);
     setTimeout(() => {
       if (type === 'family') {
+        setOnboardingScreen('/(auth)/screens/onboarding/family/name');
         router.push('/(auth)/screens/onboarding/family/name');
       } else {
+        setOnboardingScreen('/(auth)/screens/onboarding/caregiver/name');
         router.push('/(auth)/screens/onboarding/caregiver/name');
       }
     }, 300);
@@ -24,7 +26,7 @@ export default function BridgeScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
 
       <View style={styles.content}>
         <View style={styles.spacer} />
@@ -37,14 +39,18 @@ export default function BridgeScreen() {
           <TouchableOpacity
             style={[
               styles.option,
-              selectedType === 'family' ? styles.selectedOption : styles.unselectedOption
+              selectedType === 'family'
+                ? styles.selectedOption
+                : styles.unselectedOption,
             ]}
             onPress={() => handleSelection('family')}
           >
-            <ThemedText 
+            <ThemedText
               style={[
                 styles.optionText,
-                selectedType === 'family' ? styles.selectedText : styles.unselectedText
+                selectedType === 'family'
+                  ? styles.selectedText
+                  : styles.unselectedText,
               ]}
             >
               👨‍👩‍👧 Family
@@ -54,14 +60,18 @@ export default function BridgeScreen() {
           <TouchableOpacity
             style={[
               styles.option,
-              selectedType === 'caregiver' ? styles.selectedOption : styles.unselectedOption
+              selectedType === 'caregiver'
+                ? styles.selectedOption
+                : styles.unselectedOption,
             ]}
             onPress={() => handleSelection('caregiver')}
           >
-            <ThemedText 
+            <ThemedText
               style={[
                 styles.optionText,
-                selectedType === 'caregiver' ? styles.selectedText : styles.unselectedText
+                selectedType === 'caregiver'
+                  ? styles.selectedText
+                  : styles.unselectedText,
               ]}
             >
               💝 Caregiver

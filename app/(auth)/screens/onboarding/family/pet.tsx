@@ -1,24 +1,70 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, ScrollView, Animated } from 'react-native';
-import { useState, useRef, useEffect } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useEffect, useRef } from 'react';
+import { Animated, ScrollView, StyleSheet, View } from 'react-native';
 
-type PetType = 
-  | 'None' | 'Cat' | 'Small Dog' | 'Pig' | 'Large Dog' | 'Cow' 
-  | 'Butterfly' | 'Turtle' | 'Snake' | 'Parrot' | 'Rabbit' | 'Sheep'
-  | 'Duck' | 'Horse' | 'Frog' | 'Gecko' | 'Whale' | 'Chicken'
-  | 'Hamster' | 'Dinosaur' | 'Baby Elephant' | 'Unicorn' | 'Other';
+type PetType =
+  | 'None'
+  | 'Cat'
+  | 'Small Dog'
+  | 'Pig'
+  | 'Large Dog'
+  | 'Cow'
+  | 'Butterfly'
+  | 'Turtle'
+  | 'Snake'
+  | 'Parrot'
+  | 'Rabbit'
+  | 'Sheep'
+  | 'Duck'
+  | 'Horse'
+  | 'Frog'
+  | 'Gecko'
+  | 'Whale'
+  | 'Chicken'
+  | 'Hamster'
+  | 'Dinosaur'
+  | 'Baby Elephant'
+  | 'Unicorn'
+  | 'Other';
+
+const pets = [
+  { type: 'None' as const, icon: '⛔' },
+  { type: 'Cat' as const, icon: '😺' },
+  { type: 'Small Dog' as const, icon: '🐕' },
+  { type: 'Pig' as const, icon: '🐷' },
+  { type: 'Large Dog' as const, icon: '🐕' },
+  { type: 'Cow' as const, icon: '🐮' },
+  { type: 'Butterfly' as const, icon: '🦋' },
+  { type: 'Turtle' as const, icon: '🐢' },
+  { type: 'Snake' as const, icon: '🐍' },
+  { type: 'Parrot' as const, icon: '🦜' },
+  { type: 'Rabbit' as const, icon: '🐰' },
+  { type: 'Sheep' as const, icon: '🐑' },
+  { type: 'Duck' as const, icon: '🦆' },
+  { type: 'Horse' as const, icon: '🐎' },
+  { type: 'Frog' as const, icon: '🐸' },
+  { type: 'Gecko' as const, icon: '🦎' },
+  { type: 'Whale' as const, icon: '🐳' },
+  { type: 'Chicken' as const, icon: '🐔' },
+  { type: 'Hamster' as const, icon: '🐹' },
+  { type: 'Dinosaur' as const, icon: '🦕' },
+  { type: 'Baby Elephant' as const, icon: '🐘' },
+  { type: 'Unicorn' as const, icon: '🦄' },
+  { type: 'Other' as const, icon: '🐾' },
+];
 
 export default function PetScreen() {
   const router = useRouter();
-  const [selectedPets, setSelectedPets] = useState<PetType[]>([]);
+  const { family_pets, setFamilyPets, setOnboardingScreen } = useUserStore();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -29,59 +75,32 @@ export default function PetScreen() {
     }).start();
   }, []);
 
-  const pets: { type: PetType; icon: string }[] = [
-    { type: 'None', icon: '⛔' },
-    { type: 'Cat', icon: '😺' },
-    { type: 'Small Dog', icon: '🐕' },
-    { type: 'Pig', icon: '🐷' },
-    { type: 'Large Dog', icon: '🐕' },
-    { type: 'Cow', icon: '🐮' },
-    { type: 'Butterfly', icon: '🦋' },
-    { type: 'Turtle', icon: '🐢' },
-    { type: 'Snake', icon: '🐍' },
-    { type: 'Parrot', icon: '🦜' },
-    { type: 'Rabbit', icon: '🐰' },
-    { type: 'Sheep', icon: '🐑' },
-    { type: 'Duck', icon: '🦆' },
-    { type: 'Horse', icon: '🐎' },
-    { type: 'Frog', icon: '🐸' },
-    { type: 'Gecko', icon: '🦎' },
-    { type: 'Whale', icon: '🐳' },
-    { type: 'Chicken', icon: '🐔' },
-    { type: 'Hamster', icon: '🐹' },
-    { type: 'Dinosaur', icon: '🦕' },
-    { type: 'Baby Elephant', icon: '🐘' },
-    { type: 'Unicorn', icon: '🦄' },
-    { type: 'Other', icon: '🐾' },
-  ];
-
   const togglePet = (pet: PetType) => {
     if (pet === 'None') {
-      setSelectedPets(['None']);
+      setFamilyPets(['None']);
     } else {
-      setSelectedPets(prev => {
-        if (prev.includes('None')) {
-          return [pet];
-        }
-        return prev.includes(pet)
-          ? prev.filter(p => p !== pet)
-          : [...prev, pet];
-      });
+      const newPets = family_pets.includes('None')
+        ? [pet]
+        : family_pets.includes(pet)
+        ? family_pets.filter((p) => p !== pet)
+        : [...family_pets, pet];
+      setFamilyPets(newPets);
     }
   };
 
   const handleNext = () => {
-    router.push('/(auth)/screens/onboarding/family/Allergies');
+    setOnboardingScreen('/(auth)/screens/onboarding/family/interest');
+    router.push('/(auth)/screens/onboarding/family/interest');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
 
       <View style={styles.content}>
         <View style={styles.spacer} />
         <ProgressBar progress={0.9} />
-        
+
         <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
           What pets are{'\n'}a part of your{'\n'}family?
         </ThemedText>
@@ -95,7 +114,7 @@ export default function PetScreen() {
             colors={[Colors.light.background, 'rgba(255,255,255,0)']}
             style={styles.topGradient}
           />
-          <Animated.ScrollView 
+          <Animated.ScrollView
             style={[styles.scrollView, { opacity: fadeAnim }]}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
@@ -106,7 +125,7 @@ export default function PetScreen() {
                   key={type}
                   label={type}
                   icon={icon}
-                  selected={selectedPets.includes(type)}
+                  selected={family_pets.includes(type)}
                   onPress={() => togglePet(type)}
                 />
               ))}
@@ -119,16 +138,12 @@ export default function PetScreen() {
             style={styles.buttonGradient}
           >
             <View style={styles.buttonContainer}>
+              <Button label='Skip' onPress={handleNext} variant='skip' />
               <Button
-                label="Skip"
+                label='Next'
                 onPress={handleNext}
-                variant="skip"
-              />
-              <Button
-                label="Next"
-                onPress={handleNext}
-                variant="compact"
-                disabled={selectedPets.length === 0}
+                variant='compact'
+                disabled={family_pets.length === 0}
               />
             </View>
           </LinearGradient>

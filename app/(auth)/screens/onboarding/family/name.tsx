@@ -1,16 +1,23 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, TextInput, Keyboard, KeyboardAvoidingView, Platform } from 'react-native';
-import { useState, useEffect } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
+import { ThemedView } from '@/components/ThemedView';
+import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
-import { Button } from '@/components/ui/Button';
-
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 export default function FamilyNameScreen() {
   const router = useRouter();
-  const [familyName, setFamilyName] = useState('');
+  const { familyName, setFamilyName, setOnboardingScreen } = useUserStore();
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   useEffect(() => {
@@ -30,37 +37,44 @@ export default function FamilyNameScreen() {
   }, []);
 
   const handleNext = () => {
-    if (familyName.trim()) {
+    if (familyName?.trim()) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/description');
       router.push('/(auth)/screens/onboarding/family/description');
     }
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
 
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingView}
       >
         <View style={styles.content}>
           <View style={styles.spacer} />
           <ProgressBar progress={0.4} />
-          
+
           <ThemedText style={styles.title}>
             What's your family's{'\n'}name?
           </ThemedText>
 
           <View style={styles.inputContainer}>
-            <View style={[styles.inputBorder, familyName.length > 0 && styles.inputBorderActive]}>
+            <View
+              style={[
+                styles.inputBorder,
+                (familyName?.trim() || '').length > 0 &&
+                  styles.inputBorderActive,
+              ]}
+            >
               <TextInput
                 style={styles.input}
-                placeholder="Family name"
-                placeholderTextColor="#999"
-                value={familyName}
+                placeholder='Family name'
+                placeholderTextColor='#999'
+                value={familyName || ''}
                 onChangeText={setFamilyName}
                 autoFocus
-                autoCapitalize="words"
+                autoCapitalize='words'
               />
             </View>
           </View>
@@ -68,19 +82,19 @@ export default function FamilyNameScreen() {
           {!keyboardVisible ? (
             <View style={styles.buttonContainer}>
               <Button
-                label="Next"
+                label='Next'
                 onPress={handleNext}
-                variant={familyName.trim() ? "primary" : "disabled"}
-                disabled={!familyName.trim()}
+                variant={familyName?.trim() ? 'primary' : undefined}
+                disabled={!familyName?.trim()}
               />
             </View>
           ) : (
             <View style={styles.buttonContainerKeyboard}>
               <Button
-                label="Next"
+                label='Next'
                 onPress={handleNext}
-                variant={familyName.trim() ? "primary" : "disabled"}
-                disabled={!familyName.trim()}
+                variant={familyName?.trim() ? 'primary' : undefined}
+                disabled={!familyName?.trim()}
               />
             </View>
           )}

@@ -3,18 +3,67 @@ import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Colors } from '@/constants/Colors';
+import customAxios from '@/services/api/envConfig';
+import { useUserStore } from '@/services/state/user';
+import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useReducer, useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
+const reducer = (state: any, action: any) => {
+  switch (action.type) {
+    case 'field': {
+      return {
+        ...state,
+        [action.fieldName]: action.payload,
+      };
+    }
+  }
+};
+
+const initialState = {
+  phoneNumber: '',
+};
+
 export default function PhoneNumberScreen() {
+  const [state, dispatch] = useReducer(reducer, initialState);
   const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isChecked, setIsChecked] = useState(false);
+  const { subscribed_to_promotions, setPromotionSubscription } = useUserStore();
+
+  console.log('phoneNumber', phoneNumber);
+
+  const signIn = useMutation({
+    mutationFn: (data: any) => {
+      return customAxios.post(`/auth/phone/start-verification`, data);
+    },
+    onSuccess: async (data: any) => {
+      router.push({
+        pathname: '/(auth)/verification',
+        params: {
+          isChecked: isChecked ? '1' : '0',
+          phoneNumber: phoneNumber,
+        },
+      });
+    },
+    onError: (error: any) => {
+      console.log('error', error['response'].data);
+      // router.push('/phoneNumber');
+      // Toast.show({
+      //   type: 'problem',
+      //   text1: 'Something went wrong',
+      //   text2: error['response'].data?.message,
+      // });
+    },
+  });
 
   const handleNext = () => {
     if (phoneNumber.length === 10) {
-      router.push('/(auth)/verification');
+      signIn.mutate({
+        phone_number: `+234${phoneNumber}`,
+        strategy: 'SIGN_UP',
+      });
     }
   };
 
@@ -32,7 +81,9 @@ export default function PhoneNumberScreen() {
 
       <View style={styles.content}>
         <View style={styles.spacer} />
-        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>What's your phone number?</ThemedText>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
+          What's your phone number?
+        </ThemedText>
 
         <View style={styles.inputWrapper}>
           <View
@@ -41,9 +92,9 @@ export default function PhoneNumberScreen() {
               phoneNumber.length > 0 && styles.inputActive,
             ]}
           >
-            <ThemedText style={styles.countryCode}>+1</ThemedText>
+            <ThemedText style={styles.countryCode}>+234</ThemedText>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { marginTop: 0 }]}
               placeholder='(555) 555-5555'
               placeholderTextColor='#999'
               keyboardType='phone-pad'
@@ -75,6 +126,7 @@ export default function PhoneNumberScreen() {
           onPress={handleNext}
           variant={phoneNumber.length === 10 ? 'primary' : 'disabled'}
           disabled={phoneNumber.length !== 10}
+          loading={signIn.isPending}
         />
       </View>
     </ThemedView>

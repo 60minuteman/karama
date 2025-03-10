@@ -1,55 +1,49 @@
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
+import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
 import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { Button } from '@/components/ui/Button';
-import { Pill } from '@/components/ui/Pill';
 
-type Source = 
-  | 'TikTok'
-  | 'Instagram'
-  | 'Facebook'
-  | 'YouTube'
-  | 'Family & Friends'
-  | 'Press'
-  | 'Events'
-  | 'App Store'
-  | 'Other';
+const sources = [
+  'TikTok',
+  'Instagram',
+  'Facebook',
+  'YouTube',
+  'Family & Friends',
+  'Press',
+  'Events',
+  'App Store',
+  'Other',
+] as const;
 
 export default function HearScreen() {
   const router = useRouter();
-  const [selectedSource, setSelectedSource] = useState<Source | null>(null);
-
-  const sources: Source[] = [
-    'TikTok',
-    'Instagram',
-    'Facebook',
-    'YouTube',
-    'Family & Friends',
-    'Press',
-    'Events',
-    'App Store',
-    'Other'
-  ];
+  const {
+    family_selected_source,
+    setFamilySelectedSource,
+    setOnboardingScreen,
+  } = useUserStore();
 
   const handleNext = () => {
-    if (selectedSource) {
+    if (family_selected_source) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/zipCode');
       router.push('/(auth)/screens/onboarding/family/zipCode');
     }
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
 
       <View style={styles.content}>
         <View style={styles.spacer} />
         <ProgressBar progress={0.8} />
-        
+
         <ThemedText style={styles.title}>
           How did you hear{'\n'}about us?
         </ThemedText>
@@ -59,18 +53,18 @@ export default function HearScreen() {
             <Pill
               key={source}
               label={source}
-              selected={selectedSource === source}
-              onPress={() => setSelectedSource(source)}
+              selected={family_selected_source === source}
+              onPress={() => setFamilySelectedSource(source)}
             />
           ))}
         </View>
 
         <View style={styles.buttonContainer}>
           <Button
-            label="Next"
+            label='Next'
             onPress={handleNext}
-            variant="compact"
-            disabled={!selectedSource}
+            variant='compact'
+            disabled={!family_selected_source}
           />
         </View>
       </View>

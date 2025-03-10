@@ -3,13 +3,17 @@ import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Colors } from '@/constants/Colors';
 import { useOnboarding } from '@/hooks/useOnboarding';
+import { useUserStore } from '@/services/state/user';
 import { Video } from 'expo-av';
 import { useRouter } from 'expo-router';
 import { Image, StyleSheet, View } from 'react-native';
 
 export default function OnboardingScreen() {
   const router = useRouter();
+  const { user } = useUserStore();
   const { completeOnboarding } = useOnboarding();
+
+  console.log('user', user);
 
   const handleGetStarted = async () => {
     await completeOnboarding();
@@ -17,7 +21,8 @@ export default function OnboardingScreen() {
   };
 
   const handleSignIn = () => {
-    router.push('/(tabs)/discover');
+    router.push('/(auth)/bridge');
+    // router.push('/(tabs)/discover');
   };
 
   return (

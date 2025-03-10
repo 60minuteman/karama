@@ -1,25 +1,39 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, ScrollView, Switch } from 'react-native';
-import { useState } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
-type Philosophy = 
-  | 'Montessori' | 'Waldorf/ Steiner' | 'Harkness' | 'Sudbury'
-  | 'Reggio Emillia' | 'Gentle Parenting' | 'Permissive Parenting'
-  | 'Authoritative Parenting' | 'Baby Led-Weaning' 
-  | 'Authoritarian Parenting' | 'Other' | 'None';
+type Philosophy =
+  | 'Montessori'
+  | 'Waldorf/ Steiner'
+  | 'Harkness'
+  | 'Sudbury'
+  | 'Reggio Emillia'
+  | 'Gentle Parenting'
+  | 'Permissive Parenting'
+  | 'Authoritative Parenting'
+  | 'Baby Led-Weaning'
+  | 'Authoritarian Parenting'
+  | 'Other'
+  | 'None';
 
 export default function PhilosophyScreen() {
   const router = useRouter();
-  const [selectedPhilos, setSelectedPhilos] = useState<Philosophy[]>([]);
-  const [showOnProfile, setShowOnProfile] = useState(false);
+  const {
+    family_philosophies,
+    setFamilyPhilosophies,
+    family_show_philosophy,
+    setFamilyShowPhilosophy,
+    setOnboardingScreen,
+  } = useUserStore();
 
   const philosophies: { type: Philosophy; icon: string }[] = [
     { type: 'Montessori', icon: '🌈' },
@@ -38,23 +52,23 @@ export default function PhilosophyScreen() {
 
   const togglePhilosophy = (philo: Philosophy) => {
     if (philo === 'None') {
-      setSelectedPhilos(['None']);
+      setFamilyPhilosophies(['None']);
     } else {
-      setSelectedPhilos(prev => {
-        if (prev.includes('None')) {
-          return [philo];
-        }
-        return prev.includes(philo)
-          ? prev.filter(p => p !== philo)
-          : [...prev, philo];
-      });
+      const newPhilos = family_philosophies.includes('None')
+        ? [philo]
+        : family_philosophies.includes(philo)
+        ? family_philosophies.filter((p) => p !== philo)
+        : [...family_philosophies, philo];
+      setFamilyPhilosophies(newPhilos);
     }
   };
 
   const handleNext = () => {
-    if (selectedPhilos.includes('Other')) {
+    if (family_philosophies.includes('Other')) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherPhilo');
       router.push('/(auth)/screens/onboarding/family/otherPhilo');
     } else {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/intermission');
       router.push('/(auth)/screens/onboarding/family/intermission');
     }
   };
@@ -65,13 +79,14 @@ export default function PhilosophyScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.95} />
-        
+
         <ThemedText style={styles.title}>
-          Do you practice any{'\n'}educational or{'\n'}parenting{'\n'}philosophies?
+          Do you practice any{'\n'}educational or{'\n'}parenting{'\n'}
+          philosophies?
         </ThemedText>
 
         <View style={styles.scrollViewContainer}>
@@ -79,7 +94,7 @@ export default function PhilosophyScreen() {
             colors={[Colors.light.background, `${Colors.light.background}00`]}
             style={styles.topGradient}
           />
-          
+
           <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
@@ -91,8 +106,10 @@ export default function PhilosophyScreen() {
                   key={type}
                   label={type}
                   icon={icon}
-                  selected={selectedPhilos.includes(type)}
-                  onPress={() => type === 'Other' ? handleOther() : togglePhilosophy(type)}
+                  selected={family_philosophies.includes(type)}
+                  onPress={() =>
+                    type === 'Other' ? handleOther() : togglePhilosophy(type)
+                  }
                 />
               ))}
             </View>
@@ -100,13 +117,13 @@ export default function PhilosophyScreen() {
             <View style={styles.toggleContainer}>
               <ThemedText style={styles.toggleText}>Show on profile</ThemedText>
               <Switch
-                value={showOnProfile}
-                onValueChange={setShowOnProfile}
+                value={family_show_philosophy}
+                onValueChange={setFamilyShowPhilosophy}
                 trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
-                thumbColor="#FFFFFF"
+                thumbColor='#FFFFFF'
               />
             </View>
-            
+
             <View style={styles.spacerBottom} />
           </ScrollView>
 
@@ -115,16 +132,12 @@ export default function PhilosophyScreen() {
             style={styles.buttonGradient}
           >
             <View style={styles.buttonContainer}>
+              <Button label='Skip' onPress={handleNext} variant='compact' />
               <Button
-                label="Skip"
+                label='Next'
                 onPress={handleNext}
-                variant="compact"
-              />
-              <Button
-                label="Next"
-                onPress={handleNext}
-                variant="compact"
-                disabled={selectedPhilos.length === 0}
+                variant='compact'
+                disabled={family_philosophies.length === 0}
               />
             </View>
           </LinearGradient>
