@@ -1,23 +1,34 @@
-import { StyleSheet, View, ScrollView, Pressable, Platform, Modal, TouchableOpacity, Text } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import {
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 type Commitment = 'Long Term' | 'Short Term';
 
 export default function CommitmentScreen() {
+  const { family_commitment, setFamilyCommitment, setOnboardingScreen } =
+    useUserStore();
   const router = useRouter();
-  const [selected, setSelected] = useState<Commitment | null>(null);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
@@ -27,6 +38,7 @@ export default function CommitmentScreen() {
   ];
 
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/servicedays');
     router.push('/(auth)/screens/onboarding/family/servicedays');
   };
 
@@ -34,39 +46,26 @@ export default function CommitmentScreen() {
     return date.toLocaleDateString('en-GB', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
+      year: 'numeric',
     });
   };
 
-  const onStartDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
-    const currentDate = selectedDate || startDate;
-    
-    if (Platform.OS === 'android') {
-      setShowStartDatePicker(false);
-    }
-
+  const onStartDateChange = (
+    event: DateTimePickerEvent,
+    selectedDate?: Date
+  ) => {
+    const currentDate = selectedDate || family_commitment.start_date;
+    setShowStartDatePicker(Platform.OS === 'ios');
     if (event.type === 'set') {
-      setStartDate(currentDate);
-      // Ensure end date is not before start date
-      if (endDate < currentDate) {
-        setEndDate(currentDate);
-      }
-    } else if (event.type === 'dismissed') {
-      setShowStartDatePicker(false);
+      setFamilyCommitment({ start_date: currentDate });
     }
   };
 
   const onEndDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
-    const currentDate = selectedDate || endDate;
-    
-    if (Platform.OS === 'android') {
-      setShowEndDatePicker(false);
-    }
-
+    const currentDate = selectedDate || family_commitment.end_date;
+    setShowEndDatePicker(Platform.OS === 'ios');
     if (event.type === 'set') {
-      setEndDate(currentDate);
-    } else if (event.type === 'dismissed') {
-      setShowEndDatePicker(false);
+      setFamilyCommitment({ end_date: currentDate });
     }
   };
 
@@ -92,23 +91,29 @@ export default function CommitmentScreen() {
 
   const renderDatePicker = (isStartDate: boolean) => {
     const showPicker = isStartDate ? showStartDatePicker : showEndDatePicker;
-    const currentDate = isStartDate ? startDate : endDate;
-    const handleCancel = isStartDate ? handleStartDateCancel : handleEndDateCancel;
-    const handleConfirm = isStartDate ? handleStartDateConfirm : handleEndDateConfirm;
+    const currentDate = isStartDate
+      ? family_commitment.start_date
+      : family_commitment.end_date;
+    const handleCancel = isStartDate
+      ? handleStartDateCancel
+      : handleEndDateCancel;
+    const handleConfirm = isStartDate
+      ? handleStartDateConfirm
+      : handleEndDateConfirm;
     const onDateChange = isStartDate ? onStartDateChange : onEndDateChange;
-    const minimumDate = isStartDate ? new Date() : startDate;
+    const minimumDate = isStartDate ? new Date() : family_commitment.start_date;
 
     if (Platform.OS === 'ios') {
       return (
         <Modal
-          animationType="slide"
+          animationType='slide'
           transparent={true}
           visible={showPicker}
           onRequestClose={handleCancel}
         >
-          <TouchableOpacity 
-            style={styles.modalContainer} 
-            activeOpacity={1} 
+          <TouchableOpacity
+            style={styles.modalContainer}
+            activeOpacity={1}
             onPress={handleCancel}
           >
             <View style={styles.modalContent}>
@@ -121,13 +126,13 @@ export default function CommitmentScreen() {
                 </TouchableOpacity>
               </View>
               <DateTimePicker
-                testID="dateTimePicker"
+                testID='dateTimePicker'
                 value={currentDate}
-                mode="date"
-                display="spinner"
+                mode='date'
+                display='spinner'
                 onChange={onDateChange}
                 minimumDate={minimumDate}
-                textColor="#000000"
+                textColor='#000000'
               />
             </View>
           </TouchableOpacity>
@@ -138,10 +143,10 @@ export default function CommitmentScreen() {
     if (showPicker) {
       return (
         <DateTimePicker
-          testID="dateTimePicker"
+          testID='dateTimePicker'
           value={currentDate}
-          mode="date"
-          display="default"
+          mode='date'
+          display='default'
           onChange={onDateChange}
           minimumDate={minimumDate}
         />
@@ -153,8 +158,8 @@ export default function CommitmentScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.7} />
@@ -165,7 +170,9 @@ export default function CommitmentScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.mainContent}>
-            <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
+            <ThemedText
+              style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}
+            >
               What do you expect{'\n'}in terms of{'\n'}commitment?
             </ThemedText>
 
@@ -175,57 +182,30 @@ export default function CommitmentScreen() {
                   key={option.label}
                   label={option.label}
                   icon={option.icon}
-                  selected={selected === option.label}
-                  onPress={() => setSelected(option.label)}
+                  selected={
+                    family_commitment.selected_commitment === option.label
+                  }
+                  onPress={() =>
+                    setFamilyCommitment({ selected_commitment: option.label })
+                  }
                 />
               ))}
             </View>
 
-            {selected === 'Long Term' && (
-              <View style={styles.centerContainer}>
-                <ThemedText style={styles.startDateLabel}>Start Date</ThemedText>
-                <Pressable 
-                  style={[styles.dateButton, styles.shortDateButton]}
-                  onPress={() => setShowStartDatePicker(true)}
-                >
-                  <ThemedText style={styles.dateButtonText}>
-                    {formatDate(startDate)}
-                  </ThemedText>
-                </Pressable>
-
-                {renderDatePicker(true)}
-              </View>
+            {showStartDatePicker && (
+              <DateTimePicker
+                value={family_commitment.start_date}
+                mode='date'
+                onChange={onStartDateChange}
+              />
             )}
 
-            {selected === 'Short Term' && (
-              <View style={styles.dateRow}>
-                <View style={styles.dateColumn}>
-                  <ThemedText style={styles.startDateLabel}>Start Date</ThemedText>
-                  <Pressable 
-                    style={styles.dateButton}
-                    onPress={() => setShowStartDatePicker(true)}
-                  >
-                    <ThemedText style={styles.dateButtonText}>
-                      {formatDate(startDate)}
-                    </ThemedText>
-                  </Pressable>
-                </View>
-
-                <View style={styles.dateColumn}>
-                  <ThemedText style={styles.startDateLabel}>End Date</ThemedText>
-                  <Pressable 
-                    style={styles.dateButton}
-                    onPress={() => setShowEndDatePicker(true)}
-                  >
-                    <ThemedText style={styles.dateButtonText}>
-                      {formatDate(endDate)}
-                    </ThemedText>
-                  </Pressable>
-                </View>
-
-                {renderDatePicker(true)}
-                {renderDatePicker(false)}
-              </View>
+            {showEndDatePicker && (
+              <DateTimePicker
+                value={family_commitment.end_date}
+                mode='date'
+                onChange={onEndDateChange}
+              />
             )}
           </View>
         </ScrollView>
@@ -236,10 +216,10 @@ export default function CommitmentScreen() {
         >
           <View style={styles.buttonContainer}>
             <Button
-              label="Next"
+              label='Next'
               onPress={handleNext}
-              variant="compact"
-              disabled={!selected || (selected === 'Long Term' && !startDate) || (selected === 'Short Term' && (!startDate || !endDate))}
+              variant='compact'
+              disabled={!family_commitment.selected_commitment}
             />
           </View>
         </LinearGradient>

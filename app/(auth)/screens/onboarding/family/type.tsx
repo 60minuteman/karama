@@ -1,19 +1,21 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, Switch, ScrollView } from 'react-native';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Header } from '@/components/ui/Header';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
-import { useState } from 'react';
+import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 export default function TypeScreen() {
   const router = useRouter();
-  const [isDealbreaker, setIsDealbreaker] = useState(false);
-  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const { caregiver_type, setCaregiverType, setOnboardingScreen } =
+    useUserStore();
+  const { selected_type, is_dealbreaker } = caregiver_type;
 
   const caregiverTypes = [
     { label: 'Night Nurse', icon: '🌙' },
@@ -28,29 +30,31 @@ export default function TypeScreen() {
   ];
 
   const handleTypeSelect = (type: string) => {
-    setSelectedType(type);
+    setCaregiverType({ selected_type: type });
   };
 
   const handleNext = () => {
-    if (selectedType) {
+    if (selected_type) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/trait');
       router.push('/(auth)/screens/onboarding/family/trait');
     }
   };
 
   const handleSkip = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/trait');
     router.push('/(auth)/screens/onboarding/family/trait');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
       <Button
-        label="Skip"
+        label='Skip'
         onPress={handleSkip}
-        variant="skip"
+        variant='skip'
         style={styles.skipButton}
       />
-      
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.3} />
@@ -59,7 +63,7 @@ export default function TypeScreen() {
           What type of{'\n'}caregiver are you{'\n'}seeking?
         </ThemedText>
 
-        <ScrollView 
+        <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
@@ -72,24 +76,28 @@ export default function TypeScreen() {
                   label={type.label}
                   icon={type.icon}
                   onPress={() => handleTypeSelect(type.label)}
-                  selected={selectedType === type.label}
+                  selected={selected_type === type.label}
                   style={[
                     styles.typePill,
-                    (type.label === 'Caregiver/Housekeeper' || 
-                    type.label === 'Caregiver/Household Manager') && 
-                    styles.highlightedPill
+                    (type.label === 'Caregiver/Housekeeper' ||
+                      type.label === 'Caregiver/Household Manager') &&
+                      styles.highlightedPill,
                   ]}
                 />
               ))}
             </View>
 
             <View style={styles.dealbreakerContainer}>
-              <ThemedText style={styles.dealbreakerText}>Dealbreaker</ThemedText>
+              <ThemedText style={styles.dealbreakerText}>
+                Dealbreaker
+              </ThemedText>
               <Switch
-                value={isDealbreaker}
-                onValueChange={setIsDealbreaker}
+                value={is_dealbreaker}
+                onValueChange={(value) =>
+                  setCaregiverType({ is_dealbreaker: value })
+                }
                 trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
-                thumbColor="#FFFFFF"
+                thumbColor='#FFFFFF'
               />
             </View>
           </View>
@@ -101,10 +109,10 @@ export default function TypeScreen() {
         >
           <View style={styles.buttonContainer}>
             <Button
-              label="Next"
+              label='Next'
               onPress={handleNext}
-              variant="compact"
-              disabled={!selectedType}
+              variant='compact'
+              disabled={!selected_type}
             />
           </View>
         </LinearGradient>
@@ -188,6 +196,6 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'flex-end'
-  }
+    justifyContent: 'flex-end',
+  },
 });

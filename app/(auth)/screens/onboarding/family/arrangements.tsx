@@ -1,21 +1,22 @@
-import { StyleSheet, View, ScrollView, Switch } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 type Arrangement = 'Live In' | 'Live Out' | 'Hybrid';
 
 export default function ArrangementsScreen() {
   const router = useRouter();
-  const [selected, setSelected] = useState<Arrangement | null>(null);
-  const [isDealbreaker, setIsDealbreaker] = useState(false);
+  const { family_arrangement, setFamilyArrangement, setOnboardingScreen } =
+    useUserStore();
 
   const arrangementOptions: Array<{ label: Arrangement; icon: string }> = [
     { label: 'Live In', icon: '💤' },
@@ -24,15 +25,16 @@ export default function ArrangementsScreen() {
   ];
 
   const handleNext = () => {
-    if (selected) {
+    if (family_arrangement.selected_arrangement) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/commitment');
       router.push('/(auth)/screens/onboarding/family/commitment');
     }
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.65} />
@@ -53,19 +55,27 @@ export default function ArrangementsScreen() {
                   key={option.label}
                   label={option.label}
                   icon={option.icon}
-                  selected={selected === option.label}
-                  onPress={() => setSelected(option.label)}
+                  selected={
+                    family_arrangement.selected_arrangement === option.label
+                  }
+                  onPress={() =>
+                    setFamilyArrangement({ selected_arrangement: option.label })
+                  }
                 />
               ))}
             </View>
 
             <View style={styles.dealbreaker}>
-              <ThemedText style={styles.dealbreakerText}>Dealbreaker</ThemedText>
+              <ThemedText style={styles.dealbreakerText}>
+                Dealbreaker
+              </ThemedText>
               <Switch
-                value={isDealbreaker}
-                onValueChange={setIsDealbreaker}
+                value={family_arrangement.is_dealbreaker}
+                onValueChange={(value) =>
+                  setFamilyArrangement({ is_dealbreaker: value })
+                }
                 trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
-                thumbColor="#FFFFFF"
+                thumbColor='#FFFFFF'
               />
             </View>
           </View>
@@ -77,10 +87,10 @@ export default function ArrangementsScreen() {
         >
           <View style={styles.buttonContainer}>
             <Button
-              label="Next"
+              label='Next'
               onPress={handleNext}
-              variant="compact"
-              disabled={!selected}
+              variant='compact'
+              disabled={!family_arrangement.selected_arrangement}
             />
           </View>
         </LinearGradient>
@@ -151,5 +161,5 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-  }
+  },
 });

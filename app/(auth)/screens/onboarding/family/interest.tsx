@@ -96,6 +96,8 @@ export default function InterestScreen() {
     useUserStore();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
+  console.log('family interest', family_interests);
+
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -104,11 +106,55 @@ export default function InterestScreen() {
     }).start();
   }, []);
 
-  const toggleInterest = (interest: string) => {
-    const newInterests = family_interests.includes(interest)
-      ? family_interests.filter((i) => i !== interest)
-      : [...family_interests, interest];
-    setFamilyInterests(newInterests);
+  const toggleInterest = (interest: Interest) => {
+    const { label, category } = interest;
+    // Get current interests array for this category
+    let currentInterests: string[] = [];
+    switch (category) {
+      case 'Creative':
+        currentInterests = family_interests.creative_interests;
+        break;
+      case 'Instruments':
+        currentInterests = family_interests.instrument_interests;
+        break;
+      case 'Sports':
+        currentInterests = family_interests.sport_interests;
+        break;
+      case 'STEM':
+        currentInterests = family_interests.stem_interests;
+        break;
+    }
+
+    // Toggle the interest in the appropriate category
+    const updatedInterests = {
+      ...family_interests,
+      creative_interests:
+        category === 'Creative'
+          ? currentInterests.includes(label)
+            ? currentInterests.filter((i) => i !== label)
+            : [...currentInterests, label]
+          : family_interests.creative_interests,
+      instrument_interests:
+        category === 'Instruments'
+          ? currentInterests.includes(label)
+            ? currentInterests.filter((i) => i !== label)
+            : [...currentInterests, label]
+          : family_interests.instrument_interests,
+      sport_interests:
+        category === 'Sports'
+          ? currentInterests.includes(label)
+            ? currentInterests.filter((i) => i !== label)
+            : [...currentInterests, label]
+          : family_interests.sport_interests,
+      stem_interests:
+        category === 'STEM'
+          ? currentInterests.includes(label)
+            ? currentInterests.filter((i) => i !== label)
+            : [...currentInterests, label]
+          : family_interests.stem_interests,
+    };
+
+    setFamilyInterests(updatedInterests);
   };
 
   const handleNext = () => {
@@ -148,8 +194,19 @@ export default function InterestScreen() {
                       key={interest.label}
                       label={interest.label}
                       icon={interest.icon}
-                      selected={family_interests.includes(interest.label)}
-                      onPress={() => toggleInterest(interest.label)}
+                      selected={
+                        family_interests.creative_interests.includes(
+                          interest.label
+                        ) ||
+                        family_interests.instrument_interests.includes(
+                          interest.label
+                        ) ||
+                        family_interests.sport_interests.includes(
+                          interest.label
+                        ) ||
+                        family_interests.stem_interests.includes(interest.label)
+                      }
+                      onPress={() => toggleInterest(interest)}
                     />
                   ))}
                 </View>
@@ -168,7 +225,12 @@ export default function InterestScreen() {
               label='Next'
               onPress={handleNext}
               variant='compact'
-              disabled={family_interests.length === 0}
+              disabled={
+                family_interests.creative_interests.length === 0 &&
+                family_interests.instrument_interests.length === 0 &&
+                family_interests.sport_interests.length === 0 &&
+                family_interests.stem_interests.length === 0
+              }
             />
           </View>
         </View>
@@ -219,7 +281,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     fontWeight: '500',
     marginTop: 20,
-    color: '#002140',
+    // color: '#002140',
   },
   categoryContainer: {
     marginBottom: 32,

@@ -10,19 +10,24 @@ import { Image, StyleSheet, View } from 'react-native';
 
 export default function OnboardingScreen() {
   const router = useRouter();
-  const { user } = useUserStore();
+  const { user, onboarding_screen } = useUserStore();
   const { completeOnboarding } = useOnboarding();
 
   console.log('user', user);
 
   const handleGetStarted = async () => {
     await completeOnboarding();
-    router.push('/(auth)/phoneNumber');
+    if (onboarding_screen) {
+      // router.push(onboarding_screen);
+      router.push('/(auth)/bridge');
+    } else {
+      router.push('/(auth)/phoneNumber');
+    }
   };
 
   const handleSignIn = () => {
-    router.push('/(auth)/bridge');
-    // router.push('/(tabs)/discover');
+    // router.push('/(auth)/bridge');
+    router.push('/(tabs)/discover');
   };
 
   return (

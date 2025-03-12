@@ -1,16 +1,17 @@
-import { StyleSheet, View, ScrollView, Switch, Animated } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useState, useRef, useEffect } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
-import { LinearGradient } from 'expo-linear-gradient';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, ScrollView, StyleSheet, Switch, View } from 'react-native';
 
-type Requirement = 
+type Requirement =
   | 'Can Travel'
   | 'Able To Drive'
   | 'First Aid'
@@ -19,7 +20,7 @@ type Requirement =
   | 'CPR'
   | 'Other';
 
-type Certification = 
+type Certification =
   | 'Sign Language'
   | 'Administering Medication'
   | 'Special Needs'
@@ -30,10 +31,17 @@ type Certification =
 
 export default function RequirementsScreen() {
   const router = useRouter();
-  const [selectedRequirements, setSelectedRequirements] = useState<Requirement[]>([]);
-  const [selectedCertifications, setSelectedCertifications] = useState<Certification[]>([]);
-  const [requirementsDealbreaker, setRequirementsDealbreaker] = useState(false);
-  const [certificationsDealbreaker, setCertificationsDealbreaker] = useState(false);
+  const {
+    caregiver_requirements,
+    setCaregiverRequirements,
+    setOnboardingScreen,
+  } = useUserStore();
+  const {
+    selected_requirements,
+    selected_certifications,
+    requirements_dealbreaker,
+    certifications_dealbreaker,
+  } = caregiver_requirements;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -65,33 +73,35 @@ export default function RequirementsScreen() {
   ];
 
   const toggleRequirement = (req: Requirement) => {
-    setSelectedRequirements(prev => 
-      prev.includes(req) 
-        ? prev.filter(r => r !== req)
-        : [...prev, req]
-    );
+    const newRequirements = selected_requirements.includes(req)
+      ? selected_requirements.filter((r) => r !== req)
+      : [...selected_requirements, req];
+
+    setCaregiverRequirements({ selected_requirements: newRequirements });
   };
 
   const toggleCertification = (cert: Certification) => {
-    setSelectedCertifications(prev =>
-      prev.includes(cert)
-        ? prev.filter(c => c !== cert)
-        : [...prev, cert]
-    );
+    const newCertifications = selected_certifications.includes(cert)
+      ? selected_certifications.filter((c) => c !== cert)
+      : [...selected_certifications, cert];
+
+    setCaregiverRequirements({ selected_certifications: newCertifications });
   };
 
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/available');
     router.push('/(auth)/screens/onboarding/family/available');
   };
 
   const handleSkip = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/available');
     router.push('/(auth)/screens/onboarding/family/available');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.8} />
@@ -114,42 +124,56 @@ export default function RequirementsScreen() {
                     key={req.label}
                     label={req.label}
                     icon={req.icon}
-                    selected={selectedRequirements.includes(req.label)}
+                    selected={selected_requirements.includes(req.label)}
                     onPress={() => toggleRequirement(req.label)}
                   />
                 ))}
               </View>
               <View style={styles.dealbreaker}>
-                <ThemedText style={styles.dealbreakerText}>Dealbreaker</ThemedText>
+                <ThemedText style={styles.dealbreakerText}>
+                  Dealbreaker
+                </ThemedText>
                 <Switch
-                  value={requirementsDealbreaker}
-                  onValueChange={setRequirementsDealbreaker}
+                  value={requirements_dealbreaker}
+                  onValueChange={(value) =>
+                    setCaregiverRequirements({
+                      requirements_dealbreaker: value,
+                    })
+                  }
                   trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
-                  thumbColor="#FFFFFF"
+                  thumbColor='#FFFFFF'
                 />
               </View>
             </View>
 
             <View style={styles.section}>
-              <ThemedText style={styles.sectionTitle}>Certifications</ThemedText>
+              <ThemedText style={styles.sectionTitle}>
+                Certifications
+              </ThemedText>
               <View style={styles.optionsContainer}>
                 {certifications.map((cert) => (
                   <Pill
                     key={cert.label}
                     label={cert.label}
                     icon={cert.icon}
-                    selected={selectedCertifications.includes(cert.label)}
+                    selected={selected_certifications.includes(cert.label)}
                     onPress={() => toggleCertification(cert.label)}
                   />
                 ))}
               </View>
               <View style={styles.dealbreaker}>
-                <ThemedText style={styles.dealbreakerText}>Dealbreaker</ThemedText>
+                <ThemedText style={styles.dealbreakerText}>
+                  Dealbreaker
+                </ThemedText>
                 <Switch
-                  value={certificationsDealbreaker}
-                  onValueChange={setCertificationsDealbreaker}
+                  value={certifications_dealbreaker}
+                  onValueChange={(value) =>
+                    setCaregiverRequirements({
+                      certifications_dealbreaker: value,
+                    })
+                  }
                   trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
-                  thumbColor="#FFFFFF"
+                  thumbColor='#FFFFFF'
                 />
               </View>
             </View>
@@ -161,16 +185,15 @@ export default function RequirementsScreen() {
           style={styles.buttonGradient}
         >
           <View style={styles.buttonContainer}>
+            <Button label='Skip' onPress={handleSkip} variant='skip' />
             <Button
-              label="Skip"
-              onPress={handleSkip}
-              variant="skip"
-            />
-            <Button
-              label="Next"
+              label='Next'
               onPress={handleNext}
-              variant="compact"
-              disabled={selectedRequirements.length === 0 && selectedCertifications.length === 0}
+              variant='compact'
+              disabled={
+                selected_requirements.length === 0 &&
+                selected_certifications.length === 0
+              }
             />
           </View>
         </LinearGradient>

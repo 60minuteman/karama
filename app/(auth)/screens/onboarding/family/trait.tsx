@@ -1,19 +1,21 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, Switch, ScrollView } from 'react-native';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Header } from '@/components/ui/Header';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
-import { useState } from 'react';
+import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 export default function TraitScreen() {
   const router = useRouter();
-  const [isDealbreaker, setIsDealbreaker] = useState(false);
-  const [selectedTraits, setSelectedTraits] = useState<string[]>([]);
+  const { caregiver_traits, setCaregiverTraits, setOnboardingScreen } =
+    useUserStore();
+  const { selected_traits, is_dealbreaker } = caregiver_traits;
 
   const personalityTraits = [
     { label: 'Bubbly', icon: '🫧' },
@@ -29,41 +31,43 @@ export default function TraitScreen() {
     { label: 'Whimsical', icon: '🧚' },
     { label: 'Nurturing', icon: '🤗' },
     { label: 'Cool', icon: '😎' },
-    { label: 'Organized', icon: '👨‍💼' }
+    { label: 'Organized', icon: '👨‍💼' },
   ];
 
   const handleTraitSelect = (trait: string) => {
-    setSelectedTraits(prev => {
-      if (prev.includes(trait)) {
-        return prev.filter(t => t !== trait);
-      }
-      return [...prev, trait];
-    });
+    const newTraits = selected_traits.includes(trait)
+      ? selected_traits.filter((t) => t !== trait)
+      : [...selected_traits, trait];
+
+    setCaregiverTraits({ selected_traits: newTraits });
   };
 
   const handleNext = () => {
-    if (selectedTraits.length > 0) {
+    if (selected_traits.length > 0) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/age');
       router.push('/(auth)/screens/onboarding/family/age');
     }
   };
 
   const handleSkip = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/age');
     router.push('/(auth)/screens/onboarding/family/age');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.3} />
 
         <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
-          What personality{'\n'}traits would you like{'\n'}your caregiver to{'\n'}have ?
+          What personality{'\n'}traits would you like{'\n'}your caregiver to
+          {'\n'}have ?
         </ThemedText>
 
-        <ScrollView 
+        <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
@@ -76,18 +80,22 @@ export default function TraitScreen() {
                   label={trait.label}
                   icon={trait.icon}
                   onPress={() => handleTraitSelect(trait.label)}
-                  selected={selectedTraits.includes(trait.label)}
+                  selected={selected_traits.includes(trait.label)}
                 />
               ))}
             </View>
 
             <View style={styles.dealbreakerContainer}>
-              <ThemedText style={styles.dealbreakerText}>Dealbreaker</ThemedText>
+              <ThemedText style={styles.dealbreakerText}>
+                Dealbreaker
+              </ThemedText>
               <Switch
-                value={isDealbreaker}
-                onValueChange={setIsDealbreaker}
+                value={is_dealbreaker}
+                onValueChange={(value) =>
+                  setCaregiverTraits({ is_dealbreaker: value })
+                }
                 trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
-                thumbColor="#FFFFFF"
+                thumbColor='#FFFFFF'
               />
             </View>
           </View>
@@ -98,16 +106,12 @@ export default function TraitScreen() {
           style={styles.buttonGradient}
         >
           <View style={styles.buttonContainer}>
+            <Button label='Skip' onPress={handleSkip} variant='skip' />
             <Button
-              label="Skip"
-              onPress={handleSkip}
-              variant="skip"
-            />
-            <Button
-              label="Next"
+              label='Next'
               onPress={handleNext}
-              variant="compact"
-              disabled={selectedTraits.length === 0}
+              variant='compact'
+              disabled={selected_traits.length === 0}
             />
           </View>
         </LinearGradient>
@@ -183,6 +187,6 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between'
-  }
+    justifyContent: 'space-between',
+  },
 });

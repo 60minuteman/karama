@@ -1,24 +1,28 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, Switch, ScrollView } from 'react-native';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Header } from '@/components/ui/Header';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
-import { useState } from 'react';
+import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 export default function GenderScreen() {
   const router = useRouter();
+  const {
+    family_gender_preference,
+    setFamilyGenderPreference,
+    setOnboardingScreen,
+  } = useUserStore();
   const [showGenderOptions, setShowGenderOptions] = useState(false);
-  const [selectedResponse, setSelectedResponse] = useState<'yes' | 'no' | null>(null);
-  const [isDealbreaker, setIsDealbreaker] = useState(false);
 
   const genderOptions = [
     'Male',
-    'Female', 
+    'Female',
     'Non Binary',
     'Transgender',
     'Gender Nutual',
@@ -26,54 +30,63 @@ export default function GenderScreen() {
     'Cisgender Male',
     'Cisgender Female',
     'Gender Fluid',
-    'Other'
+    'Other',
   ];
 
   const handleResponse = (response: 'yes' | 'no') => {
-    setSelectedResponse(response);
+    setFamilyGenderPreference({ has_preference: response });
     if (response === 'yes') {
       setShowGenderOptions(true);
     } else {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/type');
       router.push('/(auth)/screens/onboarding/family/type');
     }
   };
 
   const handleGenderSelect = (gender: string) => {
-    // Handle gender selection here
-    router.push('/(auth)/screens/onboarding/family/next-screen');
+    setFamilyGenderPreference({ selected_gender: gender });
+    setOnboardingScreen('/(auth)/screens/onboarding/family/type');
+    router.push('/(auth)/screens/onboarding/family/type');
   };
 
   const handleSkip = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/type');
     router.push('/(auth)/screens/onboarding/family/type');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
       <View style={styles.titleContainer}>
         <ProgressBar progress={0.3} />
         <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
-          Do you have a preference when it comes to the gender of your caregiver?
+          Do you have a preference when it comes to the gender of your
+          caregiver?
         </ThemedText>
-        
+
         <ThemedText style={styles.subtitle}>
           (This will not be visible on your profile)
         </ThemedText>
       </View>
-      
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.content}>
           <View style={styles.mainContent}>
-            <View style={[styles.optionsContainer, { justifyContent: 'flex-end' }]}>
+            <View
+              style={[styles.optionsContainer, { justifyContent: 'flex-end' }]}
+            >
               <Pill
-                label="Yes"
+                label='Yes'
                 onPress={() => handleResponse('yes')}
-                selected={selectedResponse === 'yes'}
+                selected={family_gender_preference?.has_preference === 'yes'}
               />
               <Pill
-                label="No"
+                label='No'
                 onPress={() => handleResponse('no')}
-                selected={selectedResponse === 'no'}
+                selected={family_gender_preference?.has_preference === 'no'}
               />
             </View>
           </View>
@@ -91,12 +104,16 @@ export default function GenderScreen() {
               </View>
 
               <View style={styles.dealbreakerContainer}>
-                <ThemedText style={styles.dealbreakerText}>Dealbreaker</ThemedText>
+                <ThemedText style={styles.dealbreakerText}>
+                  Dealbreaker
+                </ThemedText>
                 <Switch
-                  value={isDealbreaker}
-                  onValueChange={setIsDealbreaker}
+                  value={family_gender_preference?.is_dealbreaker}
+                  onValueChange={(value) =>
+                    setFamilyGenderPreference({ is_dealbreaker: value })
+                  }
                   trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
-                  thumbColor="#FFFFFF"
+                  thumbColor='#FFFFFF'
                 />
               </View>
             </>
@@ -110,11 +127,7 @@ export default function GenderScreen() {
         style={styles.buttonGradient}
       >
         <View style={styles.buttonContainer}>
-          <Button
-            label="Skip"
-            onPress={handleSkip}
-            variant="skip"
-          />
+          <Button label='Skip' onPress={handleSkip} variant='skip' />
         </View>
       </LinearGradient>
     </ThemedView>
@@ -191,5 +204,5 @@ const styles = StyleSheet.create({
   dealbreakerText: {
     fontSize: 16,
     color: Colors.light.text,
-  }
+  },
 });
