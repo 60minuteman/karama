@@ -1,70 +1,67 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView, Switch } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
-import { LinearGradient } from 'expo-linear-gradient';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
-const benefitsOptions = [
-  { id: 'yearly_bonus', label: 'Yearly Bonus', icon: '💰' },
-  { id: 'paid_time_off', label: 'Paid Time Off', icon: '🏖' },
-  { id: 'yearly_raise', label: 'Yearly Raise', icon: '💸' },
-  { id: 'overtime_pay', label: 'Overtime Pay', icon: '💲' },
-  { id: 'maternity_leave', label: 'Maternity Leave', icon: '👶' },
+const BenefitOptions = [
   { id: 'health_insurance', label: 'Health Insurance', icon: '🏥' },
-  { id: 'retirement_account', label: 'Retirement Account', icon: '🤑' },
-  { id: 'metro_card', label: 'Monthly Metro Card', icon: '🚇' },
-  { id: 'mileage', label: 'Mileage Reimbursement', icon: '🚗' },
-  { id: 'extra_child_pay', label: 'Extra Pay For Additional Children', icon: '👶' },
-  { id: 'other', label: 'Other', icon: '✨' },
+  { id: 'paid_time_off', label: 'Paid Time Off', icon: '🌴' },
+  { id: 'sick_leave', label: 'Sick Leave', icon: '🤒' },
+  { id: 'dental_insurance', label: 'Dental Insurance', icon: '🦷' },
+  { id: 'vision_insurance', label: 'Vision Insurance', icon: '👁️' },
+  { id: 'retirement_plan', label: 'Retirement Plan', icon: '💰' },
+  { id: 'life_insurance', label: 'Life Insurance', icon: '🌟' },
+  { id: 'disability_insurance', label: 'Disability Insurance', icon: '♿' },
 ];
 
-export default function Benefits() {
+export default function BenefitsScreen() {
   const router = useRouter();
-  const [selectedBenefits, setSelectedBenefits] = useState<string[]>([]);
-  const [showOnProfile, setShowOnProfile] = useState(false);
+  const { family_benefits, setFamilyBenefits, setOnboardingScreen } =
+    useUserStore();
 
-  const toggleBenefit = (benefitId: string) => {
-    setSelectedBenefits(prev =>
-      prev.includes(benefitId)
-        ? prev.filter(id => id !== benefitId)
-        : [...prev, benefitId]
-    );
+  const { selected_benefits, show_on_profile } = family_benefits;
+
+  const toggleBenefit = (id: string) => {
+    const currentBenefits = selected_benefits ?? [];
+    const updatedBenefits = currentBenefits.includes(id)
+      ? currentBenefits.filter((benefit) => benefit !== id)
+      : [...currentBenefits, id];
+
+    setFamilyBenefits({ selected_benefits: updatedBenefits });
   };
 
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/prompt');
     router.push('/(auth)/screens/onboarding/family/prompt');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
-        <ProgressBar progress={0.85} />
+        <ProgressBar progress={0.95} />
 
-        <ThemedText style={styles.title}>
-          What benefits are{'\n'}you offering?
-        </ThemedText>
+        <ScrollView style={styles.mainContent}>
+          <ThemedText style={styles.title}>
+            What benefits do you{'\n'}offer to caregivers?
+          </ThemedText>
 
-        <ScrollView 
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.benefitsContainer}>
-            {benefitsOptions.map((benefit) => (
+          <View style={styles.optionsContainer}>
+            {BenefitOptions.map((benefit) => (
               <View key={benefit.id} style={styles.pillWrapper}>
                 <Pill
                   label={benefit.label}
                   icon={benefit.icon}
-                  selected={selectedBenefits.includes(benefit.id)}
+                  selected={selected_benefits?.includes(benefit.id)}
                   onPress={() => toggleBenefit(benefit.id)}
                 />
               </View>
@@ -74,34 +71,25 @@ export default function Benefits() {
           <View style={styles.toggleContainer}>
             <ThemedText style={styles.toggleText}>Show on profile</ThemedText>
             <Switch
-              value={showOnProfile}
-              onValueChange={setShowOnProfile}
+              value={show_on_profile}
+              onValueChange={(value) =>
+                setFamilyBenefits({ show_on_profile: value })
+              }
               trackColor={{ false: '#E5E5E5', true: Colors.light.primary }}
-              thumbColor={showOnProfile ? '#FFFFFF' : '#FFFFFF'}
+              thumbColor={show_on_profile ? '#FFFFFF' : '#FFFFFF'}
             />
           </View>
-
-          <View style={styles.bottomSpacer} />
         </ScrollView>
 
-        <LinearGradient
-          colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
-          style={styles.buttonGradient}
-        >
-          <View style={styles.buttonContainer}>
-            <Button
-              label="Skip"
-              onPress={() => router.back()}
-              variant="skip"
-            />
-            <Button
-              label="Next"
-              onPress={handleNext}
-              variant="compact"
-              disabled={selectedBenefits.length === 0}
-            />
-          </View>
-        </LinearGradient>
+        <View style={styles.buttonContainer}>
+          <Button label='Skip' onPress={() => router.back()} variant='skip' />
+          <Button
+            label='Next'
+            onPress={handleNext}
+            variant='compact'
+            disabled={selected_benefits?.length === 0}
+          />
+        </View>
       </View>
     </ThemedView>
   );
@@ -119,12 +107,9 @@ const styles = StyleSheet.create({
   spacerTop: {
     height: 120,
   },
-  scrollView: {
+  mainContent: {
     flex: 1,
     marginTop: 20,
-  },
-  scrollContent: {
-    flexGrow: 1,
   },
   title: {
     fontSize: 32,
@@ -134,7 +119,7 @@ const styles = StyleSheet.create({
     color: '#002140',
     marginTop: 20,
   },
-  benefitsContainer: {
+  optionsContainer: {
     flexDirection: 'column',
     gap: 12,
     marginBottom: 32,
@@ -151,21 +136,10 @@ const styles = StyleSheet.create({
   toggleText: {
     fontSize: 16,
   },
-  bottomSpacer: {
-    height: 100,
-  },
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 20,
   },
-  buttonGradient: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 100,
-    paddingHorizontal: 20,
-  }
 });

@@ -1,46 +1,55 @@
-import { StyleSheet, View, Switch, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
-import { useState } from 'react';
+import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 export default function ExperienceScreen() {
   const router = useRouter();
-  const [selectedExperience, setSelectedExperience] = useState<string | null>(null);
-  const [isDealbreaker, setIsDealbreaker] = useState(false);
+  const { caregiver_experience, setCaregiverExperience, setOnboardingScreen } =
+    useUserStore();
+  const { selected_experience, is_dealbreaker } = caregiver_experience;
 
   const experienceOptions = [
     '1-11 months',
-    '1-5 years', 
+    '1-5 years',
     '6-10 years',
     '11-20 years',
     '21-30 years',
-    '31 years+'
+    '31 years+',
   ];
 
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/cglanguage');
+    router.push('/(auth)/screens/onboarding/family/cglanguage');
+  };
+
+  const handleSkip = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/cglanguage');
     router.push('/(auth)/screens/onboarding/family/cglanguage');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.6} />
 
         <ThemedText style={styles.title}>
-          How many years of{'\n'}experience do you{'\n'}require your{'\n'}caregiver to have?
+          How many years of{'\n'}experience do you{'\n'}require your{'\n'}
+          caregiver to have?
         </ThemedText>
 
-        <ScrollView 
+        <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
@@ -51,19 +60,25 @@ export default function ExperienceScreen() {
                 <Pill
                   key={index}
                   label={option}
-                  onPress={() => setSelectedExperience(option)}
-                  selected={selectedExperience === option}
+                  onPress={() =>
+                    setCaregiverExperience({ selected_experience: option })
+                  }
+                  selected={selected_experience === option}
                 />
               ))}
             </View>
 
             <View style={styles.dealbreakerContainer}>
-              <ThemedText style={styles.dealbreakerText}>Dealbreaker</ThemedText>
+              <ThemedText style={styles.dealbreakerText}>
+                Dealbreaker
+              </ThemedText>
               <Switch
-                value={isDealbreaker}
-                onValueChange={setIsDealbreaker}
+                value={is_dealbreaker}
+                onValueChange={(value) =>
+                  setCaregiverExperience({ is_dealbreaker: value })
+                }
                 trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
-                thumbColor="#FFFFFF"
+                thumbColor='#FFFFFF'
               />
             </View>
           </View>
@@ -74,16 +89,12 @@ export default function ExperienceScreen() {
           style={styles.buttonGradient}
         >
           <View style={styles.buttonContainer}>
+            <Button label='Skip' onPress={handleSkip} variant='skip' />
             <Button
-              label="Skip"
+              label='Next'
               onPress={handleNext}
-              variant="skip"
-            />
-            <Button
-              label="Next"
-              onPress={handleNext}
-              variant="compact"
-              disabled={!selectedExperience}
+              variant='compact'
+              disabled={!selected_experience}
             />
           </View>
         </LinearGradient>
@@ -153,6 +164,6 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between'
-  }
+    justifyContent: 'space-between',
+  },
 });

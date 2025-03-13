@@ -68,8 +68,8 @@ export default function PhilosophyScreen() {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherPhilo');
       router.push('/(auth)/screens/onboarding/family/otherPhilo');
     } else {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/intermission');
-      router.push('/(auth)/screens/onboarding/family/intermission');
+      setOnboardingScreen('/(auth)/screens/onboarding/family/Allergies');
+      router.push('/(auth)/screens/onboarding/family/Allergies');
     }
   };
 

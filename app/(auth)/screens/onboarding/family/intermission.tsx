@@ -1,22 +1,124 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, Image } from 'react-native';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import customAxios from '@/services/api/envConfig';
+import { useUserStore } from '@/services/state/user';
+import { useMutation } from '@tanstack/react-query';
+import { useRouter } from 'expo-router';
+import { Image, StyleSheet, View } from 'react-native';
 
 export default function IntermissionScreen() {
   const router = useRouter();
+  const {
+    setOnboardingScreen,
+    familyName,
+    family_description,
+    family_age_groups,
+    family_behaviour,
+    family_zipcode,
+    family_languages,
+    family_pets,
+    family_selected_source,
+    family_interests,
+    family_show_diet,
+    family_show_rules,
+    family_show_religion,
+    family_selections,
+    family_show_philosophy,
+    family_philosophies,
+    family_allergies,
+  } = useUserStore();
+
+  console.log('family_allergies', family_allergies);
 
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/gender');
     router.push('/(auth)/screens/onboarding/family/gender');
+  };
+
+  const submit = useMutation({
+    mutationFn: (data: any) => {
+      return customAxios.post(`/auth/phone/start-verification`, data);
+    },
+    onSuccess: async (data: any) => {
+      handleNext();
+    },
+    onError: (error: any) => {
+      console.log('error', error['response'].data);
+      // router.push('/phoneNumber');
+      // Toast.show({
+      //   type: 'problem',
+      //   text1: 'Something went wrong',
+      //   text2: error['response'].data?.message,
+      // });
+    },
+  });
+
+  const handleSubmit = () => {
+    submit.mutate({
+      name: familyName,
+      description: {
+        description: family_description?.type,
+        other: 'N/A',
+        show_on_profile: family_description?.showOnProfile,
+      },
+      children: family_age_groups,
+      behavioural_difference: {
+        differences: family_behaviour,
+        other: 'N/A',
+      },
+      zipcode: family_zipcode,
+      languages: {
+        languages: family_languages,
+      },
+      pets: {
+        pets: family_pets,
+        other: 'N/A',
+      },
+      allergies: {
+        food_allergies: family_allergies?.food,
+        other_food_allergies: 'N/A',
+        environmental_allergies: family_allergies?.environmental,
+        other_environmental_allergies: 'N/A',
+        other_allergies: family_allergies?.other,
+        other_other_allergies: 'N/A',
+      },
+      children_interests: {
+        creative_interests: family_interests?.creative_interests,
+        other_creative_interest: 'N/A',
+        instrument_interests: family_interests?.instrument_interests,
+        other_instrument_interest: 'N/A',
+        sport_interests: family_interests,
+        other_sport_interest: 'N/A',
+        stem_interests: family_interests?.stem_interests,
+        other_stem_interest: 'N/A',
+      },
+      household_info: {
+        diets: family_selections?.diets,
+        other_diets: 'N/A',
+        show_diet_on_profile: family_show_diet,
+        rules: family_selections?.rules,
+        other_rules: 'N/A',
+        show_rules_on_profile: family_show_rules,
+        religion: family_selections?.religion,
+        other_religion: 'N/A',
+        show_religion_on_profile: family_show_religion,
+      },
+      philosophies: {
+        philosophies: family_philosophies,
+        other: 'N/A',
+        show_on_profile: family_show_philosophy,
+      },
+      aquisition_source: family_selected_source,
+    });
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
 
       <View style={styles.content}>
         <View style={styles.spacer} />
@@ -25,7 +127,7 @@ export default function IntermissionScreen() {
         <View style={styles.mainContent}>
           <View style={styles.textContainer}>
             <View style={styles.lightningContainer}>
-              <Image 
+              <Image
                 source={require('@/assets/onboarding/family/bolt.png')}
                 style={styles.lightning}
               />
@@ -49,10 +151,11 @@ export default function IntermissionScreen() {
 
         <View style={styles.buttonContainer}>
           <Button
-            label="Next"
-            onPress={handleNext}
-            variant="compact"
+            label='Next'
+            onPress={handleSubmit}
+            variant='compact'
             style={styles.button}
+            loading={submit.isPending}
           />
         </View>
       </View>

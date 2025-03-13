@@ -12,7 +12,18 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 type Category = 'Diet' | 'Rules' | 'Religion';
-type Selection = { [key: string]: boolean };
+
+interface FamilySelections {
+  diets?: string[];
+  rules?: string[];
+  religion?: string;
+  other_diets?: string;
+  other_rules?: string;
+  other_religion?: string;
+  show_diet_on_profile?: boolean;
+  show_rules_on_profile?: boolean;
+  show_religion_on_profile?: boolean;
+}
 
 export default function HouseholdScreen() {
   const router = useRouter();
@@ -27,6 +38,13 @@ export default function HouseholdScreen() {
     setFamilyShowReligion,
     setOnboardingScreen,
   } = useUserStore();
+
+  console.log(
+    'family_selections',
+    family_selections,
+    family_show_diet,
+    family_show_rules
+  );
 
   const categories = {
     Diet: [
@@ -67,15 +85,47 @@ export default function HouseholdScreen() {
     ],
   };
 
-  const toggleSelection = (category: string, label: string) => {
-    setFamilySelections({
-      ...family_selections,
-      [`${category}-${label}`]: !family_selections[`${category}-${label}`],
-    });
+  const toggleSelection = (category: Category, label: string) => {
+    const currentSelections = { ...family_selections } as FamilySelections;
+
+    // Initialize arrays if they don't exist
+    if (!currentSelections.diets) currentSelections.diets = [];
+    if (!currentSelections.rules) currentSelections.rules = [];
+    if (!currentSelections.religion) currentSelections.religion = '';
+
+    if (category === 'Diet') {
+      const index = currentSelections.diets.indexOf(label);
+      if (index === -1) {
+        currentSelections.diets.push(label);
+      } else {
+        currentSelections.diets.splice(index, 1);
+      }
+    } else if (category === 'Rules') {
+      const index = currentSelections.rules.indexOf(label);
+      if (index === -1) {
+        currentSelections.rules.push(label);
+      } else {
+        currentSelections.rules.splice(index, 1);
+      }
+    } else if (category === 'Religion') {
+      currentSelections.religion =
+        currentSelections.religion === label ? '' : label;
+    }
+
+    // Add other fields required by the backend
+    currentSelections.other_diets = 'N/A';
+    currentSelections.other_rules = 'N/A';
+    currentSelections.other_religion = 'N/A';
+    currentSelections.show_diet_on_profile = family_show_diet;
+    currentSelections.show_rules_on_profile = family_show_rules;
+    currentSelections.show_religion_on_profile = family_show_religion;
+
+    setFamilySelections(currentSelections);
   };
 
   const handleNext = () => {
-    if (family_selections['Diet-Other']) {
+    const selections = family_selections as FamilySelections;
+    if (selections.diets?.includes('Other')) {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
       router.push('/(auth)/screens/onboarding/family/otherDiet');
     } else {
@@ -115,7 +165,18 @@ export default function HouseholdScreen() {
                       key={item.label}
                       label={item.label}
                       icon={item.icon}
-                      selected={family_selections[`${category}-${item.label}`]}
+                      selected={
+                        category === 'Religion'
+                          ? (family_selections as FamilySelections).religion ===
+                            item.label
+                          : category === 'Diet'
+                          ? (
+                              family_selections as FamilySelections
+                            ).diets?.includes(item.label)
+                          : (
+                              family_selections as FamilySelections
+                            ).rules?.includes(item.label)
+                      }
                       onPress={() => toggleSelection(category, item.label)}
                     />
                   ))}

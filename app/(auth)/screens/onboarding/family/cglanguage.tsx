@@ -1,37 +1,43 @@
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 type Option = 'Yes, required' | 'Not required';
 
 export default function CGLanguageScreen() {
   const router = useRouter();
-  const [selected, setSelected] = useState<Option | null>(null);
+  const {
+    caregiver_language_required,
+    setCaregiverLanguageRequired,
+    setOnboardingScreen,
+  } = useUserStore();
 
   const options: Option[] = ['Yes, required', 'Not required'];
 
   const handleNext = () => {
-    if (selected) {
+    if (caregiver_language_required) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/requirements');
       router.push('/(auth)/screens/onboarding/family/requirements');
     }
   };
 
   const handleSkip = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/requirements');
     router.push('/(auth)/screens/onboarding/family/requirements');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.6} />
@@ -43,7 +49,8 @@ export default function CGLanguageScreen() {
         >
           <View style={styles.mainContent}>
             <ThemedText style={styles.title}>
-              Do you require{'\n'}caregivers to speak{'\n'}the same language(s){'\n'}as your family?
+              Do you require{'\n'}caregivers to speak{'\n'}the same language(s)
+              {'\n'}as your family?
             </ThemedText>
 
             <View style={styles.optionsContainer}>
@@ -52,8 +59,8 @@ export default function CGLanguageScreen() {
                   <Pill
                     key={option}
                     label={option}
-                    selected={selected === option}
-                    onPress={() => setSelected(option)}
+                    selected={caregiver_language_required === option}
+                    onPress={() => setCaregiverLanguageRequired(option)}
                   />
                 ))}
               </View>
@@ -66,16 +73,12 @@ export default function CGLanguageScreen() {
           style={styles.buttonGradient}
         >
           <View style={styles.buttonContainer}>
+            <Button label='Skip' onPress={handleSkip} variant='skip' />
             <Button
-              label="Skip"
-              onPress={handleSkip}
-              variant="skip"
-            />
-            <Button
-              label="Next"
+              label='Next'
               onPress={handleNext}
-              variant="compact"
-              disabled={!selected}
+              variant='compact'
+              disabled={!caregiver_language_required}
             />
           </View>
         </LinearGradient>
@@ -136,6 +139,6 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between'
-  }
+    justifyContent: 'space-between',
+  },
 });

@@ -1,25 +1,28 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, TextInput } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
 
 export default function MoreInfo() {
   const router = useRouter();
-  const [answer, setAnswer] = useState('');
+  const { family_more_info, setFamilyMoreInfo, setOnboardingScreen } =
+    useUserStore();
 
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/upload');
     router.push('/(auth)/screens/onboarding/family/upload');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
@@ -32,26 +35,18 @@ export default function MoreInfo() {
           <TextInput
             style={styles.input}
             multiline
-            placeholder="Write your answer here..."
-            placeholderTextColor="#A8A3A5"
-            value={answer}
-            onChangeText={setAnswer}
-            textAlignVertical="top"
+            placeholder='Write your answer here...'
+            placeholderTextColor='#A8A3A5'
+            value={family_more_info}
+            onChangeText={setFamilyMoreInfo}
+            textAlignVertical='top'
           />
         </View>
       </View>
 
       <View style={styles.bottomNav}>
-        <Button
-          label="Skip"
-          onPress={() => router.back()}
-          variant="skip"
-        />
-        <Button
-          label="Next"
-          onPress={handleNext}
-          variant="compact"
-        />
+        <Button label='Skip' onPress={() => router.back()} variant='skip' />
+        <Button label='Next' onPress={handleNext} variant='compact' />
       </View>
     </ThemedView>
   );
@@ -100,5 +95,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     paddingBottom: 40,
-  }
+  },
 });

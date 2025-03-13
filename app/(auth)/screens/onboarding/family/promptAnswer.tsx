@@ -1,58 +1,59 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, TextInput } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import React from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
 
 export default function PromptAnswer() {
   const router = useRouter();
   const { prompt } = useLocalSearchParams();
-  const [answer, setAnswer] = useState('');
+  const { family_prompt_answer, setFamilyPromptAnswer, setOnboardingScreen } =
+    useUserStore();
+
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/moreInfo');
+    router.push('/(auth)/screens/onboarding/family/moreInfo');
+  };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
 
-        <ThemedText style={styles.title}>
-          {prompt}
-        </ThemedText>
+        <ThemedText style={styles.title}>{prompt}</ThemedText>
 
         <View style={styles.inputContainer}>
           <TextInput
             style={styles.input}
             multiline
-            placeholder="Type prompt answer here..."
-            placeholderTextColor="#A8A3A5"
-            value={answer}
-            onChangeText={setAnswer}
-            textAlignVertical="top"
+            placeholder='Type prompt answer here...'
+            placeholderTextColor='#A8A3A5'
+            value={family_prompt_answer}
+            onChangeText={setFamilyPromptAnswer}
+            textAlignVertical='top'
           />
         </View>
 
         <View style={styles.addButtonContainer}>
           <Button
-            label="Add Another Prompt"
+            label='Add Another Prompt'
             onPress={() => router.back()}
-            variant="compact"
+            variant='compact'
             style={styles.addButton}
           />
         </View>
       </View>
 
       <View style={styles.bottomNav}>
-        <Button
-          label="Next"
-          onPress={() => router.push('/(auth)/screens/onboarding/family/moreInfo')}
-          variant="compact"
-        />
+        <Button label='Next' onPress={handleNext} variant='compact' />
       </View>
     </ThemedView>
   );

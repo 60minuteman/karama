@@ -1,14 +1,15 @@
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 interface Responsibility {
   id: string;
@@ -63,26 +64,36 @@ const householdResponsibilities: Responsibility[] = [
 
 export default function ResponsibilitiesScreen() {
   const router = useRouter();
-  const [selectedResponsibilities, setSelectedResponsibilities] = useState<string[]>([]);
+  const {
+    family_responsibilities,
+    setFamilyResponsibilities,
+    setOnboardingScreen,
+  } = useUserStore();
 
   const toggleResponsibility = (id: string) => {
-    setSelectedResponsibilities(prev => 
-      prev.includes(id) 
-        ? prev.filter(item => item !== id)
-        : [...prev, id]
+    setFamilyResponsibilities(
+      family_responsibilities.includes(id)
+        ? family_responsibilities.filter((item) => item !== id)
+        : [...family_responsibilities, id]
     );
+  };
+
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/payment');
+    router.push('/(auth)/screens/onboarding/family/payment');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
 
         <ThemedText style={styles.title}>
-          What responsibilities{'\n'}do you require your{'\n'}caregiver to fulfill?
+          What responsibilities{'\n'}do you require your{'\n'}caregiver to
+          fulfill?
         </ThemedText>
 
         <ScrollView
@@ -91,18 +102,21 @@ export default function ResponsibilitiesScreen() {
           showsVerticalScrollIndicator={false}
         >
           <ThemedText style={styles.subtitle}>
-            Please note that assigning more responsibilities to your caregiver will likely result in a higher rate charged for their services.
+            Please note that assigning more responsibilities to your caregiver
+            will likely result in a higher rate charged for their services.
           </ThemedText>
 
           <View style={styles.section}>
-            <ThemedText style={styles.sectionTitle}>Childcare Responsibilities</ThemedText>
+            <ThemedText style={styles.sectionTitle}>
+              Childcare Responsibilities
+            </ThemedText>
             <View style={styles.pillsContainer}>
               {childcareResponsibilities.map((item) => (
                 <Pill
                   key={item.id}
                   label={item.label}
                   icon={item.icon}
-                  selected={selectedResponsibilities.includes(item.id)}
+                  selected={family_responsibilities.includes(item.id)}
                   onPress={() => toggleResponsibility(item.id)}
                 />
               ))}
@@ -110,14 +124,16 @@ export default function ResponsibilitiesScreen() {
           </View>
 
           <View style={styles.section}>
-            <ThemedText style={styles.sectionTitle}>Household Responsibilities</ThemedText>
+            <ThemedText style={styles.sectionTitle}>
+              Household Responsibilities
+            </ThemedText>
             <View style={styles.pillsContainer}>
               {householdResponsibilities.map((item) => (
                 <Pill
                   key={item.id}
                   label={item.label}
                   icon={item.icon}
-                  selected={selectedResponsibilities.includes(item.id)}
+                  selected={family_responsibilities.includes(item.id)}
                   onPress={() => toggleResponsibility(item.id)}
                 />
               ))}
@@ -131,10 +147,10 @@ export default function ResponsibilitiesScreen() {
         >
           <View style={styles.buttonContainer}>
             <Button
-              label="Next"
-              onPress={() => router.push('/(auth)/screens/onboarding/family/payment')}
-              variant="compact"
-              disabled={selectedResponsibilities.length === 0}
+              label='Next'
+              onPress={handleNext}
+              variant='compact'
+              disabled={family_responsibilities.length === 0}
             />
           </View>
         </LinearGradient>

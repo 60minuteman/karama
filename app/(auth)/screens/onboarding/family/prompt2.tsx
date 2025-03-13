@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 export const promptCategories = [
   { id: 'get_to_know', label: 'Get to know Us' },
@@ -18,12 +19,12 @@ export const promptCategories = [
 
 export const promptOptions = [
   'If I could plan a playdate I would',
-  'When I\'m sad I like',
+  "When I'm sad I like",
   'An important member of the family is',
   'I dont like veggies but',
   'Let me tell you about myself',
   'My favorite food is',
-  'Okay here\'s the deal',
+  "Okay here's the deal",
   'The funniest thing about me is',
   'Did you know',
   'Something cool I can do is',
@@ -35,29 +36,33 @@ export const promptOptions = [
 
 export default function Prompt2() {
   const router = useRouter();
-  const [selectedPrompt, setSelectedPrompt] = useState<string>('');
+  const { family_prompt, setFamilyPrompt, setOnboardingScreen } =
+    useUserStore();
 
   const handleNext = () => {
-    if (selectedPrompt) {
+    if (family_prompt) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/promptAnswer');
       router.push({
         pathname: '/(auth)/screens/onboarding/family/promptAnswer',
-        params: { prompt: selectedPrompt }
+        params: { prompt: family_prompt },
       });
     }
   };
 
   const handleCategoryPress = (categoryId: string) => {
     if (categoryId === 'get_to_know') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/prompt');
       router.push('/(auth)/screens/onboarding/family/prompt');
     } else if (categoryId === 'childcare') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/prompt3');
       router.push('/(auth)/screens/onboarding/family/prompt3');
     }
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
@@ -90,8 +95,8 @@ export default function Prompt2() {
               <View key={index} style={styles.pillWrapper}>
                 <Pill
                   label={prompt}
-                  selected={selectedPrompt === prompt}
-                  onPress={() => setSelectedPrompt(prompt)}
+                  selected={family_prompt === prompt}
+                  onPress={() => setFamilyPrompt(prompt)}
                 />
               </View>
             ))}
@@ -104,10 +109,10 @@ export default function Prompt2() {
         >
           <View style={styles.buttonContainer}>
             <Button
-              label="Next"
+              label='Next'
               onPress={handleNext}
-              variant="compact"
-              disabled={!selectedPrompt}
+              variant='compact'
+              disabled={!family_prompt}
             />
           </View>
         </LinearGradient>
@@ -175,5 +180,5 @@ const styles = StyleSheet.create({
     right: 0,
     height: 100,
     paddingHorizontal: 20,
-  }
+  },
 });

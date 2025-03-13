@@ -1,16 +1,16 @@
-import { StyleSheet, View, ScrollView, Switch } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
-type Availability = 
+type Availability =
   | 'Full Time'
   | 'Part Time'
   | 'Occasionally'
@@ -19,8 +19,9 @@ type Availability =
 
 export default function AvailabilityScreen() {
   const router = useRouter();
-  const [selected, setSelected] = useState<Availability | null>(null);
-  const [isDealbreaker, setIsDealbreaker] = useState(false);
+  const { family_availability, setFamilyAvailability, setOnboardingScreen } =
+    useUserStore();
+  const { selected_availability, is_dealbreaker } = family_availability;
 
   const availabilityOptions: Array<{ label: Availability; icon: string }> = [
     { label: 'Full Time', icon: '⏰' },
@@ -31,13 +32,14 @@ export default function AvailabilityScreen() {
   ];
 
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/arrangements');
     router.push('/(auth)/screens/onboarding/family/arrangements');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.75} />
@@ -58,19 +60,27 @@ export default function AvailabilityScreen() {
                   key={option.label}
                   label={option.label}
                   icon={option.icon}
-                  selected={selected === option.label}
-                  onPress={() => setSelected(option.label)}
+                  selected={selected_availability === option.label}
+                  onPress={() =>
+                    setFamilyAvailability({
+                      selected_availability: option.label,
+                    })
+                  }
                 />
               ))}
             </View>
 
             <View style={styles.dealbreaker}>
-              <ThemedText style={styles.dealbreakerText}>Dealbreaker</ThemedText>
+              <ThemedText style={styles.dealbreakerText}>
+                Dealbreaker
+              </ThemedText>
               <Switch
-                value={isDealbreaker}
-                onValueChange={setIsDealbreaker}
+                value={is_dealbreaker}
+                onValueChange={(value) =>
+                  setFamilyAvailability({ is_dealbreaker: value })
+                }
                 trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
-                thumbColor="#FFFFFF"
+                thumbColor='#FFFFFF'
               />
             </View>
           </View>
@@ -82,10 +92,10 @@ export default function AvailabilityScreen() {
         >
           <View style={styles.buttonContainer}>
             <Button
-              label="Next"
+              label='Next'
               onPress={handleNext}
-              variant="compact"
-              disabled={!selected}
+              variant='compact'
+              disabled={!selected_availability}
             />
           </View>
         </LinearGradient>

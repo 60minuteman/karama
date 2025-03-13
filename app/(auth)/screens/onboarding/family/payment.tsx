@@ -1,24 +1,24 @@
-import { StyleSheet, View } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
-import { Colors } from '@/constants/Colors';
-import { TextInput } from 'react-native';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Slider } from '@/components/ui/Slider';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
 
 type PaymentType = 'Hourly' | 'Salary Base';
 
 export default function PaymentScreen() {
   const router = useRouter();
-  const [selected, setSelected] = useState<PaymentType | null>(null);
-  const [hourlyRate, setHourlyRate] = useState(15);
-  const [salaryAmount, setSalaryAmount] = useState('50,000');
-  const [hasInteracted, setHasInteracted] = useState(false);
+  const { family_payment, setFamilyPayment, setOnboardingScreen } =
+    useUserStore();
+  const { selected_type, hourly_rate, salary_amount, has_interacted } =
+    family_payment;
 
   const paymentOptions: Array<{ label: PaymentType; icon: string }> = [
     { label: 'Hourly', icon: '🤑' },
@@ -26,19 +26,23 @@ export default function PaymentScreen() {
   ];
 
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/PaymentMethod');
     router.push({
       pathname: '/(auth)/screens/onboarding/family/PaymentMethod',
       params: {
-        type: selected,
-        rate: selected === 'Hourly' ? hourlyRate : parseInt(salaryAmount.replace(/,/g, ''))
-      }
+        type: selected_type,
+        rate:
+          selected_type === 'Hourly'
+            ? hourly_rate
+            : parseInt(salary_amount.replace(/,/g, '')),
+      },
     });
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.95} />
@@ -54,13 +58,15 @@ export default function PaymentScreen() {
                 key={option.label}
                 label={option.label}
                 icon={option.icon}
-                selected={selected === option.label}
-                onPress={() => setSelected(option.label)}
+                selected={selected_type === option.label}
+                onPress={() =>
+                  setFamilyPayment({ selected_type: option.label })
+                }
               />
             ))}
           </View>
 
-          {selected === 'Hourly' && (
+          {selected_type === 'Hourly' && (
             <>
               <View style={styles.inputContainer}>
                 <View style={styles.sliderContainer}>
@@ -68,25 +74,34 @@ export default function PaymentScreen() {
                     <Slider
                       min={15}
                       max={45}
-                      value={hourlyRate}
+                      value={hourly_rate}
                       onValueChange={(value) => {
-                        setHasInteracted(true);
-                        setHourlyRate(value);
+                        setFamilyPayment({
+                          hourly_rate: value,
+                          has_interacted: true,
+                        });
                       }}
                     />
                   </View>
                 </View>
-                <View style={[styles.inputBorder, hourlyRate > 0 && styles.inputBorderActive]}>
+                <View
+                  style={[
+                    styles.inputBorder,
+                    hourly_rate > 0 && styles.inputBorderActive,
+                  ]}
+                >
                   <TextInput
                     style={styles.input}
-                    placeholder="$20-$30/hr"
-                    placeholderTextColor="#999"
-                    value={hasInteracted ? hourlyRate.toString() : ''}
+                    placeholder='$20-$30/hr'
+                    placeholderTextColor='#999'
+                    value={has_interacted ? hourly_rate.toString() : ''}
                     onChangeText={(text) => {
-                      setHasInteracted(true);
-                      setHourlyRate(Number(text));
+                      setFamilyPayment({
+                        hourly_rate: Number(text),
+                        has_interacted: true,
+                      });
                     }}
-                    keyboardType="numeric"
+                    keyboardType='numeric'
                     maxLength={3}
                   />
                 </View>
@@ -94,16 +109,23 @@ export default function PaymentScreen() {
             </>
           )}
 
-          {selected === 'Salary Base' && (
+          {selected_type === 'Salary Base' && (
             <View style={styles.inputContainer}>
-              <View style={[styles.inputBorder, salaryAmount.length > 0 && styles.inputBorderActive]}>
+              <View
+                style={[
+                  styles.inputBorder,
+                  salary_amount.length > 0 && styles.inputBorderActive,
+                ]}
+              >
                 <TextInput
                   style={styles.input}
-                  placeholder="50,000"
-                  placeholderTextColor="#999"
-                  value={salaryAmount}
-                  onChangeText={setSalaryAmount}
-                  keyboardType="numeric"
+                  placeholder='50,000'
+                  placeholderTextColor='#999'
+                  value={salary_amount}
+                  onChangeText={(text) =>
+                    setFamilyPayment({ salary_amount: text })
+                  }
+                  keyboardType='numeric'
                   autoFocus
                   maxLength={7}
                 />
@@ -114,10 +136,10 @@ export default function PaymentScreen() {
 
         <View style={styles.buttonContainer}>
           <Button
-            label="Next"
+            label='Next'
             onPress={handleNext}
-            variant="compact"
-            disabled={!selected}
+            variant='compact'
+            disabled={!selected_type}
           />
         </View>
       </View>
@@ -184,9 +206,9 @@ const styles = StyleSheet.create({
     right: 20,
     left: 20,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   button: {
-    alignSelf: 'flex-end'
-  }
+    alignSelf: 'flex-end',
+  },
 });

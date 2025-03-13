@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 const promptCategories = [
   { id: 'get_to_know', label: 'Get to know Us' },
@@ -25,7 +26,7 @@ const promptOptions = [
   'Our caregiver must',
   'Our dream caregiver is',
   'The top parenting tip I share with parents is',
-  'Our approach to correcting children is', 
+  'Our approach to correcting children is',
   'One thing we do not tolerate is',
   'I believe children thrive when',
   'I encourage children by',
@@ -34,13 +35,15 @@ const promptOptions = [
 
 export default function Prompt3() {
   const router = useRouter();
-  const [selectedPrompt, setSelectedPrompt] = useState<string>('');
+  const { family_prompt, setFamilyPrompt, setOnboardingScreen } =
+    useUserStore();
 
   const handleNext = () => {
-    if (selectedPrompt) {
+    if (family_prompt) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/promptAnswer');
       router.push({
         pathname: '/(auth)/screens/onboarding/family/promptAnswer',
-        params: { prompt: selectedPrompt }
+        params: { prompt: family_prompt },
       });
     }
   };
@@ -55,15 +58,13 @@ export default function Prompt3() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
 
-        <ThemedText style={styles.title}>
-          Choose your prompt.
-        </ThemedText>
+        <ThemedText style={styles.title}>Choose your prompt.</ThemedText>
 
         <View style={styles.categories}>
           {promptCategories.map((category) => (
@@ -89,8 +90,8 @@ export default function Prompt3() {
               <View key={index} style={styles.pillWrapper}>
                 <Pill
                   label={prompt}
-                  selected={selectedPrompt === prompt}
-                  onPress={() => setSelectedPrompt(prompt)}
+                  selected={family_prompt === prompt}
+                  onPress={() => setFamilyPrompt(prompt)}
                 />
               </View>
             ))}
@@ -103,10 +104,10 @@ export default function Prompt3() {
         >
           <View style={styles.buttonContainer}>
             <Button
-              label="Next"
+              label='Next'
               onPress={handleNext}
-              variant="compact"
-              disabled={!selectedPrompt}
+              variant='compact'
+              disabled={!family_prompt}
             />
           </View>
         </LinearGradient>
@@ -175,5 +176,5 @@ const styles = StyleSheet.create({
     right: 0,
     height: 100,
     paddingHorizontal: 20,
-  }
+  },
 });

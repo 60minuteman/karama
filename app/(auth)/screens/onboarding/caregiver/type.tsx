@@ -23,7 +23,7 @@ const caregiverTypes = [
 ] as const;
 
 export default function Page() {
-  const { caregiverType, setCaregiverType, setOnboardingScreen } = useUserStore()
+  const { caregiverPositionType, setCaregiverPositionType, setOnboardingScreen } = useUserStore()
   // const [selectedType, setSelectedType] = useState<string | null>(null);
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/experience')
@@ -47,8 +47,8 @@ export default function Page() {
               key={index}
               label={type.label}
               icon={type.icon}
-              onPress={() => setCaregiverType(type.label)}
-              selected={caregiverType === type.label}
+              onPress={() => setCaregiverPositionType(type.label)}
+              selected={caregiverPositionType === type.label}
               style={styles.option}
             />
           ))}
@@ -61,7 +61,7 @@ export default function Page() {
           onPress={handleNext}
           variant="compact"
           style={styles.nextButton}
-          disabled={!caregiverType}
+          disabled={!caregiverPositionType}
         />
       </View>
     </ThemedView>

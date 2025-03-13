@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView, Switch } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 interface PaymentMethodProps {
   onNext?: (method: string) => void;
@@ -21,21 +22,42 @@ const PaymentOptions = [
 
 const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
   const router = useRouter();
-  const [selectedMethod, setSelectedMethod] = useState<string>('');
-  const [showOnProfile, setShowOnProfile] = useState(false);
+  const {
+    family_payment_method = { selected_method: '', show_on_profile: false },
+    setFamilyPaymentMethod,
+    setOnboardingScreen,
+  } = useUserStore();
+
+  // Initialize with default values if family_payment_method is null or undefined
+  React.useEffect(() => {
+    if (
+      !family_payment_method ||
+      Object.keys(family_payment_method).length === 0
+    ) {
+      setFamilyPaymentMethod({
+        selected_method: '',
+        show_on_profile: false,
+      });
+    }
+  }, []);
+
+  // Destructure with default values
+  const { selected_method = '', show_on_profile = false } =
+    family_payment_method;
 
   const handleNext = () => {
     if (onNext) {
-      onNext(selectedMethod);
+      onNext(selected_method);
     } else {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/benefits');
       router.push('/(auth)/screens/onboarding/family/benefits');
     }
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.3} />
@@ -44,9 +66,12 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
           <ThemedText style={styles.title}>
             What is your preferred{'\n'}payment method
           </ThemedText>
-          
+
           <ThemedText style={styles.description}>
-            If you choose "Employee," please note that taxes and withholdings are expected to be deducted before paying your caregiver. If you choose "Independent Contractor," the caregiver is responsible for paying their own taxes.
+            If you choose "Employee," please note that taxes and withholdings
+            are expected to be deducted before paying your caregiver. If you
+            choose "Independent Contractor," the caregiver is responsible for
+            paying their own taxes.
           </ThemedText>
 
           <View style={styles.optionsContainer}>
@@ -55,8 +80,10 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
                 <Pill
                   label={option.label}
                   icon={option.icon}
-                  selected={selectedMethod === option.id}
-                  onPress={() => setSelectedMethod(option.id)}
+                  selected={selected_method === option.id}
+                  onPress={() =>
+                    setFamilyPaymentMethod({ selected_method: option.id })
+                  }
                 />
               </View>
             ))}
@@ -65,25 +92,23 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
           <View style={styles.toggleContainer}>
             <ThemedText style={styles.toggleText}>Show on profile</ThemedText>
             <Switch
-              value={showOnProfile}
-              onValueChange={setShowOnProfile}
+              value={show_on_profile}
+              onValueChange={(value) =>
+                setFamilyPaymentMethod({ show_on_profile: value })
+              }
               trackColor={{ false: '#E5E5E5', true: Colors.light.primary }}
-              thumbColor={showOnProfile ? '#FFFFFF' : '#FFFFFF'}
+              thumbColor={show_on_profile ? '#FFFFFF' : '#FFFFFF'}
             />
           </View>
         </ScrollView>
 
         <View style={styles.buttonContainer}>
+          <Button label='Skip' onPress={() => router.back()} variant='skip' />
           <Button
-            label="Skip"
-            onPress={() => router.back()}
-            variant="skip"
-          />
-          <Button
-            label="Next"
+            label='Next'
             onPress={handleNext}
-            variant="compact"
-            disabled={!selectedMethod}
+            variant='compact'
+            disabled={!selected_method}
           />
         </View>
       </View>
@@ -142,7 +167,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 20,
-  }
+  },
 });
 
 export default PaymentMethod;

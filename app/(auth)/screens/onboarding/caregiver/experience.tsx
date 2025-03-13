@@ -17,7 +17,7 @@ const experienceOptions = [
 ] as const;
 
 export default function Page() {
-  const { caregiverExperience, setCaregiverExperience, setOnboardingScreen } = useUserStore()
+  const { caregiverExperienceDuration, setCaregiverExperienceDuration, setOnboardingScreen } = useUserStore()
   // const [selectedExperience, setSelectedExperience] = useState<string | null>(null);
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/education')
@@ -46,8 +46,8 @@ export default function Page() {
                 <Pill
                   key={option}
                   label={option}
-                  onPress={() => setCaregiverExperience(option)}
-                  selected={caregiverExperience === option}
+                  onPress={() => setCaregiverExperienceDuration(option)}
+                  selected={caregiverExperienceDuration === option}
                   style={styles.option}
                 />
               ))}
@@ -62,7 +62,7 @@ export default function Page() {
           onPress={handleNext}
           variant="compact"
           style={styles.nextButton}
-          disabled={!caregiverExperience}
+          disabled={!caregiverExperienceDuration}
         />
       </View>
     </ThemedView>

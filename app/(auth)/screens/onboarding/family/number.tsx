@@ -30,6 +30,8 @@ export default function FamilyNumberScreen() {
     { icon: '👑', label: 'Teenager', count: 0 },
   ]);
 
+  console.log('family_age_groups', family_age_groups);
+
   useEffect(() => {
     // Initialize from stored state if it exists
     if (family_age_groups) {

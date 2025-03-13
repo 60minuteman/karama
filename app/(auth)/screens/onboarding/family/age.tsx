@@ -1,71 +1,75 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, Switch, ScrollView } from 'react-native';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Header } from '@/components/ui/Header';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
-import { useState } from 'react';
+import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 export default function AgeScreen() {
   const router = useRouter();
-  const [isDealbreaker, setIsDealbreaker] = useState(false);
-  const [selectedAgeRange, setSelectedAgeRange] = useState<string | null>(null);
-  const [showAgeRanges, setShowAgeRanges] = useState(false);
-  const [initialChoice, setInitialChoice] = useState<'yes' | 'no' | null>(null);
+  const { caregiver_age, setCaregiverAge, setOnboardingScreen } =
+    useUserStore();
+  const { has_preference, selected_age_range, is_dealbreaker } = caregiver_age;
+  const [showAgeRanges, setShowAgeRanges] = useState(has_preference === 'yes');
 
   const ageRanges = [
     '18 - 25 years old',
     '26 - 30 years old',
     '31 - 40 years old',
     '41 - 50 years old',
-    '50 years+'
+    '50 years+',
   ];
 
   const handleInitialChoice = (choice: 'yes' | 'no') => {
-    setInitialChoice(choice);
+    setCaregiverAge({ has_preference: choice });
     if (choice === 'yes') {
       setShowAgeRanges(true);
     } else {
-      // Handle "No Preference" selection
+      setOnboardingScreen('/(auth)/screens/onboarding/family/experience');
       router.push('/(auth)/screens/onboarding/family/experience');
     }
   };
 
   const handleAgeSelect = (range: string) => {
-    setSelectedAgeRange(range);
+    setCaregiverAge({ selected_age_range: range });
   };
 
   const handleNext = () => {
-    if (showAgeRanges && selectedAgeRange) {
-      router.push('/(auth)/screens/onboarding/family/next-screen');
+    if (showAgeRanges && selected_age_range) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/experience');
+      router.push('/(auth)/screens/onboarding/family/experience');
     }
   };
 
   const handleSkip = () => {
-    router.push('/(auth)/screens/onboarding/family/next-screen');
+    setOnboardingScreen('/(auth)/screens/onboarding/family/experience');
+    router.push('/(auth)/screens/onboarding/family/experience');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.4} />
 
         <ThemedText style={styles.title}>
-          Do you require your{'\n'}caregiver to be{'\n'}within a certain age{'\n'}range?
+          Do you require your{'\n'}caregiver to be{'\n'}within a certain age
+          {'\n'}range?
         </ThemedText>
-            
+
         <ThemedText style={styles.subtitle}>
           (This will not be visible on your profile)
         </ThemedText>
 
-        <ScrollView 
+        <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
@@ -74,14 +78,14 @@ export default function AgeScreen() {
             <View style={styles.initialChoiceContainer}>
               <View style={styles.spacer} />
               <Pill
-                label="Yes"
+                label='Yes'
                 onPress={() => handleInitialChoice('yes')}
-                selected={initialChoice === 'yes'}
+                selected={has_preference === 'yes'}
               />
               <Pill
-                label="No Preference"
+                label='No Preference'
                 onPress={() => handleInitialChoice('no')}
-                selected={initialChoice === 'no'}
+                selected={has_preference === 'no'}
               />
             </View>
 
@@ -93,19 +97,26 @@ export default function AgeScreen() {
                       <Pill
                         label={range}
                         onPress={() => handleAgeSelect(range)}
-                        selected={selectedAgeRange === range}
+                        selected={selected_age_range === range}
                       />
                     </View>
                   ))}
                 </View>
-                
+
                 <View style={styles.dealbreakerContainer}>
-                  <ThemedText style={styles.dealbreakerText}>Dealbreaker</ThemedText>
+                  <ThemedText style={styles.dealbreakerText}>
+                    Dealbreaker
+                  </ThemedText>
                   <Switch
-                    value={isDealbreaker}
-                    onValueChange={setIsDealbreaker}
-                    trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
-                    thumbColor="#FFFFFF"
+                    value={is_dealbreaker}
+                    onValueChange={(value) =>
+                      setCaregiverAge({ is_dealbreaker: value })
+                    }
+                    trackColor={{
+                      false: '#E8E8E8',
+                      true: Colors.light.primary,
+                    }}
+                    thumbColor='#FFFFFF'
                   />
                 </View>
               </View>
@@ -118,17 +129,13 @@ export default function AgeScreen() {
           style={styles.buttonGradient}
         >
           <View style={styles.buttonContainer}>
-            <Button
-              label="Skip"
-              onPress={handleSkip}
-              variant="skip"
-            />
+            <Button label='Skip' onPress={handleSkip} variant='skip' />
             {showAgeRanges && (
               <Button
-                label="Next"
+                label='Next'
                 onPress={handleNext}
-                variant="compact"
-                disabled={!selectedAgeRange}
+                variant='compact'
+                disabled={!selected_age_range}
               />
             )}
           </View>
@@ -218,6 +225,6 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between'
-  }
+    justifyContent: 'space-between',
+  },
 });

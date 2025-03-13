@@ -1,14 +1,15 @@
-import { StyleSheet, View, ScrollView, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 type DayOfWeek = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
 
@@ -25,19 +26,15 @@ interface DaySchedule {
 
 export default function ServiceDaysScreen() {
   const router = useRouter();
-  const [schedule, setSchedule] = useState<DaySchedule[]>([
-    { day: 'Mon', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Tue', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Wed', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Thu', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Fri', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Sat', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Sun', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-  ]);
+  const { family_schedule, setFamilySchedule, setOnboardingScreen } =
+    useUserStore();
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedDay, setSelectedDay] = useState<DayOfWeek | null>(null);
   const [isSettingBeginTime, setIsSettingBeginTime] = useState(true);
-  const [activeField, setActiveField] = useState<{day: DayOfWeek, field: 'begin' | 'end'} | null>(null);
+  const [activeField, setActiveField] = useState<{
+    day: DayOfWeek;
+    field: 'begin' | 'end';
+  } | null>(null);
 
   const handleTimeSelect = (event: any, selectedTime?: Date) => {
     setShowTimePicker(false);
@@ -48,7 +45,7 @@ export default function ServiceDaysScreen() {
         hour12: false,
       });
 
-      setSchedule(prev => prev.map(day => {
+      const updatedSchedule = family_schedule.map((day) => {
         if (day.day === selectedDay) {
           return {
             ...day,
@@ -60,7 +57,8 @@ export default function ServiceDaysScreen() {
           };
         }
         return day;
-      }));
+      });
+      setFamilySchedule(updatedSchedule);
     }
     setActiveField(null);
   };
@@ -69,19 +67,24 @@ export default function ServiceDaysScreen() {
     setSelectedDay(day);
     setIsSettingBeginTime(isBegin);
     setShowTimePicker(true);
-    setActiveField({day, field: isBegin ? 'begin' : 'end'});
+    setActiveField({ day, field: isBegin ? 'begin' : 'end' });
+  };
+
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/responsibilities');
+    router.push('/(auth)/screens/onboarding/family/responsibilities');
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.8} />
 
         <View style={styles.titleContainer}>
-          <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
+          <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
             What days and{'\n'}hours would you{'\n'}need a caregiver?
           </ThemedText>
         </View>
@@ -98,11 +101,21 @@ export default function ServiceDaysScreen() {
               <ThemedText style={styles.headerText}>End</ThemedText>
             </View>
 
-            {schedule.map((day) => (
+            {family_schedule.map((day) => (
               <View key={day.day} style={styles.dayRow}>
                 <View style={styles.dayColumn}>
-                  <Pressable style={[styles.dayPill, day.isActive && styles.activeDayPill]}>
-                    <ThemedText style={[styles.dayText, day.isActive && styles.activeDayText]}>
+                  <Pressable
+                    style={[
+                      styles.dayPill,
+                      day.isActive && styles.activeDayPill,
+                    ]}
+                  >
+                    <ThemedText
+                      style={[
+                        styles.dayText,
+                        day.isActive && styles.activeDayText,
+                      ]}
+                    >
                       {day.day}
                     </ThemedText>
                   </Pressable>
@@ -110,7 +123,9 @@ export default function ServiceDaysScreen() {
                 <Pressable
                   style={[
                     styles.timePill,
-                    activeField?.day === day.day && activeField?.field === 'begin' && styles.activeTimePill
+                    activeField?.day === day.day &&
+                      activeField?.field === 'begin' &&
+                      styles.activeTimePill,
                   ]}
                   onPress={() => handleTimePress(day.day, true)}
                 >
@@ -121,7 +136,9 @@ export default function ServiceDaysScreen() {
                 <Pressable
                   style={[
                     styles.timePill,
-                    activeField?.day === day.day && activeField?.field === 'end' && styles.activeTimePill
+                    activeField?.day === day.day &&
+                      activeField?.field === 'end' &&
+                      styles.activeTimePill,
                   ]}
                   onPress={() => handleTimePress(day.day, false)}
                 >
@@ -136,9 +153,9 @@ export default function ServiceDaysScreen() {
           {showTimePicker && (
             <DateTimePicker
               value={new Date()}
-              mode="time"
+              mode='time'
               is24Hour={true}
-              display="spinner"
+              display='spinner'
               onChange={handleTimeSelect}
             />
           )}
@@ -148,11 +165,7 @@ export default function ServiceDaysScreen() {
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonContainer}
         >
-          <Button
-            label="Next"
-            onPress={() => router.push('/(auth)/screens/onboarding/family/responsibilities')}
-            variant="compact"
-          />
+          <Button label='Next' onPress={handleNext} variant='compact' />
         </LinearGradient>
       </View>
     </ThemedView>
@@ -256,9 +269,9 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 20,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   nextButton: {
-    alignSelf: 'flex-end'
-  }
+    alignSelf: 'flex-end',
+  },
 });
