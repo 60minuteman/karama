@@ -7,16 +7,17 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
+import { useUserStore } from '@/services/state/user';
 
 export default function PromptAnswer() {
   const router = useRouter();
   const { prompt } = useLocalSearchParams();
-  const [answer, setAnswer] = useState('');
-
+  const { caregiverFirstPromptAnswer, setCaregiverFirstPromptAnswer, setOnboardingScreen } = useUserStore();
+  // const [answer, setAnswer] = useState('');
   return (
     <ThemedView style={styles.container}>
-        <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-      
+      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
@@ -31,8 +32,8 @@ export default function PromptAnswer() {
             multiline
             placeholder="Type prompt answer here..."
             placeholderTextColor="#A8A3A5"
-            value={answer}
-            onChangeText={setAnswer}
+            value={caregiverFirstPromptAnswer}
+            onChangeText={setCaregiverFirstPromptAnswer}
             textAlignVertical="top"
           />
         </View>
@@ -50,7 +51,10 @@ export default function PromptAnswer() {
       <View style={styles.bottomNav}>
         <Button
           label="Next"
-          onPress={() => router.push('/(auth)/screens/onboarding/caregiver/moreInfo')}
+          onPress={() => {
+            setOnboardingScreen('/(auth)/screens/onboarding/caregiver/moreInfo')
+            router.push('/(auth)/screens/onboarding/caregiver/moreInfo')
+          }}
           variant="compact"
         />
       </View>

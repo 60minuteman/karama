@@ -5,6 +5,7 @@ import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
 import { useFonts } from 'expo-font';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
@@ -14,7 +15,7 @@ const ageGroups = [
   ['Newborn', 'Infant'],
   ['Toddler', 'Pre Schooler'],
   ['School Age', 'Teenager'],
-];
+] as const;
 
 const ageIcons = {
   Newborn: '👶',
@@ -26,10 +27,15 @@ const ageIcons = {
 };
 
 export default function Page() {
-  const [selectedAge, setSelectedAge] = useState<string | null>(null);
+  const {caregiverAgeExperience,setCaregiverAgeExperience,setOnboardingScreen}=useUserStore()
+  // const [selectedAge, setSelectedAge] = useState<string | null>(null);
   const [fontsLoaded] = useFonts({
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
   });
+  const handleNext = ()=>{
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/number')
+    router.push('/(auth)/screens/onboarding/caregiver/number')
+  }
 
   return (
     <ThemedView style={styles.container}>
@@ -51,8 +57,8 @@ export default function Page() {
                   key={age}
                   label={age}
                   icon={ageIcons[age as keyof typeof ageIcons]}
-                  onPress={() => setSelectedAge(age)}
-                  selected={selectedAge === age}
+                  onPress={() => setCaregiverAgeExperience(age)}
+                  selected={caregiverAgeExperience === age}
                 />
               ))}
             </View>
@@ -64,11 +70,9 @@ export default function Page() {
         <View style={styles.buttonContainer}>
           <Button
             label='Next'
-            onPress={() =>
-              router.push('/(auth)/screens/onboarding/caregiver/number')
-            }
+            onPress={handleNext}
             variant='compact'
-            disabled={!selectedAge}
+            disabled={!caregiverAgeExperience}
           />
         </View>
       </View>

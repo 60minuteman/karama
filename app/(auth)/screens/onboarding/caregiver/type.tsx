@@ -8,6 +8,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { useUserStore } from '@/services/state/user';
 
 const caregiverTypes = [
   { label: 'Night Nurse', icon: '🌙' },
@@ -19,15 +20,19 @@ const caregiverTypes = [
   { label: 'Caregiver/Housekeeper', icon: '🧽' },
   { label: 'Caregiver/Personal Assistant', icon: '📅' },
   { label: 'Caregiver/Household Manager', icon: '🗣' },
-];
+] as const;
 
 export default function Page() {
-  const [selectedType, setSelectedType] = useState<string | null>(null);
-
+  const { caregiverType, setCaregiverType, setOnboardingScreen } = useUserStore()
+  // const [selectedType, setSelectedType] = useState<string | null>(null);
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/experience')
+    router.push('/(auth)/screens/onboarding/caregiver/experience')
+  }
   return (
     <ThemedView style={styles.container}>
-        <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-      
+      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
@@ -42,8 +47,8 @@ export default function Page() {
               key={index}
               label={type.label}
               icon={type.icon}
-              onPress={() => setSelectedType(type.label)}
-              selected={selectedType === type.label}
+              onPress={() => setCaregiverType(type.label)}
+              selected={caregiverType === type.label}
               style={styles.option}
             />
           ))}
@@ -53,10 +58,10 @@ export default function Page() {
       <View style={styles.bottomNav}>
         <Button
           label="Next"
-          onPress={() => router.push('/(auth)/screens/onboarding/caregiver/experience')}
+          onPress={handleNext}
           variant="compact"
           style={styles.nextButton}
-          disabled={!selectedType}
+          disabled={!caregiverType}
         />
       </View>
     </ThemedView>

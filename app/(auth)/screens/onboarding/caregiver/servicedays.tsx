@@ -1,6 +1,6 @@
-import { StyleSheet, View, ScrollView, Pressable } from 'react-native';
+import { StyleSheet, View, ScrollView, Pressable, Modal } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
@@ -9,38 +9,42 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
+import { CaregiverDayOfWeek, CaregiverDaySchedule, useUserStore } from '@/services/state/user';
 
-type DayOfWeek = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
-
-interface TimeSlot {
-  begin: string;
-  end: string;
-}
-
-interface DaySchedule {
-  day: DayOfWeek;
-  timeSlot: TimeSlot;
-  isActive: boolean;
-}
 
 export default function ServiceDaysScreen() {
   const router = useRouter();
-  const [schedule, setSchedule] = useState<DaySchedule[]>([
-    { day: 'Mon', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Tue', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Wed', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Thu', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Fri', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Sat', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Sun', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-  ]);
+  const { caregiverSchedule, setCaregiverSchedule, setOnboardingScreen } = useUserStore()
+  // const [schedule, setSchedule] = useState<CaregiverDaySchedule[]>([
+  //   { day: 'Mon', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+  //   { day: 'Tue', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+  //   { day: 'Wed', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+  //   { day: 'Thu', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+  //   { day: 'Fri', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+  //   { day: 'Sat', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+  //   { day: 'Sun', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+  // ]);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [selectedDay, setSelectedDay] = useState<DayOfWeek | null>(null);
+  const [selectedDay, setSelectedDay] = useState<CaregiverDayOfWeek | null>(null);
   const [isSettingBeginTime, setIsSettingBeginTime] = useState(true);
-  const [activeField, setActiveField] = useState<{day: DayOfWeek, field: 'begin' | 'end'} | null>(null);
+  const [activeField, setActiveField] = useState<{ day: CaregiverDayOfWeek, field: 'begin' | 'end' } | null>(null);
+  useEffect(() => {
+    if (caregiverSchedule?.length === 0) {
+      setCaregiverSchedule([
+        { day: 'Mon', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Tue', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Wed', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Thu', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Fri', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Sat', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Sun', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+      ]);
+    }
+  }, [caregiverSchedule, setCaregiverSchedule]);
 
   const handleTimeSelect = (event: any, selectedTime?: Date) => {
     setShowTimePicker(false);
+
     if (selectedTime && selectedDay) {
       const formattedTime = selectedTime.toLocaleTimeString('en-US', {
         hour: '2-digit',
@@ -48,34 +52,36 @@ export default function ServiceDaysScreen() {
         hour12: false,
       });
 
-      setSchedule(prev => prev.map(day => {
-        if (day.day === selectedDay) {
-          return {
-            ...day,
-            isActive: true,
-            timeSlot: {
-              ...day.timeSlot,
-              [isSettingBeginTime ? 'begin' : 'end']: formattedTime,
-            },
-          };
-        }
-        return day;
-      }));
+      setCaregiverSchedule(
+        (caregiverSchedule ?? []).map(day =>
+          day.day === selectedDay
+            ? {
+              ...day,
+              isActive: true,
+              timeSlot: {
+                ...day.timeSlot,
+                [isSettingBeginTime ? 'begin' : 'end']: formattedTime,
+              },
+            }
+            : day
+        )
+      );
     }
+
     setActiveField(null);
   };
 
-  const handleTimePress = (day: DayOfWeek, isBegin: boolean) => {
+  const handleTimePress = (day: CaregiverDayOfWeek, isBegin: boolean) => {
     setSelectedDay(day);
     setIsSettingBeginTime(isBegin);
     setShowTimePicker(true);
-    setActiveField({day, field: isBegin ? 'begin' : 'end'});
+    setActiveField({ day, field: isBegin ? 'begin' : 'end' });
   };
 
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" />
-      
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.8} />
@@ -98,7 +104,7 @@ export default function ServiceDaysScreen() {
               <ThemedText style={styles.headerText}>End</ThemedText>
             </View>
 
-            {schedule.map((day) => (
+            {caregiverSchedule?.map((day) => (
               <View key={day.day} style={styles.dayRow}>
                 <View style={styles.dayColumn}>
                   <Pressable style={[styles.dayPill, day.isActive && styles.activeDayPill]}>
@@ -150,7 +156,10 @@ export default function ServiceDaysScreen() {
         >
           <Button
             label="Next"
-            onPress={() => router.push('/(auth)/screens/onboarding/caregiver/responsibilities')}
+            onPress={() => {
+              setOnboardingScreen('/(auth)/screens/onboarding/caregiver/responsibilities')
+              router.push('/(auth)/screens/onboarding/caregiver/responsibilities')
+            }}
             variant="compact"
           />
         </LinearGradient>

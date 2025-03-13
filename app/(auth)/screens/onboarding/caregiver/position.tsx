@@ -8,28 +8,30 @@ import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Button } from '@/components/ui/Button';
 import { Pill } from '@/components/ui/Pill';
+import { CaregiverPositions, useUserStore } from '@/services/state/user';
 
 const POSITIONS = [
-  { label: 'Full Time', icon: '⏰' },
-  { label: 'Part Time', icon: '⌛' },
-  { label: 'Occasionally', icon: '📅' },
-  { label: 'Night Out', icon: '🍸' },
-  { label: 'After school Pickup', icon: '🎒' },
+  { label: 'Full Time' as const, icon: '⏰' },
+  { label: 'Part Time' as const, icon: '⌛' },
+  { label: 'Occasionally' as const, icon: '📅' },
+  { label: 'Night Out' as const, icon: '🍸' },
+  { label: 'After school Pickup' as const, icon: '🎒' },
 ];
 
 export default function PositionScreen() {
   const router = useRouter();
-  const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
-
-  const togglePosition = (position: string) => {
-    setSelectedPositions(prev =>
-      prev.includes(position)
-        ? prev.filter(p => p !== position)
-        : [...prev, position]
-    );
+  // const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
+  const {caregiverPreferredPositions,setCaregiverPreferredPositions,setOnboardingScreen}=useUserStore()
+  const togglePosition = (position: CaregiverPositions) => {
+    const prev = caregiverPreferredPositions?? [];
+    const selectedPositions = prev.includes(position)
+      ? prev.filter((item) => item !== position)
+      : [...prev, position];
+    setCaregiverPreferredPositions(selectedPositions);
   };
 
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/arrangements');
     router.push('/(auth)/screens/onboarding/caregiver/arrangements');
   };
 
@@ -51,7 +53,7 @@ export default function PositionScreen() {
               <Pill
                 label={position.label}
                 icon={position.icon}
-                selected={selectedPositions.includes(position.label)}
+                selected={caregiverPreferredPositions?.includes(position.label)}
                 onPress={() => togglePosition(position.label)}
               />
             </View>
@@ -63,7 +65,7 @@ export default function PositionScreen() {
             label="Next"
             onPress={handleNext}
             variant="compact"
-            disabled={selectedPositions.length === 0}
+            disabled={caregiverPreferredPositions?.length === 0}
           />
         </View>
       </View>

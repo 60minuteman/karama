@@ -8,6 +8,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { CaregiverConditionExperience, useUserStore } from '@/services/state/user';
 
 const CONDITIONS = [
   'Dyslexia',
@@ -19,25 +20,44 @@ const CONDITIONS = [
   'Misophonia',
   'Hearing Impaired',
   'Vision Impaired',
-  'Biapolar',
-];
+  'Bipolar',
+] as const;
 
 export default function Page() {
-  const [selection, setSelection] = useState<'yes' | 'no' | null>(null);
-  const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
+  const {
+    caregiverConditionExperience,
+    setCaregiverConditionExperience,
+    hasNeuroDivergentExperience,
+    setHasNeuroDivergentExperience,
+    setOnboardingScreen,
+  }
+    = useUserStore()
+  // const [selection, setSelection] = useState<'yes' | 'no' | null>(null);
+  // const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
 
-  const toggleCondition = (condition: string) => {
-    setSelectedConditions(prev => 
-      prev.includes(condition) 
-        ? prev.filter(c => c !== condition)
-        : [...prev, condition]
-    );
+  // const toggleCondition = (condition: string) => {
+  //   setSelectedConditions(prev =>
+  //     prev.includes(condition)
+  //       ? prev.filter(c => c !== condition)
+  //       : [...prev, condition]
+  //   );
+  // };
+  const toggleConditionSelection = (label: CaregiverConditionExperience) => {
+    const prev = caregiverConditionExperience ?? [];
+    const updatedConditions = prev.includes(label)
+      ? prev.filter((item) => item !== label)
+      : [...prev, label];
+    setCaregiverConditionExperience(updatedConditions);
   };
 
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/pet')
+    router.push('/(auth)/screens/onboarding/caregiver/pet')
+  }
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
-      
+
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
@@ -49,43 +69,43 @@ export default function Page() {
         <View style={[styles.optionsContainer, { justifyContent: 'flex-end' }]}>
           <Pill
             label="Yes"
-            onPress={() => setSelection('yes')}
-            selected={selection === 'yes'}
+            onPress={() => setHasNeuroDivergentExperience('yes')}
+            selected={hasNeuroDivergentExperience === 'yes'}
           />
           <Pill
             label="No"
-            onPress={() => setSelection('no')}
-            selected={selection === 'no'}
+            onPress={() => setHasNeuroDivergentExperience('no')}
+            selected={hasNeuroDivergentExperience === 'no'}
           />
         </View>
 
-        {selection === 'yes' && (
+        {hasNeuroDivergentExperience === 'yes' && (
           <View style={styles.conditionsContainer}>
             {CONDITIONS.map((condition) => (
               <Pill
                 key={condition}
                 label={condition}
-                onPress={() => toggleCondition(condition)}
-                selected={selectedConditions.includes(condition)}
+                onPress={() => toggleConditionSelection(condition)}
+                selected={caregiverConditionExperience?.includes(condition)}
               />
             ))}
           </View>
         )}
-        
+
         <View style={styles.spacerBottom} />
       </ScrollView>
 
       <View style={styles.bottomNav}>
         <Button
           label="Skip"
-          onPress={() => router.push('/(auth)/screens/onboarding/caregiver/pet')}
+          onPress={handleNext}
           variant="skip"
         />
         <Button
           label="Next"
-          onPress={() => router.push('/(auth)/screens/onboarding/caregiver/pet')}
+          onPress={handleNext}
           variant="compact"
-          disabled={!selection}
+          disabled={!hasNeuroDivergentExperience}
         />
       </View>
     </ThemedView>

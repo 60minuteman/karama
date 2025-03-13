@@ -10,27 +10,31 @@ import { Pill } from '@/components/ui/Pill';
 import { Colors } from '@/constants/Colors';
 import { TextInput } from 'react-native';
 import { Slider } from '@/components/ui/Slider';
+import { useUserStore } from '@/services/state/user';
 
 type PaymentType = 'Hourly' | 'Salary Base';
 
 export default function PaymentScreen() {
   const router = useRouter();
-  const [selected, setSelected] = useState<PaymentType | null>(null);
-  const [hourlyRate, setHourlyRate] = useState(15);
-  const [salaryAmount, setSalaryAmount] = useState('50,000');
+  // const [selected, setSelected] = useState<PaymentType | null>(null);
+  // const [hourlyRate, setHourlyRate] = useState(15);
+  // const [salaryAmount, setSalaryAmount] = useState('50,000');
   const [hasInteracted, setHasInteracted] = useState(false);
-
+  const {caregiverHourlyRate,setCaregiverHourlyRate,caregiverSalaryAmount,
+    setCaregiverSalaryAmount,setOnboardingScreen,caregiverPaymentType,setCaregiverPaymentType}=useUserStore()
   const paymentOptions: Array<{ label: PaymentType; icon: string }> = [
     { label: 'Hourly', icon: '🤑' },
     { label: 'Salary Base', icon: '💰' },
   ];
 
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/PaymentMethod',)
     router.push({
       pathname: '/(auth)/screens/onboarding/caregiver/PaymentMethod',
       params: {
-        type: selected,
-        rate: selected === 'Hourly' ? hourlyRate : parseInt(salaryAmount.replace(/,/g, ''))
+        type: caregiverPaymentType,
+        rate: caregiverPaymentType === 'Hourly' ? caregiverHourlyRate : 
+        parseInt(caregiverSalaryAmount?.replace(/,/g, ''))
       }
     });
   };
@@ -54,13 +58,13 @@ export default function PaymentScreen() {
                 key={option.label}
                 label={option.label}
                 icon={option.icon}
-                selected={selected === option.label}
-                onPress={() => setSelected(option.label)}
+                selected={caregiverPaymentType=== option.label}
+                onPress={() => setCaregiverPaymentType(option.label)}
               />
             ))}
           </View>
 
-          {selected === 'Hourly' && (
+          {caregiverPaymentType === 'Hourly' && (
             <>
               <View style={styles.inputContainer}>
                 <View style={styles.sliderContainer}>
@@ -68,23 +72,23 @@ export default function PaymentScreen() {
                     <Slider
                       min={15}
                       max={45}
-                      value={hourlyRate}
+                      value={caregiverHourlyRate}
                       onValueChange={(value) => {
                         setHasInteracted(true);
-                        setHourlyRate(value);
+                        setCaregiverHourlyRate(value);
                       }}
                     />
                   </View>
                 </View>
-                <View style={[styles.inputBorder, hourlyRate > 0 && styles.inputBorderActive]}>
+                <View style={[styles.inputBorder, caregiverHourlyRate > 0 && styles.inputBorderActive]}>
                   <TextInput
                     style={styles.input}
                     placeholder="$20-$30/hr"
                     placeholderTextColor="#999"
-                    value={hasInteracted ? hourlyRate.toString() : ''}
+                    value={hasInteracted ? caregiverHourlyRate?.toString() : ''}
                     onChangeText={(text) => {
                       setHasInteracted(true);
-                      setHourlyRate(Number(text));
+                      setCaregiverHourlyRate(Number(text));
                     }}
                     keyboardType="numeric"
                     maxLength={3}
@@ -94,15 +98,15 @@ export default function PaymentScreen() {
             </>
           )}
 
-          {selected === 'Salary Base' && (
+          {caregiverPaymentType === 'Salary Base' && (
             <View style={styles.inputContainer}>
-              <View style={[styles.inputBorder, salaryAmount.length > 0 && styles.inputBorderActive]}>
+              <View style={[styles.inputBorder, caregiverSalaryAmount?.length > 0 && styles.inputBorderActive]}>
                 <TextInput
                   style={styles.input}
                   placeholder="50,000"
                   placeholderTextColor="#999"
-                  value={salaryAmount}
-                  onChangeText={setSalaryAmount}
+                  value={caregiverSalaryAmount}
+                  onChangeText={setCaregiverSalaryAmount}
                   keyboardType="numeric"
                   autoFocus
                   maxLength={7}
@@ -117,7 +121,7 @@ export default function PaymentScreen() {
             label="Next"
             onPress={handleNext}
             variant="compact"
-            disabled={!selected}
+            disabled={!caregiverPaymentType}
             style={styles.button}
           />
         </View>

@@ -9,22 +9,30 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
 import { Colors } from '@/constants/Colors';
 import { LinearGradient } from 'expo-linear-gradient';
+import { CaregiverPreferredArrangement, useUserStore } from '@/services/state/user';
 
-type Arrangement = 'Live In' | 'Live Out' | 'Hybrid';
 
 export default function ArrangementsScreen() {
   const router = useRouter();
-  const [selected, setSelected] = useState<Arrangement | null>(null);
-  const [isDealbreaker, setIsDealbreaker] = useState(false);
+  // const [selected, setSelected] = useState<CaregiverPreferredArrangement | null>(null);
+  // const [isDealbreaker, setIsDealbreaker] = useState(false);
+  const {
+    caregiverPreferredArrangement,
+    setCaregiverPreferredArrangement,
+    isDealBreaker,
+    setIsDealBreaker,
+    setOnboardingScreen
+  }=useUserStore()
 
-  const arrangementOptions: Array<{ label: Arrangement; icon: string }> = [
+  const arrangementOptions: Array<{ label: CaregiverPreferredArrangement; icon: string }> = [
     { label: 'Live In', icon: '💤' },
     { label: 'Live Out', icon: '⏰' },
     { label: 'Hybrid', icon: '🔗' },
   ];
 
   const handleNext = () => {
-    if (selected) {
+    if (caregiverPreferredArrangement) {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/commitment');
       router.push('/(auth)/screens/onboarding/caregiver/commitment');
     }
   };
@@ -32,7 +40,7 @@ export default function ArrangementsScreen() {
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
-      
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.65} />
@@ -53,8 +61,8 @@ export default function ArrangementsScreen() {
                   key={option.label}
                   label={option.label}
                   icon={option.icon}
-                  selected={selected === option.label}
-                  onPress={() => setSelected(option.label)}
+                  selected={caregiverPreferredArrangement === option.label}
+                  onPress={() => setCaregiverPreferredArrangement(option.label)}
                 />
               ))}
             </View>
@@ -62,8 +70,8 @@ export default function ArrangementsScreen() {
             <View style={styles.dealbreaker}>
               <ThemedText style={styles.dealbreakerText}>Dealbreaker</ThemedText>
               <Switch
-                value={isDealbreaker}
-                onValueChange={setIsDealbreaker}
+                value={isDealBreaker}
+                onValueChange={setIsDealBreaker}
                 trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
                 thumbColor="#FFFFFF"
               />
@@ -80,7 +88,7 @@ export default function ArrangementsScreen() {
               label="Next"
               onPress={handleNext}
               variant="compact"
-              disabled={!selected}
+              disabled={!caregiverPreferredArrangement}
             />
           </View>
         </LinearGradient>

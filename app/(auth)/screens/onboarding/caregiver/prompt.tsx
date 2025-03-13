@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useUserStore } from '@/services/state/user';
 
 const promptCategories = [
   { id: 'get_to_know', label: 'Get to know Me', primary: true },
@@ -31,21 +32,25 @@ const promptOptions = [
 
 export default function Prompt() {
   const router = useRouter();
-  const [selectedPrompt, setSelectedPrompt] = useState<string>('');
+  const {caregiverFirstPrompt,setCaregiverFirstPrompt,setOnboardingScreen}=useUserStore();
+  // const [selectedPrompt, setSelectedPrompt] = useState<string>('');
 
   const handleNext = () => {
-    if (selectedPrompt) {
+    if (caregiverFirstPrompt) {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/promptAnswer')
       router.push({
         pathname: '/(auth)/screens/onboarding/caregiver/promptAnswer',
-        params: { prompt: selectedPrompt }
+        params: { prompt:caregiverFirstPrompt }
       });
     }
   };
 
   const handleCategoryPress = (categoryId: string) => {
     if (categoryId === 'kids_talking') {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/prompt2');
       router.push('/(auth)/screens/onboarding/caregiver/prompt2');
     } else if (categoryId === 'childcare') {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/prompt3');
       router.push('/(auth)/screens/onboarding/caregiver/prompt3');
     }
   };
@@ -86,8 +91,8 @@ export default function Prompt() {
               <View key={index} style={styles.pillWrapper}>
                 <Pill
                   label={prompt}
-                  selected={selectedPrompt === prompt}
-                  onPress={() => setSelectedPrompt(prompt)}
+                  selected={caregiverFirstPrompt === prompt}
+                  onPress={() => setCaregiverFirstPrompt(prompt)}
                 />
               </View>
             ))}
@@ -103,7 +108,7 @@ export default function Prompt() {
               label="Next"
               onPress={handleNext}
               variant="compact"
-              disabled={!selectedPrompt}
+              disabled={!caregiverFirstPrompt}
             />
           </View>
         </LinearGradient>

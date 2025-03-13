@@ -8,6 +8,7 @@ import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Button } from '@/components/ui/Button';
 import { Pill } from '@/components/ui/Pill';
+import { useUserStore } from '@/services/state/user';
 
 type Source = 
   | 'TikTok'
@@ -21,7 +22,8 @@ type Source =
 
 export default function HearScreen() {
   const router = useRouter();
-  const [selectedSource, setSelectedSource] = useState<Source | null>(null);
+  const {caregiverReferral,setCaregiverReferral,setOnboardingScreen} = useUserStore();
+  // const [selectedSource, setSelectedSource] = useState<Source | null>(null);
 
   const sources: Source[] = [
     'TikTok',
@@ -35,7 +37,8 @@ export default function HearScreen() {
   ];
 
   const handleNext = () => {
-    if (selectedSource) {
+    if (caregiverReferral) {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/zipCode')
       router.push('/(auth)/screens/onboarding/caregiver/zipCode');
     }
   };
@@ -57,8 +60,8 @@ export default function HearScreen() {
             <Pill
               key={source}
               label={source}
-              selected={selectedSource === source}
-              onPress={() => setSelectedSource(source)}
+              selected={caregiverReferral === source}
+              onPress={() => setCaregiverReferral(source)}
             />
           ))}
         </View>
@@ -68,7 +71,7 @@ export default function HearScreen() {
             label="Next"
             onPress={handleNext}
             variant="compact"
-            disabled={!selectedSource}
+            disabled={!caregiverReferral}
           />
         </View>
       </View>

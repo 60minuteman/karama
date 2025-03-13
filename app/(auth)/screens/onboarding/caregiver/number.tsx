@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { Colors } from '@/constants/Colors';
@@ -8,17 +8,23 @@ import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { useUserStore } from '@/services/state/user';
 
 export default function Page() {
-  const [count, setCount] = useState(0);
+  const { caregiverChildrenCount, setCaregiverChildrenCount, setOnboardingScreen } = useUserStore()
+  // const [count, setCount] = useState(0);
 
-  const increment = () => setCount(prev => prev + 1);
-  const decrement = () => setCount(prev => Math.max(0, prev - 1));
-
+  const increment = () => setCaregiverChildrenCount(caregiverChildrenCount + 1);
+  const decrement = () => setCaregiverChildrenCount(Math.max(0, caregiverChildrenCount - 1));
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/neuro')
+    router.push('/(auth)/screens/onboarding/caregiver/neuro')
+  }
+  useEffect(()=>{console.log(caregiverChildrenCount)},[caregiverChildrenCount])
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-      
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
@@ -35,10 +41,10 @@ export default function Page() {
           />
 
           <ThemedText style={styles.counterValue}>
-            {count}
+            {caregiverChildrenCount}
           </ThemedText>
 
-          <Pill 
+          <Pill
             label="+"
             onPress={increment}
             variant="counter"
@@ -50,9 +56,9 @@ export default function Page() {
         <View style={styles.buttonContainer}>
           <Button
             label="Next"
-            onPress={() => router.push('/(auth)/screens/onboarding/caregiver/neuro')}
+            onPress={handleNext}
             variant="compact"
-            disabled={count === 0}
+            disabled={caregiverChildrenCount === 0}
           />
         </View>
       </View>

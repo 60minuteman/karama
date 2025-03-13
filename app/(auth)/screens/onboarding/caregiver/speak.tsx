@@ -8,17 +8,21 @@ import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Button } from '@/components/ui/Button';
 import { Pill } from '@/components/ui/Pill';
+import { useUserStore } from '@/services/state/user';
 
 export default function SpeakScreen() {
+  const {caregiverLanguageMatch,setCaregiverLanguageMatch,setOnboardingScreen}=useUserStore()
   const router = useRouter();
-  const [preference, setPreference] = useState<string | null>(null);
+  // const [preference, setPreference] = useState<string | null>(null);
 
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/position');
     router.push('/(auth)/screens/onboarding/caregiver/position');
   };
 
-  const handlePillPress = (value: string) => {
-    setPreference(value);
+  const handlePillPress = (value: 'required' | 'not_required') => {
+    setCaregiverLanguageMatch(value);
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/position');
     router.push('/(auth)/screens/onboarding/caregiver/position');
   };
 
@@ -39,14 +43,14 @@ export default function SpeakScreen() {
             <Pill
               label="Yes, required"
               onPress={() => handlePillPress('required')}
-              selected={preference === 'required'}
+              selected={caregiverLanguageMatch === 'required'}
             />
           </View>
           <View style={styles.pillWrapper}>
             <Pill
               label="Not required"
               onPress={() => handlePillPress('not_required')}
-              selected={preference === 'not_required'}
+              selected={caregiverLanguageMatch === 'not_required'}
             />
           </View>
         </View>

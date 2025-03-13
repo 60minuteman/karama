@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, TextInput } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
@@ -11,58 +11,65 @@ import { Pill } from '@/components/ui/Pill';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFonts } from 'expo-font';
 import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
+import { useUserStore } from '@/services/state/user';
 
 const positionTypes = [
-  { id: 'night_nurse', label: 'Night Nurse', icon: '👩‍⚕️' },
-  { id: 'doula', label: 'Doula/MFW', icon: '👶' },
-  { id: 'babysitter', label: 'Babysitter', icon: '🎈' },
-  { id: 'nanny', label: 'Nanny', icon: '👶' },
-  { id: 'manny', label: 'Manny', icon: '👨' },
-  { id: 'au_pair', label: 'Au Pair', icon: '✈️' },
-  { id: 'caregiver', label: 'Caregiver/Housekeeper', icon: '🏠' },
-  { id: 'personal_assistant', label: 'Caregiver/Personal Assistant', icon: '📋' },
-  { id: 'household_manager', label: 'Caregiver/Household Manager', icon: '🏡' },
+  { id: 'night_nurse' as const, label: 'Night Nurse', icon: '👩‍⚕️' },
+  { id: 'doula' as const, label: 'Doula/MFW', icon: '👶' },
+  { id: 'babysitter' as const, label: 'Babysitter', icon: '🎈' },
+  { id: 'nanny' as const, label: 'Nanny', icon: '👶' },
+  { id: 'manny' as const, label: 'Manny', icon: '👨' },
+  { id: 'au_pair' as const, label: 'Au Pair', icon: '✈️' },
+  { id: 'caregiver' as const, label: 'Caregiver/Housekeeper', icon: '🏠' },
+  { id: 'personal_assistant' as const, label: 'Caregiver/Personal Assistant', icon: '📋' },
+  { id: 'household_manager' as const, label: 'Caregiver/Household Manager', icon: '🏡' },
 ];
 
 const childAgeGroups = [
-  { id: 'newborn', label: 'Newborn', icon: '👶' },
-  { id: 'toddler', label: 'Toddler', icon: '🚶' },
-  { id: 'teenager', label: 'Teenager', icon: '🧑' },
-  { id: 'infant', label: 'Infant', icon: '👶' },
-  { id: 'expecting', label: 'Expecting', icon: '🤰' },
-  { id: 'pre_schooler', label: 'Pre Schooler', icon: '🎨' },
-  { id: 'school_age', label: 'School Age', icon: '📚' },
+  { id: 'newborn' as const, label: 'Newborn', icon: '👶' },
+  { id: 'toddler' as const, label: 'Toddler', icon: '🚶' },
+  { id: 'teenager' as const, label: 'Teenager', icon: '🧑' },
+  { id: 'infant' as const, label: 'Infant', icon: '👶' },
+  { id: 'expecting' as const, label: 'Expecting', icon: '🤰' },
+  { id: 'pre_schooler' as const, label: 'Pre Schooler', icon: '🎨' },
+  { id: 'school_age' as const, label: 'School Age', icon: '📚' },
 ];
 
 const employmentTypes = [
-  { id: 'full_time', label: 'Full Time', icon: '⏰' },
-  { id: 'part_time', label: 'Part Time', icon: '🕐' },
-  { id: 'occasional', label: 'Occasional', icon: '📅' },
-  { id: 'night_out', label: 'Night Out', icon: '🌙' },
-  { id: 'after_school', label: 'After School/Pickup', icon: '🚗' },
+  { id: 'full_time' as const, label: 'Full Time', icon: '⏰' },
+  { id: 'part_time' as const, label: 'Part Time', icon: '🕐' },
+  { id: 'occasional' as const, label: 'Occasional', icon: '📅' },
+  { id: 'night_out' as const, label: 'Night Out', icon: '🌙' },
+  { id: 'after_school' as const, label: 'After School/Pickup', icon: '🚗' },
 ];
 
 const PastPosition: React.FC = () => {
   const router = useRouter();
-  const [selectedPosition, setSelectedPosition] = useState<string>('');
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>('');
-  const [selectedEmploymentType, setSelectedEmploymentType] = useState<string>('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [familyName, setFamilyName] = useState('');
-  const [selectedPositionNumber, setSelectedPositionNumber] = useState<'first'|'second'>('first');
+  const { caregiverFirstPosition, setCaregiverFirstPosition, caregiverSecondPosition,
+    setCaregiverSecondPosition, setOnboardingScreen } = useUserStore();
+  // const [selectedPosition, setSelectedPosition] = useState<string>('');
+  // const [selectedAgeGroup, setSelectedAgeGroup] = useState<string>('');
+  // const [selectedEmploymentType, setSelectedEmploymentType] = useState<string>('');
+  // const [startDate, setStartDate] = useState('');
+  // const [endDate, setEndDate] = useState('');
+  // const [familyName, setFamilyName] = useState('');
+  const [selectedPositionNumber, setSelectedPositionNumber] = useState<'first' | 'second'>('first');
   const [fontsLoaded] = useFonts({
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
   });
 
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/prompt')
     router.push('/(auth)/screens/onboarding/caregiver/prompt');
   };
-
+  useEffect(() => {
+    console.log(caregiverFirstPosition)
+    console.log(caregiverSecondPosition)
+  }, [caregiverFirstPosition, caregiverSecondPosition])
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
-      
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
@@ -74,17 +81,31 @@ const PastPosition: React.FC = () => {
         <View style={styles.positionPills}>
           <Pill
             label="First Position"
-            selected={selectedPositionNumber === 'first'}
-            onPress={() => setSelectedPositionNumber('first')}
+            selected={caregiverFirstPosition?.positionNumber === 'first' && selectedPositionNumber === 'first'}
+            onPress={() => {
+              setSelectedPositionNumber('first')
+              setCaregiverFirstPosition({
+                ...caregiverFirstPosition,
+                positionNumber: 'first',
+              })
+            }
+            }
           />
           <Pill
             label="Second Position"
-            selected={selectedPositionNumber === 'second'}
-            onPress={() => setSelectedPositionNumber('second')}
+            selected={caregiverSecondPosition?.positionNumber === 'second' && selectedPositionNumber === 'second'}
+            onPress={() => {
+              setSelectedPositionNumber('second')
+              setCaregiverSecondPosition({
+                ...caregiverSecondPosition,
+                positionNumber: 'second',
+              })
+            }
+            }
           />
         </View>
 
-        <ScrollView 
+        <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
@@ -97,8 +118,19 @@ const PastPosition: React.FC = () => {
                 style={styles.input}
                 placeholder="Type here"
                 placeholderTextColor="#999"
-                value={familyName}
-                onChangeText={setFamilyName}
+                value={selectedPositionNumber === 'first' ? caregiverFirstPosition?.familyName : caregiverSecondPosition?.familyName}
+                onChangeText={(value) => {
+                  selectedPositionNumber === 'first' ?
+                    setCaregiverFirstPosition({
+                      ...caregiverFirstPosition,
+                      familyName: value,
+                    })
+                    :
+                    setCaregiverSecondPosition({
+                      ...caregiverSecondPosition,
+                      familyName: value,
+                    })
+                }}
                 autoFocus
               />
             </View>
@@ -107,26 +139,47 @@ const PastPosition: React.FC = () => {
           <View style={styles.dateContainer}>
             <View style={styles.dateInput}>
               <ThemedText style={styles.dateLabel}>Start Date</ThemedText>
-              <View style={[styles.inputBorder, startDate.length > 0 && styles.inputBorderActive]}>
+              <View style={[styles.inputBorder, (caregiverFirstPosition?.startDate?.length > 0 || caregiverSecondPosition?.startDate?.length > 0) && styles.inputBorderActive]}>
                 <TextInput
                   style={styles.input}
                   placeholder="MM/DD/YYYY"
                   placeholderTextColor="#999"
-                  value={startDate}
-                  onChangeText={setStartDate}
+                  value={selectedPositionNumber === 'first' ? caregiverFirstPosition?.startDate : caregiverSecondPosition?.startDate}
+                  onChangeText={(value) => {
+                    selectedPositionNumber === 'first' ?
+                      setCaregiverFirstPosition({
+                        ...caregiverFirstPosition,
+                        startDate: value,
+                      })
+                      :
+                      setCaregiverSecondPosition({
+                        ...caregiverSecondPosition,
+                        startDate: value,
+                      })
+                  }}
                 />
               </View>
             </View>
             <View style={styles.dateInput}>
               <ThemedText style={styles.dateLabel}>End Date</ThemedText>
-              <View style={[styles.inputBorder, endDate.length > 0 && styles.inputBorderActive]}>
+              <View style={[styles.inputBorder, (caregiverFirstPosition?.endDate?.length > 0 || caregiverSecondPosition?.endDate?.length > 0) && styles.inputBorderActive]}>
                 <TextInput
                   style={styles.input}
                   placeholder="MM/DD/YYYY"
                   placeholderTextColor="#999"
-                  value={endDate}
-                  onChangeText={setEndDate}
-                />
+                  value={selectedPositionNumber === 'first' ? caregiverFirstPosition?.endDate : caregiverSecondPosition?.endDate}
+                  onChangeText={(value) => {
+                    selectedPositionNumber === 'first' ?
+                      setCaregiverFirstPosition({
+                        ...caregiverFirstPosition,
+                        endDate: value,
+                      })
+                      :
+                      setCaregiverSecondPosition({
+                        ...caregiverSecondPosition,
+                        endDate: value,
+                      })
+                  }} />
               </View>
             </View>
           </View>
@@ -139,8 +192,20 @@ const PastPosition: React.FC = () => {
                   key={position.id}
                   label={position.label}
                   icon={position.icon}
-                  selected={selectedPosition === position.id}
-                  onPress={() => setSelectedPosition(position.id)}
+                  selected={selectedPositionNumber === 'first' ? caregiverFirstPosition?.position === position.id : caregiverSecondPosition?.position === position.id}
+                  onPress={
+                    () => {
+                      selectedPositionNumber === 'first' ?
+                        setCaregiverFirstPosition({
+                          ...caregiverFirstPosition,
+                          position: position.id,
+                        }) :
+                        setCaregiverSecondPosition({
+                          ...caregiverSecondPosition,
+                          position: position.id,
+                        })
+                    }
+                  }
                 />
               ))}
             </View>
@@ -154,8 +219,20 @@ const PastPosition: React.FC = () => {
                   key={age.id}
                   label={age.label}
                   icon={age.icon}
-                  selected={selectedAgeGroup === age.id}
-                  onPress={() => setSelectedAgeGroup(age.id)}
+                  selected={selectedPositionNumber === 'first' ? caregiverFirstPosition?.ageGroup === age.id : caregiverSecondPosition?.ageGroup === age.id}
+                  onPress={
+                    () => {
+                      selectedPositionNumber === 'first' ?
+                        setCaregiverFirstPosition({
+                          ...caregiverFirstPosition,
+                          ageGroup: age.id,
+                        }) :
+                        setCaregiverSecondPosition({
+                          ...caregiverSecondPosition,
+                          ageGroup: age.id,
+                        })
+                    }
+                  }
                 />
               ))}
             </View>
@@ -169,8 +246,20 @@ const PastPosition: React.FC = () => {
                   key={type.id}
                   label={type.label}
                   icon={type.icon}
-                  selected={selectedEmploymentType === type.id}
-                  onPress={() => setSelectedEmploymentType(type.id)}
+                  selected={selectedPositionNumber === 'first' ? caregiverFirstPosition?.employmentType === type.id :caregiverSecondPosition?.employmentType === type.id}
+                  onPress={
+                    () => {
+                      selectedPositionNumber === 'first' ?
+                        setCaregiverFirstPosition({
+                          ...caregiverFirstPosition,
+                          employmentType: type.id,
+                        }) :
+                        setCaregiverSecondPosition({
+                          ...caregiverSecondPosition,
+                          employmentType: type.id,
+                        })
+                    }
+                  }
                 />
               ))}
             </View>
@@ -191,7 +280,7 @@ const PastPosition: React.FC = () => {
               label="Next"
               onPress={handleNext}
               variant="compact"
-              disabled={!selectedPosition}
+              disabled={!caregiverFirstPosition || !caregiverSecondPosition}
             />
           </View>
         </LinearGradient>

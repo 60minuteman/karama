@@ -8,11 +8,13 @@ import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Button } from '@/components/ui/Button';
 import { useFonts } from 'expo-font';
-import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
+// import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
+import { useUserStore } from '@/services/state/user';
 
 export default function ZipCodeScreen() {
   const router = useRouter();
-  const [zipCode, setZipCode] = useState('');
+  // const [zipCode, setZipCode] = useState('');
+  const {caregiverLocation,setCaregiverLocation,setOnboardingScreen}=useUserStore()
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [fontsLoaded] = useFonts({
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
@@ -36,11 +38,12 @@ export default function ZipCodeScreen() {
   const handleZipCodeChange = (text: string) => {
     // Only allow numbers and limit to 5 digits
     const cleaned = text.replace(/[^0-9]/g, '');
-    setZipCode(cleaned.slice(0, 5));
+    setCaregiverLocation(cleaned.slice(0, 5));
   };
 
   const handleNext = () => {
-    if (zipCode.length === 5) {
+    if (caregiverLocation?.length === 5) {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/type')
       router.push('/(auth)/screens/onboarding/caregiver/type');
     }
   };
@@ -62,7 +65,7 @@ export default function ZipCodeScreen() {
             style={styles.input}
             placeholder="Enter zip code"
             placeholderTextColor="#666"
-            value={zipCode}
+            value={caregiverLocation || ''}
             onChangeText={handleZipCodeChange}
             keyboardType="numeric"
             maxLength={5}
@@ -79,7 +82,7 @@ export default function ZipCodeScreen() {
             label="Next"
             onPress={handleNext}
             variant="compact"
-            disabled={zipCode.length !== 5}
+            disabled={caregiverLocation?.length !== 5}
           />
         </View>
       </View>

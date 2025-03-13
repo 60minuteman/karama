@@ -8,34 +8,38 @@ import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { useUserStore } from '@/services/state/user';
 
 interface PaymentMethodProps {
   onNext?: (method: string) => void;
 }
 
 const PaymentOptions = [
-  { id: 'employee', label: 'Employee', icon: '💳' },
-  { id: 'contractor', label: 'Independent Contractor', icon: '📄' },
-  { id: 'no_preference', label: 'No Preference', icon: '💰' },
+  { id: 'employee' as const, label: 'Employee', icon: '💳' },
+  { id: 'contractor' as const, label: 'Independent Contractor', icon: '📄' },
+  { id: 'no_preference' as const, label: 'No Preference', icon: '💰' },
 ];
 
 const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
   const router = useRouter();
-  const [selectedMethod, setSelectedMethod] = useState<string>('');
-  const [showOnProfile, setShowOnProfile] = useState(false);
+  const { caregiverPaymentMethod, setCaregiverPaymentMethod,
+     showCaregiverPaymentMethod, setShowCaregiverPaymentMethod, setOnboardingScreen } = useUserStore();
+  // const [selectedMethod, setSelectedMethod] = useState<string>('');
+  // const [showOnProfile, setShowOnProfile] = useState(false);
 
   const handleNext = () => {
     if (onNext) {
-      onNext(selectedMethod);
+      onNext(caregiverPaymentMethod);
     } else {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/benefits');
       router.push('/(auth)/screens/onboarding/caregiver/benefits');
     }
   };
 
   return (
     <ThemedView style={styles.container}>
-       <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-      
+      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.3} />
@@ -44,7 +48,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
           <ThemedText style={styles.title}>
             What is your preferred{'\n'}payment method
           </ThemedText>
-          
+
           <ThemedText style={styles.description}>
             If you choose "Employee," please note that taxes and withholdings will be deducted from your pay. If you choose "Independent Contractor," taxes will not be withheld, and you are responsible for paying your own taxes.
           </ThemedText>
@@ -55,8 +59,8 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
                 <Pill
                   label={option.label}
                   icon={option.icon}
-                  selected={selectedMethod === option.id}
-                  onPress={() => setSelectedMethod(option.id)}
+                  selected={caregiverPaymentMethod=== option.id}
+                  onPress={() => setCaregiverPaymentMethod(option.id)}
                 />
               </View>
             ))}
@@ -65,10 +69,10 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
           <View style={styles.toggleContainer}>
             <ThemedText style={styles.toggleText}>Show on profile</ThemedText>
             <Switch
-              value={showOnProfile}
-              onValueChange={setShowOnProfile}
+              value={showCaregiverPaymentMethod}
+              onValueChange={setShowCaregiverPaymentMethod}
               trackColor={{ false: '#E5E5E5', true: Colors.light.primary }}
-              thumbColor={showOnProfile ? '#FFFFFF' : '#FFFFFF'}
+              thumbColor={showCaregiverPaymentMethod ? '#FFFFFF' : '#FFFFFF'}
             />
           </View>
         </ScrollView>
@@ -83,7 +87,7 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
             label="Next"
             onPress={handleNext}
             variant="compact"
-            disabled={!selectedMethod}
+            disabled={!caregiverPaymentMethod}
           />
         </View>
       </View>

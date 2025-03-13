@@ -1,24 +1,29 @@
 import { useRouter } from 'expo-router';
 import { StyleSheet, View, TextInput } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Button } from '@/components/ui/Button';
+import { useUserStore } from '@/services/state/user';
 
 export default function CaregiverNameScreen() {
   const router = useRouter();
-  const [name, setName] = useState('');
-
+  const { caregiverName, setCaregiverName,setOnboardingScreen } = useUserStore();
   const handleNext = () => {
-    if (name.trim()) {
+    if (caregiverName?.trim()) {
       // Navigate to next screen in caregiver flow
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/dob')
       router.push('/(auth)/screens/onboarding/caregiver/dob'); // Update with actual next screen
+      console.log(caregiverName)
+
     }
   };
-
+useEffect(()=>{
+  console.log(caregiverName)
+},[caregiverName])
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" />
@@ -32,13 +37,13 @@ export default function CaregiverNameScreen() {
         </ThemedText>
 
         <View style={styles.inputContainer}>
-          <View style={[styles.inputBorder, name.length > 0 && styles.inputBorderActive]}>
+          <View style={[styles.inputBorder, (caregiverName?.trim() || '').length> 0 && styles.inputBorderActive]}>
             <TextInput
               style={styles.input}
               placeholder="Your name"
               placeholderTextColor="#999"
-              value={name}
-              onChangeText={setName}
+              value={caregiverName || ''}
+              onChangeText={setCaregiverName}
               autoFocus
               autoCapitalize="words"
             />
@@ -49,8 +54,8 @@ export default function CaregiverNameScreen() {
           <Button
             label="Next"
             onPress={handleNext}
-            variant={name.trim() ? "primary" : "disabled"}
-            disabled={!name.trim()}
+            variant={caregiverName?.trim() ? "primary" : undefined}
+            disabled={!caregiverName?.trim()}
           />
         </View>
       </View>

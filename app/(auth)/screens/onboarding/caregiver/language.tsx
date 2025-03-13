@@ -9,41 +9,44 @@ import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Button } from '@/components/ui/Button';
 import { Pill } from '@/components/ui/Pill';
+import { Language, useUserStore } from '@/services/state/user';
 
-type Language = 
-  | 'Spanish' | 'French' | 'English' | 'German' | 'Hausa' | 'Italian'
-  | 'Russian' | 'Arabic' | 'Chinese' | 'Korean' | 'Japanese' | 'Yoruba'
-  | 'Afrikaans' | 'Hindi' | 'Dutch' | 'Estonian' | 'Croatian' | 'Swedish'
-  | 'Portugese' | 'Other';
+// type Language = 
+//   | 'Spanish' | 'French' | 'English' | 'German' | 'Hausa' | 'Italian'
+//   | 'Russian' | 'Arabic' | 'Chinese' | 'Korean' | 'Japanese' | 'Yoruba'
+//   | 'Afrikaans' | 'Hindi' | 'Dutch' | 'Estonian' | 'Croatian' | 'Swedish'
+//   | 'Portugese' | 'Other';
 
 export default function LanguageScreen() {
   const router = useRouter();
-  const [selectedLanguages, setSelectedLanguages] = useState<Language[]>([]);
+  const { caregiverLanguages, setCaregiverLanguages, setOnboardingScreen } = useUserStore()
+  // const [selectedLanguages, setSelectedLanguages] = useState<Language[]>([]);
 
   const languages: Language[] = [
     'English', 'Spanish', 'French', 'German', 'Hausa', 'Italian',
     'Russian', 'Arabic', 'Chinese', 'Korean', 'Japanese', 'Yoruba',
     'Afrikaans', 'Hindi', 'Dutch', 'Estonian', 'Croatian', 'Swedish',
-    'Portugese', 'Other'
+    'Portuguese', 'Other'
   ];
 
-  const toggleLanguage = (language: Language) => {
-    setSelectedLanguages(prev => 
-      prev.includes(language)
-        ? prev.filter(l => l !== language)
-        : [...prev, language]
-    );
+  const toggleLanguageSelection = (label: Language) => {
+    const prev = caregiverLanguages ?? [];
+    const updatedLanguages = prev.includes(label)
+      ? prev.filter((item) => item !== label)
+      : [...prev, label];
+    setCaregiverLanguages(updatedLanguages);
   };
 
   const handleNext = () => {
-    if (selectedLanguages.length > 0) {
+    if ((caregiverLanguages ?? [])?.length > 0) {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/age');
       router.push('/(auth)/screens/onboarding/caregiver/age');
     }
   };
 
   return (
     <ThemedView style={styles.container}>
-        <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -53,7 +56,7 @@ export default function LanguageScreen() {
           What language(s){'\n'}does your family{'\n'}speak?
         </ThemedText>
 
-        <ScrollView 
+        <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
@@ -64,8 +67,8 @@ export default function LanguageScreen() {
                 key={language}
                 label={language}
                 icon="💬"
-                selected={selectedLanguages.includes(language)}
-                onPress={() => toggleLanguage(language)}
+                selected={caregiverLanguages?.includes(language)}
+                onPress={() => toggleLanguageSelection(language)}
               />
             ))}
           </View>
@@ -83,7 +86,7 @@ export default function LanguageScreen() {
               label="Next"
               onPress={handleNext}
               variant="compact"
-              disabled={selectedLanguages.length === 0}
+              disabled={caregiverLanguages?.length === 0}
             />
           </View>
         </View>
