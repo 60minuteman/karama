@@ -33,8 +33,15 @@ const promptOptions = [
 
 export default function Prompt() {
   const router = useRouter();
-  const { family_prompt, setFamilyPrompt, setOnboardingScreen } =
-    useUserStore();
+  const {
+    family_prompt,
+    setFamilyPrompt,
+    setOnboardingScreen,
+    family_prompt_category,
+    setFamilyPromptCategory,
+  } = useUserStore();
+
+  console.log('family_prompt', family_prompt);
 
   const handleNext = () => {
     if (family_prompt) {
@@ -47,6 +54,7 @@ export default function Prompt() {
   };
 
   const handleCategoryPress = (categoryId: string) => {
+    setFamilyPromptCategory(categoryId);
     if (categoryId === 'kids_talking') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/prompt2');
       router.push('/(auth)/screens/onboarding/family/prompt2');
@@ -71,7 +79,7 @@ export default function Prompt() {
             <View key={category.id} style={styles.pillWrapper}>
               <Pill
                 label={category.label}
-                selected={category.primary}
+                selected={category.id === family_prompt_category}
                 onPress={() => handleCategoryPress(category.id)}
               />
             </View>

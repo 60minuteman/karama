@@ -26,6 +26,8 @@ export default function BenefitsScreen() {
   const { family_benefits, setFamilyBenefits, setOnboardingScreen } =
     useUserStore();
 
+  console.log('family_benefits', family_benefits);
+
   const { selected_benefits, show_on_profile } = family_benefits;
 
   const toggleBenefit = (id: string) => {

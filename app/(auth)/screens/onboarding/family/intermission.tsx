@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import useAuthMutation from '@/hooks/useAuthMutation';
 import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
 import { useMutation } from '@tanstack/react-query';
@@ -39,9 +40,9 @@ export default function IntermissionScreen() {
     router.push('/(auth)/screens/onboarding/family/gender');
   };
 
-  const submit = useMutation({
+  const submit: any = useAuthMutation({
     mutationFn: (data: any) => {
-      return customAxios.post(`/auth/phone/start-verification`, data);
+      return customAxios.post(`/family-profile/create-profile`, data);
     },
     onSuccess: async (data: any) => {
       handleNext();
@@ -57,59 +58,61 @@ export default function IntermissionScreen() {
     },
   });
 
+  console.log('family_submit', family_interests);
+
   const handleSubmit = () => {
     submit.mutate({
       name: familyName,
       description: {
         description: family_description?.type,
-        other: 'N/A',
+        // other: 'N/A',
         show_on_profile: family_description?.showOnProfile,
       },
       children: family_age_groups,
       behavioural_difference: {
-        differences: family_behaviour,
-        other: 'N/A',
+        differences: family_behaviour?.conditions || [],
+        // other: 'N/A',
       },
       zipcode: family_zipcode,
       languages: {
-        languages: family_languages,
+        languages: family_languages || [],
       },
       pets: {
-        pets: family_pets,
-        other: 'N/A',
+        pets: family_pets || [],
+        // other: 'N/A',
       },
       allergies: {
         food_allergies: family_allergies?.food,
-        other_food_allergies: 'N/A',
+        // other_food_allergies: 'N/A',
         environmental_allergies: family_allergies?.environmental,
-        other_environmental_allergies: 'N/A',
+        // other_environmental_allergies: 'N/A',
         other_allergies: family_allergies?.other,
-        other_other_allergies: 'N/A',
+        // other_other_allergies: 'N/A',
       },
       children_interests: {
         creative_interests: family_interests?.creative_interests,
-        other_creative_interest: 'N/A',
+        // other_creative_interest: 'N/A',
         instrument_interests: family_interests?.instrument_interests,
-        other_instrument_interest: 'N/A',
-        sport_interests: family_interests,
-        other_sport_interest: 'N/A',
+        // other_instrument_interest: 'N/A',
+        sport_interests: family_interests?.sport_interests,
+        // other_sport_interest: 'N/A',
         stem_interests: family_interests?.stem_interests,
-        other_stem_interest: 'N/A',
+        // other_stem_interest: 'N/A',
       },
       household_info: {
         diets: family_selections?.diets,
-        other_diets: 'N/A',
+        // other_diets: 'N/A',
         show_diet_on_profile: family_show_diet,
         rules: family_selections?.rules,
-        other_rules: 'N/A',
+        // other_rules: 'N/A',
         show_rules_on_profile: family_show_rules,
         religion: family_selections?.religion,
-        other_religion: 'N/A',
+        // other_religion: 'N/A',
         show_religion_on_profile: family_show_religion,
       },
       philosophies: {
         philosophies: family_philosophies,
-        other: 'N/A',
+        // other: 'N/A',
         show_on_profile: family_show_philosophy,
       },
       aquisition_source: family_selected_source,

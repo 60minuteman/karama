@@ -12,7 +12,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 
 type AgeGroup = {
   icon: string;
-  label: string;
+  age_group: string;
   count: number;
 };
 
@@ -21,29 +21,33 @@ export default function FamilyNumberScreen() {
   const { family_age_groups, setFamilyAgeGroups, setOnboardingScreen } =
     useUserStore();
   const [ageGroups, setAgeGroups] = useState<AgeGroup[]>([
-    { icon: '🐣', label: 'Expecting', count: 0 },
-    { icon: '👶', label: 'Newborn', count: 0 },
-    { icon: '🍼', label: 'Infant', count: 0 },
-    { icon: '🧸', label: 'Toddler', count: 0 },
-    { icon: '✏️', label: 'Pre Schooler', count: 0 },
-    { icon: '🛴', label: 'School Age', count: 0 },
-    { icon: '👑', label: 'Teenager', count: 0 },
+    { icon: '🐣', age_group: 'Expecting', count: 0 },
+    { icon: '👶', age_group: 'Newborn', count: 0 },
+    { icon: '🍼', age_group: 'Infant', count: 0 },
+    { icon: '🧸', age_group: 'Toddler', count: 0 },
+    { icon: '✏️', age_group: 'Pre Schooler', count: 0 },
+    { icon: '🛴', age_group: 'School Age', count: 0 },
+    { icon: '👑', age_group: 'Teenager', count: 0 },
   ]);
 
   console.log('family_age_groups', family_age_groups);
 
   useEffect(() => {
     // Initialize from stored state if it exists
-    if (family_age_groups) {
-      setAgeGroups(family_age_groups);
-    }
+    // if (family_age_groups) {
+    // setAgeGroups(family_age_groups);
+    // }
   }, []);
 
   const handleIncrement = (index: number) => {
     const newGroups = [...ageGroups];
     newGroups[index].count += 1;
     setAgeGroups(newGroups);
-    setFamilyAgeGroups(newGroups);
+    // Only store age groups with count > 0 and exclude icon property
+    const filteredGroups = newGroups
+      .filter((group) => group.count > 0)
+      .map(({ icon, ...rest }) => rest);
+    setFamilyAgeGroups(filteredGroups);
   };
 
   const handleDecrement = (index: number) => {
@@ -51,7 +55,11 @@ export default function FamilyNumberScreen() {
     if (newGroups[index].count > 0) {
       newGroups[index].count -= 1;
       setAgeGroups(newGroups);
-      setFamilyAgeGroups(newGroups);
+      // Only store age groups with count > 0 and exclude icon property
+      const filteredGroups = newGroups
+        .filter((group) => group.count > 0)
+        .map(({ icon, ...rest }) => rest);
+      setFamilyAgeGroups(filteredGroups);
     }
   };
 
@@ -84,9 +92,9 @@ export default function FamilyNumberScreen() {
           <View style={styles.countersContainer}>
             {ageGroups.map((group, index) => (
               <Counter
-                key={group.label}
+                key={group.age_group}
                 icon={group.icon}
-                label={group.label}
+                label={group.age_group}
                 value={group.count}
                 onIncrement={() => handleIncrement(index)}
                 onDecrement={() => handleDecrement(index)}

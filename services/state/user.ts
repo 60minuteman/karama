@@ -103,19 +103,19 @@ export type PetType =
   | 'Other';
 
 interface AgeGroup {
-  icon: string;
-  label: string;
+  icon?: string;
+  age_group: string;
   count: number;
 }
 
 const defaultAgeGroups: AgeGroup[] = [
-  { icon: '🐣', label: 'Expecting', count: 0 },
-  { icon: '👶', label: 'Newborn', count: 0 },
-  { icon: '🍼', label: 'Infant', count: 0 },
-  { icon: '🧸', label: 'Toddler', count: 0 },
-  { icon: '✏️', label: 'Pre Schooler', count: 0 },
-  { icon: '🛴', label: 'School Age', count: 0 },
-  { icon: '👑', label: 'Teenager', count: 0 },
+  { icon: '🐣', age_group: 'Expecting', count: 0 },
+  { icon: '👶', age_group: 'Newborn', count: 0 },
+  { icon: '🍼', age_group: 'Infant', count: 0 },
+  { icon: '🧸', age_group: 'Toddler', count: 0 },
+  { icon: '✏️', age_group: 'Pre Schooler', count: 0 },
+  { icon: '🛴', age_group: 'School Age', count: 0 },
+  { icon: '👑', age_group: 'Teenager', count: 0 },
 ];
 
 interface FamilyDescription {
@@ -312,6 +312,8 @@ interface UserState {
   family_more_info: string;
   family_has_allergies: boolean | null;
   family_allergies: FamilyAllergies;
+  family_prompt_category: string | null;
+  family_images: string[];
   // Actions
   setUser: (user: UserProfile | null) => void;
   setToken: (token: string | null) => void;
@@ -386,6 +388,8 @@ interface UserState {
   setFamilyMoreInfo: (info: string) => void;
   setFamilyHasAllergies: (hasAllergies: boolean | null) => void;
   setFamilyAllergies: (allergies: Partial<FamilyAllergies>) => void;
+  setFamilyPromptCategory: (category: string | null) => void;
+  setFamilyImages: (images: string[]) => void;
 }
 
 export const useUserStore = create<UserState>()(
@@ -536,6 +540,8 @@ export const useUserStore = create<UserState>()(
         environmental: [],
         other: [],
       },
+      family_prompt_category: 'get_to_know',
+      family_images: [],
 
       setUser: (user) => set({ user, error: null }),
 
@@ -822,6 +828,8 @@ export const useUserStore = create<UserState>()(
             environmental: [],
             other: [],
           },
+          family_prompt_category: 'get_to_know',
+          family_images: [],
         });
       },
 
@@ -900,6 +908,11 @@ export const useUserStore = create<UserState>()(
             ...allergies,
           },
         })),
+
+      setFamilyPromptCategory: (category) =>
+        set({ family_prompt_category: category }),
+
+      setFamilyImages: (images) => set({ family_images: images }),
     }),
     {
       name: 'user-storage',

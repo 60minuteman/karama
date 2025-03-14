@@ -18,6 +18,8 @@ export default function AgeScreen() {
   const { has_preference, selected_age_range, is_dealbreaker } = caregiver_age;
   const [showAgeRanges, setShowAgeRanges] = useState(has_preference === 'yes');
 
+  console.log('caregiver_age', caregiver_age);
+
   const ageRanges = [
     '18 - 25 years old',
     '26 - 30 years old',
