@@ -153,8 +153,38 @@ export default function PromptAnswer() {
     "required_benefits": caregiverRequiredBenefits,
     // "other_required_benefits": "something else",
     "past_positions": [
-      caregiverFirstPosition,
-      caregiverSecondPosition,
+      {
+        "family_or_business_name": caregiverFirstPosition.familyName,
+        "start_date": caregiverFirstPosition.startDate,
+        "end_date": caregiverFirstPosition.endDate,
+        "position_type": caregiverFirstPosition.position,
+        "children_age_group": caregiverFirstPosition.ageGroup,
+        "availability": caregiverFirstPosition.employmentType,
+        "childcare_responsibilities": [
+          "Packing Lunch",
+          "Play Dates"
+        ],
+        "household_responsibilities": [
+          "Property Management",
+          "Meal Prep"
+        ]
+      },
+      {
+        "family_or_business_name": caregiverSecondPosition.familyName,
+        "start_date": caregiverSecondPosition.startDate,
+        "end_date": caregiverSecondPosition.endDate,
+        "position_type": caregiverSecondPosition.position,
+        "children_age_group": caregiverSecondPosition.ageGroup,
+        "availability": caregiverSecondPosition.employmentType,
+        "childcare_responsibilities": [
+          "Packing Lunch",
+          "Play Dates"
+        ],
+        "household_responsibilities": [
+          "Property Management",
+          "Meal Prep"
+        ]
+      },
     ],
     "prompts": [
       {
