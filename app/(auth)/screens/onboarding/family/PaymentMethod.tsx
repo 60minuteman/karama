@@ -28,6 +28,8 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
     setOnboardingScreen,
   } = useUserStore();
 
+  console.log('family_payment_method', family_payment_method);
+
   // Initialize with default values if family_payment_method is null or undefined
   React.useEffect(() => {
     if (

@@ -8,7 +8,7 @@ import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
 import { useFonts } from 'expo-font';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 const ageGroups = [
@@ -32,10 +32,18 @@ export default function Page() {
   const [fontsLoaded] = useFonts({
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
   });
+   const toggleAgesSelection = (label: string) => {
+      const prev = caregiverAgeExperience?? [];
+      const updatedAges = prev.includes(label)
+        ? prev.filter((item) => item !== label) 
+        : [...prev, label];
+      setCaregiverAgeExperience(updatedAges); 
+    };
   const handleNext = ()=>{
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/number')
     router.push('/(auth)/screens/onboarding/caregiver/number')
   }
+  console.log(caregiverAgeExperience)
 
   return (
     <ThemedView style={styles.container}>
@@ -57,8 +65,8 @@ export default function Page() {
                   key={age}
                   label={age}
                   icon={ageIcons[age as keyof typeof ageIcons]}
-                  onPress={() => setCaregiverAgeExperience(age)}
-                  selected={caregiverAgeExperience === age}
+                  onPress={() => toggleAgesSelection(age)}
+                  selected={caregiverAgeExperience?.includes(age)}   
                 />
               ))}
             </View>

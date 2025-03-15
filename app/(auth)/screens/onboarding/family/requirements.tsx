@@ -44,6 +44,8 @@ export default function RequirementsScreen() {
   } = caregiver_requirements;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
+  console.log('caregiver_requirements', caregiver_requirements);
+
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,

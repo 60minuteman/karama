@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import useAuthMutation from '@/hooks/useAuthMutation';
+import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -11,12 +13,62 @@ import { StyleSheet, TextInput, View } from 'react-native';
 
 export default function MoreInfo() {
   const router = useRouter();
-  const { family_more_info, setFamilyMoreInfo, setOnboardingScreen } =
-    useUserStore();
+  const {
+    family_more_info,
+    setFamilyMoreInfo,
+    setOnboardingScreen,
+    family_payment,
+    family_payment_method,
+    family_benefits,
+    family_prompt,
+    family_prompt_category,
+    family_prompt_answer,
+  } = useUserStore();
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/family/upload');
     router.push('/(auth)/screens/onboarding/family/upload');
+  };
+
+  const submit: any = useAuthMutation({
+    mutationFn: (data: any) => {
+      return customAxios.post(`/family-profile/extra-info`, data);
+    },
+    onSuccess: async (data: any) => {
+      handleNext();
+    },
+    onError: (error: any) => {
+      console.log('error', error['response'].data);
+      // router.push('/phoneNumber');
+      // Toast.show({
+      //   type: 'problem',
+      //   text1: 'Something went wrong',
+      //   text2: error['response'].data?.message,
+      // });
+    },
+  });
+
+  const handleSubmit = () => {
+    submit.mutate({
+      payment_info: {
+        type: family_payment?.selected_type,
+        hourly_min: 15,
+        hourly_max: family_payment?.hourly_rate,
+        method: family_payment_method?.selected_method,
+        show_method_on_profile: family_payment_method?.show_on_profile,
+      },
+      prompts: [
+        {
+          category: family_prompt_category,
+          title: family_prompt,
+          answer: family_prompt_answer,
+        },
+      ],
+      more_information: family_more_info,
+      benefits: {
+        benefits: family_benefits?.selected_benefits,
+      },
+    });
   };
 
   return (
@@ -46,7 +98,12 @@ export default function MoreInfo() {
 
       <View style={styles.bottomNav}>
         <Button label='Skip' onPress={() => router.back()} variant='skip' />
-        <Button label='Next' onPress={handleNext} variant='compact' />
+        <Button
+          label='Next'
+          onPress={handleSubmit}
+          variant='compact'
+          loading={submit.isPending}
+        />
       </View>
     </ThemedView>
   );

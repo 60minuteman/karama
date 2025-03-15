@@ -1,6 +1,6 @@
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 type CounterProps = {
   icon: string;
@@ -11,36 +11,43 @@ type CounterProps = {
   minValue?: number;
 };
 
-export function Counter({ 
-  icon, 
-  label, 
-  value, 
-  onIncrement, 
-  onDecrement, 
-  minValue = 0 
+export function Counter({
+  icon,
+  label,
+  value,
+  onIncrement,
+  onDecrement,
+  minValue = 0,
 }: CounterProps) {
+  // console.log('value', label);
   return (
     <View style={styles.container}>
-      <View style={[styles.labelContainer, value > 0 && styles.labelContainerActive]}>
-        <ThemedText style={[styles.icon, value > 0 && styles.textActive]}>{icon}</ThemedText>
-        <ThemedText style={[styles.label, value > 0 && styles.textActive]}>{label}</ThemedText>
+      <View
+        style={[
+          styles.labelContainer,
+          value > 0 && styles.labelContainerActive,
+        ]}
+      >
+        <ThemedText style={[styles.icon, value > 0 && styles.textActive]}>
+          {icon}
+        </ThemedText>
+        <ThemedText style={[styles.label, value > 0 && styles.textActive]}>
+          {label}
+        </ThemedText>
       </View>
-      
+
       <View style={styles.counterContainer}>
-        <TouchableOpacity 
-          style={[styles.button, value <= minValue && styles.buttonDisabled]} 
+        <TouchableOpacity
+          style={[styles.button, value <= minValue && styles.buttonDisabled]}
           onPress={onDecrement}
           disabled={value <= minValue}
         >
           <ThemedText style={styles.buttonText}>−</ThemedText>
         </TouchableOpacity>
-        
+
         <ThemedText style={styles.value}>{value}</ThemedText>
-        
-        <TouchableOpacity 
-          style={styles.button} 
-          onPress={onIncrement}
-        >
+
+        <TouchableOpacity style={styles.button} onPress={onIncrement}>
           <ThemedText style={styles.buttonText}>+</ThemedText>
         </TouchableOpacity>
       </View>

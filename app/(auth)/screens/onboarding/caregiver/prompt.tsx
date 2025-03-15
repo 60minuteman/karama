@@ -32,7 +32,7 @@ const promptOptions = [
 
 export default function Prompt() {
   const router = useRouter();
-  const {caregiverFirstPrompt,setCaregiverFirstPrompt,setOnboardingScreen}=useUserStore();
+  const {caregiverPromptCategory,setCaregiverPromptCategory,caregiverFirstPrompt,setCaregiverFirstPrompt,setOnboardingScreen}=useUserStore();
   // const [selectedPrompt, setSelectedPrompt] = useState<string>('');
 
   const handleNext = () => {
@@ -53,6 +53,7 @@ export default function Prompt() {
       setOnboardingScreen('/(auth)/screens/onboarding/caregiver/prompt3');
       router.push('/(auth)/screens/onboarding/caregiver/prompt3');
     }
+    setCaregiverPromptCategory(categoryId)
   };
 
   return (

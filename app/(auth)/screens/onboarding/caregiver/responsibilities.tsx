@@ -64,19 +64,32 @@ const householdResponsibilities: Responsibility[] = [
 export default function ResponsibilitiesScreen() {
   const router = useRouter();
   // const [selectedResponsibilities, setSelectedResponsibilities] = useState<string[]>([]);
-  const {caregiverResponsibilities,setCaregiverResponsibilities,setOnboardingScreen}=useUserStore()
-  const toggleResponsibility = (id: string) => {
-    const prev = caregiverResponsibilities ?? [];
+  const {
+    caregiverChildcareResponsibilities,
+    setCaregiverChildcareResponsibilities,
+    caregiverHouseholdResponsibilities,
+    setCaregiverHouseholdResponsibilities,
+    setOnboardingScreen
+  } = useUserStore()
+  const toggleChildcareResponsibility = (id: string) => {
+    const prev = caregiverChildcareResponsibilities ?? [];
     const selectedResponsibilities = prev.includes(id)
       ? prev.filter((item) => item !== id)
-      : [...prev,id];
-    setCaregiverResponsibilities(selectedResponsibilities);
+      : [...prev, id];
+    setCaregiverChildcareResponsibilities(selectedResponsibilities);
+  };
+  const toggleHouseholdResponsibility = (id: string) => {
+    const prev = caregiverHouseholdResponsibilities ?? [];
+    const selectedResponsibilities = prev.includes(id)
+      ? prev.filter((item) => item !== id)
+      : [...prev, id];
+    setCaregiverHouseholdResponsibilities(selectedResponsibilities);
   };
 
   return (
     <ThemedView style={styles.container}>
-       <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-      
+      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
@@ -102,8 +115,8 @@ export default function ResponsibilitiesScreen() {
                   key={item.id}
                   label={item.label}
                   icon={item.icon}
-                  selected={caregiverResponsibilities?.includes(item.id)}
-                  onPress={() => toggleResponsibility(item.id)}
+                  selected={caregiverChildcareResponsibilities?.includes(item.id)}
+                  onPress={() => toggleChildcareResponsibility(item.id)}
                 />
               ))}
             </View>
@@ -117,8 +130,8 @@ export default function ResponsibilitiesScreen() {
                   key={item.id}
                   label={item.label}
                   icon={item.icon}
-                  selected={caregiverResponsibilities?.includes(item.id)}
-                  onPress={() => toggleResponsibility(item.id)}
+                  selected={caregiverHouseholdResponsibilities?.includes(item.id)}
+                  onPress={() => toggleHouseholdResponsibility(item.id)}
                 />
               ))}
             </View>
@@ -132,9 +145,12 @@ export default function ResponsibilitiesScreen() {
           <View style={styles.buttonContainer}>
             <Button
               label="Next"
-              onPress={() => router.push('/(auth)/screens/onboarding/caregiver/payment')}
+              onPress={() => {
+                setOnboardingScreen('/(auth)/screens/onboarding/caregiver/payment')
+                router.push('/(auth)/screens/onboarding/caregiver/payment')
+              }}
               variant="compact"
-              disabled={caregiverResponsibilities?.length === 0}
+              disabled={caregiverChildcareResponsibilities?.length === 0 || caregiverHouseholdResponsibilities?.length === 0}
             />
           </View>
         </LinearGradient>

@@ -27,20 +27,18 @@ export default function ServiceDaysScreen() {
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [selectedDay, setSelectedDay] = useState<CaregiverDayOfWeek | null>(null);
   const [isSettingBeginTime, setIsSettingBeginTime] = useState(true);
-  const [activeField, setActiveField] = useState<{ day: CaregiverDayOfWeek, field: 'begin' | 'end' } | null>(null);
+  const [activeField, setActiveField] = useState<{
+    day: CaregiverDayOfWeek, field: 'begin' | 'end'
+  } | null>(null);
   useEffect(() => {
-    if (caregiverSchedule?.length === 0) {
-      setCaregiverSchedule([
-        { day: 'Mon', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-        { day: 'Tue', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-        { day: 'Wed', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-        { day: 'Thu', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-        { day: 'Fri', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-        { day: 'Sat', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-        { day: 'Sun', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-      ]);
-    }
-  }, [caregiverSchedule, setCaregiverSchedule]);
+    console.log(
+      'caregiver schedule',
+      caregiverSchedule?.map((day) => ({
+        day: day.day,
+        begin: day.timeSlot?.begin,
+        end: day.timeSlot?.end,
+      })))
+  }, []);
 
   const handleTimeSelect = (event: any, selectedTime?: Date) => {
     setShowTimePicker(false);
@@ -52,20 +50,31 @@ export default function ServiceDaysScreen() {
         hour12: false,
       });
 
-      setCaregiverSchedule(
-        (caregiverSchedule ?? []).map(day =>
-          day.day === selectedDay
-            ? {
-              ...day,
-              isActive: true,
-              timeSlot: {
-                ...day.timeSlot,
-                [isSettingBeginTime ? 'begin' : 'end']: formattedTime,
-              },
-            }
-            : day
-        )
-      );
+      const updatedSchedule = caregiverSchedule?.map((day) => {
+        const currentTimeSlot = day.timeSlot || {
+          begin: '00:00',
+          end: '00:00',
+        };
+
+        if (day.day === selectedDay) {
+          return {
+            ...day,
+            isActive: true,
+            timeSlot: {
+              begin: isSettingBeginTime ? formattedTime : currentTimeSlot.begin,
+              end: isSettingBeginTime ? currentTimeSlot.end : formattedTime,
+            },
+          };
+        }
+        return {
+          ...day,
+          timeSlot: {
+            begin: currentTimeSlot.begin,
+            end: currentTimeSlot.end,
+          },
+        };
+      });
+      setCaregiverSchedule(updatedSchedule);
     }
 
     setActiveField(null);
@@ -85,10 +94,23 @@ export default function ServiceDaysScreen() {
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.8} />
-
+        {showTimePicker && (
+          <>
+            <View style={styles.overlay} />
+            <View style={styles.timePickerContainer}>
+              <DateTimePicker
+                value={new Date()}
+                mode='time'
+                is24Hour={true}
+                display='spinner'
+                onChange={handleTimeSelect}
+              />
+            </View>
+          </>
+        )}
         <View style={styles.titleContainer}>
           <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
-            What days and{'\n'}hours would you{'\n'}need a caregiver?
+            Choose your availability
           </ThemedText>
         </View>
 
@@ -138,16 +160,6 @@ export default function ServiceDaysScreen() {
               </View>
             ))}
           </View>
-
-          {showTimePicker && (
-            <DateTimePicker
-              value={new Date()}
-              mode="time"
-              is24Hour={true}
-              display="spinner"
-              onChange={handleTimeSelect}
-            />
-          )}
         </ScrollView>
 
         <LinearGradient
@@ -269,5 +281,34 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     alignSelf: 'flex-end'
-  }
+  },
+  timePickerContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    backgroundColor: 'white',
+    paddingTop: 20,
+    paddingBottom: 40,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 999,
+  },
 });

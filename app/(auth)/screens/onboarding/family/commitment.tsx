@@ -11,13 +11,14 @@ import DateTimePicker, {
 } from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Modal,
   Platform,
   Pressable,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   TouchableOpacity,
   View,
@@ -32,6 +33,20 @@ export default function CommitmentScreen() {
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
+  // Initialize default dates if they don't exist
+  useEffect(() => {
+    if (!family_commitment.start_date) {
+      setFamilyCommitment({ start_date: new Date() });
+    }
+    if (!family_commitment.end_date) {
+      const defaultEndDate = new Date();
+      defaultEndDate.setMonth(defaultEndDate.getMonth() + 1); // Set default end date to 1 month from now
+      setFamilyCommitment({ end_date: defaultEndDate });
+    }
+  }, []);
+
+  console.log('family_commitment', family_commitment);
+
   const commitmentOptions: Array<{ label: Commitment; icon: string }> = [
     { label: 'Long Term', icon: '📋' },
     { label: 'Short Term', icon: '⌛' },
@@ -42,43 +57,16 @@ export default function CommitmentScreen() {
     router.push('/(auth)/screens/onboarding/family/servicedays');
   };
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-  };
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return 'MM/DD/YYYY';
+    const dateObj = new Date(date);
+    if (isNaN(dateObj.getTime())) return 'MM/DD/YYYY';
 
-  const onStartDateChange = (
-    event: DateTimePickerEvent,
-    selectedDate?: Date
-  ) => {
-    const currentDate = selectedDate || family_commitment.start_date;
-    setShowStartDatePicker(Platform.OS === 'ios');
-    if (event.type === 'set') {
-      setFamilyCommitment({ start_date: currentDate });
-    }
-  };
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const year = dateObj.getFullYear();
 
-  const onEndDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
-    const currentDate = selectedDate || family_commitment.end_date;
-    setShowEndDatePicker(Platform.OS === 'ios');
-    if (event.type === 'set') {
-      setFamilyCommitment({ end_date: currentDate });
-    }
-  };
-
-  const handleStartDateConfirm = () => {
-    if (Platform.OS === 'ios') {
-      setShowStartDatePicker(false);
-    }
-  };
-
-  const handleEndDateConfirm = () => {
-    if (Platform.OS === 'ios') {
-      setShowEndDatePicker(false);
-    }
+    return `${month}/${day}/${year}`;
   };
 
   const handleStartDateCancel = () => {
@@ -89,71 +77,55 @@ export default function CommitmentScreen() {
     setShowEndDatePicker(false);
   };
 
+  const handleStartDateConfirm = () => {
+    setShowStartDatePicker(false);
+  };
+
+  const handleEndDateConfirm = () => {
+    setShowEndDatePicker(false);
+  };
+
+  const onStartDateChange = (event: any, selectedDate?: Date) => {
+    setShowStartDatePicker(false);
+    if (selectedDate && event.type !== 'dismissed') {
+      setFamilyCommitment({ start_date: selectedDate });
+
+      // If end date is before start date, update end date
+      if (
+        family_commitment.end_date &&
+        selectedDate > family_commitment.end_date
+      ) {
+        setFamilyCommitment({ end_date: selectedDate });
+      }
+    }
+  };
+
+  const onEndDateChange = (event: any, selectedDate?: Date) => {
+    setShowEndDatePicker(false);
+    if (selectedDate && event.type !== 'dismissed') {
+      setFamilyCommitment({ end_date: selectedDate });
+    }
+  };
+
   const renderDatePicker = (isStartDate: boolean) => {
     const showPicker = isStartDate ? showStartDatePicker : showEndDatePicker;
     const currentDate = isStartDate
-      ? family_commitment.start_date
-      : family_commitment.end_date;
-    const handleCancel = isStartDate
-      ? handleStartDateCancel
-      : handleEndDateCancel;
-    const handleConfirm = isStartDate
-      ? handleStartDateConfirm
-      : handleEndDateConfirm;
+      ? family_commitment.start_date || new Date()
+      : family_commitment.end_date || new Date();
     const onDateChange = isStartDate ? onStartDateChange : onEndDateChange;
     const minimumDate = isStartDate ? new Date() : family_commitment.start_date;
 
-    if (Platform.OS === 'ios') {
-      return (
-        <Modal
-          animationType='slide'
-          transparent={true}
-          visible={showPicker}
-          onRequestClose={handleCancel}
-        >
-          <TouchableOpacity
-            style={styles.modalContainer}
-            activeOpacity={1}
-            onPress={handleCancel}
-          >
-            <View style={styles.modalContent}>
-              <View style={styles.modalHeader}>
-                <TouchableOpacity onPress={handleCancel}>
-                  <Text style={styles.modalButton}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleConfirm}>
-                  <Text style={styles.modalButton}>Done</Text>
-                </TouchableOpacity>
-              </View>
-              <DateTimePicker
-                testID='dateTimePicker'
-                value={currentDate}
-                mode='date'
-                display='spinner'
-                onChange={onDateChange}
-                minimumDate={minimumDate}
-                textColor='#000000'
-              />
-            </View>
-          </TouchableOpacity>
-        </Modal>
-      );
-    }
+    if (!showPicker) return null;
 
-    if (showPicker) {
-      return (
-        <DateTimePicker
-          testID='dateTimePicker'
-          value={currentDate}
-          mode='date'
-          display='default'
-          onChange={onDateChange}
-          minimumDate={minimumDate}
-        />
-      );
-    }
-
-    return null;
+    return (
+      <DateTimePicker
+        value={new Date(currentDate)}
+        mode='date'
+        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+        onChange={onDateChange}
+        minimumDate={minimumDate ? new Date(minimumDate) : new Date()}
+      />
+    );
   };
 
   return (
@@ -170,9 +142,7 @@ export default function CommitmentScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.mainContent}>
-            <ThemedText
-              style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}
-            >
+            <ThemedText style={styles.title}>
               What do you expect{'\n'}in terms of{'\n'}commitment?
             </ThemedText>
 
@@ -188,25 +158,53 @@ export default function CommitmentScreen() {
                   onPress={() =>
                     setFamilyCommitment({ selected_commitment: option.label })
                   }
+                  style={styles.commitmentPill}
                 />
               ))}
             </View>
 
-            {showStartDatePicker && (
-              <DateTimePicker
-                value={family_commitment.start_date}
-                mode='date'
-                onChange={onStartDateChange}
+            <View style={styles.dealbreaker}>
+              <ThemedText style={styles.dealbreakerText}>
+                Dealbreaker
+              </ThemedText>
+              <Switch
+                value={family_commitment.is_dealbreaker}
+                onValueChange={(value) =>
+                  setFamilyCommitment({ is_dealbreaker: value })
+                }
+                trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
+                thumbColor='#FFFFFF'
               />
-            )}
+            </View>
 
-            {showEndDatePicker && (
-              <DateTimePicker
-                value={family_commitment.end_date}
-                mode='date'
-                onChange={onEndDateChange}
-              />
-            )}
+            <View style={styles.dateContainer}>
+              <View style={styles.dateColumn}>
+                <Text style={styles.dateLabel}>Start Date</Text>
+                <Pressable
+                  style={styles.dateInput}
+                  onPress={() => setShowStartDatePicker(true)}
+                >
+                  <Text style={styles.dateInputText}>
+                    {formatDate(family_commitment.start_date)}
+                  </Text>
+                </Pressable>
+              </View>
+
+              <View style={styles.dateColumn}>
+                <Text style={styles.dateLabel}>End Date</Text>
+                <Pressable
+                  style={styles.dateInput}
+                  onPress={() => setShowEndDatePicker(true)}
+                >
+                  <Text style={styles.dateInputText}>
+                    {formatDate(family_commitment.end_date)}
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+
+            {renderDatePicker(true)}
+            {renderDatePicker(false)}
           </View>
         </ScrollView>
 
@@ -214,14 +212,13 @@ export default function CommitmentScreen() {
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
-          <View style={styles.buttonContainer}>
-            <Button
-              label='Next'
-              onPress={handleNext}
-              variant='compact'
-              disabled={!family_commitment.selected_commitment}
-            />
-          </View>
+          <Button
+            label='Next'
+            onPress={handleNext}
+            variant='compact'
+            disabled={!family_commitment.selected_commitment}
+            style={styles.nextButton}
+          />
         </LinearGradient>
       </View>
     </ThemedView>
@@ -254,44 +251,42 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Poppins',
-    fontWeight: '600',
-    marginBottom: 40,
+    fontFamily: 'Bogart-Semibold',
     color: '#002140',
     marginTop: 20,
+    marginBottom: 40,
   },
   optionsContainer: {
     flexDirection: 'row',
     gap: 12,
     marginBottom: 32,
   },
-  pill: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 25,
-    backgroundColor: '#F5F5F5',
+  commitmentPill: {
+    flex: 1,
   },
-  startDateLabel: {
+  dateContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 16,
+    marginTop: 24,
+  },
+  dateColumn: {
+    flex: 1,
+  },
+  dateLabel: {
     fontSize: 16,
-    color: '#999999',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  dateButton: {
-    backgroundColor: '#F5F5F5',
-    padding: 16,
-    borderRadius: 25,
-    alignItems: 'center',
-  },
-  shortDateButton: {
-    width: '60%',
-  },
-  centerContainer: {
-    alignItems: 'center',
-  },
-  dateButtonText: {
     color: '#666666',
+    marginBottom: 8,
+  },
+  dateInput: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
+  dateInputText: {
     fontSize: 16,
+    color: '#666666',
   },
   modalContainer: {
     flex: 1,
@@ -325,17 +320,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     justifyContent: 'center',
   },
-  buttonContainer: {
-    marginBottom: 50,
+  nextButton: {
+    backgroundColor: '#E85B40',
+    borderRadius: 25,
+    paddingVertical: 16,
     width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
   },
-  dateRow: {
+  dealbreaker: {
     flexDirection: 'row',
-    gap: 12,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 16,
+    marginBottom: 24,
+    paddingHorizontal: 4,
   },
-  dateColumn: {
-    flex: 1,
+  dealbreakerText: {
+    fontSize: 16,
+    color: '#666666',
   },
 });

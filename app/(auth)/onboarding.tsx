@@ -19,7 +19,9 @@ export default function OnboardingScreen() {
     await completeOnboarding();
     if (onboarding_screen) {
       // router.push(onboarding_screen);
-      router.push('/(auth)/bridge');
+      // router.push('/(auth)/screens/onboarding/family/payment');
+      router.push('/(auth)/bridge')
+      // router.push('/(auth)/phoneNumber');
     } else {
       router.push('/(auth)/phoneNumber');
     }

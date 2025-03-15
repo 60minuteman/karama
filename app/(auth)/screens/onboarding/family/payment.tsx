@@ -20,6 +20,8 @@ export default function PaymentScreen() {
   const { selected_type, hourly_rate, salary_amount, has_interacted } =
     family_payment;
 
+  console.log('family_payment', family_payment);
+
   const paymentOptions: Array<{ label: PaymentType; icon: string }> = [
     { label: 'Hourly', icon: '🤑' },
     { label: 'Salary Base', icon: '💰' },

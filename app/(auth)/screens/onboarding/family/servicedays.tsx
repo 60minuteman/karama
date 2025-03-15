@@ -36,6 +36,15 @@ export default function ServiceDaysScreen() {
     field: 'begin' | 'end';
   } | null>(null);
 
+  console.log(
+    'family_schedule',
+    family_schedule.map((day) => ({
+      day: day.day,
+      begin: day.timeSlot?.begin,
+      end: day.timeSlot?.end,
+    }))
+  );
+
   const handleTimeSelect = (event: any, selectedTime?: Date) => {
     setShowTimePicker(false);
     if (selectedTime && selectedDay) {
@@ -46,17 +55,28 @@ export default function ServiceDaysScreen() {
       });
 
       const updatedSchedule = family_schedule.map((day) => {
+        const currentTimeSlot = day.timeSlot || {
+          begin: '00:00',
+          end: '00:00',
+        };
+
         if (day.day === selectedDay) {
           return {
             ...day,
             isActive: true,
             timeSlot: {
-              ...day.timeSlot,
-              [isSettingBeginTime ? 'begin' : 'end']: formattedTime,
+              begin: isSettingBeginTime ? formattedTime : currentTimeSlot.begin,
+              end: isSettingBeginTime ? currentTimeSlot.end : formattedTime,
             },
           };
         }
-        return day;
+        return {
+          ...day,
+          timeSlot: {
+            begin: currentTimeSlot.begin,
+            end: currentTimeSlot.end,
+          },
+        };
       });
       setFamilySchedule(updatedSchedule);
     }
@@ -82,6 +102,21 @@ export default function ServiceDaysScreen() {
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.8} />
+
+        {showTimePicker && (
+          <>
+            <View style={styles.overlay} />
+            <View style={styles.timePickerContainer}>
+              <DateTimePicker
+                value={new Date()}
+                mode='time'
+                is24Hour={true}
+                display='spinner'
+                onChange={handleTimeSelect}
+              />
+            </View>
+          </>
+        )}
 
         <View style={styles.titleContainer}>
           <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
@@ -130,7 +165,7 @@ export default function ServiceDaysScreen() {
                   onPress={() => handleTimePress(day.day, true)}
                 >
                   <ThemedText style={styles.timeText}>
-                    {day.timeSlot.begin}
+                    {day.timeSlot?.begin || '00:00'}
                   </ThemedText>
                 </Pressable>
                 <Pressable
@@ -143,22 +178,12 @@ export default function ServiceDaysScreen() {
                   onPress={() => handleTimePress(day.day, false)}
                 >
                   <ThemedText style={styles.timeText}>
-                    {day.timeSlot.end}
+                    {day.timeSlot?.end || '00:00'}
                   </ThemedText>
                 </Pressable>
               </View>
             ))}
           </View>
-
-          {showTimePicker && (
-            <DateTimePicker
-              value={new Date()}
-              mode='time'
-              is24Hour={true}
-              display='spinner'
-              onChange={handleTimeSelect}
-            />
-          )}
         </ScrollView>
 
         <LinearGradient
@@ -273,5 +298,34 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     alignSelf: 'flex-end',
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 999,
+  },
+  timePickerContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    backgroundColor: 'white',
+    paddingTop: 20,
+    paddingBottom: 40,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });

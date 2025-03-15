@@ -18,6 +18,8 @@ export default function ArrangementsScreen() {
   const { family_arrangement, setFamilyArrangement, setOnboardingScreen } =
     useUserStore();
 
+  console.log('family_arrangement', family_arrangement);
+
   const arrangementOptions: Array<{ label: Arrangement; icon: string }> = [
     { label: 'Live In', icon: '💤' },
     { label: 'Live Out', icon: '⏰' },

@@ -30,15 +30,18 @@ export default function CommitmentScreen() {
     setCaregiverCommitmentEndDate,
     setOnboardingScreen,
   } = useUserStore()
-  // useEffect(() => {
-  //   console.log(caregiverCommitmentStartDate)
-  //   if (!caregiverCommitmentStartDate) {
-  //     setCaregiverCommitmentStartDate(new Date());
-  //   }
-  //   if (!caregiverCommitmentEndDate) {
-  //     setCaregiverCommitmentEndDate(new Date());
-  //   }
-  // }, [])
+  // Initialize default dates if they don't exist
+  useEffect(() => {
+    if (!caregiverCommitmentStartDate) {
+      setCaregiverCommitmentStartDate( new Date());
+    }
+    if (!caregiverCommitmentEndDate) {
+      const defaultEndDate = new Date();
+      defaultEndDate.setMonth(defaultEndDate.getMonth() + 1); // Set default end date to 1 month from now
+      setCaregiverCommitmentEndDate(defaultEndDate);
+    }
+  }, []);
+
   const commitmentOptions: Array<{ label: CaregiverCommitment; icon: string }> = [
     { label: 'Long Term', icon: '📋' },
     { label: 'Short Term', icon: '⌛' },
@@ -48,61 +51,59 @@ export default function CommitmentScreen() {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/servicedays');
     router.push('/(auth)/screens/onboarding/caregiver/servicedays');
   };
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return 'MM/DD/YYYY';
+    const dateObj = new Date(date);
+    if (isNaN(dateObj.getTime())) return 'MM/DD/YYYY';
 
-const formatDate = (date: any) => {
-  console.log("formatDate received:", date); // Debugging line
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const year = dateObj.getFullYear();
 
-  if (!date) return 'Select Date';
+    return `${month}/${day}/${year}`;
+  };
+  const onStartDateChange = (event: any, selectedDate?: Date) => {
+    setShowStartDatePicker(false);
+    if (selectedDate && event.type !== 'dismissed') {
+      setCaregiverCommitmentStartDate(selectedDate);
 
-  let parsedDate = date;
-
-  // If the date is a string, try converting it to a Date object
-  if (typeof date === "string") {
-    parsedDate = new Date(date);
-  }
-
-  if (!(parsedDate instanceof Date) || isNaN(parsedDate.getTime())) {
-    console.error("Invalid date received:", date);
-    return 'Invalid Date';
-  }
-
-  return parsedDate.toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric'
-  });
-};
-  const onStartDateChange = (event: DateTimePickerEvent, selectedDate?: Date|null) => {
-    const currentDate = selectedDate || caregiverCommitmentStartDate;
-
-    if (Platform.OS === 'android') {
-      setShowStartDatePicker(false);
-    }
-
-    if (event.type === 'set') {
-      setCaregiverCommitmentStartDate(currentDate);
-      if (caregiverCommitmentEndDate && currentDate && caregiverCommitmentEndDate < currentDate) {
-        setCaregiverCommitmentEndDate(currentDate);
+      // If end date is before start date, update end date
+      if (
+       caregiverCommitmentEndDate &&
+        selectedDate > caregiverCommitmentEndDate
+      ) {
+        setCaregiverCommitmentEndDate(selectedDate );
       }
-    } else if (event.type === 'dismissed') {
-      setShowStartDatePicker(false);
     }
   };
 
-  const onEndDateChange = (event: DateTimePickerEvent, selectedDate?: Date) => {
-    const currentDate = selectedDate || caregiverCommitmentEndDate;
-
-    if (Platform.OS === 'android') {
-      setShowEndDatePicker(false);
-    }
-
-    if (event.type === 'set') {
-      setCaregiverCommitmentEndDate(currentDate);
-    } else if (event.type === 'dismissed') {
-      setShowEndDatePicker(false);
+  const onEndDateChange = (event: any, selectedDate?: Date) => {
+    setShowEndDatePicker(false);
+    if (selectedDate && event.type !== 'dismissed') {
+      setCaregiverCommitmentEndDate(selectedDate );
     }
   };
 
+  const renderDatePicker = (isStartDate: boolean) => {
+    const showPicker = isStartDate ? showStartDatePicker : showEndDatePicker;
+    const currentDate = isStartDate
+      ?caregiverCommitmentStartDate || new Date()
+      : caregiverCommitmentEndDate || new Date();
+    const onDateChange = isStartDate ? onStartDateChange : onEndDateChange;
+    const minimumDate = isStartDate ? new Date() :caregiverCommitmentStartDate;
+
+    if (!showPicker) return null;
+
+    return (
+      <DateTimePicker
+        value={new Date(currentDate)}
+        mode='date'
+        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+        onChange={onDateChange}
+        minimumDate={minimumDate ? new Date(minimumDate) : new Date()}
+      />
+    );
+  };
   const handleStartDateConfirm = () => {
     if (Platform.OS === 'ios') {
       setShowStartDatePicker(false);
@@ -123,66 +124,66 @@ const formatDate = (date: any) => {
     setShowEndDatePicker(false);
   };
 
-  const renderDatePicker = (isStartDate: boolean) => {
-    const showPicker = isStartDate ? showStartDatePicker : showEndDatePicker;
-    const currentDate = isStartDate ? caregiverCommitmentStartDate : caregiverCommitmentEndDate;
-    const handleCancel = isStartDate ? handleStartDateCancel : handleEndDateCancel;
-    const handleConfirm = isStartDate ? handleStartDateConfirm : handleEndDateConfirm;
-    const onDateChange = isStartDate ? onStartDateChange : onEndDateChange;
-    const minimumDate = isStartDate ? new Date() : caregiverCommitmentStartDate;
+  // const renderDatePicker = (isStartDate: boolean) => {
+  //   const showPicker = isStartDate ? showStartDatePicker : showEndDatePicker;
+  //   const currentDate = isStartDate ? caregiverCommitmentStartDate : caregiverCommitmentEndDate;
+  //   const handleCancel = isStartDate ? handleStartDateCancel : handleEndDateCancel;
+  //   const handleConfirm = isStartDate ? handleStartDateConfirm : handleEndDateConfirm;
+  //   const onDateChange = isStartDate ? onStartDateChange : onEndDateChange;
+  //   const minimumDate = isStartDate ? new Date() : caregiverCommitmentStartDate;
 
-    if (Platform.OS === 'ios') {
-      return (
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={showPicker}
-          onRequestClose={handleCancel}
-        >
-          <TouchableOpacity
-            style={styles.modalContainer}
-            activeOpacity={1}
-            onPress={handleCancel}
-          >
-            <View style={styles.modalContent}>
-              <View style={styles.modalHeader}>
-                <TouchableOpacity onPress={handleCancel}>
-                  <Text style={styles.modalButton}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleConfirm}>
-                  <Text style={styles.modalButton}>Done</Text>
-                </TouchableOpacity>
-              </View>
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={currentDate}
-                mode="date"
-                display="spinner"
-                onChange={onDateChange}
-                minimumDate={minimumDate}
-                textColor="#000000"
-              />
-            </View>
-          </TouchableOpacity>
-        </Modal>
-      );
-    }
+  //   if (Platform.OS === 'ios') {
+  //     return (
+  //       <Modal
+  //         animationType="slide"
+  //         transparent={true}
+  //         visible={showPicker}
+  //         onRequestClose={handleCancel}
+  //       >
+  //         <TouchableOpacity
+  //           style={styles.modalContainer}
+  //           activeOpacity={1}
+  //           onPress={handleCancel}
+  //         >
+  //           <View style={styles.modalContent}>
+  //             <View style={styles.modalHeader}>
+  //               <TouchableOpacity onPress={handleCancel}>
+  //                 <Text style={styles.modalButton}>Cancel</Text>
+  //               </TouchableOpacity>
+  //               <TouchableOpacity onPress={handleConfirm}>
+  //                 <Text style={styles.modalButton}>Done</Text>
+  //               </TouchableOpacity>
+  //             </View>
+  //             <DateTimePicker
+  //               testID="dateTimePicker"
+  //               value={currentDate}
+  //               mode="date"
+  //               display="spinner"
+  //               onChange={onDateChange}
+  //               minimumDate={minimumDate}
+  //               textColor="#000000"
+  //             />
+  //           </View>
+  //         </TouchableOpacity>
+  //       </Modal>
+  //     );
+  //   }
 
-    if (showPicker) {
-      return (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={currentDate}
-          mode="date"
-          display="default"
-          onChange={onDateChange}
-          minimumDate={minimumDate}
-        />
-      );
-    }
+  //   if (showPicker) {
+  //     return (
+  //       <DateTimePicker
+  //         testID="dateTimePicker"
+  //         value={currentDate}
+  //         mode="date"
+  //         display="default"
+  //         onChange={onDateChange}
+  //         minimumDate={minimumDate}
+  //       />
+  //     );
+  //   }
 
-    return null;
-  };
+  //   return null;
+  // };
 
   return (
     <ThemedView style={styles.container}>

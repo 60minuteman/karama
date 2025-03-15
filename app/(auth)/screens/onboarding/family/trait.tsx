@@ -17,6 +17,8 @@ export default function TraitScreen() {
     useUserStore();
   const { selected_traits, is_dealbreaker } = caregiver_traits;
 
+  console.log('caregiver_traits', caregiver_traits);
+
   const personalityTraits = [
     { label: 'Bubbly', icon: '🫧' },
     { label: 'Animated', icon: '🤹' },

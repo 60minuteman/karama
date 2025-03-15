@@ -85,7 +85,7 @@ export default function PaymentScreen() {
                     style={styles.input}
                     placeholder="$20-$30/hr"
                     placeholderTextColor="#999"
-                    value={hasInteracted ? caregiverHourlyRate?.toString() : ''}
+                    value={caregiverHourlyRate?.toString()}
                     onChangeText={(text) => {
                       setHasInteracted(true);
                       setCaregiverHourlyRate(Number(text));

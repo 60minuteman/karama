@@ -218,19 +218,19 @@ export interface CaregiverPositionHistory {
 }
 
 interface AgeGroup {
-  icon: string;
-  label: string;
+  icon?: string;
+  age_group: string;
   count: number;
 }
 
 const defaultAgeGroups: AgeGroup[] = [
-  { icon: '🐣', label: 'Expecting', count: 0 },
-  { icon: '👶', label: 'Newborn', count: 0 },
-  { icon: '🍼', label: 'Infant', count: 0 },
-  { icon: '🧸', label: 'Toddler', count: 0 },
-  { icon: '✏️', label: 'Pre Schooler', count: 0 },
-  { icon: '🛴', label: 'School Age', count: 0 },
-  { icon: '👑', label: 'Teenager', count: 0 },
+  { icon: '🐣', age_group: 'Expecting', count: 0 },
+  { icon: '👶', age_group: 'Newborn', count: 0 },
+  { icon: '🍼', age_group: 'Infant', count: 0 },
+  { icon: '🧸', age_group: 'Toddler', count: 0 },
+  { icon: '✏️', age_group: 'Pre Schooler', count: 0 },
+  { icon: '🛴', age_group: 'School Age', count: 0 },
+  { icon: '👑', age_group: 'Teenager', count: 0 },
 ];
 
 interface FamilyDescription {
@@ -428,6 +428,8 @@ interface UserState {
   family_more_info: string;
   family_has_allergies: boolean | null;
   family_allergies: FamilyAllergies;
+  family_prompt_category: string | null;
+  family_images: string[];
   //USER IS CAREGIVER
   caregiverName: string | null;
   caregiverDob: string | null;
@@ -443,7 +445,7 @@ interface UserState {
   caregiverAbilities: CaregiverAbilities[] | null;
   caregiverCertifications: CaregiverCertification[] | null;
   caregiverLanguages: Language[] | null;
-  caregiverAgeExperience: string | null;
+  caregiverAgeExperience: string[] | undefined;
   caregiverChildrenCount: number;
   hasNeuroDivergentExperience: 'yes' | 'no' | null;
   caregiverConditionExperience: CaregiverConditionExperience[] | null;
@@ -469,21 +471,23 @@ interface UserState {
   caregiverCommitmentType: CaregiverCommitment | null;
   caregiverCommitmentStartDate: Date | null;
   caregiverCommitmentEndDate: Date | null;
-  caregiverSchedule: CaregiverDaySchedule[] | null;
-  caregiverResponsibilities: string[] | null;
+  caregiverSchedule: CaregiverDaySchedule[] | undefined;
+  caregiverChildcareResponsibilities: string[] | null;
+  caregiverHouseholdResponsibilities: string[] | null;
   caregiverPaymentType: 'Hourly' | 'Salary Base' | null;
-  caregiverHourlyRate: number | undefined;
-  caregiverSalaryAmount: string | undefined;
+  caregiverHourlyRate: number | null;
+  caregiverSalaryAmount: string | null;
   caregiverPaymentMethod: string;
   showCaregiverPaymentMethod: boolean | undefined;
   caregiverRequiredBenefits: string[] | null;
   showCaregiverRequiredBenefit: boolean | undefined;
   caregiverFirstPosition: CaregiverPositionHistory;
   caregiverSecondPosition: CaregiverPositionHistory;
+  caregiverPromptCategory : string | undefined;
   caregiverFirstPrompt: string | undefined;
   caregiverFirstPromptAnswer :string | undefined;
   caregiverMoreInfo: string | undefined;
-
+  caregiverImages : string[];
 
 
   // Actions
@@ -551,7 +555,7 @@ interface UserState {
   setCaregiverAbilities: (type: CaregiverAbilities[] | null) => void;
   setCaregiverCertification: (type: CaregiverCertification[] | null) => void;
   setCaregiverLanguages: (type: Language[] | null) => void;
-  setCaregiverAgeExperience: (type: string | null) => void;
+  setCaregiverAgeExperience: (type: string[] | undefined) => void;
   setCaregiverChildrenCount: (type: number) => void;
   setHasNeuroDivergentExperience: (type: 'yes' | 'no' | null) => void;
   setCaregiverConditionExperience: (type: CaregiverConditionExperience[] | null) => void;
@@ -577,20 +581,24 @@ interface UserState {
   setCaregiverCommitmentType: (type: CaregiverCommitment | null) => void;
   setCaregiverCommitmentStartDate: (type: Date | null) => void;
   setCaregiverCommitmentEndDate: (type: Date | null) => void;
-  setCaregiverSchedule: (type: CaregiverDaySchedule[] | null) => void;
-  setCaregiverResponsibilities: (type: string[] | null) => void;
+  setCaregiverSchedule: (type: CaregiverDaySchedule[] | undefined) => void;
+  setCaregiverChildcareResponsibilities: (type: string[] | null) => void;
+  setCaregiverHouseholdResponsibilities: (type: string[] | null) => void;
+
   setCaregiverPaymentType: (type: 'Hourly' | 'Salary Base' | null) => void;
-  setCaregiverHourlyRate: (type: number | undefined) => void;
-  setCaregiverSalaryAmount: (type: string | undefined) => void;
+  setCaregiverHourlyRate: (type: number | null) => void;
+  setCaregiverSalaryAmount: (type: string | null) => void;
   setCaregiverPaymentMethod: (type: string) => void;
   setShowCaregiverPaymentMethod: (type: boolean | undefined) => void;
   setCaregiverRequiredBenefits: (type: string[] | null) => void;
   setShowCaregiverRequiredBenefits: (type: boolean | undefined) => void;
   setCaregiverFirstPosition: (type: CaregiverPositionHistory) => void;
   setCaregiverSecondPosition: (type: CaregiverPositionHistory) => void;
+  setCaregiverPromptCategory: (type: string | undefined) => void;
   setCaregiverFirstPrompt: (type: string | undefined) => void;
   setCaregiverFirstPromptAnswer : (type: string|undefined)=> void;
   setCaregiverMoreInfo: (type: string | undefined) => void;
+  setCaregiverImages: (images: string[]) => void;
 
 
 
@@ -620,6 +628,8 @@ interface UserState {
   setFamilyMoreInfo: (info: string) => void;
   setFamilyHasAllergies: (hasAllergies: boolean | null) => void;
   setFamilyAllergies: (allergies: Partial<FamilyAllergies>) => void;
+  setFamilyPromptCategory: (category: string | null) => void;
+  setFamilyImages: (images: string[]) => void;
 }
 
 export const useUserStore = create<UserState>()(
@@ -771,6 +781,8 @@ export const useUserStore = create<UserState>()(
         environmental: [],
         other: [],
       },
+      family_prompt_category: 'get_to_know',
+      family_images: [],
       // USER IS CAREGIVER
       caregiverName: null,
       caregiverDob: null,
@@ -786,7 +798,7 @@ export const useUserStore = create<UserState>()(
       caregiverAbilities: [],
       caregiverCertifications: [],
       caregiverLanguages: [],
-      caregiverAgeExperience: null,
+      caregiverAgeExperience: [],
       caregiverChildrenCount: 0,
       hasNeuroDivergentExperience: null,
       caregiverConditionExperience: [],
@@ -812,8 +824,17 @@ export const useUserStore = create<UserState>()(
       caregiverCommitmentType: null,
       caregiverCommitmentStartDate: new Date(),
       caregiverCommitmentEndDate: new Date(),
-      caregiverSchedule: [],
-      caregiverResponsibilities: [],
+      caregiverSchedule: [
+        { day: 'Mon', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Tue', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Wed', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Thu', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Fri', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Sat', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Sun', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+      ],
+      caregiverChildcareResponsibilities: [],
+      caregiverHouseholdResponsibilities: [],
       caregiverHourlyRate: 15,
       caregiverSalaryAmount: '50,000',
       caregiverPaymentType: null,
@@ -839,9 +860,12 @@ export const useUserStore = create<UserState>()(
         startDate: '',
         endDate: '',
       },
+      caregiverPromptCategory:'',
       caregiverFirstPrompt : '',
       caregiverFirstPromptAnswer: '',
       caregiverMoreInfo: '',
+      caregiverImages:[],
+
 
 
       //
@@ -980,8 +1004,10 @@ export const useUserStore = create<UserState>()(
       setCaregiverCommitmentEndDate: (end) => set({ caregiverCommitmentEndDate: end }),
       setCaregiverCommitmentStartDate: (start) => set({ caregiverCommitmentStartDate: start }),
       setCaregiverSchedule: (schedule) => set({ caregiverSchedule: schedule }),
-      setCaregiverResponsibilities: (responsibilities) =>
-        set({ caregiverResponsibilities: responsibilities }),
+      setCaregiverChildcareResponsibilities: (responsibilities) =>
+        set({ caregiverChildcareResponsibilities: responsibilities }),
+      setCaregiverHouseholdResponsibilities: (responsibilities) =>
+        set({ caregiverHouseholdResponsibilities: responsibilities }),
       setCaregiverHourlyRate: (rate) => set({ caregiverHourlyRate: rate }),
       setCaregiverPaymentType: (payment) => set({ caregiverPaymentType: payment }),
       setCaregiverSalaryAmount: (amount) => set({ caregiverSalaryAmount: amount }),
@@ -991,9 +1017,11 @@ export const useUserStore = create<UserState>()(
       setShowCaregiverRequiredBenefits: (show) => set({ showCaregiverRequiredBenefit: show }),
       setCaregiverFirstPosition: (first) => set({ caregiverFirstPosition: first }),
       setCaregiverSecondPosition: (second) => set({ caregiverSecondPosition: second }),
+      setCaregiverPromptCategory : (category)=>set({caregiverPromptCategory : category}),
       setCaregiverFirstPrompt : (prompt)=>set({caregiverFirstPrompt : prompt}),
       setCaregiverFirstPromptAnswer: (answer) => set({ caregiverFirstPromptAnswer: answer }),
       setCaregiverMoreInfo: (prompt) => set({ caregiverMoreInfo: prompt }),
+      setCaregiverImages: (images) => set({ caregiverImages: images }),
 
 
       // 
@@ -1194,6 +1222,8 @@ export const useUserStore = create<UserState>()(
             environmental: [],
             other: [],
           },
+          family_prompt_category: 'get_to_know',
+          family_images: [],
         });
       },
 
@@ -1272,6 +1302,11 @@ export const useUserStore = create<UserState>()(
             ...allergies,
           },
         })),
+
+      setFamilyPromptCategory: (category) =>
+        set({ family_prompt_category: category }),
+
+      setFamilyImages: (images) => set({ family_images: images }),
     }),
     {
       name: 'user-storage',
