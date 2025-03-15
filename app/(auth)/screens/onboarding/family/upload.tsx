@@ -67,7 +67,6 @@ export default function Page() {
       if (newImages.length <= 6) {
         setFamilyImages(newImages);
       } else {
-        alert('Maximum 6 images allowed');
       }
     }
   };

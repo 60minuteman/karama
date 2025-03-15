@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Switch } from 'react-native';
 import { router } from 'expo-router';
 import { Colors } from '@/constants/Colors';
@@ -10,6 +10,7 @@ import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { useFonts } from 'expo-font';
 import * as Font from 'expo-font';
+import { useUserStore } from '@/services/state/user';
 
 const pronounOptions = [
   {
@@ -27,11 +28,18 @@ const pronounOptions = [
 ];
 
 export default function Page() {
-  const [selectedPronouns, setSelectedPronouns] = useState<string | null>(null);
-  const [showOnProfile, setShowOnProfile] = useState(false);
+  const {caregiverPronouns,setCaregiverPronouns,setOnboardingScreen, caregiverShowPronouns,setCaregiverShowPronouns}=useUserStore()
+  // const [selectedPronouns, setSelectessssDietdPronouns] = useState<string | null>(null);
+  // const [showOnProfile, setShowOnProfile] = useState(false);
   const [fontsLoaded] = useFonts({
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
   });
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/hear');
+    router.push('/(auth)/screens/onboarding/caregiver/hear')  };
+  useEffect(()=>{
+    console.log(caregiverPronouns)
+  },[caregiverPronouns])
 
   return (
     <ThemedView style={styles.container}>
@@ -50,8 +58,8 @@ export default function Page() {
             <Pill
               key={option.label}
               label={`${option.emoji} ${option.label}`}
-              onPress={() => setSelectedPronouns(option.label)}
-              selected={selectedPronouns === option.label}
+              onPress={() => setCaregiverPronouns(option.label)}
+              selected={caregiverPronouns === option.label}
             />
           ))}
         </View>
@@ -59,8 +67,8 @@ export default function Page() {
         <View style={styles.toggleContainer}>
           <ThemedText style={styles.toggleText}>Show on profile</ThemedText>
           <Switch
-            value={showOnProfile}
-            onValueChange={setShowOnProfile}
+            value={caregiverShowPronouns}
+            onValueChange={setCaregiverShowPronouns}
             trackColor={{ false: '#E2E8F0', true: '#F45B69' }}
             thumbColor={'#FFFFFF'}
           />
@@ -70,14 +78,14 @@ export default function Page() {
       <View style={styles.bottomNav}>
         <Button
           label="Skip"
-          onPress={() => router.push('/(auth)/screens/onboarding/caregiver/hear')}
+          onPress={handleNext}
           variant="skip"
         />
         <Button
           label="Next"
-          onPress={() => router.push('/(auth)/screens/onboarding/caregiver/hear')}
+          onPress={handleNext }
           variant="compact"
-          disabled={!selectedPronouns}
+          disabled={!caregiverPronouns}
         />
       </View>
     </ThemedView>

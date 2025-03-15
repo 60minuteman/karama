@@ -55,7 +55,7 @@ type Source =
   | 'App Store'
   | 'Other';
 
-type Language =
+export type Language =
   | 'Spanish'
   | 'French'
   | 'English'
@@ -74,7 +74,7 @@ type Language =
   | 'Estonian'
   | 'Croatian'
   | 'Swedish'
-  | 'Portugese'
+  | 'Portuguese'
   | 'Other';
 
 export type PetType =
@@ -101,6 +101,121 @@ export type PetType =
   | 'Baby Elephant'
   | 'Unicorn'
   | 'Other';
+
+type CaregiverGender =
+  | 'Cisgender Female'
+  | 'Non Binary'
+  | 'Gender Neutral'
+  | 'Gender Queer'
+  | 'Transgender'
+  | 'Male'
+  | 'Female'
+  | 'Prefer not to say'
+  | 'Cisgender Male'
+  | 'Gender Fluid'
+  | 'Other';
+
+type CaregiverType =
+  | 'Night Nurse'
+  | 'Governess'
+  | 'Babysitter'
+  | 'Nanny'
+  | 'Manny'
+  | 'Au Pair'
+  | 'Caregiver/Housekeeper'
+  | 'Caregiver/Personal Assistant'
+  | 'Caregiver/Household Manager';
+
+type CaregiverExperience =
+  | '1-11 months'
+  | '1-5 years'
+  | '6-10 years'
+  | '11-20 years'
+  | '21-30 years'
+  | '31 years+';
+
+type CaregiverEducation =
+  | 'High School'
+  | 'In College'
+  | 'Undergraduate Degree'
+  | 'In Grad School'
+  | 'Graduate Degree'
+  | 'No Preference';
+
+export type CaregiverAbilities =
+  | 'Can Travel'
+  | 'Able To Drive'
+  | 'First Aid'
+  | 'Can Swim'
+  | 'COVID Vaccination'
+  | 'CPR'
+  | 'Other';
+
+export type CaregiverCertification =
+  | 'Sign Language'
+  | 'Administering Medication'
+  | 'Special Needs'
+  | 'Condition Specific'
+  | 'Feeding & Swallowing'
+  | 'Registered Behaviour Technician'
+  | 'Other';
+
+export type CaregiverConditionExperience =
+  | 'Dyslexia'
+  | 'ADHD'
+  | 'Autistic Spectrum'
+  | 'Tourette Syndrome'
+  | 'Down Syndrome'
+  | 'Schizophrenia'
+  | 'Misophonia'
+  | 'Hearing Impaired'
+  | 'Vision Impaired'
+  | 'Bipolar';
+
+export type CaregiverPhilosophies =
+  | 'Harkness'
+  | 'Montessori'
+  | 'Waldorf/ Steiner'
+  | 'Sudbury'
+  | 'Reggio Emillia'
+  | 'Gentle Parenting'
+  | 'Permissive Parenting';
+
+export type CaregiverPositions =
+  | 'Full Time'
+  | 'Part Time'
+  | 'Occasionally'
+  | 'Night Out'
+  | 'After school Pickup';
+
+export type CaregiverPreferredArrangement =
+  | 'Live In'
+  | 'Live Out'
+  | 'Hybrid';
+export type CaregiverCommitment = 'Long Term' | 'Short Term';
+
+export type CaregiverDayOfWeek = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
+
+interface CaregiverTimeSlot {
+  begin: string;
+  end: string;
+}
+
+export interface CaregiverDaySchedule {
+  day: CaregiverDayOfWeek;
+  timeSlot: CaregiverTimeSlot;
+  isActive: boolean;
+}
+
+export interface CaregiverPositionHistory {
+  position: string,
+  positionNumber: 'first' | 'second' | null,
+  ageGroup: string,
+  familyName: string,
+  employmentType: string,
+  startDate: string,
+  endDate: string,
+}
 
 interface AgeGroup {
   icon?: string;
@@ -225,6 +340,7 @@ interface UserState {
   hydrated: boolean;
   subscribed_to_promotions: boolean;
   selectedType: 'family' | 'caregiver' | null;
+  //USER IS FAMILY
   familyName: string | null;
   family_description: FamilyDescription | null;
   family_age_groups: AgeGroup[];
@@ -314,12 +430,73 @@ interface UserState {
   family_allergies: FamilyAllergies;
   family_prompt_category: string | null;
   family_images: string[];
+  //USER IS CAREGIVER
+  caregiverName: string | null;
+  caregiverDob: string | null;
+  caregiverGender: CaregiverGender | null;
+  caregiverPronouns: string | null;
+  caregiverReferral: string | null;
+  caregiverShowPronouns: boolean;
+  caregiverLocation: string | null;
+  caregiverPositionType: CaregiverType | null;
+  caregiverExperienceDuration: CaregiverExperience | null;
+  caregiverEducation: CaregiverEducation | null;
+  caregiverShowEducation: boolean;
+  caregiverAbilities: CaregiverAbilities[] | null;
+  caregiverCertifications: CaregiverCertification[] | null;
+  caregiverLanguages: Language[] | null;
+  caregiverAgeExperience: string[] | undefined;
+  caregiverChildrenCount: number;
+  hasNeuroDivergentExperience: 'yes' | 'no' | null;
+  caregiverConditionExperience: CaregiverConditionExperience[] | null;
+  hasPetExperience: 'yes' | 'no' | null;
+  caregiverPetExperience: PetType[] | null;
+  caregiverCreativeInterests: string[] | null;
+  caregiverInstrumentInterests: string[] | null;
+  caregiverSportInterest: string[] | null;
+  caregiverStemInterests: string[] | null;
+  caregiverPersonality: string[] | null;
+  showCaregiverPersonality: boolean;
+  caregiverRules: string[] | null;
+  caregiverDiet: string[] | null;
+  showCaregiverDiet: boolean;
+  caregiverReligion: string[] | null;
+  showCaregiverReligion: boolean;
+  hasPhilosophyExperience: 'yes' | 'no' | null;
+  caregiverPhilosophyExperience: CaregiverPhilosophies[] | null;
+  caregiverLanguageMatch: 'required' | 'not_required' | null;
+  caregiverPreferredPositions: CaregiverPositions[] | null;
+  caregiverPreferredArrangement: CaregiverPreferredArrangement | null;
+  isDealBreaker: boolean | null;
+  caregiverCommitmentType: CaregiverCommitment | null;
+  caregiverCommitmentStartDate: Date | null;
+  caregiverCommitmentEndDate: Date | null;
+  caregiverSchedule: CaregiverDaySchedule[] | undefined;
+  caregiverChildcareResponsibilities: string[] | null;
+  caregiverHouseholdResponsibilities: string[] | null;
+  caregiverPaymentType: 'Hourly' | 'Salary Base' | null;
+  caregiverHourlyRate: number | null;
+  caregiverSalaryAmount: string | null;
+  caregiverPaymentMethod: string;
+  showCaregiverPaymentMethod: boolean | undefined;
+  caregiverRequiredBenefits: string[] | null;
+  showCaregiverRequiredBenefit: boolean | undefined;
+  caregiverFirstPosition: CaregiverPositionHistory;
+  caregiverSecondPosition: CaregiverPositionHistory;
+  caregiverPromptCategory : string | undefined;
+  caregiverFirstPrompt: string | undefined;
+  caregiverFirstPromptAnswer :string | undefined;
+  caregiverMoreInfo: string | undefined;
+  caregiverImages : string[];
+
+
   // Actions
   setUser: (user: UserProfile | null) => void;
   setToken: (token: string | null) => void;
   updateUser: (userData: Partial<UserProfile>) => void;
   setPromotionSubscription: (subscribed: boolean) => void;
   setSelectedType: (type: 'family' | 'caregiver' | null) => void;
+  //USER IS FAMILY
   setFamilyName: (name: string | null) => void;
   setFamilyDescription: (description: Partial<FamilyDescription>) => void;
   setFamilyAgeGroups: (groups: AgeGroup[]) => void;
@@ -363,6 +540,69 @@ interface UserState {
   setCaregiverRequirements: (
     requirements: Partial<UserState['caregiver_requirements']>
   ) => void;
+  //USER IS CAREGIVER
+  setCaregiverName: (name: string | null) => void;
+  setCaregiverDob: (dob: string | null) => void;
+  setCaregiverGender: (gender: CaregiverGender | null) => void;
+  setCaregiverPronouns: (pronouns: string | null) => void;
+  setCaregiverShowPronouns: (show: boolean) => void;
+  setCaregiverReferral: (referral: string | null) => void;
+  setCaregiverLocation: (location: string | null) => void;
+  setCaregiverPositionType: (type: CaregiverType | null) => void;
+  setCaregiverExperienceDuration: (type: CaregiverExperience | null) => void;
+  setCaregiverEducation: (type: CaregiverEducation | null) => void;
+  setCaregiverShowEducation: (type: boolean) => void;
+  setCaregiverAbilities: (type: CaregiverAbilities[] | null) => void;
+  setCaregiverCertification: (type: CaregiverCertification[] | null) => void;
+  setCaregiverLanguages: (type: Language[] | null) => void;
+  setCaregiverAgeExperience: (type: string[] | undefined) => void;
+  setCaregiverChildrenCount: (type: number) => void;
+  setHasNeuroDivergentExperience: (type: 'yes' | 'no' | null) => void;
+  setCaregiverConditionExperience: (type: CaregiverConditionExperience[] | null) => void;
+  setHasPetExperience: (type: 'yes' | 'no' | null) => void;
+  setCaregiverPetExperience: (type: PetType[] | null) => void;
+  setCaregiverCreativeInterests: (type: string[] | null) => void;
+  setCaregiverInstrumentsInterests: (type: string[] | null) => void;
+  setCaregiverSportsInterests: (type: string[] | null) => void;
+  setCaregiverStemInterests: (type: string[] | null) => void;
+  setCaregiverPersonality: (type: string[] | null) => void;
+  setShowCaregiverPersonality: (type: boolean) => void;
+  setCaregiverRules: (type: string[] | null) => void;
+  setCaregiverDiet: (type: string[] | null) => void;
+  setShowCaregiverDiet: (type: boolean) => void;
+  setCaregiverReligion: (type: string[] | null) => void;
+  setShowCaregiverReligion: (type: boolean) => void;
+  setHasPhilosophyExperience: (type: 'yes' | 'no' | null) => void;
+  setCaregiverPhilosophyExperience: (type: CaregiverPhilosophies[] | null) => void;
+  setCaregiverLanguageMatch: (type: 'required' | 'not_required' | null) => void;
+  setCaregiverPreferredPositions: (type: CaregiverPositions[] | null) => void;
+  setCaregiverPreferredArrangement: (type: CaregiverPreferredArrangement | null) => void;
+  setIsDealBreaker: (type: boolean | null) => void;
+  setCaregiverCommitmentType: (type: CaregiverCommitment | null) => void;
+  setCaregiverCommitmentStartDate: (type: Date | null) => void;
+  setCaregiverCommitmentEndDate: (type: Date | null) => void;
+  setCaregiverSchedule: (type: CaregiverDaySchedule[] | undefined) => void;
+  setCaregiverChildcareResponsibilities: (type: string[] | null) => void;
+  setCaregiverHouseholdResponsibilities: (type: string[] | null) => void;
+
+  setCaregiverPaymentType: (type: 'Hourly' | 'Salary Base' | null) => void;
+  setCaregiverHourlyRate: (type: number | null) => void;
+  setCaregiverSalaryAmount: (type: string | null) => void;
+  setCaregiverPaymentMethod: (type: string) => void;
+  setShowCaregiverPaymentMethod: (type: boolean | undefined) => void;
+  setCaregiverRequiredBenefits: (type: string[] | null) => void;
+  setShowCaregiverRequiredBenefits: (type: boolean | undefined) => void;
+  setCaregiverFirstPosition: (type: CaregiverPositionHistory) => void;
+  setCaregiverSecondPosition: (type: CaregiverPositionHistory) => void;
+  setCaregiverPromptCategory: (type: string | undefined) => void;
+  setCaregiverFirstPrompt: (type: string | undefined) => void;
+  setCaregiverFirstPromptAnswer : (type: string|undefined)=> void;
+  setCaregiverMoreInfo: (type: string | undefined) => void;
+  setCaregiverImages: (images: string[]) => void;
+
+
+
+  //
   clearUser: () => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
@@ -402,6 +642,7 @@ export const useUserStore = create<UserState>()(
       hydrated: false,
       subscribed_to_promotions: false,
       selectedType: null,
+      // USER IS FAMILY
       familyName: null,
       family_description: null,
       family_age_groups: defaultAgeGroups,
@@ -542,7 +783,92 @@ export const useUserStore = create<UserState>()(
       },
       family_prompt_category: 'get_to_know',
       family_images: [],
+      // USER IS CAREGIVER
+      caregiverName: null,
+      caregiverDob: null,
+      caregiverGender: null,
+      caregiverPronouns: null,
+      caregiverShowPronouns: false,
+      caregiverReferral: null,
+      caregiverLocation: null,
+      caregiverPositionType: null,
+      caregiverExperienceDuration: null,
+      caregiverEducation: null,
+      caregiverShowEducation: false,
+      caregiverAbilities: [],
+      caregiverCertifications: [],
+      caregiverLanguages: [],
+      caregiverAgeExperience: [],
+      caregiverChildrenCount: 0,
+      hasNeuroDivergentExperience: null,
+      caregiverConditionExperience: [],
+      hasPetExperience: null,
+      caregiverPetExperience: [],
+      caregiverCreativeInterests: [],
+      caregiverInstrumentInterests: [],
+      caregiverSportInterest: [],
+      caregiverStemInterests: [],
+      caregiverPersonality: [],
+      showCaregiverPersonality: false,
+      caregiverRules: [],
+      caregiverDiet: [],
+      showCaregiverDiet: false,
+      caregiverReligion: [],
+      showCaregiverReligion: false,
+      hasPhilosophyExperience: null,
+      caregiverPhilosophyExperience: [],
+      caregiverLanguageMatch: null,
+      caregiverPreferredPositions: [],
+      caregiverPreferredArrangement: null,
+      isDealBreaker: null,
+      caregiverCommitmentType: null,
+      caregiverCommitmentStartDate: new Date(),
+      caregiverCommitmentEndDate: new Date(),
+      caregiverSchedule: [
+        { day: 'Mon', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Tue', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Wed', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Thu', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Fri', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Sat', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+        { day: 'Sun', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+      ],
+      caregiverChildcareResponsibilities: [],
+      caregiverHouseholdResponsibilities: [],
+      caregiverHourlyRate: 15,
+      caregiverSalaryAmount: '50,000',
+      caregiverPaymentType: null,
+      caregiverPaymentMethod: '',
+      showCaregiverPaymentMethod: false,
+      caregiverRequiredBenefits: [],
+      showCaregiverRequiredBenefit: false,
+      caregiverFirstPosition: {
+        positionNumber:null,
+        position: '',
+        ageGroup: '',
+        familyName: '',
+        employmentType: '',
+        startDate: '',
+        endDate: '',
+      },
+      caregiverSecondPosition: {
+        positionNumber: null,
+        position: '',
+        ageGroup: '',
+        familyName: '',
+        employmentType: '',
+        startDate: '',
+        endDate: '',
+      },
+      caregiverPromptCategory:'',
+      caregiverFirstPrompt : '',
+      caregiverFirstPromptAnswer: '',
+      caregiverMoreInfo: '',
+      caregiverImages:[],
 
+
+
+      //
       setUser: (user) => set({ user, error: null }),
 
       setToken: async (token) => {
@@ -563,7 +889,7 @@ export const useUserStore = create<UserState>()(
         set({ subscribed_to_promotions: subscribed }),
 
       setSelectedType: (type) => set({ selectedType: type }),
-
+      //USER IS FAMILY
       setFamilyName: (name) => set({ familyName: name }),
 
       setFamilyDescription: (description) =>
@@ -571,11 +897,11 @@ export const useUserStore = create<UserState>()(
           family_description: state.family_description
             ? { ...state.family_description, ...description }
             : {
-                type: null,
-                description: null,
-                showOnProfile: false,
-                ...description,
-              },
+              type: null,
+              description: null,
+              showOnProfile: false,
+              ...description,
+            },
         })),
 
       setFamilyAgeGroups: (groups) => set({ family_age_groups: groups }),
@@ -616,7 +942,6 @@ export const useUserStore = create<UserState>()(
             ...visibility,
           },
         })),
-
       setFamilySelections: (selections) =>
         set({ family_selections: selections }),
 
@@ -630,7 +955,76 @@ export const useUserStore = create<UserState>()(
         set({ family_philosophies: philosophies }),
 
       setFamilyShowPhilosophy: (show) => set({ family_show_philosophy: show }),
+      //USER IS CAREGIVER
+      setCaregiverName: (name) => set({ caregiverName: name }),
+      setCaregiverDob: (dob) => set({ caregiverDob: dob }),
+      setCaregiverGender: (gender) => set({ caregiverGender: gender }),
+      setCaregiverShowPronouns: (show) => set({ caregiverShowPronouns: show }),
+      setCaregiverPronouns: (pronouns) => set({ caregiverPronouns: pronouns }),
+      setCaregiverReferral: (referral) => set({ caregiverReferral: referral }),
+      setCaregiverLocation: (referral) => set({ caregiverLocation: referral }),
+      setCaregiverPositionType: (type) => set({ caregiverPositionType: type }),
+      setCaregiverExperienceDuration: (experience) => set({ caregiverExperienceDuration: experience }),
+      setCaregiverEducation: (education) => set({ caregiverEducation: education }),
+      setCaregiverShowEducation: (show) => set({ caregiverShowPronouns: show }),
+      setCaregiverAbilities: (abilities) => set({ caregiverAbilities: abilities }),
+      setCaregiverCertification: (certification) =>
+        set({ caregiverCertifications: certification }),
+      setCaregiverLanguages: (language) => set({ caregiverLanguages: language }),
+      setCaregiverAgeExperience: (ageExperience) => set({ caregiverAgeExperience: ageExperience }),
+      setCaregiverChildrenCount: (children) => set({ caregiverChildrenCount: children }),
+      setHasNeuroDivergentExperience: (neurodivergentExperience) =>
+        set({ hasNeuroDivergentExperience: neurodivergentExperience }),
+      setCaregiverConditionExperience: (conditions) => set({ caregiverConditionExperience: conditions }),
+      setHasPetExperience: (petExperience) => set({ hasPetExperience: petExperience }),
+      setCaregiverPetExperience: (pets) => set({ caregiverPetExperience: pets }),
+      setCaregiverCreativeInterests: (creative) => set({ caregiverCreativeInterests: creative }),
+      setCaregiverInstrumentsInterests: (instruments) => set({ caregiverInstrumentInterests: instruments }),
+      setCaregiverSportsInterests: (sports) => set({ caregiverSportInterest: sports }),
+      setCaregiverStemInterests: (stem) => set({ caregiverStemInterests: stem }),
+      setCaregiverPersonality: (personality) => set({ caregiverPersonality: personality }),
+      setShowCaregiverPersonality: (show) => set({ showCaregiverPersonality: show }),
+      setCaregiverRules: (rules) => set({ caregiverRules: rules }),
+      setCaregiverDiet: (diet) => set({ caregiverDiet: diet }),
+      setShowCaregiverDiet: (show) => set({ showCaregiverDiet: show }),
+      setCaregiverReligion: (religion) => set({ caregiverReligion: religion }),
+      setShowCaregiverReligion: (show) => set({ showCaregiverReligion: show }),
+      setHasPhilosophyExperience: (philosophyExperience) =>
+        set({ hasPhilosophyExperience: philosophyExperience }),
+      setCaregiverPhilosophyExperience: (philosophies) =>
+        set({ caregiverPhilosophyExperience: philosophies }),
+      setCaregiverLanguageMatch: (match) => set({ caregiverLanguageMatch: match }),
+      setCaregiverPreferredPositions: (positions) =>
+        set({ caregiverPreferredPositions: positions }),
+      setCaregiverPreferredArrangement: (arrangement) =>
+        set({ caregiverPreferredArrangement: arrangement }),
+      setIsDealBreaker: (dealbreaker) => set({ isDealBreaker: dealbreaker }),
+      setCaregiverCommitmentType: (commitment) =>
+        set({ caregiverCommitmentType: commitment }),
+      setCaregiverCommitmentEndDate: (end) => set({ caregiverCommitmentEndDate: end }),
+      setCaregiverCommitmentStartDate: (start) => set({ caregiverCommitmentStartDate: start }),
+      setCaregiverSchedule: (schedule) => set({ caregiverSchedule: schedule }),
+      setCaregiverChildcareResponsibilities: (responsibilities) =>
+        set({ caregiverChildcareResponsibilities: responsibilities }),
+      setCaregiverHouseholdResponsibilities: (responsibilities) =>
+        set({ caregiverHouseholdResponsibilities: responsibilities }),
+      setCaregiverHourlyRate: (rate) => set({ caregiverHourlyRate: rate }),
+      setCaregiverPaymentType: (payment) => set({ caregiverPaymentType: payment }),
+      setCaregiverSalaryAmount: (amount) => set({ caregiverSalaryAmount: amount }),
+      setCaregiverPaymentMethod: (method) => set({ caregiverPaymentMethod: method }),
+      setShowCaregiverPaymentMethod: (show) => set({ showCaregiverPaymentMethod: show }),
+      setCaregiverRequiredBenefits: (benfits) => set({ caregiverRequiredBenefits: benfits }),
+      setShowCaregiverRequiredBenefits: (show) => set({ showCaregiverRequiredBenefit: show }),
+      setCaregiverFirstPosition: (first) => set({ caregiverFirstPosition: first }),
+      setCaregiverSecondPosition: (second) => set({ caregiverSecondPosition: second }),
+      setCaregiverPromptCategory : (category)=>set({caregiverPromptCategory : category}),
+      setCaregiverFirstPrompt : (prompt)=>set({caregiverFirstPrompt : prompt}),
+      setCaregiverFirstPromptAnswer: (answer) => set({ caregiverFirstPromptAnswer: answer }),
+      setCaregiverMoreInfo: (prompt) => set({ caregiverMoreInfo: prompt }),
+      setCaregiverImages: (images) => set({ caregiverImages: images }),
 
+
+      // 
       setFamilyGenderPreference: (preference) =>
         set((state) => ({
           family_gender_preference: {

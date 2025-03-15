@@ -7,13 +7,16 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
+import { useUserStore } from '@/services/state/user';
 
 export default function MoreInfo() {
   const router = useRouter();
+  const {caregiverMoreInfo,setCaregiverMoreInfo,setOnboardingScreen}=useUserStore()
   const [answer, setAnswer] = useState('');
 
   const handleNext = () => {
-    router.push('/(auth)/screens/onboarding/family/upload');
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/upload');
+    router.push('/(auth)/screens/onboarding/caregiver/upload');
   };
 
   return (
@@ -34,8 +37,8 @@ export default function MoreInfo() {
             multiline
             placeholder="Write your answer here..."
             placeholderTextColor="#A8A3A5"
-            value={answer}
-            onChangeText={setAnswer}
+            value={caregiverMoreInfo}
+            onChangeText={setCaregiverMoreInfo}
             textAlignVertical="top"
           />
         </View>

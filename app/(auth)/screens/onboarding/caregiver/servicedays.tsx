@@ -1,6 +1,6 @@
-import { StyleSheet, View, ScrollView, Pressable } from 'react-native';
+import { StyleSheet, View, ScrollView, Pressable, Modal } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
@@ -9,38 +9,40 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
+import { CaregiverDayOfWeek, CaregiverDaySchedule, useUserStore } from '@/services/state/user';
 
-type DayOfWeek = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
-
-interface TimeSlot {
-  begin: string;
-  end: string;
-}
-
-interface DaySchedule {
-  day: DayOfWeek;
-  timeSlot: TimeSlot;
-  isActive: boolean;
-}
 
 export default function ServiceDaysScreen() {
   const router = useRouter();
-  const [schedule, setSchedule] = useState<DaySchedule[]>([
-    { day: 'Mon', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Tue', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Wed', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Thu', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Fri', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Sat', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-    { day: 'Sun', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
-  ]);
+  const { caregiverSchedule, setCaregiverSchedule, setOnboardingScreen } = useUserStore()
+  // const [schedule, setSchedule] = useState<CaregiverDaySchedule[]>([
+  //   { day: 'Mon', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+  //   { day: 'Tue', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+  //   { day: 'Wed', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+  //   { day: 'Thu', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+  //   { day: 'Fri', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+  //   { day: 'Sat', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+  //   { day: 'Sun', timeSlot: { begin: '00:00', end: '00:00' }, isActive: false },
+  // ]);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [selectedDay, setSelectedDay] = useState<DayOfWeek | null>(null);
+  const [selectedDay, setSelectedDay] = useState<CaregiverDayOfWeek | null>(null);
   const [isSettingBeginTime, setIsSettingBeginTime] = useState(true);
-  const [activeField, setActiveField] = useState<{day: DayOfWeek, field: 'begin' | 'end'} | null>(null);
+  const [activeField, setActiveField] = useState<{
+    day: CaregiverDayOfWeek, field: 'begin' | 'end'
+  } | null>(null);
+  useEffect(() => {
+    console.log(
+      'caregiver schedule',
+      caregiverSchedule?.map((day) => ({
+        day: day.day,
+        begin: day.timeSlot?.begin,
+        end: day.timeSlot?.end,
+      })))
+  }, []);
 
   const handleTimeSelect = (event: any, selectedTime?: Date) => {
     setShowTimePicker(false);
+
     if (selectedTime && selectedDay) {
       const formattedTime = selectedTime.toLocaleTimeString('en-US', {
         hour: '2-digit',
@@ -48,41 +50,67 @@ export default function ServiceDaysScreen() {
         hour12: false,
       });
 
-      setSchedule(prev => prev.map(day => {
+      const updatedSchedule = caregiverSchedule?.map((day) => {
+        const currentTimeSlot = day.timeSlot || {
+          begin: '00:00',
+          end: '00:00',
+        };
+
         if (day.day === selectedDay) {
           return {
             ...day,
             isActive: true,
             timeSlot: {
-              ...day.timeSlot,
-              [isSettingBeginTime ? 'begin' : 'end']: formattedTime,
+              begin: isSettingBeginTime ? formattedTime : currentTimeSlot.begin,
+              end: isSettingBeginTime ? currentTimeSlot.end : formattedTime,
             },
           };
         }
-        return day;
-      }));
+        return {
+          ...day,
+          timeSlot: {
+            begin: currentTimeSlot.begin,
+            end: currentTimeSlot.end,
+          },
+        };
+      });
+      setCaregiverSchedule(updatedSchedule);
     }
+
     setActiveField(null);
   };
 
-  const handleTimePress = (day: DayOfWeek, isBegin: boolean) => {
+  const handleTimePress = (day: CaregiverDayOfWeek, isBegin: boolean) => {
     setSelectedDay(day);
     setIsSettingBeginTime(isBegin);
     setShowTimePicker(true);
-    setActiveField({day, field: isBegin ? 'begin' : 'end'});
+    setActiveField({ day, field: isBegin ? 'begin' : 'end' });
   };
 
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" />
-      
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.8} />
-
+        {showTimePicker && (
+          <>
+            <View style={styles.overlay} />
+            <View style={styles.timePickerContainer}>
+              <DateTimePicker
+                value={new Date()}
+                mode='time'
+                is24Hour={true}
+                display='spinner'
+                onChange={handleTimeSelect}
+              />
+            </View>
+          </>
+        )}
         <View style={styles.titleContainer}>
           <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
-            What days and{'\n'}hours would you{'\n'}need a caregiver?
+            Choose your availability
           </ThemedText>
         </View>
 
@@ -98,7 +126,7 @@ export default function ServiceDaysScreen() {
               <ThemedText style={styles.headerText}>End</ThemedText>
             </View>
 
-            {schedule.map((day) => (
+            {caregiverSchedule?.map((day) => (
               <View key={day.day} style={styles.dayRow}>
                 <View style={styles.dayColumn}>
                   <Pressable style={[styles.dayPill, day.isActive && styles.activeDayPill]}>
@@ -132,16 +160,6 @@ export default function ServiceDaysScreen() {
               </View>
             ))}
           </View>
-
-          {showTimePicker && (
-            <DateTimePicker
-              value={new Date()}
-              mode="time"
-              is24Hour={true}
-              display="spinner"
-              onChange={handleTimeSelect}
-            />
-          )}
         </ScrollView>
 
         <LinearGradient
@@ -150,7 +168,10 @@ export default function ServiceDaysScreen() {
         >
           <Button
             label="Next"
-            onPress={() => router.push('/(auth)/screens/onboarding/caregiver/responsibilities')}
+            onPress={() => {
+              setOnboardingScreen('/(auth)/screens/onboarding/caregiver/responsibilities')
+              router.push('/(auth)/screens/onboarding/caregiver/responsibilities')
+            }}
             variant="compact"
           />
         </LinearGradient>
@@ -260,5 +281,34 @@ const styles = StyleSheet.create({
   },
   nextButton: {
     alignSelf: 'flex-end'
-  }
+  },
+  timePickerContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    backgroundColor: 'white',
+    paddingTop: 20,
+    paddingBottom: 40,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 999,
+  },
 });

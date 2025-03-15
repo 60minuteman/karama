@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { router } from 'expo-router';
 import { Colors } from '@/constants/Colors';
@@ -10,26 +10,34 @@ import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { useFonts } from 'expo-font';
 import { Bogart_400Regular, Bogart_500Medium, Bogart_600SemiBold } from '@expo-google-fonts/bogart';
+import { useUserStore } from '@/services/state/user';
 
 const genderOptions = [
   ['Cisgender Female', 'Non Binary'],
-  ['Gender Nutual', 'Gender Queer'],
+  ['Gender Neutral', 'Gender Queer'],
   ['Transgender', 'Male'],
   ['Female', 'Prefer not to say'],
   ['Cisgender Male', 'Gender Fluid'],
   ['Other']
-];
+] as const;
 
 export default function Page() {
+  const { caregiverGender, setCaregiverGender, setOnboardingScreen } = useUserStore()
   const [selectedGender, setSelectedGender] = useState<string | null>(null);
   const [fontsLoaded] = useFonts({
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
   });
-
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/pronouns');
+    router.push('/(auth)/screens/onboarding/caregiver/pronouns')
+  };
+  useEffect(()=>{
+    console.log(caregiverGender)
+  },[caregiverGender]);
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
-      
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
@@ -45,9 +53,9 @@ export default function Page() {
                 <Pill
                   key={option}
                   label={option}
-                  onPress={() => setSelectedGender(option)}
-                  selected={selectedGender === option}
-                  variant={selectedGender === option ? 'highlighted' : undefined}
+                  onPress={() => setCaregiverGender(option)}
+                  selected={caregiverGender === option}
+                  variant={caregiverGender === option ? 'highlighted' : undefined}
                 />
               ))}
             </View>
@@ -58,14 +66,14 @@ export default function Page() {
       <View style={styles.bottomNav}>
         <Button
           label="Skip"
-          onPress={() => router.push('/(auth)/screens/onboarding/caregiver/pronouns')}
+          onPress={handleNext}
           variant="skip"
         />
         <Button
           label="Next"
-          onPress={() => router.push('/(auth)/screens/onboarding/caregiver/pronouns')}
+          onPress={handleNext}
           variant="compact"
-          disabled={!selectedGender}
+          disabled={!caregiverGender}
         />
       </View>
     </ThemedView>

@@ -10,13 +10,23 @@ import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { useFonts } from 'expo-font';
 import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
+import { useUserStore } from '@/services/state/user';
 
 export default function Page() {
-  const [selection, setSelection] = useState<'yes' | 'no' | null>(null);
+  const {hasPetExperience,setHasPetExperience,setOnboardingScreen}=useUserStore()
+  // const [selection, setSelection] = useState<'yes' | 'no' | null>(null);
   const [fontsLoaded] = useFonts({
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
   });
-
+const handleNext =()=>{
+  if (hasPetExperience === 'yes') {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/pets')
+    router.push('/(auth)/screens/onboarding/caregiver/pets');
+  } else {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/next-screen')
+    router.push('/(auth)/screens/onboarding/caregiver/next-screen');
+  }
+}
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
@@ -36,13 +46,13 @@ export default function Page() {
         <View style={[styles.optionsContainer, { justifyContent: 'flex-end' }]}>
           <Pill
             label="Yes"
-            onPress={() => setSelection('yes')}
-            selected={selection === 'yes'}
+            onPress={() => setHasPetExperience('yes')}
+            selected={hasPetExperience === 'yes'}
           />
           <Pill
             label="No"
-            onPress={() => setSelection('no')}
-            selected={selection === 'no'}
+            onPress={() => setHasPetExperience('no')}
+            selected={hasPetExperience === 'no'}
           />
         </View>
       </ScrollView>
@@ -51,15 +61,9 @@ export default function Page() {
         <View style={styles.buttonContainer}>
           <Button
             label="Next"
-            onPress={() => {
-              if (selection === 'yes') {
-                router.push('/(auth)/screens/onboarding/caregiver/pets');
-              } else {
-                router.push('/(auth)/screens/onboarding/caregiver/next-screen');
-              }
-            }}
+            onPress={handleNext}
             variant="compact"
-            disabled={!selection}
+            disabled={!hasPetExperience}
           />
         </View>
       </View>

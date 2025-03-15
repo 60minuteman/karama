@@ -9,42 +9,60 @@ import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { LinearGradient } from 'expo-linear-gradient';
+import { CaregiverAbilities, CaregiverCertification, useUserStore } from '@/services/state/user';
 
-const requirements = [
-  { label: 'Can Travel', icon: '✈️' },
-  { label: 'Able To Drive', icon: '🚗' },
-  { label: 'First Aid', icon: '🏥' },
-  { label: 'Can Swim', icon: '🏊' },
-  { label: 'COVID Vaccination', icon: '💉' },
-  { label: 'CPR', icon: '🫀' },
-  { label: 'Other', icon: '🎪' },
+const abilities = [
+  { label: 'Can Travel' as const, icon: '✈️' },
+  { label: 'Able To Drive' as const, icon: '🚗' },
+  { label: 'First Aid' as const, icon: '🏥' },
+  { label: 'Can Swim' as const, icon: '🏊' },
+  { label: 'COVID Vaccination' as const, icon: '💉' },
+  { label: 'CPR' as const, icon: '🫀' },
+  { label: 'Other' as const, icon: '🎪' },
 ];
 
 const certifications = [
-  { label: 'Sign Language', icon: '🤟' },
-  { label: 'Administering Medication', icon: '💊' },
-  { label: 'Special Needs', icon: '👨‍🦽' },
-  { label: 'Condition Specific', icon: '🧹' },
-  { label: 'Feeding & Swallowing', icon: '🍔' },
-  { label: 'Registered Behaviour Technician', icon: '😇' },
-  { label: 'Other', icon: '📄' },
+  { label: 'Sign Language' as const, icon: '🤟' },
+  { label: 'Administering Medication' as const, icon: '💊' },
+  { label: 'Special Needs' as const, icon: '👨‍🦽' },
+  { label: 'Condition Specific' as const, icon: '🧹' },
+  { label: 'Feeding & Swallowing' as const, icon: '🍔' },
+  { label: 'Registered Behaviour Technician' as const, icon: '😇' },
+  { label: 'Other' as const, icon: '📄' },
 ];
 
 export default function Page() {
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const {
+    caregiverAbilities,
+    setCaregiverAbilities,
+    caregiverCertifications,
+    setCaregiverCertification,
+    setOnboardingScreen
+  } = useUserStore()
+  // const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
-  const toggleSelection = (label: string) => {
-    setSelectedItems(prev => 
-      prev.includes(label) 
-        ? prev.filter(item => item !== label)
-        : [...prev, label]
-    );
+  const toggleAbilitiesSelection = (label: CaregiverAbilities) => {
+    const prev = caregiverAbilities ?? [];
+    const updatedAbilities = prev.includes(label)
+      ? prev.filter((item) => item !== label) 
+      : [...prev, label];
+    setCaregiverAbilities(updatedAbilities); 
   };
-
+  const toggleCertificationSelection = (label: CaregiverCertification) => {
+    const prev = caregiverCertifications ?? [];
+    const updatedCertification = prev.includes(label)
+      ? prev.filter((item) => item !== label)
+      : [...prev, label];
+    setCaregiverCertification(updatedCertification);
+  };
+  const handleNext = ()=>{
+     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/language')
+        router.push('/(auth)/screens/onboarding/caregiver/language')
+  }
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" />
-      
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
@@ -53,20 +71,20 @@ export default function Page() {
           What are your{'\n'}abilities and{'\n'}certifications?
         </ThemedText>
 
-        <ScrollView 
+        <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          <ThemedText style={styles.sectionTitle}>Requirements</ThemedText>
+          <ThemedText style={styles.sectionTitle}>Abilities</ThemedText>
           <View style={styles.optionsContainer}>
-            {requirements.map((option) => (
+            {abilities.map((option) => (
               <Pill
                 key={option.label}
                 label={option.label}
                 icon={option.icon}
-                onPress={() => toggleSelection(option.label)}
-                selected={selectedItems.includes(option.label)}
+                onPress={() => toggleAbilitiesSelection(option.label)}
+                selected={caregiverAbilities?.includes(option.label)}
               />
             ))}
           </View>
@@ -78,8 +96,8 @@ export default function Page() {
                 key={option.label}
                 label={option.label}
                 icon={option.icon}
-                onPress={() => toggleSelection(option.label)}
-                selected={selectedItems.includes(option.label)}
+                onPress={() => toggleCertificationSelection(option.label)}
+                selected={caregiverCertifications?.includes(option.label)}
               />
             ))}
           </View>
@@ -96,12 +114,12 @@ export default function Page() {
         <View style={styles.bottomNav}>
           <Button
             label="Skip"
-            onPress={() => router.push('/(auth)/screens/onboarding/caregiver/language')}
+            onPress={handleNext}
             variant="skip"
           />
           <Button
             label="Next"
-            onPress={() => router.push('/(auth)/screens/onboarding/caregiver/language')}
+            onPress={handleNext}
             variant="compact"
           />
         </View>

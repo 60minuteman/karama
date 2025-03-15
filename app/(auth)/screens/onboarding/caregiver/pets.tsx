@@ -11,62 +11,61 @@ import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { useFonts } from 'expo-font';
 import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
+import { PetType, useUserStore } from '@/services/state/user';
 
 const PETS = [
-  { label: 'Cat', emoji: '🐱' },
-  { label: 'Small Dog', emoji: '🐶' },
-  { label: 'Pig', emoji: '🐷' },
-  { label: 'Large Dog', emoji: '🦮' },
-  { label: 'Cow', emoji: '🐮' },
-  { label: 'Butterfly', emoji: '🦋' },
-  { label: 'Turtle', emoji: '🐢' },
-  { label: 'Snake', emoji: '🐍' },
-  { label: 'Parrot', emoji: '🦜' },
-  { label: 'Rabbit', emoji: '🐰' },
-  { label: 'Sheep', emoji: '🐑' },
-  { label: 'Duck', emoji: '🦆' },
-  { label: 'Horse', emoji: '🐎' },
-  { label: 'Frog', emoji: '🐸' },
-  { label: 'Gecko', emoji: '🦎' },
-  { label: 'Whale', emoji: '🐋' },
-  { label: 'Chicken', emoji: '🐔' },
-  { label: 'Hamster', emoji: '🐹' },
-  { label: 'Dinosaur', emoji: '🦕' },
-  { label: 'Baby Elephant', emoji: '🐘' },
-  { label: 'Unicorn', emoji: '🦄' },
-  { label: 'None', emoji: '⛔' },
-  { label: 'Other', emoji: '🐾' },
+  { label: 'Cat' as const, emoji: '🐱' },
+  { label: 'Small Dog' as const, emoji: '🐶' },
+  { label: 'Pig' as const, emoji: '🐷' },
+  { label: 'Large Dog' as const, emoji: '🦮' },
+  { label: 'Cow' as const, emoji: '🐮' },
+  { label: 'Butterfly' as const, emoji: '🦋' },
+  { label: 'Turtle' as const, emoji: '🐢' },
+  { label: 'Snake' as const, emoji: '🐍' },
+  { label: 'Parrot' as const, emoji: '🦜' },
+  { label: 'Rabbit' as const, emoji: '🐰' },
+  { label: 'Sheep' as const, emoji: '🐑' },
+  { label: 'Duck' as const, emoji: '🦆' },
+  { label: 'Horse' as const, emoji: '🐎' },
+  { label: 'Frog' as const, emoji: '🐸' },
+  { label: 'Gecko' as const, emoji: '🦎' },
+  { label: 'Whale' as const, emoji: '🐋' },
+  { label: 'Chicken' as const, emoji: '🐔' },
+  { label: 'Hamster' as const, emoji: '🐹' },
+  { label: 'Dinosaur' as const, emoji: '🦕' },
+  { label: 'Baby Elephant' as const, emoji: '🐘' },
+  { label: 'Unicorn' as const, emoji: '🦄' },
+  { label: 'None' as const, emoji: '⛔' },
+  { label: 'Other' as const, emoji: '🐾' },
 ];
 
 export default function Page() {
-  const [selectedPets, setSelectedPets] = useState<string[]>([]);
+  const { caregiverPetExperience, setCaregiverPetExperience, setOnboardingScreen } = useUserStore()
+  // const [selectedPets, setSelectedPets] = useState<string[]>([]);
 
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/interest')
     router.push('/(auth)/screens/onboarding/caregiver/interest');
   };
 
-  const togglePet = (pet: string) => {
+  const togglePet = (pet: PetType) => {
     if (pet === 'None') {
-      setSelectedPets(['None']);
+      setCaregiverPetExperience(['None']);
       return;
     }
-
-    setSelectedPets(prev => {
-      // Remove 'None' if selecting another pet
-      const filtered = prev.filter(p => p !== 'None');
-      
-      if (prev.includes(pet)) {
-        return filtered.filter(p => p !== pet);
-      } else {
-        return [...filtered, pet];
-      }
-    });
+    const prev = caregiverPetExperience ?? [];
+    const filtered = prev.filter(p => p !== 'None');
+    if (prev.includes(pet)) {
+      setCaregiverPetExperience(filtered.filter(p => p !== pet));
+    } else {
+      setCaregiverPetExperience([...filtered, pet]);
+    }
   };
 
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" />
-      
+
       <View style={styles.headerContent}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.65} />
@@ -76,8 +75,8 @@ export default function Page() {
         </ThemedText>
       </View>
 
-      <ScrollView 
-        style={styles.scrollContent} 
+      <ScrollView
+        style={styles.scrollContent}
         contentContainerStyle={styles.scrollContentContainer}
         showsVerticalScrollIndicator={false}
       >
@@ -87,8 +86,8 @@ export default function Page() {
               key={pet.label}
               label={`${pet.emoji} ${pet.label}`}
               onPress={() => togglePet(pet.label)}
-              selected={selectedPets.includes(pet.label)}
-              disabled={pet.label !== 'None' && selectedPets.includes('None')}
+              selected={caregiverPetExperience?.includes(pet.label)}
+              disabled={pet.label !== 'None' && caregiverPetExperience?.includes('None')}
             />
           ))}
         </View>
@@ -111,7 +110,7 @@ export default function Page() {
             label="Next"
             onPress={handleNext}
             variant="compact"
-            disabled={selectedPets.length === 0}
+            disabled={caregiverPetExperience?.length === 0}
           />
         </View>
       </View>

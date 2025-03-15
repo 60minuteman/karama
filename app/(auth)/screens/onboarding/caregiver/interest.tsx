@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { StyleSheet, View, ScrollView } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
@@ -9,13 +9,25 @@ import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Button } from '@/components/ui/Button';
 import { Pill } from '@/components/ui/Pill';
+import { useUserStore } from '@/services/state/user';
 
 type Category = 'Creative' | 'Instruments' | 'Sports' | 'STEM';
 type Interest = { label: string; icon: string; category: Category };
 
 export default function InterestScreen() {
   const router = useRouter();
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const {
+    caregiverSportInterest,
+    setCaregiverSportsInterests,
+    caregiverCreativeInterests,
+    setCaregiverCreativeInterests,
+    caregiverInstrumentInterests,
+    setCaregiverInstrumentsInterests,
+    caregiverStemInterests,
+    setCaregiverStemInterests,
+    setOnboardingScreen
+  } = useUserStore();
+  // const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
   const interests: Record<Category, Interest[]> = {
     Creative: [
@@ -93,15 +105,46 @@ export default function InterestScreen() {
     ],
   };
 
-  const toggleInterest = (interest: string) => {
-    setSelectedInterests(prev => 
-      prev.includes(interest)
-        ? prev.filter(i => i !== interest)
-        : [...prev, interest]
-    );
+  useEffect(() => {
+    console.log(caregiverCreativeInterests)
+    console.log(caregiverInstrumentInterests)
+    console.log(caregiverSportInterest)
+    console.log(caregiverStemInterests)
+
+  }, [caregiverCreativeInterests, caregiverInstrumentInterests, caregiverStemInterests, caregiverSportInterest])
+
+  const toggleCreativeInterest = (interest: string) => {
+    const prev = caregiverCreativeInterests ?? [];
+    const selectedInterests = prev.includes(interest)
+      ? prev.filter((item) => item !== interest)
+      : [...prev, interest];
+    setCaregiverCreativeInterests(selectedInterests);
+  };
+  const toggleInstrumentInterest = (interest: string) => {
+    const prev = caregiverInstrumentInterests ?? [];
+    const selectedInterests = prev.includes(interest)
+      ? prev.filter((item) => item !== interest)
+      : [...prev, interest];
+    setCaregiverInstrumentsInterests(selectedInterests);
+  };
+  const toggleSportInterest = (interest: string) => {
+    const prev = caregiverSportInterest ?? [];
+    const selectedInterests = prev.includes(interest)
+      ? prev.filter((item) => item !== interest)
+      : [...prev, interest];
+    setCaregiverSportsInterests(selectedInterests);
+  };
+  const toggleStemInterest = (interest: string) => {
+    const prev = caregiverStemInterests ?? [];
+    const selectedInterests = prev.includes(interest)
+      ? prev.filter((item) => item !== interest)
+      : [...prev, interest];
+    setCaregiverStemInterests(selectedInterests);
   };
 
+
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/about');
     router.push('/(auth)/screens/onboarding/caregiver/about');
   };
 
@@ -112,7 +155,7 @@ export default function InterestScreen() {
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.95} />
-        
+
         <ThemedText style={styles.title}>
           What are your{'\n'}interests/hobbies?
         </ThemedText>
@@ -123,24 +166,38 @@ export default function InterestScreen() {
             style={styles.topGradient}
             pointerEvents="none"
           />
-          <ScrollView 
+          <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
           >
             {(Object.keys(interests) as Category[]).map((category) => (
               <View key={category} style={styles.categoryContainer}>
-                <ThemedText style={styles.categoryTitle}>
-                  {category}
-                </ThemedText>
+                <ThemedText style={styles.categoryTitle}>{category}</ThemedText>
                 <View style={styles.pillsContainer}>
                   {interests[category].map((interest) => (
                     <Pill
                       key={interest.label}
                       label={interest.label}
                       icon={interest.icon}
-                      selected={selectedInterests.includes(interest.label)}
-                      onPress={() => toggleInterest(interest.label)}
+                      selected={
+                        category === 'Creative'
+                          ? caregiverCreativeInterests?.includes(interest.label)
+                          : category === 'Instruments'
+                            ? caregiverInstrumentInterests?.includes(interest.label)
+                            : category === 'Sports'
+                              ? caregiverSportInterest?.includes(interest.label)
+                              : caregiverStemInterests?.includes(interest.label)
+                      }
+                      onPress={() =>
+                        category === 'Creative'
+                          ? toggleCreativeInterest(interest.label)
+                          : category === 'Instruments'
+                            ? toggleInstrumentInterest(interest.label)
+                            : category === 'Sports'
+                              ? toggleSportInterest(interest.label)
+                              : toggleStemInterest(interest.label)
+                      }
                     />
                   ))}
                 </View>
@@ -148,6 +205,7 @@ export default function InterestScreen() {
             ))}
             <View style={styles.spacerBottom} />
           </ScrollView>
+
           <LinearGradient
             colors={['rgba(255,255,255,0)', Colors.light.background]}
             style={styles.buttonGradient}
@@ -163,7 +221,12 @@ export default function InterestScreen() {
               label="Next"
               onPress={handleNext}
               variant="compact"
-              disabled={selectedInterests.length === 0}
+              disabled={
+                caregiverCreativeInterests?.length === 0 &&
+                caregiverSportInterest?.length === 0 &&
+                caregiverInstrumentInterests?.length === 0 &&
+                caregiverStemInterests?.length === 0
+              }
             />
           </View>
         </View>

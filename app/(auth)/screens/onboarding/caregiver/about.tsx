@@ -9,6 +9,7 @@ import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Button } from '@/components/ui/Button';
 import { Pill } from '@/components/ui/Pill';
+import { useUserStore } from '@/services/state/user';
 
 type Category = 'Personality' | 'Rules' | 'Diet' | 'Religion';
 
@@ -20,12 +21,30 @@ interface CategoryData {
 
 export default function AboutScreen() {
   const router = useRouter();
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [visibilitySettings, setVisibilitySettings] = useState({
-    personality: false,
-    diet: false,
-    religion: false
-  });
+  const {
+    caregiverReligion,
+    setCaregiverReligion,
+    showCaregiverReligion,
+    setShowCaregiverReligion,
+    caregiverPersonality,
+    setCaregiverPersonality,
+    showCaregiverPersonality,
+    setShowCaregiverPersonality,
+    caregiverDiet,
+    setCaregiverDiet,
+    showCaregiverDiet,
+    setShowCaregiverDiet,
+    caregiverRules,
+    setCaregiverRules,
+    setOnboardingScreen,
+
+  } = useUserStore()
+  // const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  // const [visibilitySettings, setVisibilitySettings] = useState({
+  //   personality: false,
+  //   diet: false,
+  //   religion: false
+  // });
 
   const categories: Record<Category, CategoryData[]> = {
     Personality: [
@@ -82,33 +101,48 @@ export default function AboutScreen() {
     ],
   };
 
-  const toggleItem = (item: string) => {
-    setSelectedItems(prev =>
-      prev.includes(item)
-        ? prev.filter(i => i !== item)
-        : [...prev, item]
-    );
+  const togglePersonalitySelection = (item: string) => {
+    const prev = caregiverPersonality ?? [];
+    const selectedPersonality = prev.includes(item)
+      ? prev.filter(i => i !== item)
+      : [...prev, item]
+    setCaregiverPersonality(selectedPersonality);
   };
-
-  const handleVisibilityChange = (category: keyof typeof visibilitySettings, value: boolean) => {
-    setVisibilitySettings(prev => ({
-      ...prev,
-      [category]: value
-    }));
+  const toggleRulesSelection = (item: string) => {
+    const prev = caregiverRules ?? [];
+    const selectedRules = prev.includes(item)
+      ? prev.filter(i => i !== item)
+      : [...prev, item]
+    setCaregiverRules(selectedRules);
+  };
+  const toggleDietSelection = (item: string) => {
+    const prev = caregiverDiet ?? [];
+    const selectedDiet = prev.includes(item)
+      ? prev.filter(i => i !== item)
+      : [...prev, item]
+    setCaregiverDiet(selectedDiet);
+  };
+  const toggleReligionSelection = (item: string) => {
+    const prev = caregiverReligion ?? [];
+    const selectedReligion = prev.includes(item)
+      ? prev.filter(i => i !== item)
+      : [...prev, item]
+    setCaregiverReligion(selectedReligion);
   };
 
   const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/philo');
     router.push('/(auth)/screens/onboarding/caregiver/philo');
   };
 
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" />
-      
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.75} />
-        
+
         <ThemedText style={styles.title}>
           Tell us about{'\n'}yourself.
         </ThemedText>
@@ -119,7 +153,7 @@ export default function AboutScreen() {
             style={styles.topGradient}
             pointerEvents="none"
           />
-          <ScrollView 
+          <ScrollView
             style={styles.scrollView}
             contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}
@@ -135,8 +169,24 @@ export default function AboutScreen() {
                       key={item.label}
                       label={item.label}
                       icon={item.icon}
-                      selected={selectedItems.includes(item.label)}
-                      onPress={() => toggleItem(item.label)}
+                      selected={
+                        category === 'Personality' ?
+                          caregiverPersonality?.includes(item.label)
+                          : category === 'Rules' ?
+                            caregiverRules?.includes(item.label)
+                            : category === 'Diet' ?
+                              caregiverDiet?.includes(item.label)
+                              : caregiverReligion?.includes(item.label)
+                      }
+                      onPress={() =>
+                        category === 'Personality' ?
+                          togglePersonalitySelection(item.label)
+                          : category === 'Rules' ?
+                            toggleRulesSelection(item.label)
+                            : category === 'Diet' ?
+                              toggleDietSelection(item.label)
+                              : toggleReligionSelection(item.label)
+                      }
                     />
                   ))}
                 </View>
@@ -144,8 +194,21 @@ export default function AboutScreen() {
                   <View style={styles.switchContainer}>
                     <ThemedText style={styles.switchLabel}>Show on profile</ThemedText>
                     <Switch
-                      value={visibilitySettings[category.toLowerCase() as keyof typeof visibilitySettings]}
-                      onValueChange={(value) => handleVisibilityChange(category.toLowerCase() as keyof typeof visibilitySettings, value)}
+                      value={
+                        category === 'Personality' ?
+                          showCaregiverPersonality
+                          : category === 'Diet' ?
+                            showCaregiverDiet :
+                            showCaregiverReligion
+                      }
+                      onValueChange={(value) => {
+                        category === 'Personality' ?
+                          setShowCaregiverPersonality(value)
+                          : category === 'Diet' ?
+                            setShowCaregiverDiet(value) :
+                            setShowCaregiverReligion(value)
+                      }
+                      }
                     />
                   </View>
                 )}
@@ -173,7 +236,12 @@ export default function AboutScreen() {
               label="Next"
               onPress={handleNext}
               variant="compact"
-              disabled={selectedItems.length === 0}
+              disabled={
+                caregiverDiet?.length === 0 ||
+                caregiverPersonality?.length === 0 ||
+                caregiverReligion?.length === 0 ||
+                caregiverRules?.length === 0
+              }
             />
           </View>
         </View>

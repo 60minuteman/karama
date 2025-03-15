@@ -8,24 +8,29 @@ import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { useUserStore } from '@/services/state/user';
 
 const educationOptions = [
-  { label: 'High School', icon: '🎓' },
-  { label: 'In College', icon: '📚' },
-  { label: 'Undergraduate Degree', icon: '🎓' },
-  { label: 'In Grad School', icon: '📘' },
-  { label: 'Graduate Degree', icon: '🎓' },
-  { label: 'No Prefrence' },
+  { label: 'High School' as const, icon: '🎓' },
+  { label: 'In College' as const, icon: '📚' },
+  { label: 'Undergraduate Degree' as const, icon: '🎓' },
+  { label: 'In Grad School' as const, icon: '📘' },
+  { label: 'Graduate Degree' as const, icon: '🎓' },
+  { label: 'No Preference' as const },
 ];
 
 export default function Page() {
-  const [selectedEducation, setSelectedEducation] = useState<string | null>(null);
-  const [showOnProfile, setShowOnProfile] = useState(false);
-
+  const { caregiverEducation, setCaregiverEducation, setOnboardingScreen , caregiverShowEducation,setCaregiverShowEducation} = useUserStore()
+  // const [selectedEducation, setSelectedEducation] = useState<string | null>(null);
+  // const [showOnProfile, setShowOnProfile] = useState(false);
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/abilities')
+    router.push('/(auth)/screens/onboarding/caregiver/abilities')
+  }
   return (
     <ThemedView style={styles.container}>
-        <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-      
+      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
@@ -40,8 +45,8 @@ export default function Page() {
               key={option.label}
               label={option.label}
               icon={option.icon}
-              onPress={() => setSelectedEducation(option.label)}
-              selected={selectedEducation === option.label}
+              onPress={() => setCaregiverEducation(option.label)}
+              selected={caregiverEducation === option.label}
               style={styles.option}
             />
           ))}
@@ -50,8 +55,8 @@ export default function Page() {
         <View style={styles.toggleContainer}>
           <ThemedText style={styles.toggleText}>Show on profile</ThemedText>
           <Switch
-            value={showOnProfile}
-            onValueChange={setShowOnProfile}
+            value={caregiverShowEducation}
+            onValueChange={setCaregiverShowEducation}
             trackColor={{ false: '#E2E8F0', true: '#F45B69' }}
             thumbColor={'#FFFFFF'}
           />
@@ -61,10 +66,10 @@ export default function Page() {
       <View style={styles.bottomNav}>
         <Button
           label="Next"
-          onPress={() => router.push('/(auth)/screens/onboarding/caregiver/abilities')}
+          onPress={handleNext}
           variant="compact"
           style={styles.nextButton}
-          disabled={!selectedEducation}
+          disabled={!caregiverEducation}
         />
       </View>
     </ThemedView>

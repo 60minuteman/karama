@@ -9,6 +9,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
 import { Colors } from '@/constants/Colors';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useUserStore } from '@/services/state/user';
 
 interface Responsibility {
   id: string;
@@ -17,66 +18,78 @@ interface Responsibility {
 }
 
 const childcareResponsibilities: Responsibility[] = [
-  { id: 'bathing', label: 'Bathing', icon: '🛁' },
-  { id: 'laundry', label: 'Laundry', icon: '🧺' },
-  { id: 'packingLunch', label: 'Packing Lunch', icon: '🥪' },
-  { id: 'driving', label: 'Driving', icon: '🚗' },
-  { id: 'cooking', label: 'Cooking', icon: '🍳' },
-  { id: 'playDates', label: 'Play Dates', icon: '🎮' },
-  { id: 'commuting', label: 'Commuting', icon: '🚌' },
-  { id: 'scheduling', label: 'Scheduling/ Planning', icon: '📅' },
-  { id: 'sleepScheduling', label: 'Sleep Scheduling', icon: '💤' },
-  { id: 'tutoring', label: 'Tutoring', icon: '📚' },
-  { id: 'homeworkHelp', label: 'Homework Help', icon: '📝' },
-  { id: 'roomOrg', label: 'Room organization', icon: '🏠' },
-  { id: 'foodPrep', label: 'Food prep', icon: '🥗' },
-  { id: 'diaperChange', label: 'Diaper Change', icon: '👶' },
-  { id: 'pottyTraining', label: 'Potty training', icon: '🚽' },
-  { id: 'organization', label: 'Organization', icon: '📋' },
-  { id: 'lightHouseKeeping', label: 'Light house keeping', icon: '🧹' },
-  { id: 'roomOrganization', label: 'Room Organization', icon: '🏠' },
-  { id: 'groceryShopping', label: 'Grocery Shopping', icon: '🛒' },
-  { id: 'childcareErrands', label: 'Childcare Errands', icon: '🏃' },
-  { id: 'feeding', label: 'Feeding', icon: '🍼' },
-  { id: 'pottyTraining2', label: 'Potty Training', icon: '🚽' },
-  { id: 'other', label: 'Other', icon: '➕' },
+  { id: 'bathing' as const, label: 'Bathing', icon: '🛁' },
+  { id: 'laundry' as const, label: 'Laundry', icon: '🧺' },
+  { id: 'packingLunch' as const, label: 'Packing Lunch', icon: '🥪' },
+  { id: 'driving' as const, label: 'Driving', icon: '🚗' },
+  { id: 'cooking' as const, label: 'Cooking', icon: '🍳' },
+  { id: 'playDates' as const, label: 'Play Dates', icon: '🎮' },
+  { id: 'commuting' as const, label: 'Commuting', icon: '🚌' },
+  { id: 'scheduling' as const, label: 'Scheduling/ Planning', icon: '📅' },
+  { id: 'sleepScheduling' as const, label: 'Sleep Scheduling', icon: '💤' },
+  { id: 'tutoring' as const, label: 'Tutoring', icon: '📚' },
+  { id: 'homeworkHelp' as const, label: 'Homework Help', icon: '📝' },
+  { id: 'roomOrg' as const, label: 'Room organization', icon: '🏠' },
+  { id: 'foodPrep' as const, label: 'Food prep', icon: '🥗' },
+  { id: 'diaperChange' as const, label: 'Diaper Change', icon: '👶' },
+  { id: 'pottyTraining' as const, label: 'Potty training', icon: '🚽' },
+  { id: 'organization' as const, label: 'Organization', icon: '📋' },
+  { id: 'lightHouseKeeping' as const, label: 'Light house keeping', icon: '🧹' },
+  { id: 'roomOrganization' as const, label: 'Room Organization', icon: '🏠' },
+  { id: 'groceryShopping' as const, label: 'Grocery Shopping', icon: '🛒' },
+  { id: 'childcareErrands' as const, label: 'Childcare Errands', icon: '🏃' },
+  { id: 'feeding' as const, label: 'Feeding', icon: '🍼' },
+  { id: 'pottyTraining2' as const, label: 'Potty Training', icon: '🚽' },
+  { id: 'other' as const, label: 'Other', icon: '➕' },
 ];
 
 const householdResponsibilities: Responsibility[] = [
-  { id: 'cooking2', label: 'Cooking', icon: '👩‍🍳' },
-  { id: 'laundry2', label: 'Laundry', icon: '👕' },
-  { id: 'mealPrep', label: 'Meal Prep', icon: '🥘' },
-  { id: 'ironing', label: 'Ironing', icon: '👔' },
-  { id: 'errands', label: 'Errands', icon: '🏃' },
-  { id: 'petCare', label: 'Pet Care', icon: '🐾' },
-  { id: 'eventPlanning', label: 'Event Planning', icon: '🎉' },
-  { id: 'trashRecycling', label: 'Trash & Recycling', icon: '🗑️' },
-  { id: 'lightHousekeeping2', label: 'Light Housekeeping', icon: '🧹' },
-  { id: 'deepHousekeeping', label: 'Deep Housekeeping', icon: '🧽' },
-  { id: 'managingProperties', label: 'Managing Properties', icon: '🏘️' },
-  { id: 'householdBudgeting', label: 'Household Budgeting', icon: '💰' },
-  { id: 'hiringStaff', label: 'Hiring & Supervising Staff', icon: '👥' },
-  { id: 'propertyManagement', label: 'Property Management', icon: '🏢' },
-  { id: 'dishwasher', label: 'Loading/Unloading Dishwasher', icon: '🍽️' },
-  { id: 'other2', label: 'Other', icon: '➕' },
+  { id: 'cooking2' as const, label: 'Cooking', icon: '👩‍🍳' },
+  { id: 'laundry2' as const, label: 'Laundry', icon: '👕' },
+  { id: 'mealPrep' as const, label: 'Meal Prep', icon: '🥘' },
+  { id: 'errands' as const, label: 'Errands', icon: '🏃' },
+  { id: 'petCare' as const, label: 'Pet Care', icon: '🐾' },
+  { id: 'eventPlanning' as const, label: 'Event Planning', icon: '🎉' },
+  { id: 'trashRecycling' as const, label: 'Trash & Recycling', icon: '🗑️' },
+  { id: 'lightHousekeeping2' as const, label: 'Light Housekeeping', icon: '🧹' },
+  { id: 'deepHousekeeping' as const, label: 'Deep Housekeeping', icon: '🧽' },
+  { id: 'managingProperties' as const, label: 'Managing Properties', icon: '🏘️' },
+  { id: 'householdBudgeting' as const, label: 'Household Budgeting', icon: '💰' },
+  { id: 'hiringStaff' as const, label: 'Hiring & Supervising Staff', icon: '👥' },
+  { id: 'propertyManagement' as const, label: 'Property Management', icon: '🏢' },
+  { id: 'dishwasher' as const, label: 'Loading/Unloading Dishwasher', icon: '🍽️' },
+  { id: 'other2' as const, label: 'Other', icon: '➕' },
 ];
 
 export default function ResponsibilitiesScreen() {
   const router = useRouter();
-  const [selectedResponsibilities, setSelectedResponsibilities] = useState<string[]>([]);
-
-  const toggleResponsibility = (id: string) => {
-    setSelectedResponsibilities(prev => 
-      prev.includes(id) 
-        ? prev.filter(item => item !== id)
-        : [...prev, id]
-    );
+  // const [selectedResponsibilities, setSelectedResponsibilities] = useState<string[]>([]);
+  const {
+    caregiverChildcareResponsibilities,
+    setCaregiverChildcareResponsibilities,
+    caregiverHouseholdResponsibilities,
+    setCaregiverHouseholdResponsibilities,
+    setOnboardingScreen
+  } = useUserStore()
+  const toggleChildcareResponsibility = (id: string) => {
+    const prev = caregiverChildcareResponsibilities ?? [];
+    const selectedResponsibilities = prev.includes(id)
+      ? prev.filter((item) => item !== id)
+      : [...prev, id];
+    setCaregiverChildcareResponsibilities(selectedResponsibilities);
+  };
+  const toggleHouseholdResponsibility = (id: string) => {
+    const prev = caregiverHouseholdResponsibilities ?? [];
+    const selectedResponsibilities = prev.includes(id)
+      ? prev.filter((item) => item !== id)
+      : [...prev, id];
+    setCaregiverHouseholdResponsibilities(selectedResponsibilities);
   };
 
   return (
     <ThemedView style={styles.container}>
-       <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-      
+      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
@@ -102,8 +115,8 @@ export default function ResponsibilitiesScreen() {
                   key={item.id}
                   label={item.label}
                   icon={item.icon}
-                  selected={selectedResponsibilities.includes(item.id)}
-                  onPress={() => toggleResponsibility(item.id)}
+                  selected={caregiverChildcareResponsibilities?.includes(item.id)}
+                  onPress={() => toggleChildcareResponsibility(item.id)}
                 />
               ))}
             </View>
@@ -117,8 +130,8 @@ export default function ResponsibilitiesScreen() {
                   key={item.id}
                   label={item.label}
                   icon={item.icon}
-                  selected={selectedResponsibilities.includes(item.id)}
-                  onPress={() => toggleResponsibility(item.id)}
+                  selected={caregiverHouseholdResponsibilities?.includes(item.id)}
+                  onPress={() => toggleHouseholdResponsibility(item.id)}
                 />
               ))}
             </View>
@@ -132,9 +145,12 @@ export default function ResponsibilitiesScreen() {
           <View style={styles.buttonContainer}>
             <Button
               label="Next"
-              onPress={() => router.push('/(auth)/screens/onboarding/caregiver/payment')}
+              onPress={() => {
+                setOnboardingScreen('/(auth)/screens/onboarding/caregiver/payment')
+                router.push('/(auth)/screens/onboarding/caregiver/payment')
+              }}
               variant="compact"
-              disabled={selectedResponsibilities.length === 0}
+              disabled={caregiverChildcareResponsibilities?.length === 0 || caregiverHouseholdResponsibilities?.length === 0}
             />
           </View>
         </LinearGradient>

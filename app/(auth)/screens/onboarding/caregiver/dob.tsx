@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { router } from 'expo-router';
 import { Colors } from '@/constants/Colors';
@@ -9,19 +9,23 @@ import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { useFonts } from 'expo-font';
 import { Poppins_400Regular, Poppins_500Medium } from '@expo-google-fonts/poppins';
-import { Bogart_400Regular, Bogart_500Medium } from '@expo-google-fonts/bogart';
+// import { Bogart_400Regular, Bogart_500Medium } from '@expo-google-fonts/bogart';
+import { useUserStore } from '@/services/state/user';
 
 export default function Page() {
-  const [date, setDate] = useState('');
+  const { caregiverDob, setCaregiverDob, setOnboardingScreen } = useUserStore();
   const [fontsLoaded] = useFonts({
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
   });
-
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/gender');
+    router.push('/(auth)/screens/onboarding/caregiver/gender');
+  };
   const handleDateChange = (text: string) => {
     // Format input as MM/DD/YYYY
     const cleaned = text.replace(/\D/g, '');
     let formatted = cleaned;
-    
+
     if (cleaned.length >= 2) {
       formatted = cleaned.slice(0, 2) + (cleaned.length > 2 ? '/' + cleaned.slice(2) : '');
     }
@@ -29,17 +33,19 @@ export default function Page() {
       formatted = formatted.slice(0, 5) + (cleaned.length > 4 ? '/' + cleaned.slice(4, 8) : '');
     }
 
-    setDate(formatted);
+    setCaregiverDob(formatted);
   };
-
+  useEffect(() => {
+    console.log(caregiverDob)
+  }, [caregiverDob])
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.keyboardAvoid}
     >
       <ThemedView style={styles.container}>
         <Header variant="back" />
-        
+
         <View style={styles.content}>
           <View style={styles.spacerTop} />
           <ProgressBar progress={0.2} />
@@ -48,12 +54,12 @@ export default function Page() {
             What is your date of{'\n'}birth?
           </ThemedText>
 
-          <View style={[styles.inputContainer, date.length > 0 && styles.inputContainerActive]}>
+          <View style={[styles.inputContainer, (caregiverDob?.trim() || '').length > 0 && styles.inputContainerActive]}>
             <TextInput
               style={styles.input}
               placeholder="MM/DD/YYYY"
               placeholderTextColor="#999"
-              value={date}
+              value={caregiverDob || ''}
               onChangeText={handleDateChange}
               keyboardType="numeric"
               maxLength={10}
@@ -64,9 +70,9 @@ export default function Page() {
         <View style={styles.bottomNav}>
           <Button
             label="Next"
-            onPress={() => router.push('/(auth)/screens/onboarding/caregiver/gender')}
-            variant={date.length === 10 ? "primary" : "disabled"}
-            disabled={date.length !== 10}
+            onPress={handleNext}
+            variant={caregiverDob?.length === 10 ? "primary" : undefined}
+            disabled={caregiverDob?.length !== 10}
           />
         </View>
       </ThemedView>

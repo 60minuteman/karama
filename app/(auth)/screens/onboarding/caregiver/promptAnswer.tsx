@@ -7,16 +7,218 @@ import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
+import { useUserStore } from '@/services/state/user';
+import { useMutation } from '@tanstack/react-query';
+import useAuthMutation from '@/hooks/useAuthMutation';
+import customAxios from '@/services/api/envConfig';
 
 export default function PromptAnswer() {
   const router = useRouter();
   const { prompt } = useLocalSearchParams();
-  const [answer, setAnswer] = useState('');
-
+  const {
+    caregiverAbilities,
+    caregiverAgeExperience,
+    caregiverCertifications,
+    caregiverChildcareResponsibilities,
+    caregiverChildrenCount,
+    caregiverCommitmentEndDate,
+    caregiverCommitmentStartDate,
+    caregiverCommitmentType,
+    caregiverConditionExperience,
+    caregiverCreativeInterests,
+    caregiverDiet,
+    caregiverDob,
+    caregiverEducation,
+    caregiverExperienceDuration,
+    caregiverFirstPosition,
+    caregiverFirstPrompt,
+    caregiverGender,
+    caregiverHourlyRate,
+    caregiverHouseholdResponsibilities,
+    caregiverImages,
+    caregiverInstrumentInterests,
+    caregiverLanguageMatch,
+    caregiverLanguages,
+    caregiverLocation,
+    caregiverMoreInfo,
+    caregiverName,
+    caregiverPaymentMethod,
+    caregiverPaymentType,
+    caregiverPersonality,
+    caregiverPetExperience,
+    caregiverPhilosophyExperience,
+    caregiverPositionType,
+    caregiverPreferredArrangement,
+    caregiverPreferredPositions,
+    caregiverPronouns,
+    caregiverReferral,
+    caregiverReligion,
+    caregiverRequiredBenefits,
+    caregiverRules,
+    caregiverSalaryAmount,
+    caregiverSchedule,
+    caregiverSecondPosition,
+    caregiverShowEducation,
+    caregiverShowPronouns,
+    caregiverSportInterest,
+    caregiverStemInterests,
+    caregiverFirstPromptAnswer,
+    caregiverPromptCategory,
+    hasNeuroDivergentExperience,
+    hasPetExperience,
+    hasPhilosophyExperience,
+    showCaregiverDiet,
+    showCaregiverPaymentMethod,
+    showCaregiverPersonality,
+    showCaregiverReligion,
+    showCaregiverRequiredBenefit,
+    setCaregiverFirstPromptAnswer,
+    setOnboardingScreen
+  } = useUserStore();
+  // const [answer, setAnswer] = useState('');
+  const onboadingInfo = {
+    "name": caregiverName,
+    "date_of_birth": caregiverDob,
+    "gender": caregiverGender,
+    "pronouns": caregiverPronouns,
+    "aquisition_source": caregiverReferral,
+    "zipcode": caregiverLocation,
+    "caregiver_type": caregiverPositionType,
+    "years_of_experience": caregiverExperienceDuration,
+    "education_level": caregiverEducation,
+    "show_edu_level_on_profile": caregiverShowEducation,
+    "abilities_and_certifications": {
+      "abilities": caregiverAbilities,
+      // "other_ability": "Child Yoga",
+      "certifications": caregiverCertifications,
+      // "other_certification": "Infant Care Specialist"
+    },
+    "languages": caregiverLanguages,
+    "other_languages": "French",
+    "ages_best_with": caregiverAgeExperience,
+    "children_capacity": caregiverChildrenCount,
+    "experience_with_disabilities": {
+      "disabilities": caregiverConditionExperience,
+      // "other": "Sensory Processing Disorder"
+    },
+    "experience_with_pets": {
+      "pets": caregiverPetExperience,
+      // "other": "Birds"
+    },
+    "hobbies": {
+      "creative_interests": caregiverCreativeInterests,
+      // "other_creative_interests": "N/A",
+      "instrument_interests": caregiverInstrumentInterests,
+      // "other_instrument_interest": "N/A",
+      "sport_interests": caregiverSportInterest,
+      // "other_sport_interest": "N/A",
+      "stem_interests": caregiverStemInterests,
+      // "other_stem_interest": "N/A"
+    },
+    "characteristics": {
+      "personalities": caregiverPersonality,
+      "diets": caregiverDiet,
+      // "other_diets": "N/A",
+      "show_diet_on_profile": showCaregiverDiet,
+      "rules": caregiverRules,
+      // "other_rules": "N/A",
+      // "show_rules_on_profile": showR,
+      "religion": caregiverReligion,
+      // "other_religion": "N/A",
+      "show_religion_on_profile": showCaregiverReligion,
+      // "religion_is_dealbreaker": true
+    },
+    "childcare_philosophies": caregiverPhilosophyExperience,
+    "family_must_speak_same_language": caregiverLanguageMatch,
+    "availability": caregiverPreferredPositions,
+    "arrangement_type": caregiverPreferredArrangement,
+    "job_commitment": {
+      "commitment": caregiverCommitmentType,
+      "start_date": caregiverCommitmentStartDate,
+    },
+    "service_days": caregiverSchedule,
+    "responsibilities": {
+      "childcare_responsibilities": caregiverChildcareResponsibilities,
+      // "other_childcare_responsibilities": "Assist with bedtime routines",
+      "household_responsibilities": caregiverHouseholdResponsibilities,
+      // "other_household_responsibilities": "Help with grocery shopping"
+    },
+    "payment_info": {
+      "type": caregiverPaymentType,
+      "hourly_min": caregiverHourlyRate,
+      "hourly_max": caregiverHourlyRate,
+      "method": caregiverPaymentMethod,
+      "show_method_on_profile": showCaregiverPaymentMethod,
+    },
+    "required_benefits": caregiverRequiredBenefits,
+    // "other_required_benefits": "something else",
+    "past_positions": [
+      {
+        "family_or_business_name": caregiverFirstPosition.familyName,
+        "start_date": caregiverFirstPosition.startDate,
+        "end_date": caregiverFirstPosition.endDate,
+        "position_type": caregiverFirstPosition.position,
+        "children_age_group": caregiverFirstPosition.ageGroup,
+        "availability": caregiverFirstPosition.employmentType,
+        "childcare_responsibilities": [
+          "Packing Lunch",
+          "Play Dates"
+        ],
+        "household_responsibilities": [
+          "Property Management",
+          "Meal Prep"
+        ]
+      },
+      {
+        "family_or_business_name": caregiverSecondPosition.familyName,
+        "start_date": caregiverSecondPosition.startDate,
+        "end_date": caregiverSecondPosition.endDate,
+        "position_type": caregiverSecondPosition.position,
+        "children_age_group": caregiverSecondPosition.ageGroup,
+        "availability": caregiverSecondPosition.employmentType,
+        "childcare_responsibilities": [
+          "Packing Lunch",
+          "Play Dates"
+        ],
+        "household_responsibilities": [
+          "Property Management",
+          "Meal Prep"
+        ]
+      },
+    ],
+    "prompts": [
+      {
+        "category": caregiverPromptCategory,
+        "title": caregiverFirstPrompt,
+        "answer": caregiverFirstPromptAnswer,
+      }
+    ]
+  }
+  console.log(onboadingInfo,'TO Create PROFIELEEE')
+  const createProfile: any = useAuthMutation({
+    mutationFn: (data: any) => {
+      return customAxios.post(`/caregiver-profile/create-profile`, data);
+    },
+    onSuccess: async (data: any) => {
+      console.log('CAREGIVER PROFILE CREATED')
+      handleNext();
+    },
+    onError: (error: any) => {
+      console.log('COULD NOR CREATEEE')
+      console.log('error', error['response'].data);
+    },
+  });
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/moreInfo')
+    router.push('/(auth)/screens/onboarding/caregiver/moreInfo')
+  }
+  const handleSubmit = ()=>{
+    createProfile.mutate(onboadingInfo)
+  }
   return (
     <ThemedView style={styles.container}>
-        <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-      
+      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
@@ -31,8 +233,8 @@ export default function PromptAnswer() {
             multiline
             placeholder="Type prompt answer here..."
             placeholderTextColor="#A8A3A5"
-            value={answer}
-            onChangeText={setAnswer}
+            value={caregiverFirstPromptAnswer}
+            onChangeText={setCaregiverFirstPromptAnswer}
             textAlignVertical="top"
           />
         </View>
@@ -50,13 +252,15 @@ export default function PromptAnswer() {
       <View style={styles.bottomNav}>
         <Button
           label="Next"
-          onPress={() => router.push('/(auth)/screens/onboarding/caregiver/moreInfo')}
+          onPress={handleSubmit}
           variant="compact"
+          loading={createProfile.isPending}
         />
       </View>
     </ThemedView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
