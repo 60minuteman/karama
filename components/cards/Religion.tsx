@@ -1,45 +1,49 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Pill2 } from '@/components/ui/Pill2';
-import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import { Poppins_400Regular, useFonts } from '@expo-google-fonts/poppins';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
 interface ReligionProps {
   religion?: string;
   personality?: string[];
   disabilities?: string[];
+  data?: any;
 }
 
 export const Religion = ({
-  religion = "Buddhism",
-  personality = ["Caring", "Patient", "Creative"],
-  disabilities = ["Dyslexia", "ADHD"]
+  religion = 'Buddhism',
+  personality = ['Caring', 'Patient', 'Creative'],
+  disabilities = ['Dyslexia', 'ADHD'],
+  data,
 }: ReligionProps) => {
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
-    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf')
+    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
   });
 
-  const religionIcons: {[key: string]: string} = {
-    "Buddhism": "☸️",
-    "Christianity": "✝️",
-    "Islam": "☪️",
-    "Judaism": "✡️",
-    "Hinduism": "🕉️",
-    "Sikhism": "🪔",
-    "Other": "🙏",
-    "None": "❌"
+  console.log('data=======', data?.caregiver_profile?.pictures[2]?.path);
+
+  const religionIcons: { [key: string]: string } = {
+    Buddhism: '☸️',
+    Christianity: '✝️',
+    Islam: '☪️',
+    Judaism: '✡️',
+    Hinduism: '🕉️',
+    Sikhism: '🪔',
+    Other: '🙏',
+    None: '❌',
   };
 
-  const personalityIcons: {[key: string]: string} = {
-    "Caring": "💝",
-    "Patient": "🧘‍♀️",
-    "Creative": "🎨",
-    "Energetic": "⚡",
-    "Organized": "📋",
-    "Fun": "🎮",
-    "Calm": "🌊",
-    "Reliable": "🤝"
+  const personalityIcons: { [key: string]: string } = {
+    Caring: '💝',
+    Patient: '🧘‍♀️',
+    Creative: '🎨',
+    Energetic: '⚡',
+    Organized: '📋',
+    Fun: '🎮',
+    Calm: '🌊',
+    Reliable: '🤝',
   };
 
   if (!fontsLoaded) {
@@ -53,7 +57,7 @@ export const Religion = ({
         <View style={styles.pillContainer}>
           {religion && (
             <Pill2
-              icon={religionIcons[religion] || religionIcons["Other"]}
+              icon={religionIcons[religion] || religionIcons['Other']}
               label={religion}
               style={styles.pill}
             />
@@ -67,7 +71,7 @@ export const Religion = ({
           {personality.map((trait, index) => (
             <Pill2
               key={index}
-              icon={personalityIcons[trait] || "✨"}
+              icon={personalityIcons[trait] || '✨'}
               label={trait}
               style={styles.pill}
             />
@@ -76,14 +80,12 @@ export const Religion = ({
       </View>
 
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>Disability Experience</ThemedText>
+        <ThemedText style={styles.sectionTitle}>
+          Disability Experience
+        </ThemedText>
         <View style={styles.pillContainer}>
           {disabilities.map((disability, index) => (
-            <Pill2
-              key={index}
-              label={disability}
-              style={styles.pill}
-            />
+            <Pill2 key={index} label={disability} style={styles.pill} />
           ))}
         </View>
       </View>
@@ -115,4 +117,4 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 20,
   },
-}); 
+});

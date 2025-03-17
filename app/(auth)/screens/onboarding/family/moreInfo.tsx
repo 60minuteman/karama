@@ -23,10 +23,12 @@ export default function MoreInfo() {
     family_prompt,
     family_prompt_category,
     family_prompt_answer,
+    setSteps,
   } = useUserStore();
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/family/upload');
+    setSteps('more-info');
     router.push('/(auth)/screens/onboarding/family/upload');
   };
 

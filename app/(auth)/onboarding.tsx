@@ -10,7 +10,7 @@ import { Image, StyleSheet, View } from 'react-native';
 
 export default function OnboardingScreen() {
   const router = useRouter();
-  const { user, onboarding_screen } = useUserStore();
+  const { user, onboarding_screen, steps, selectedType } = useUserStore();
   const { completeOnboarding } = useOnboarding();
 
   console.log('user', user);
@@ -20,8 +20,24 @@ export default function OnboardingScreen() {
     if (onboarding_screen) {
       // router.push(onboarding_screen);
       // router.push('/(auth)/screens/onboarding/family/payment');
-      router.push('/(auth)/bridge')
+      // router.push('/(auth)/bridge');
       // router.push('/(auth)/phoneNumber');
+      if (selectedType === 'family') {
+        if (steps === 'intermission') {
+          return router.push('/(auth)/screens/onboarding/family/gender');
+        }
+        if (steps === 'responsibilities') {
+          return router.push('/(auth)/screens/onboarding/family/payment');
+        }
+        if (steps === 'more-info') {
+          return router.push('/(auth)/screens/onboarding/family/upload');
+        }
+        if (steps === 'upload') {
+          return router.push('/(auth)/screens/onboarding/family/success');
+        }
+
+        return router.push('/(auth)/bridge');
+      }
     } else {
       router.push('/(auth)/phoneNumber');
     }

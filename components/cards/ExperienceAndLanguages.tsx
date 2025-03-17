@@ -1,8 +1,8 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Pill2 } from '@/components/ui/Pill2';
-import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import { Poppins_400Regular, useFonts } from '@expo-google-fonts/poppins';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
 interface ExperienceAndLanguagesProps {
   yearsOfExperience: string;
@@ -10,12 +10,12 @@ interface ExperienceAndLanguagesProps {
 }
 
 export const ExperienceAndLanguages = ({
-  yearsOfExperience = "11-20 years",
-  languages = ["Hausa", "Arbic", "Hindu"]
+  yearsOfExperience = '11-20 years',
+  languages = ['Hausa', 'Arbic', 'Hindu'],
 }: ExperienceAndLanguagesProps) => {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
-    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf')
+    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
   });
 
   if (!fontsLoaded) {
@@ -24,19 +24,16 @@ export const ExperienceAndLanguages = ({
 
   return (
     <View style={styles.container}>
-      <Section title="With an experience of">
-        <Pill2
-          label={yearsOfExperience}
-          style={styles.experiencePill}
-        />
+      <Section title='With an experience of'>
+        <Pill2 label={yearsOfExperience} style={styles.experiencePill} />
       </Section>
 
-      <Section title="I speak">
+      <Section title='I speak'>
         <View style={styles.languagesContainer}>
           {languages.map((language, index) => (
             <Pill2
               key={index}
-              icon="💬"
+              icon='💬'
               label={language}
               style={styles.languagePill}
             />
@@ -47,11 +44,11 @@ export const ExperienceAndLanguages = ({
   );
 };
 
-const Section = ({ 
-  title, 
-  children 
-}: { 
-  title: string; 
+const Section = ({
+  title,
+  children,
+}: {
+  title: string;
   children: React.ReactNode;
 }) => (
   <View style={styles.section}>
@@ -90,4 +87,4 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 20,
   },
-}); 
+});

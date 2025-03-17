@@ -1,9 +1,18 @@
-import React from 'react';
-import { StyleSheet, View, Image, Animated, useWindowDimensions } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedText } from '@/components/ThemedText';
+import {
+  Poppins_400Regular,
+  Poppins_500Medium,
+} from '@expo-google-fonts/poppins';
 import { useFonts } from 'expo-font';
-import { Poppins_400Regular, Poppins_500Medium } from '@expo-google-fonts/poppins';
+import { LinearGradient } from 'expo-linear-gradient';
+import React from 'react';
+import {
+  Animated,
+  Image,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
 interface ProfileCardProps {
   name: string;
@@ -12,16 +21,25 @@ interface ProfileCardProps {
   pronouns: string;
   rating: number;
   role: string;
+  data: any;
 }
 
-export const ProfileCard = ({ name, age, address = "123 Lain St, New York, NY", pronouns, rating, role }: ProfileCardProps) => {
+export const ProfileCard = ({
+  name,
+  age,
+  address = '123 Lain St, New York, NY',
+  pronouns,
+  rating,
+  role,
+  data,
+}: ProfileCardProps) => {
   const { height: windowHeight } = useWindowDimensions();
   const [fadeAnim] = React.useState(new Animated.Value(0));
   const [fontsLoaded] = useFonts({
     'Poppins-Regular': Poppins_400Regular,
     'Poppins-Medium': Poppins_500Medium,
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
-    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf')
+    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
   });
 
   React.useEffect(() => {
@@ -36,13 +54,15 @@ export const ProfileCard = ({ name, age, address = "123 Lain St, New York, NY", 
     return null;
   }
 
+  // console.log('data&&&&&&', data?.caregiver_profile?.pictures);
+
   return (
     <View style={styles.container}>
-      <Image 
-        source={require('@/assets/images/1.png')} 
-        style={[styles.image, { height: Math.min(windowHeight * 0.7, 700) }]} 
+      <Image
+        source={{ uri: data?.caregiver_profile?.pictures[0]?.path }}
+        style={[styles.image, { height: Math.min(windowHeight * 0.7, 700) }]}
       />
-      
+
       <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
         <LinearGradient
           colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.7)']}
@@ -59,7 +79,9 @@ export const ProfileCard = ({ name, age, address = "123 Lain St, New York, NY", 
           </View>
           <View style={styles.infoOverlay}>
             <View style={styles.infoContainer}>
-              <ThemedText style={styles.nameAge}>{name}, {age}</ThemedText>
+              <ThemedText style={styles.nameAge}>
+                {name}, {age}
+              </ThemedText>
               <ThemedText style={styles.role}>{role}</ThemedText>
               <ThemedText style={styles.address}>{address}</ThemedText>
             </View>

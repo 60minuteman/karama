@@ -13,7 +13,7 @@ import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 export default function Page() {
-  const { family_images, setFamilyImages } = useUserStore();
+  const { family_images, setFamilyImages, setSteps } = useUserStore();
 
   const uploadMutation = useAuthMutation({
     mutationFn: async () => {
@@ -35,6 +35,7 @@ export default function Page() {
       });
     },
     onSuccess: () => {
+      setSteps('upload');
       router.push('/(auth)/screens/onboarding/family/success');
     },
     onError: (error: any) => {

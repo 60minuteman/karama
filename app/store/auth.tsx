@@ -1,3 +1,4 @@
+import { useUserStore } from '@/services/state/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useRootNavigation, useSegments } from 'expo-router';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -23,7 +24,9 @@ export function useAuth() {
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const { user } = useUserStore();
   const rootSegments = useSegments();
+
   const rootNavigation = useRootNavigation();
 
   // Check if the user is authenticated when the app loads
@@ -37,14 +40,14 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const inAuthGroup = rootSegments[0] === '(auth)';
 
-    if (isLoggedIn && inAuthGroup) {
+    if (user && inAuthGroup) {
       // Redirect away from auth group if authenticated
-      // router.replace('/(app)');
-    } else if (!isLoggedIn && !inAuthGroup) {
+      router.replace('/(tabs)/discover');
+    } else if (!user && !inAuthGroup) {
       // Redirect to auth group if not authenticated
-      // router.replace('/(auth)');
+      router.replace('/(auth)');
     }
-  }, [isLoggedIn, rootNavigation?.isReady, rootSegments]);
+  }, [user, rootNavigation?.isReady, rootSegments]);
 
   const checkAuthStatus = async () => {
     try {

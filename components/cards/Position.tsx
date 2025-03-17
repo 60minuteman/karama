@@ -1,27 +1,24 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import { PastPosition } from './PastPosition';
 import { useFonts } from '@expo-google-fonts/poppins';
+import React, { useState } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { PastPosition } from './PastPosition';
 
 interface PositionProps {
-  positions?: Array<{
-    name: string;
-    onPress: () => void;
-  }>;
+  positions?: Array<any>;
 }
 
 export const Position = ({
   positions = [
     { name: 'Willson', onPress: () => {} },
     { name: 'Johnsons', onPress: () => {} },
-  ]
+  ],
 }: PositionProps) => {
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
-  
+
   let [fontsLoaded] = useFonts({
     'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
-    'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf')
+    'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
   });
 
   if (!fontsLoaded) {
@@ -33,19 +30,19 @@ export const Position = ({
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>My Past positions</ThemedText>
         <ThemedText style={styles.subtitle}>Tap to view</ThemedText>
-        
+
         <View style={styles.positionsContainer}>
           {positions.map((position, index) => (
-            <TouchableOpacity 
+            <TouchableOpacity
               key={index}
               style={styles.positionButton}
               onPress={() => {
-                setSelectedPosition(selectedPosition === position.name ? null : position.name);
-                position.onPress();
+                setSelectedPosition(position);
+                // position.onPress();
               }}
             >
               <ThemedText style={styles.positionText}>
-                {position.name}
+                {position?.family_or_business_name}
               </ThemedText>
               <ThemedText style={styles.arrow}>→</ThemedText>
             </TouchableOpacity>
@@ -108,5 +105,5 @@ const styles = StyleSheet.create({
   },
   pastPositionContainer: {
     marginTop: 16,
-  }
+  },
 });

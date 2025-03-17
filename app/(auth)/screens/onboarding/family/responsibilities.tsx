@@ -81,6 +81,7 @@ export default function ResponsibilitiesScreen() {
     family_arrangement,
     family_commitment,
     family_schedule,
+    setSteps,
   } = useUserStore();
 
   const toggleResponsibility = (id: string) => {
@@ -93,6 +94,7 @@ export default function ResponsibilitiesScreen() {
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/family/payment');
+    setSteps('responsibilities');
     router.push('/(auth)/screens/onboarding/family/payment');
   };
 

@@ -1,8 +1,8 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Pill2 } from '@/components/ui/Pill2';
 import { useFonts } from 'expo-font';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
 interface WorkProps {
   animals?: Array<{
@@ -16,7 +16,7 @@ export const Work = ({
     { icon: '🐱', label: 'Cat' },
     { icon: '🐸', label: 'Frog' },
     { icon: '🐮', label: 'Cow' },
-  ]
+  ],
 }: WorkProps) => {
   let [fontsLoaded] = useFonts({
     'Bogart-Regular': require('../../assets/fonts/bogart/Bogart-Regular-trial.ttf'),
@@ -33,11 +33,7 @@ export const Work = ({
         <View style={styles.pillsContainer}>
           {animals.map((animal, index) => (
             <View key={index} style={styles.pillWrapper}>
-              <Pill2
-                icon={animal.icon}
-                label={animal.label}
-                style={styles.pill}
-              />
+              <Pill2 icon={animal.icon} label={animal} style={styles.pill} />
             </View>
           ))}
         </View>

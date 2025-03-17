@@ -1,11 +1,9 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Pill2 } from '@/components/ui/Pill2';
-import { 
-  useFonts,
-  Poppins_400Regular 
-} from '@expo-google-fonts/poppins';
+import { Poppins_400Regular, useFonts } from '@expo-google-fonts/poppins';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Image } from './Image';
 
 interface ResponsibilitiesProps {
   childcareResponsibilities?: Array<{
@@ -16,6 +14,7 @@ interface ResponsibilitiesProps {
     icon: string;
     label: string;
   }>;
+  data: any;
 }
 
 export const Responsibilities = ({
@@ -37,11 +36,12 @@ export const Responsibilities = ({
     { icon: '🧹', label: 'Deep Housekeeping' },
     { icon: '📊', label: 'Household Budgeting' },
     { icon: '🏠', label: 'Vendor/ Services Management' },
-  ]
+  ],
+  data,
 }: ResponsibilitiesProps) => {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
-    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf')
+    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
   });
 
   if (!fontsLoaded) {
@@ -51,7 +51,10 @@ export const Responsibilities = ({
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <View style={styles.imagePlaceholder} />
+        <Image
+          source={{ uri: data?.caregiver_profile?.pictures[2]?.path }}
+          style={styles.imagePlaceholder}
+        />
       </View>
 
       <View style={styles.section}>
@@ -59,14 +62,16 @@ export const Responsibilities = ({
           Childcare Responsibilities
         </ThemedText>
         <View style={styles.pillsContainer}>
-          {childcareResponsibilities.map((item, index) => (
-            <Pill2
-              key={index}
-              icon={item.icon}
-              label={item.label}
-              style={styles.pill}
-            />
-          ))}
+          {data?.caregiver_profile?.responsibilities?.childcare_responsibilities?.map(
+            (item: any, index: any) => (
+              <Pill2
+                key={index}
+                icon={item.icon}
+                label={item}
+                style={styles.pill}
+              />
+            )
+          )}
         </View>
       </View>
 
@@ -75,14 +80,16 @@ export const Responsibilities = ({
           Household Responsibilities
         </ThemedText>
         <View style={styles.pillsContainer}>
-          {householdResponsibilities.map((item, index) => (
-            <Pill2
-              key={index}
-              icon={item.icon}
-              label={item.label}
-              style={styles.pill}
-            />
-          ))}
+          {data?.caregiver_profile?.responsibilities?.household_responsibilities?.map(
+            (item: any, index: any) => (
+              <Pill2
+                key={index}
+                icon={item.icon}
+                label={item}
+                style={styles.pill}
+              />
+            )
+          )}
         </View>
       </View>
     </View>
@@ -107,7 +114,7 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 14, // Changed from 8 to 10
-    marginTop: 24
+    marginTop: 24,
   },
   sectionTitle: {
     fontSize: 16,

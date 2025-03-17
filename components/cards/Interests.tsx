@@ -1,51 +1,60 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Pill2 } from '@/components/ui/Pill2';
-import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import { Poppins_400Regular, useFonts } from '@expo-google-fonts/poppins';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Image } from './Image';
 
 interface InterestsProps {
   interests: string[];
+  data: any;
 }
 
 export const Interests = ({
   interests = [
-    "Dance",
-    "DIY", 
-    "Magic",
-    "Gaming",
-    "Painting",
-    "Film Making",
-    "Trumpet",
-    "Piano",
-    "Drama"
-  ]
+    'Dance',
+    'DIY',
+    'Magic',
+    'Gaming',
+    'Painting',
+    'Film Making',
+    'Trumpet',
+    'Piano',
+    'Drama',
+  ],
+  data,
 }: InterestsProps) => {
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
-    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf')
+    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
   });
 
-  const interestIcons: {[key: string]: string} = {
-    "Dance": "🩰",
-    "DIY": "✨",
-    "Magic": "🪄", 
-    "Gaming": "🎮",
-    "Painting": "🎨",
-    "Film Making": "🎬",
-    "Trumpet": "🎺",
-    "Piano": "🎹",
-    "Drama": "🎭"
+  const interestIcons: { [key: string]: string } = {
+    Dance: '🩰',
+    DIY: '✨',
+    Magic: '🪄',
+    Gaming: '🎮',
+    Painting: '🎨',
+    'Film Making': '🎬',
+    Trumpet: '🎺',
+    Piano: '🎹',
+    Drama: '🎭',
   };
 
   if (!fontsLoaded) {
     return null;
   }
 
+  console.log('data=======', data?.caregiver_profile?.pictures[3]?.path);
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <View style={styles.imagePlaceholder} />
+        {/* <View style={styles.imagePlaceholder} /> */}
+        <Image
+          source={{ uri: data?.caregiver_profile?.pictures[3]?.path }}
+          style={styles.imagePlaceholder}
+        />
       </View>
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>My Interests</ThemedText>
@@ -101,4 +110,4 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 20,
   },
-}); 
+});

@@ -31,12 +31,14 @@ export default function IntermissionScreen() {
     family_show_philosophy,
     family_philosophies,
     family_allergies,
+    setSteps,
   } = useUserStore();
 
   console.log('family_allergies', family_allergies);
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/family/gender');
+    setSteps('intermission');
     router.push('/(auth)/screens/onboarding/family/gender');
   };
 

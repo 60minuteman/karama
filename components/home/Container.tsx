@@ -1,16 +1,21 @@
-import React from 'react';
-import { StyleSheet, View, ScrollView, useWindowDimensions } from 'react-native';
-import { ProfileCard } from '@/components/cards/ProfileCard';
-import { ProfileDetails } from '@/components/home/ProfileDetails';
+import { Certifications } from '@/components/cards/Certifications';
 import { ExperienceAndLanguages } from '@/components/cards/ExperienceAndLanguages';
-import { Obsession } from '@/components/cards/Obsession';
+import { Image } from '@/components/cards/Image';
 import { Interests } from '@/components/cards/Interests';
+import { Obsession } from '@/components/cards/Obsession';
+import { Position } from '@/components/cards/Position';
+import { ProfileCard } from '@/components/cards/ProfileCard';
 import { Religion } from '@/components/cards/Religion';
 import { Responsibilities } from '@/components/cards/Responsibilities';
-import { Certifications } from '@/components/cards/Certifications';
-import { Image } from '@/components/cards/Image';
 import { Work } from '@/components/cards/Work';
-import { Position } from '@/components/cards/Position';
+import { ProfileDetails } from '@/components/home/ProfileDetails';
+import React from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
 interface ContainerProps {
   profileData: {
@@ -32,12 +37,15 @@ interface ContainerProps {
     disabilities?: string[];
     address: string;
   };
+  data: any;
 }
 
-export const Container = ({ profileData }: ContainerProps) => {
+export const Container = ({ profileData, data }: ContainerProps) => {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const isLargeScreen = windowWidth > 768;
-  
+
+  // console.log('data=======', data);
+
   const containerWidth = Math.min(windowWidth * 0.9, 500); // Max width of 500
 
   const dynamicStyles = StyleSheet.create({
@@ -59,8 +67,10 @@ export const Container = ({ profileData }: ContainerProps) => {
       backgroundColor: '#ECEBEC',
       borderRadius: 10,
       marginBottom: containerWidth * 0.03,
-    }
+    },
   });
+
+  // console.log('data=======', data?.caregiver_profile);
 
   const content = (
     <>
@@ -76,7 +86,7 @@ export const Container = ({ profileData }: ContainerProps) => {
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>
         <ExperienceAndLanguages
-          yearsOfExperience={profileData.experience[0]}
+          yearsOfExperience={data?.caregiver_profile?.years_of_experience}
           languages={profileData.languages}
         />
       </View>
@@ -86,31 +96,50 @@ export const Container = ({ profileData }: ContainerProps) => {
       </View>
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>
-        <Interests interests={profileData.interests} />
+        <Interests data={data} interests={profileData.interests} />
       </View>
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>
-        <Religion religion={profileData.religion} />
+        <Religion
+          religion={profileData.religion}
+          personality={profileData.personality}
+          disabilities={profileData.disabilities}
+          data={data}
+        />
       </View>
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>
-        <Responsibilities />
+        <Responsibilities data={data} />
       </View>
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>
-        <Certifications />
+        <Certifications
+          certifications={[
+            ...(data?.caregiver_profile?.abilities_and_certifications
+              ?.abilities || []),
+            ...(data?.caregiver_profile?.abilities_and_certifications
+              ?.certifications || []),
+          ].filter(Boolean)}
+          data={data}
+        />
       </View>
       <View style={styles.spacer} />
       <View style={[dynamicStyles.componentContainer, styles.imageContainer]}>
-        <Image />
+        <Image data={data} />
       </View>
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>
-        <Work />
+        <Work
+          animals={[
+            ...(data?.caregiver_profile?.experience_with_disabilities
+              ?.disabilities || []),
+            ...(data?.caregiver_profile?.experience_with_pets?.pets || []),
+          ].filter(Boolean)}
+        />
       </View>
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>
-        <Position />
+        <Position positions={data?.caregiver_profile?.past_positions} />
       </View>
       <View style={styles.bottomSpacer} />
     </>
@@ -121,9 +150,9 @@ export const Container = ({ profileData }: ContainerProps) => {
       {isLargeScreen ? (
         <View style={styles.largeScreenLayout}>
           <View style={dynamicStyles.profileCardContainer}>
-            <ProfileCard {...profileData} />
+            <ProfileCard data={data} {...profileData} />
           </View>
-          <ScrollView 
+          <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollContent}
           >
@@ -131,12 +160,12 @@ export const Container = ({ profileData }: ContainerProps) => {
           </ScrollView>
         </View>
       ) : (
-        <ScrollView 
+        <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
           <View style={dynamicStyles.profileCardContainer}>
-            <ProfileCard {...profileData} />
+            <ProfileCard data={data} {...profileData} />
           </View>
           {content}
         </ScrollView>

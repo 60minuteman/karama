@@ -1,7 +1,7 @@
-import React from 'react';
-import { StyleSheet, View, TouchableOpacity, ViewStyle } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import { Poppins_400Regular, useFonts } from '@expo-google-fonts/poppins';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-native';
 
 interface Pill2Props {
   label: string;
@@ -20,15 +20,10 @@ export const Pill2 = ({ label, icon, style, onPress }: Pill2Props) => {
   }
 
   const Component = onPress ? TouchableOpacity : View;
-  
+
   return (
-    <Component 
-      style={[styles.container, style]}
-      onPress={onPress}
-    >
-      {icon && (
-        <ThemedText style={styles.icon}>{icon}</ThemedText>
-      )}
+    <Component style={[styles.container, style]} onPress={onPress}>
+      {icon && <ThemedText style={styles.icon}>{icon}</ThemedText>}
       <ThemedText style={styles.label}>{label}</ThemedText>
     </Component>
   );
@@ -44,14 +39,19 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingBottom: 4,
     paddingHorizontal: 16,
+    flexShrink: 0,
+    maxWidth: '100%',
   },
   icon: {
     fontSize: 14,
     marginRight: 8,
+    flexShrink: 0,
   },
   label: {
     fontSize: 14,
     fontWeight: '400',
     fontFamily: 'Poppins_400Regular',
+    flexShrink: 1,
+    flexWrap: 'wrap',
   },
-}); 
+});

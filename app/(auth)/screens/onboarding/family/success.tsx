@@ -1,18 +1,21 @@
-import React from 'react';
-import { StyleSheet, View, Image } from 'react-native';
-import { router } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { router } from 'expo-router';
+import React from 'react';
+import { Image, StyleSheet, View } from 'react-native';
 
 export default function Page() {
+  const { clearUser } = useUserStore();
+
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
@@ -23,11 +26,11 @@ export default function Page() {
           </ThemedText>
         </View>
 
-        <Image 
+        <Image
           source={require('@/assets/images/heart-pink.png')}
           style={styles.heartImageTop}
         />
-        <Image 
+        <Image
           source={require('@/assets/images/heart-yellow.png')}
           style={styles.heartImageBottom}
         />
@@ -36,9 +39,12 @@ export default function Page() {
       <View style={styles.bottomNav}>
         <View style={styles.buttonContainer}>
           <Button
-            label="Finish"
-            onPress={() => router.push('/(tabs)/discover')}
-            variant="compact"
+            label='Finish'
+            onPress={() => {
+              clearUser();
+              router.push('/(tabs)/discover');
+            }}
+            variant='compact'
           />
         </View>
       </View>
@@ -92,6 +98,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-end'
-  }
+    justifyContent: 'flex-end',
+  },
 });

@@ -1,12 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, Image as RNImage } from 'react-native';
+import { Image as RNImage, StyleSheet, View } from 'react-native';
 
-export const Image = () => {
+export const Image = ({ data }: any) => {
   return (
     <RNImage
-      source={require('@/assets/images/1.png')}
+      source={{ uri: data?.caregiver_profile?.pictures[1]?.path }}
       style={styles.image}
-      resizeMode="cover"
+      resizeMode='cover'
     />
   );
 };
@@ -15,5 +15,5 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: 325,
-  }
-}); 
+  },
+});
