@@ -640,6 +640,7 @@ interface UserState {
   setFamilyAllergies: (allergies: Partial<FamilyAllergies>) => void;
   setFamilyPromptCategory: (category: string | null) => void;
   setFamilyImages: (images: string[]) => void;
+  logout: () => Promise<void>;
 }
 
 export const useUserStore = create<UserState>()(
@@ -1374,6 +1375,14 @@ export const useUserStore = create<UserState>()(
       setFamilyImages: (images) => set({ family_images: images }),
 
       setSteps: (steps) => set({ steps }),
+
+      logout: async () => {
+        await AsyncStorage.removeItem('token');
+        set({
+          user: null,
+          token: null,
+        });
+      },
     }),
     {
       name: 'user-storage',

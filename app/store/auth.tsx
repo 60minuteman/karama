@@ -24,7 +24,7 @@ export function useAuth() {
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const { user } = useUserStore();
+  const { user, clearUser } = useUserStore();
   const rootSegments = useSegments();
 
   const rootNavigation = useRootNavigation();
@@ -39,6 +39,8 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!rootNavigation?.isReady) return;
 
     const inAuthGroup = rootSegments[0] === '(auth)';
+
+    // clearUser();
 
     if (user && inAuthGroup) {
       // Redirect away from auth group if authenticated

@@ -44,8 +44,8 @@ export default function OnboardingScreen() {
   };
 
   const handleSignIn = () => {
-    // router.push('/(auth)/bridge');
-    router.push('/(tabs)/discover');
+    router.push('/(auth)/pet');
+    // router.push('/(tabs)/discover');
   };
 
   return (

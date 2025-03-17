@@ -1,21 +1,23 @@
-import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
-import { Link, useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
+import { Ionicons } from '@expo/vector-icons';
+import { Link, useRouter } from 'expo-router';
+import React from 'react';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 export const HomeHeader = () => {
+  const { logout } = useUserStore();
   const router = useRouter();
 
   return (
     <View style={styles.container}>
-      <Image 
-        source={require('@/assets/images/HomeLogo.png')} 
+      <Image
+        source={require('@/assets/images/HomeLogo.png')}
         style={styles.logo}
-        resizeMode="contain"
+        resizeMode='contain'
       />
       <View style={styles.rightIcons}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.iconButton}
           activeOpacity={0.7}
           onPress={() => router.push('/liked-you')}
@@ -23,10 +25,10 @@ export const HomeHeader = () => {
           <Image
             source={require('@/assets/images/BackIcon.png')}
             style={styles.icon}
-            resizeMode="contain"
+            resizeMode='contain'
           />
         </TouchableOpacity>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.iconButton}
           activeOpacity={0.7}
           onPress={() => router.push('/filter')}
@@ -34,18 +36,21 @@ export const HomeHeader = () => {
           <Image
             source={require('@/assets/images/Settings.png')}
             style={styles.icon}
-            resizeMode="contain"
+            resizeMode='contain'
           />
         </TouchableOpacity>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.iconButton}
           activeOpacity={0.7}
-          onPress={() => router.push('/profile')}
+          onPress={() => {
+            // router.push('/profile')
+            logout();
+          }}
         >
-          <Image 
+          <Image
             source={require('@/assets/images/profile-placeholder.png')}
             style={styles.profileImage}
-            resizeMode="cover"
+            resizeMode='cover'
           />
         </TouchableOpacity>
       </View>
