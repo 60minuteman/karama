@@ -12,7 +12,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// This hook can be used to access the user info.
 export function useAuth() {
   const value = useContext(AuthContext);
   if (!value) {
@@ -27,12 +26,10 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const { user, clearUser, onboarding_screen, logout, hydrated } =
     useUserStore();
   const rootSegments = useSegments();
-
   const rootNavigation = useRootNavigation();
 
   // Check if the user is authenticated when the app loads
 
-  // Handle authentication state changes
   useEffect(() => {
     // Ensure everything is ready before attempting navigation
     if (!rootNavigation?.isReady || !hydrated || !rootSegments) return;
@@ -79,7 +76,9 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     try {
       await AsyncStorage.removeItem('userToken');
+      await logout(); // Clear user state
       setIsLoggedIn(false);
+      router.replace('/(auth)');
     } catch (error) {
       console.error('Error signing out:', error);
       throw error;

@@ -4,7 +4,7 @@ import { FontProvider } from '@/providers/FontProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { useUserStore } from '@/services/state/user';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Stack } from 'expo-router';
+import { Slot } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
@@ -79,31 +79,20 @@ function RootLayoutNav() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ThemeProvider>
           <QueryClientProvider client={queryClient}>
-            <FontProvider>
-              <View
-                style={{ flex: 1, backgroundColor: Colors.light.background }}
-              >
-                <Stack
-                  screenOptions={{
-                    headerShown: false,
-                    contentStyle: { backgroundColor: Colors.light.background },
-                  }}
+            <AuthProvider>
+              <FontProvider>
+                <View
+                  style={{ flex: 1, backgroundColor: Colors.light.background }}
                 >
-                  <Stack.Screen
-                    name='(auth)'
-                    options={{
-                      presentation: 'fullScreenModal',
-                    }}
+                  <Slot />
+                  <StatusBar
+                    style='dark'
+                    backgroundColor={Colors.light.background}
                   />
-                  <Stack.Screen name='(app)' options={{ headerShown: false }} />
-                </Stack>
-                <StatusBar
-                  style='dark'
-                  backgroundColor={Colors.light.background}
-                />
-              </View>
-              <Toast config={toastConfig} position='top' />
-            </FontProvider>
+                </View>
+                <Toast config={toastConfig} position='top' />
+              </FontProvider>
+            </AuthProvider>
           </QueryClientProvider>
         </ThemeProvider>
       </GestureHandlerRootView>

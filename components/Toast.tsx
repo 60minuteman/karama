@@ -47,7 +47,7 @@ const getToastStyle = (type: string) => {
   }
 };
 
-const CustomToast = ({ text1, type, ...props }: BaseToastProps) => {
+const CustomToast = ({ text1, text2, type, ...props }: BaseToastProps) => {
   const toastStyle = getToastStyle(type || 'default');
   const isDarkBg = ['success', 'error', 'premium'].includes(type || '');
 
@@ -61,9 +61,16 @@ const CustomToast = ({ text1, type, ...props }: BaseToastProps) => {
       >
         <View style={styles.content}>
           <Image source={toastStyle.icon} style={styles.premiumIcon} />
-          <ThemedText style={[styles.message, { color: '#FFFFFF' }]}>
-            {text1}
-          </ThemedText>
+          <View>
+            <ThemedText style={[styles.message, { color: '#FFFFFF' }]}>
+              {text1}
+            </ThemedText>
+            {text2 && (
+              <ThemedText style={[styles.subMessage, { color: '#FFFFFF' }]}>
+                {text2}
+              </ThemedText>
+            )}
+          </View>
         </View>
       </LinearGradient>
     );
@@ -78,11 +85,20 @@ const CustomToast = ({ text1, type, ...props }: BaseToastProps) => {
     >
       <View style={styles.content}>
         <ThemedText style={styles.icon}>{toastStyle.icon}</ThemedText>
-        <ThemedText
-          style={[styles.message, { color: isDarkBg ? '#FFFFFF' : '#000000' }]}
-        >
-          {text1}
-        </ThemedText>
+        <View>
+          <ThemedText
+            style={[styles.message, { color: isDarkBg ? '#FFFFFF' : '#000000' }]}
+          >
+            {text1}
+          </ThemedText>
+          {text2 && (
+            <ThemedText
+              style={[styles.subMessage, { color: isDarkBg ? '#FFFFFF' : '#000000' }]}
+            >
+              {text2}
+            </ThemedText>
+          )}
+        </View>
       </View>
     </View>
   );
@@ -124,5 +140,10 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 16,
     flex: 1,
+  },
+  subMessage: {
+    fontSize: 14,
+    opacity: 0.8,
+    marginTop: 4,
   },
 });
