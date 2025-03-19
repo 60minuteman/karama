@@ -23,6 +23,7 @@ export function useAuth() {
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
+  const [isNavigationReady, setIsNavigationReady] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const { user, clearUser, onboarding_screen, logout } = useUserStore();
   const rootSegments = useSegments();
@@ -33,11 +34,14 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     checkAuthStatus();
   }, []);
-
+  useEffect(() => {
+    if (rootNavigation?.isReady) {
+      setIsNavigationReady(true);
+    }
+  }, [rootNavigation?.isReady]);
   // Handle authentication state changes
   useEffect(() => {
-    if (!rootNavigation?.isReady) return;
-
+    if (!isNavigationReady) return; // Prevent navigation before mounting
     const inAuthGroup = rootSegments[0] === '(auth)';
 
     // clearUser();

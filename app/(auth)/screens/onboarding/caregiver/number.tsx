@@ -47,7 +47,9 @@ export default function Page() {
           <Pill
             label="+"
             onPress={increment}
-            variant="counter"
+            variant="counter" 
+            disabled={caregiverChildrenCount === 4}
+
           />
         </View>
       </View>

@@ -45,8 +45,8 @@ export default function OnboardingScreen() {
   };
 
   const handleSignIn = () => {
-    router.push('/(auth)/pet');
-    // router.push('/(tabs)/discover');
+    // router.push('/(auth)/pet');
+    router.push('/(auth)/signInPhone');
   };
 
   return (

@@ -20,7 +20,7 @@ export default function SpeakScreen() {
     router.push('/(auth)/screens/onboarding/caregiver/position');
   };
 
-  const handlePillPress = (value: 'required' | 'not_required') => {
+  const handlePillPress = (value: boolean) => {
     setCaregiverLanguageMatch(value);
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/position');
     router.push('/(auth)/screens/onboarding/caregiver/position');
@@ -42,15 +42,15 @@ export default function SpeakScreen() {
           <View style={styles.pillWrapper}>
             <Pill
               label="Yes, required"
-              onPress={() => handlePillPress('required')}
-              selected={caregiverLanguageMatch === 'required'}
+              onPress={() => handlePillPress(true)}
+              selected={caregiverLanguageMatch === true}
             />
           </View>
           <View style={styles.pillWrapper}>
             <Pill
               label="Not required"
-              onPress={() => handlePillPress('not_required')}
-              selected={caregiverLanguageMatch === 'not_required'}
+              onPress={() => handlePillPress(false)}
+              selected={caregiverLanguageMatch === false}
             />
           </View>
         </View>

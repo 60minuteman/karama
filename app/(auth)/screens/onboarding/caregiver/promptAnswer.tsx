@@ -16,6 +16,17 @@ import Toast from 'react-native-toast-message';
 export default function PromptAnswer() {
   const router = useRouter();
   const { prompt } = useLocalSearchParams();
+  const formatDate = (date: Date | undefined) => {
+    if (!date) return 'MM/DD/YYYY';
+    const dateObj = new Date(date);
+    if (isNaN(dateObj.getTime())) return 'MM/DD/YYYY';
+
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const year = dateObj.getFullYear();
+
+    return `${month}/${day}/${year}`;
+  };
   const {
     caregiverAbilities,
     caregiverAgeExperience,
@@ -135,9 +146,15 @@ export default function PromptAnswer() {
     arrangement_type: caregiverPreferredArrangement,
     job_commitment: {
       commitment: caregiverCommitmentType,
-      start_date: caregiverCommitmentStartDate,
+      start_date: formatDate(caregiverCommitmentStartDate),
     },
-    service_days: caregiverSchedule,
+    service_days: caregiverSchedule?.map((schedule)=>{
+      return {
+        day :schedule.day,
+        begin : schedule.timeSlot.begin,
+        end : schedule.timeSlot.end,
+      }
+    }),
     responsibilities: {
       childcare_responsibilities: caregiverChildcareResponsibilities,
       // "other_childcare_responsibilities": "Assist with bedtime routines",
@@ -146,7 +163,7 @@ export default function PromptAnswer() {
     },
     payment_info: {
       type: caregiverPaymentType,
-      hourly_min: caregiverHourlyRate,
+      hourly_min: 1,
       hourly_max: caregiverHourlyRate,
       method: caregiverPaymentMethod,
       show_method_on_profile: showCaregiverPaymentMethod,
@@ -159,7 +176,7 @@ export default function PromptAnswer() {
         start_date: caregiverFirstPosition.startDate,
         end_date: caregiverFirstPosition.endDate,
         position_type: caregiverFirstPosition.position,
-        children_age_group: caregiverFirstPosition.ageGroup,
+        children_age_group: [caregiverFirstPosition.ageGroup],
         availability: caregiverFirstPosition.employmentType,
         childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
         household_responsibilities: ['Property Management', 'Meal Prep'],
@@ -169,7 +186,7 @@ export default function PromptAnswer() {
         start_date: caregiverSecondPosition.startDate,
         end_date: caregiverSecondPosition.endDate,
         position_type: caregiverSecondPosition.position,
-        children_age_group: caregiverSecondPosition.ageGroup,
+        children_age_group: [caregiverSecondPosition.ageGroup],
         availability: caregiverSecondPosition.employmentType,
         childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
         household_responsibilities: ['Property Management', 'Meal Prep'],
