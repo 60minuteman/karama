@@ -7,6 +7,7 @@ import { useUserStore } from '@/services/state/user';
 import { Video } from 'expo-av';
 import { useRouter } from 'expo-router';
 import { Image, StyleSheet, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 export default function OnboardingScreen() {
   const router = useRouter();
@@ -45,8 +46,13 @@ export default function OnboardingScreen() {
   };
 
   const handleSignIn = () => {
-    router.push('/(auth)/pet');
+    // router.push('/(auth)/pet');
     // router.push('/(tabs)/discover');
+    Toast.show({
+      text1: 'Hello',
+      text2: 'No Log in page yet',
+      type: 'success',
+    });
   };
 
   return (
