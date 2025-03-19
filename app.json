@@ -16,7 +16,10 @@
     "ios": {
       "bundleIdentifier": "com.karama.karama",
       "buildNumber": "1.0.0",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -43,7 +46,18 @@
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/439c483b-7ef1-4a7b-b7ca-eaa6937c6ed3"
+      "enabled": true,
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/439c483b-7ef1-4a7b-b7ca-eaa6937c6ed3",
+      "checkAutomatically": "ON_LOAD"
+    },
+    "build": {
+      "production": {
+        "channel": "production"
+      },
+      "preview": {
+        "channel": "preview"
+      }
     },
     "owner": "60minute",
     "assets": ["./assets/fonts/bogart/*"]
