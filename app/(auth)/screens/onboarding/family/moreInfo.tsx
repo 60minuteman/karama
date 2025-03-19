@@ -108,7 +108,7 @@ export default function MoreInfo() {
         <Button label='Skip' onPress={() => router.back()} variant='skip' />
         <Button
           label='Next'
-          onPress={handleSubmit}
+          onPress={handleNext}
           variant='compact'
           loading={submit.isPending}
         />

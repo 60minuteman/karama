@@ -12,7 +12,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// This hook can be used to access the user info.
 export function useAuth() {
   const value = useContext(AuthContext);
   if (!value) {
@@ -27,10 +26,8 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
   const { user, clearUser, onboarding_screen, logout } = useUserStore();
   const rootSegments = useSegments();
-
   const rootNavigation = useRootNavigation();
 
-  // Check if the user is authenticated when the app loads
   useEffect(() => {
     checkAuthStatus();
   }, []);
@@ -44,16 +41,28 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!isNavigationReady) return; // Prevent navigation before mounting
     const inAuthGroup = rootSegments[0] === '(auth)';
 
-    // clearUser();
+    // Ensure navigation state is stable before redirecting
+    const timeout = setTimeout(() => {
+      if (user) {
+        // User is logged in
+        if (!onboarding_screen && inAuthGroup) {
+          // If onboarding is complete and we're in auth group, go to main app
+          router.replace('/(tabs)/discover');
+        } else if (onboarding_screen && !inAuthGroup) {
+          // If onboarding is not complete, ensure we're in auth group
+          router.replace(onboarding_screen);
+        }
+      } else {
+        // No user - redirect to auth unless already there
+        if (!inAuthGroup) {
+          router.replace('/(auth)');
+        }
+      }
+    }, 0);
 
-    if (user && !onboarding_screen && inAuthGroup) {
-      // Redirect away from auth group if authenticated
-      router.replace('/(tabs)/discover');
-    } else if (!user && !inAuthGroup) {
-      // Redirect to auth group if not authenticated
-      router.replace('/(auth)');
-    }
-  }, [user, rootNavigation?.isReady, rootSegments]);
+    return () => clearTimeout(timeout);
+
+  }, [user, rootNavigation?.isReady, rootSegments, onboarding_screen]);
 
   const checkAuthStatus = async () => {
     try {
@@ -61,6 +70,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoggedIn(!!token);
     } catch (error) {
       console.error('Error checking auth status:', error);
+      setIsLoggedIn(false);
     } finally {
       setIsLoading(false);
     }
@@ -79,7 +89,9 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     try {
       await AsyncStorage.removeItem('userToken');
+      await logout(); // Clear user state
       setIsLoggedIn(false);
+      router.replace('/(auth)');
     } catch (error) {
       console.error('Error signing out:', error);
       throw error;

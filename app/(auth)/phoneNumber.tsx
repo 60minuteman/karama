@@ -51,7 +51,7 @@ export default function PhoneNumberScreen() {
     onError: (error: any) => {
       console.log('error', error['response'].data);
       Toast.show({
-        type: 'problem',
+        type: 'error',
         text1: 'Something went wrong',
         text2: error['response'].data?.message,
       });
