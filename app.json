@@ -4,11 +4,11 @@
     "slug": "karama",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icons/icon.jpeg",
+    "icon": "./assets/icons/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/icons/Splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -23,7 +23,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icons/icon.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": ["android.permission.RECORD_AUDIO"]
@@ -34,6 +34,21 @@
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your caregiver."
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/icons/Splash.png",
+          "resizeMode": "cover",
+          "backgroundColor": "#F15858",
+          "imageResizeMode": "cover",
+          "androidScaleType": "CENTER_CROP",
+          "splashScreenBackground": "#F15858",
+          "splashScreenAnimation": "fade",
+          "hideExponentIconDuringLoading": true,
+          "enableFullScreenImage_legacy": true,
+          "imageWidth": 500
         }
       ]
     ],
