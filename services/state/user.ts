@@ -468,7 +468,7 @@ interface UserState {
   showCaregiverReligion: boolean;
   hasPhilosophyExperience: 'yes' | 'no' | null;
   caregiverPhilosophyExperience: CaregiverPhilosophies[] | null;
-  caregiverLanguageMatch: 'required' | 'not_required' | null;
+  caregiverLanguageMatch: boolean | null;
   caregiverPreferredPositions: CaregiverPositions[] | null;
   caregiverPreferredArrangement: CaregiverPreferredArrangement | null;
   isDealBreaker: boolean | null;
@@ -582,7 +582,7 @@ interface UserState {
   setCaregiverPhilosophyExperience: (
     type: CaregiverPhilosophies[] | null
   ) => void;
-  setCaregiverLanguageMatch: (type: 'required' | 'not_required' | null) => void;
+  setCaregiverLanguageMatch: (type: boolean | null) => void;
   setCaregiverPreferredPositions: (type: CaregiverPositions[] | null) => void;
   setCaregiverPreferredArrangement: (
     type: CaregiverPreferredArrangement | null

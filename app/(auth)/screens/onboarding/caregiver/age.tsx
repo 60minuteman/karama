@@ -66,7 +66,8 @@ export default function Page() {
                   label={age}
                   icon={ageIcons[age as keyof typeof ageIcons]}
                   onPress={() => toggleAgesSelection(age)}
-                  selected={caregiverAgeExperience?.includes(age)}   
+                  selected={caregiverAgeExperience?.includes(age)}
+                  disabled ={caregiverAgeExperience?.length === 3} 
                 />
               ))}
             </View>
