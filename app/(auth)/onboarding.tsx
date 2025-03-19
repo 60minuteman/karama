@@ -47,12 +47,7 @@ export default function OnboardingScreen() {
 
   const handleSignIn = () => {
     // router.push('/(auth)/pet');
-    // router.push('/(tabs)/discover');
-    Toast.show({
-      text1: 'Hello',
-      text2: 'No Log in page yet',
-      type: 'success',
-    });
+    router.push('/(auth)/signInPhone');
   };
 
   return (
