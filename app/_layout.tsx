@@ -33,7 +33,7 @@ export const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const [isReady, setIsReady] = useState(false);
-  const hydrated = useUserStore((state) => state.hydrated);
+  const { hydrated } = useUserStore();
 
   useEffect(() => {
     async function prepare() {
@@ -49,7 +49,10 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (isReady && hydrated) {
-      SplashScreen.hideAsync();
+      setTimeout(() => {
+        SplashScreen.hideAsync();
+      }, 50);
+      return;
     }
   }, [isReady, hydrated]);
 
@@ -66,8 +69,10 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   // const { authInitialized, user } = useAuth();
+  // const { isLoading, isLoggedIn } = useAuth();
+  const { hydrated } = useUserStore();
 
-  // if (!authInitialized && !user) return null;
+  if (!hydrated) return null;
 
   return (
     <SafeAreaProvider>

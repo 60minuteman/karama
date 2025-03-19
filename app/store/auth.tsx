@@ -24,43 +24,47 @@ export function useAuth() {
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const { user, clearUser, onboarding_screen, logout } = useUserStore();
+  const { user, clearUser, onboarding_screen, logout, hydrated } =
+    useUserStore();
   const rootSegments = useSegments();
 
   const rootNavigation = useRootNavigation();
 
   // Check if the user is authenticated when the app loads
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
 
   // Handle authentication state changes
   useEffect(() => {
-    if (!rootNavigation?.isReady) return;
+    // Ensure everything is ready before attempting navigation
+    if (!rootNavigation?.isReady || !hydrated || !rootSegments) return;
 
-    const inAuthGroup = rootSegments[0] === '(auth)';
+    // Add a longer initial delay to ensure complete mounting
+    const timer = setTimeout(() => {
+      // Double-check navigation readiness
+      if (!rootNavigation.isReady) return;
 
-    // clearUser();
+      const inAuthGroup = rootSegments[0] === '(auth)';
 
-    if (user && !onboarding_screen && inAuthGroup) {
-      // Redirect away from auth group if authenticated
-      router.replace('/(tabs)/discover');
-    } else if (!user && !inAuthGroup) {
-      // Redirect to auth group if not authenticated
-      router.replace('/(auth)');
-    }
-  }, [user, rootNavigation?.isReady, rootSegments]);
+      try {
+        if (user && !onboarding_screen && inAuthGroup) {
+          // Redirect away from auth group if authenticated
+          router.navigate('/(tabs)/discover');
+        } else if (!user && !inAuthGroup) {
+          // Redirect to auth group if not authenticated
+          router.navigate('/(auth)');
+        }
+      } catch (error) {
+        console.error('Navigation error:', error);
+      }
+    }, 50); // Increased delay to 100ms
 
-  const checkAuthStatus = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      setIsLoggedIn(!!token);
-    } catch (error) {
-      console.error('Error checking auth status:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    return () => clearTimeout(timer);
+  }, [
+    user,
+    rootNavigation?.isReady,
+    rootSegments,
+    hydrated,
+    onboarding_screen,
+  ]);
 
   const signIn = async (token: string) => {
     try {
