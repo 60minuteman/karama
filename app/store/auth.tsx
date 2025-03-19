@@ -40,15 +40,18 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const inAuthGroup = rootSegments[0] === '(auth)';
 
-    // clearUser();
+    const navigate = () => {
+      if (user && !onboarding_screen && inAuthGroup) {
+        router.replace('/(tabs)/discover');
+      } else if (!user && !inAuthGroup) {
+        router.replace('/(auth)');
+      }
+    };
 
-    if (user && !onboarding_screen && inAuthGroup) {
-      // Redirect away from auth group if authenticated
-      router.replace('/(tabs)/discover');
-    } else if (!user && !inAuthGroup) {
-      // Redirect to auth group if not authenticated
-      router.replace('/(auth)');
-    }
+    // Add a small delay to ensure layout is mounted
+    const timer = setTimeout(navigate, 0);
+    return () => clearTimeout(timer);
+
   }, [user, rootNavigation?.isReady, rootSegments]);
 
   const checkAuthStatus = async () => {
