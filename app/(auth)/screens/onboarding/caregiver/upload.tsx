@@ -1,22 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, ScrollView } from 'react-native';
-import { router } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
-import * as ImagePicker from 'expo-image-picker';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import useAuthMutation from '@/hooks/useAuthMutation';
+import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
 import { useMutation } from '@tanstack/react-query';
-import customAxios from '@/services/api/envConfig';
-
+import * as ImagePicker from 'expo-image-picker';
+import { router } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 export default function Page() {
-  const { caregiverImages, setCaregiverImages, } = useUserStore()
+  const { caregiverImages, setCaregiverImages } = useUserStore();
   // const [image, setImage] = useState<string | null>(null);
-  const uploadImages = useMutation({
+  const uploadImages = useAuthMutation({
     mutationFn: async () => {
       const formData = new FormData();
       caregiverImages?.forEach((uri, index) => {
@@ -36,14 +42,14 @@ export default function Page() {
       });
     },
     onSuccess: () => {
-      // router.push('/(auth)/screens/onboarding/caregiver/success');
-      console.log('CAREGIVER IMAGES UPLOADED SUCCESSFULLY')
+      router.push('/(auth)/screens/onboarding/family/success');
+      console.log('CAREGIVER IMAGES UPLOADED SUCCESSFULLY');
     },
     onError: (error: any) => {
       console.error('Error uploading images:', error);
       alert('Failed to upload images. Please try again.');
     },
-  })
+  });
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
@@ -53,13 +59,13 @@ export default function Page() {
       selectionLimit: 6,
     });
 
-    console.log(result,'is result');
+    console.log(result, 'is result');
 
     if (!result.canceled) {
-        const selectedImages = result?.assets?.map((item)=>{
-          return item?.uri
-        })
-        setCaregiverImages(selectedImages)
+      const selectedImages = result?.assets?.map((item) => {
+        return item?.uri;
+      });
+      setCaregiverImages(selectedImages);
     }
   };
   const removeImage = (index: number) => {
@@ -67,30 +73,27 @@ export default function Page() {
     setCaregiverImages(newImages);
   };
   useEffect(() => {
-    console.log(caregiverImages)
-  }, [caregiverImages])
+    console.log(caregiverImages);
+  }, [caregiverImages]);
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
         <ScrollView>
-
           <ThemedText style={styles.title}>
             Great, Now let's tie it all with some fun photos!
           </ThemedText>
 
           <ThemedText style={styles.subtitle}>
             Share pictures of yourself, your projects, activities, and hobbies.
-            If you include photos from previous childcare positions,
-            make sure you have permission from the families to post them.
-            Please don't share pictures that show children's faces; cover or blur them.
+            If you include photos from previous childcare positions, make sure
+            you have permission from the families to post them. Please don't
+            share pictures that show children's faces; cover or blur them.
           </ThemedText>
 
-          <ThemedText style={styles.sectionTitle}>
-            Select Photos
-          </ThemedText>
+          <ThemedText style={styles.sectionTitle}>Select Photos</ThemedText>
 
           <View style={styles.photoGrid}>
             {[...Array(6)].map((_, index) => (
@@ -121,24 +124,23 @@ export default function Page() {
 
           <View style={styles.addPhotoContainer}>
             <Button
-              label="Add photo"
+              label='Add photo'
               onPress={() => {
                 // We'll implement this later
                 // console.log('Add photo pressed');
-                pickImage()
+                pickImage();
               }}
-              variant="compact"
-              disabled={caregiverImages?.length ===6}
+              variant='compact'
+              disabled={caregiverImages?.length === 6}
             />
           </View>
         </ScrollView>
-
       </View>
 
       <View style={styles.bottomNav}>
         <View style={styles.buttonContainer}>
           <Button
-            label="Next"
+            label='Next'
             onPress={() => uploadImages.mutate()}
             variant='compact'
             disabled={caregiverImages?.length < 4 || uploadImages.isPending}
@@ -146,7 +148,6 @@ export default function Page() {
           />
         </View>
       </View>
-
     </ThemedView>
   );
 }
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   bottomNav: {
     padding: 20,
@@ -244,7 +245,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   photoImage: {
     width: '100%',

@@ -1,6 +1,10 @@
 import { useAuth } from '@/app/store/auth';
 import useAuthQuery from '@/hooks/useAuthQuery';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import { useUserStore } from '../state/user';
 import customAxios from './envConfig';
 
@@ -23,33 +27,54 @@ export const fetchSignUpVerify = async (email: any, userType: any) => {
 //   });
 // };
 
-export const fetchMatchingCaregivers = async () => {
-  const { data } = await customAxios.get(
-    '/family-discovery/get-matching-caregivers'
-  );
+export const fetchMatchingCaregivers = async (cursor = '', role: any) => {
+  const endpoint =
+    role == 'FAMILY'
+      ? '/family-discovery/get-matching-caregivers'
+      : '/caregiver-discovery/get-matching-families';
+
+  const { data } = await customAxios.get(endpoint, {
+    params: {
+      page_size: 10,
+      cursor: cursor || '',
+    },
+  });
   return data;
 };
 
-export const useMatchingCaregivers = () => {
+export const useMatchingCaregivers = (cursor = '', role: any) => {
   const { token } = useUserStore();
   return useAuthQuery({
-    queryKey: ['matching-caregivers'],
-    queryFn: fetchMatchingCaregivers,
+    queryKey: ['matching-caregivers', cursor, role],
+    queryFn: () => fetchMatchingCaregivers(cursor, role),
     retry: 3,
-    enabled: !!token,
+    enabled: !!token && !!role,
   });
 };
 
-export const fetchMatchingCaregiversInfinity = async (pageParam: any) => {
-  const { data } = await customAxios.get(
-    '/family-discovery/get-matching-caregivers',
-    {
-      params: {
-        pageSize: 1,
-        cursor: pageParam,
-      },
-    }
-  );
+export const fetchMatchingCaregiversInfinity = async ({
+  pageSize,
+  cursor,
+  role,
+}: {
+  pageSize: number;
+  cursor: string;
+  role: string;
+}) => {
+  console.log('pageSize***', pageSize, cursor);
+
+  const endpoint =
+    role === 'family'
+      ? '/family-discovery/get-matching-caregivers'
+      : '/caregiver-discovery/get-matching-families';
+
+  const { data } = await customAxios.get(endpoint, {
+    params: {
+      pageSize,
+      cursor: cursor || '',
+    },
+  });
+  console.log('data***', data);
   return data;
 };
 
@@ -59,18 +84,52 @@ export const useMatchingCaregiversInfinity = () => {
     queryKey: ['matching-caregivers-infinity'],
     queryFn: ({ pageParam }: any) =>
       fetchMatchingCaregiversInfinity({
-        pageSize: 1,
+        pageSize: 10,
         cursor: pageParam as string,
+        role: 'family',
       }),
     initialPageParam: '',
     getNextPageParam: (lastPage: any) => {
-      console.log('lastPage response:', lastPage); // Full response
-      console.log('lastPage.data:', lastPage?.data); // Check data property
-      console.log('next_cursor:', lastPage?.data?.next_cursor); // Check next_cursor
-
       if (!lastPage?.data) return undefined;
       return lastPage.data.next_cursor || undefined;
     },
+    enabled: !!token,
+  });
+};
+
+// Add new function to handle optimistic updates
+export const useMatchingCaregiversWithOptimisticUpdates = () => {
+  const { token } = useUserStore();
+  const queryClient = useQueryClient();
+
+  return useInfiniteQuery({
+    queryKey: ['matching-caregivers-infinity'],
+    queryFn: ({ pageParam }: any) =>
+      fetchMatchingCaregiversInfinity({
+        pageSize: 10,
+        cursor: pageParam as string,
+        role: 'family',
+      }),
+    initialPageParam: '',
+    getNextPageParam: (lastPage: any) => {
+      if (!lastPage?.data) return undefined;
+      return lastPage.data.next_cursor || undefined;
+    },
+    enabled: !!token,
+  });
+};
+
+export const fetchCurrentUser = async () => {
+  const { data } = await customAxios.get('/users');
+  return data;
+};
+
+export const useCurrentUser = () => {
+  const { token } = useUserStore();
+  return useAuthQuery({
+    queryKey: ['current-user'],
+    queryFn: fetchCurrentUser,
+    retry: 3,
     enabled: !!token,
   });
 };

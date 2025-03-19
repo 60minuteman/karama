@@ -10,7 +10,7 @@ import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 
 export default function Page() {
-  const { clearUser } = useUserStore();
+  const { clearUser, selectedType } = useUserStore();
 
   return (
     <ThemedView style={styles.container}>
@@ -22,7 +22,8 @@ export default function Page() {
 
         <View style={styles.mainContent}>
           <ThemedText style={styles.title}>
-            Let's explore amazing{'\n'}caregivers! 🤩
+            Let's explore amazing{'\n'}
+            {selectedType === 'family' ? 'caregivers' : 'families'}! 🤩
           </ThemedText>
         </View>
 
@@ -42,7 +43,7 @@ export default function Page() {
             label='Finish'
             onPress={() => {
               clearUser();
-              router.push('/(tabs)/discover');
+              router.replace('/(tabs)/discover');
             }}
             variant='compact'
           />

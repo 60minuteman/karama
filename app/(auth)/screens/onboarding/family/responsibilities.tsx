@@ -12,6 +12,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 interface Responsibility {
   id: string;
@@ -107,6 +108,11 @@ export default function ResponsibilitiesScreen() {
     },
     onError: (error: any) => {
       console.log('error', error['response'].data);
+      Toast.show({
+        type: 'error',
+        text1: 'Something went wrong',
+        text2: error['response'].data?.message,
+      });
       // router.push('/phoneNumber');
       // Toast.show({
       //   type: 'problem',

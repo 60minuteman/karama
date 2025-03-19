@@ -10,6 +10,7 @@ import { useUserStore } from '@/services/state/user';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 export default function MoreInfo() {
   const router = useRouter();
@@ -41,6 +42,11 @@ export default function MoreInfo() {
     },
     onError: (error: any) => {
       console.log('error', error['response'].data);
+      Toast.show({
+        type: 'error',
+        text1: 'Something went wrong',
+        text2: error['response'].data?.message,
+      });
       // router.push('/phoneNumber');
       // Toast.show({
       //   type: 'problem',

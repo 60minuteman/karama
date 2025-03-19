@@ -11,6 +11,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 export default function Page() {
   const { family_images, setFamilyImages, setSteps } = useUserStore();
@@ -40,7 +41,12 @@ export default function Page() {
     },
     onError: (error: any) => {
       console.error('Error uploading images:', error);
-      alert('Failed to upload images. Please try again.');
+      // alert('Failed to upload images. Please try again.');
+      Toast.show({
+        type: 'error',
+        text1: 'Something went wrong',
+        text2: error['response'].data?.message,
+      });
     },
   });
 

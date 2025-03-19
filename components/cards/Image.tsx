@@ -3,11 +3,7 @@ import { Image as RNImage, StyleSheet, View } from 'react-native';
 
 export const Image = ({ data }: any) => {
   return (
-    <RNImage
-      source={{ uri: data?.caregiver_profile?.pictures[1]?.path }}
-      style={styles.image}
-      resizeMode='cover'
-    />
+    <RNImage source={{ uri: data }} style={styles.image} resizeMode='cover' />
   );
 };
 

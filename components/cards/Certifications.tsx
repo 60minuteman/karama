@@ -27,7 +27,7 @@ export const Certifications = ({
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          source={{ uri: data?.caregiver_profile?.pictures[3]?.path }}
+          data={data?.caregiver_profile?.pictures[4]?.path}
           style={styles.imagePlaceholder}
         />
       </View>

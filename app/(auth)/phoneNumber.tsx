@@ -9,6 +9,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useReducer, useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 const reducer = (state: any, action: any) => {
   switch (action.type) {
@@ -49,6 +50,11 @@ export default function PhoneNumberScreen() {
     },
     onError: (error: any) => {
       console.log('error', error['response'].data);
+      Toast.show({
+        type: 'problem',
+        text1: 'Something went wrong',
+        text2: error['response'].data?.message,
+      });
       // router.push('/phoneNumber');
       // Toast.show({
       //   type: 'problem',

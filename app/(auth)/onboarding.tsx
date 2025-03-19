@@ -22,6 +22,8 @@ export default function OnboardingScreen() {
       // router.push('/(auth)/screens/onboarding/family/payment');
       // router.push('/(auth)/bridge');
       // router.push('/(auth)/phoneNumber');
+      // router.push('/(auth)/bridge');
+
       if (selectedType === 'family') {
         if (steps === 'intermission') {
           return router.push('/(auth)/screens/onboarding/family/gender');
@@ -35,12 +37,11 @@ export default function OnboardingScreen() {
         if (steps === 'upload') {
           return router.push('/(auth)/screens/onboarding/family/success');
         }
-
-        return router.push('/(auth)/bridge');
       }
-    } else {
-      router.push('/(auth)/phoneNumber');
+
+      return router.push('/(auth)/bridge');
     }
+    return router.push('/(auth)/phoneNumber');
   };
 
   const handleSignIn = () => {

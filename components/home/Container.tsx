@@ -16,6 +16,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import ProfileCardLoader from '../cards/ProfileCardLoader';
 
 interface ContainerProps {
   profileData: {
@@ -125,7 +126,12 @@ export const Container = ({ profileData, data }: ContainerProps) => {
       </View>
       <View style={styles.spacer} />
       <View style={[dynamicStyles.componentContainer, styles.imageContainer]}>
-        <Image data={data} />
+        <Image
+          data={
+            data?.caregiver_profile?.pictures[5]?.path ||
+            data?.caregiver_profile?.pictures[4]?.path
+          }
+        />
       </View>
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>

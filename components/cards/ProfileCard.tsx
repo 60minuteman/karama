@@ -83,7 +83,7 @@ export const ProfileCard = ({
                 {name}, {age}
               </ThemedText>
               <ThemedText style={styles.role}>{role}</ThemedText>
-              <ThemedText style={styles.address}>{address}</ThemedText>
+              {/* <ThemedText style={styles.address}>{address}</ThemedText> */}
             </View>
           </View>
         </LinearGradient>

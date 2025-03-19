@@ -4,9 +4,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 export const HomeHeader = () => {
-  const { logout } = useUserStore();
+  const { logout, clearUser } = useUserStore();
+
   const router = useRouter();
 
   return (
@@ -44,7 +46,13 @@ export const HomeHeader = () => {
           activeOpacity={0.7}
           onPress={() => {
             // router.push('/profile')
+            clearUser();
             logout();
+            // Toast.show({
+            //   type: 'profile',
+            //   text1: 'Success',
+            //   // onClose: () => {},
+            // });
           }}
         >
           <Image

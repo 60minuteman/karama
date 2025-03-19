@@ -10,6 +10,7 @@ import { useUserStore } from '@/services/state/user';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { Image, StyleSheet, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 export default function IntermissionScreen() {
   const router = useRouter();
@@ -51,6 +52,11 @@ export default function IntermissionScreen() {
     },
     onError: (error: any) => {
       console.log('error', error['response'].data);
+      Toast.show({
+        type: 'error',
+        text1: 'Something went wrong',
+        text2: error['response'].data?.message,
+      });
       // router.push('/phoneNumber');
       // Toast.show({
       //   type: 'problem',

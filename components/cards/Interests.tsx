@@ -45,14 +45,14 @@ export const Interests = ({
     return null;
   }
 
-  console.log('data=======', data?.caregiver_profile?.pictures[3]?.path);
+  console.log('data=======******', data?.caregiver_profile?.pictures[3]?.path);
 
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         {/* <View style={styles.imagePlaceholder} /> */}
         <Image
-          source={{ uri: data?.caregiver_profile?.pictures[3]?.path }}
+          data={data?.caregiver_profile?.pictures[2]?.path}
           style={styles.imagePlaceholder}
         />
       </View>
