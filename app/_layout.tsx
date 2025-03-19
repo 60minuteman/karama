@@ -33,7 +33,7 @@ export const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const [isReady, setIsReady] = useState(false);
-  const hydrated = useUserStore((state) => state.hydrated);
+  const { hydrated } = useUserStore();
 
   useEffect(() => {
     async function prepare() {
@@ -49,7 +49,10 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (isReady && hydrated) {
-      SplashScreen.hideAsync();
+      setTimeout(() => {
+        SplashScreen.hideAsync();
+      }, 50);
+      return;
     }
   }, [isReady, hydrated]);
 
@@ -58,15 +61,34 @@ export default function RootLayout() {
   }
 
   return (
+    <AuthProvider>
+      <RootLayoutNav />
+    </AuthProvider>
+  );
+}
+
+function RootLayoutNav() {
+  // const { authInitialized, user } = useAuth();
+  // const { isLoading, isLoggedIn } = useAuth();
+  const { hydrated } = useUserStore();
+
+  if (!hydrated) return null;
+
+  return (
     <SafeAreaProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ThemeProvider>
           <QueryClientProvider client={queryClient}>
             <AuthProvider>
               <FontProvider>
-                <View style={{ flex: 1, backgroundColor: Colors.light.background }}>
+                <View
+                  style={{ flex: 1, backgroundColor: Colors.light.background }}
+                >
                   <Slot />
-                  <StatusBar style='dark' backgroundColor={Colors.light.background} />
+                  <StatusBar
+                    style='dark'
+                    backgroundColor={Colors.light.background}
+                  />
                 </View>
                 <Toast config={toastConfig} position='top' />
               </FontProvider>

@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "Karama",
-    "slug": "karama", 
+    "slug": "karama",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icons/icon.jpeg",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
@@ -12,9 +12,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "com.karama.karama",
       "buildNumber": "1.0.0",
@@ -28,9 +26,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ]
+      "permissions": ["android.permission.RECORD_AUDIO"]
     },
     "plugins": [
       "expo-router",
@@ -52,7 +48,8 @@
     "updates": {
       "enabled": true,
       "fallbackToCacheTimeout": 0,
-      "url": "https://u.expo.dev/439c483b-7ef1-4a7b-b7ca-eaa6937c6ed3"
+      "url": "https://u.expo.dev/439c483b-7ef1-4a7b-b7ca-eaa6937c6ed3",
+      "checkAutomatically": "ON_LOAD"
     },
     "build": {
       "production": {
@@ -63,8 +60,6 @@
       }
     },
     "owner": "60minute",
-    "assets": [
-      "./assets/fonts/bogart/*"
-    ]
+    "assets": ["./assets/fonts/bogart/*"]
   }
 }

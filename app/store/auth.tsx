@@ -24,57 +24,45 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isNavigationReady, setIsNavigationReady] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const { user, clearUser, onboarding_screen, logout } = useUserStore();
+  const { user, clearUser, onboarding_screen, logout, hydrated } =
+    useUserStore();
   const rootSegments = useSegments();
   const rootNavigation = useRootNavigation();
 
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-  useEffect(() => {
-    if (rootNavigation?.isReady) {
-      setIsNavigationReady(true);
-    }
-  }, [rootNavigation?.isReady]);
-  // Handle authentication state changes
-  useEffect(() => {
-    if (!isNavigationReady) return; // Prevent navigation before mounting
-    const inAuthGroup = rootSegments[0] === '(auth)';
+  // Check if the user is authenticated when the app loads
 
-    // Ensure navigation state is stable before redirecting
-    const timeout = setTimeout(() => {
-      if (user) {
-        // User is logged in
-        if (!onboarding_screen && inAuthGroup) {
-          // If onboarding is complete and we're in auth group, go to main app
-          router.replace('/(tabs)/discover');
-        } else if (onboarding_screen && !inAuthGroup) {
-          // If onboarding is not complete, ensure we're in auth group
-          router.replace(onboarding_screen);
+  useEffect(() => {
+    // Ensure everything is ready before attempting navigation
+    if (!rootNavigation?.isReady || !hydrated || !rootSegments) return;
+
+    // Add a longer initial delay to ensure complete mounting
+    const timer = setTimeout(() => {
+      // Double-check navigation readiness
+      if (!rootNavigation.isReady) return;
+
+      const inAuthGroup = rootSegments[0] === '(auth)';
+
+      try {
+        if (user && !onboarding_screen && inAuthGroup) {
+          // Redirect away from auth group if authenticated
+          router.navigate('/(tabs)/discover');
+        } else if (!user && !inAuthGroup) {
+          // Redirect to auth group if not authenticated
+          router.navigate('/(auth)');
         }
-      } else {
-        // No user - redirect to auth unless already there
-        if (!inAuthGroup) {
-          router.replace('/(auth)');
-        }
+      } catch (error) {
+        console.error('Navigation error:', error);
       }
-    }, 0);
+    }, 50); // Increased delay to 100ms
 
-    return () => clearTimeout(timeout);
-
-  }, [user, rootNavigation?.isReady, rootSegments, onboarding_screen]);
-
-  const checkAuthStatus = async () => {
-    try {
-      const token = await AsyncStorage.getItem('userToken');
-      setIsLoggedIn(!!token);
-    } catch (error) {
-      console.error('Error checking auth status:', error);
-      setIsLoggedIn(false);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    return () => clearTimeout(timer);
+  }, [
+    user,
+    rootNavigation?.isReady,
+    rootSegments,
+    hydrated,
+    onboarding_screen,
+  ]);
 
   const signIn = async (token: string) => {
     try {
