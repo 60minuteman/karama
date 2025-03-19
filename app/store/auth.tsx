@@ -39,18 +39,21 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!rootNavigation?.isReady) return;
 
     const inAuthGroup = rootSegments[0] === '(auth)';
+    
+    // Add a check for layout mounting
+    if (!rootNavigation.current) return;
+    
+    requestAnimationFrame(() => {
+      //clearUser();
 
-    const navigate = () => {
       if (user && !onboarding_screen && inAuthGroup) {
+        // Redirect away from auth group if authenticated
         router.replace('/(tabs)/discover');
       } else if (!user && !inAuthGroup) {
+        // Redirect to auth group if not authenticated
         router.replace('/(auth)');
       }
-    };
-
-    // Add a small delay to ensure layout is mounted
-    const timer = setTimeout(navigate, 0);
-    return () => clearTimeout(timer);
+    });
 
   }, [user, rootNavigation?.isReady, rootSegments]);
 
