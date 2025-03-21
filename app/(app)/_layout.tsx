@@ -1,5 +1,9 @@
 import { Stack } from 'expo-router';
+import * as Updates from 'expo-updates';
+import { useEffect, useState } from 'react';
 import {
+  AppState,
+  AppStateStatus,
   Platform,
   StatusBar,
   StyleSheet,
@@ -14,6 +18,54 @@ export default function AppLayout() {
   const isLargeScreen = width > 768;
   const isTablet = width >= 768 && width < 1024;
   const isDesktop = width >= 1024;
+  const [isCheckingForUpdate, setIsCheckingForUpdate] = useState(false);
+  const [updateAvailable, setUpdateAvailable] = useState(false);
+
+  const fetchAndApplyUpdate = async () => {
+    try {
+      const result = await Updates.fetchUpdateAsync();
+
+      if (result.isNew) {
+        // Apply the update without exiting the app
+        await Updates.reloadAsync(); // This reloads the app with the new update
+      }
+    } catch (error) {
+      console.log('Error applying updates:', error);
+    }
+  };
+
+  const checkForUpdates = async () => {
+    try {
+      setIsCheckingForUpdate(true);
+      const update = await Updates.checkForUpdateAsync();
+
+      if (update.isAvailable) {
+        setUpdateAvailable(true);
+        await fetchAndApplyUpdate();
+      }
+    } catch (error) {
+      console.log('Error checking for updates:', error);
+    } finally {
+      setIsCheckingForUpdate(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        checkForUpdates(); // Check for updates only when the app becomes active
+      }
+    };
+
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange
+    );
+
+    return () => {
+      subscription.remove(); // Cleanup the event listener
+    };
+  }, []);
 
   return (
     <View style={styles.container}>

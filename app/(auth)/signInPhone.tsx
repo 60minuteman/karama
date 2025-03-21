@@ -12,18 +12,18 @@ import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 const reducer = (state: any, action: any) => {
-    switch (action.type) {
-        case 'field': {
-            return {
-                ...state,
-                [action.fieldName]: action.payload,
-            };
-        }
+  switch (action.type) {
+    case 'field': {
+      return {
+        ...state,
+        [action.fieldName]: action.payload,
+      };
     }
+  }
 };
 
 const initialState = {
-    phoneNumber: '',
+  phoneNumber: '',
 };
 
 export default function PhoneNumberScreen() {
@@ -34,7 +34,7 @@ export default function PhoneNumberScreen() {
     const [isChecked, setIsChecked] = useState(false);
     const { subscribed_to_promotions, setPromotionSubscription } = useUserStore();
 
-    console.log('phoneNumber', phoneNumber);
+  console.log('phoneNumber', phoneNumber);
 
     const signIn = useMutation({
         mutationFn: (data: any) => {
