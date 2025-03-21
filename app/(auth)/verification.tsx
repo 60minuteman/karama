@@ -46,13 +46,7 @@ export default function OTPInputScreen() {
       return customAxios.post(`/auth/phone/start-verification`, data);
     },
     onSuccess: async (data: any) => {
-      // router.push({
-      //   pathname: '/(auth)/verification',
-      //   params: {
-      //     isChecked: isChecked ? '1' : '0',
-      //     phoneNumber: phoneNumber,
-      //   },
-      // });
+      console.log('OTP resent successfully')
     },
     onError: (error: any) => {
       console.log('error', error['response'].data);
@@ -85,14 +79,20 @@ export default function OTPInputScreen() {
 
   const verify = useMutation({
     mutationFn: (data: any) => {
-      return customAxios.post(`/auth/phone/signup/complete`, data);
+      return customAxios.post(`/auth/phone/confirm-otp`, data);
     },
     onSuccess: async (data: any) => {
       setUser(data?.data?.data);
       setUserStore(data?.data?.data?.user);
       setToken(data?.data?.data?.token);
-      setOnboardingScreen('/bridge');
-      router.push('/bridge');
+      setOnboardingScreen('/createPassword');
+      router.push({
+        pathname: '/createPassword',
+        params: {
+          isChecked: isChecked ? '1' : '0',
+          phoneNumber: phoneNumber,
+        },
+      });;
     },
     onError: (error: any) => {
       console.log('error', error['response'].data);
@@ -114,7 +114,6 @@ export default function OTPInputScreen() {
       verify.mutate({
         phone_number: `+234${phoneNumber}`,
         code: cleaned,
-        subscribed_to_promotions: isChecked === '1' ? true : false,
       });
       // setUserStore(user?.data?.data?.user);
       // setToken(user?.data?.data?.token);
