@@ -30,6 +30,7 @@ export default function PhoneNumberScreen() {
     const [state, dispatch] = useReducer(reducer, initialState);
     const router = useRouter();
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [password, setPassword] = useState('')
     const [isChecked, setIsChecked] = useState(false);
     const { subscribed_to_promotions, setPromotionSubscription } = useUserStore();
 
@@ -37,12 +38,12 @@ export default function PhoneNumberScreen() {
 
     const signIn = useMutation({
         mutationFn: (data: any) => {
-            return customAxios.post(`/auth/phone/start-verification`, data);
+            return customAxios.post(`/auth/phone/signin/complete`, data);
         },
         onSuccess: async (data: any) => {
             console.log(data.data)
             router.push({
-                pathname: '/(auth)/signInOtp',
+                pathname: '/(tabs)/discover',
                 params: {
                     isChecked: isChecked ? '1' : '0',
                     phoneNumber: phoneNumber,
@@ -64,32 +65,35 @@ export default function PhoneNumberScreen() {
             // });
         },
     });
-
-    const handleNext = () => {
-        if (phoneNumber.length === 10) {
+    function cleanNumber(phoneNumber : string) {
+        return phoneNumber.replace(/^0/, '+234');
+    }
+    const handleSignIn = () => {
+        const number = cleanNumber(phoneNumber)
+        if (phoneNumber.length === 11) {
             signIn.mutate({
-                phone_number: `+234${phoneNumber}`,
-                strategy: 'SIGN_IN',
+                phone_number: number,
+                password: password,
             });
         }
     };
-
     const handlePhoneNumberChange = (text: string) => {
         // Only allow digits
         const cleaned = text.replace(/\D/g, '');
         // Limit to 10 digits
-        const truncated = cleaned.slice(0, 10);
+        const truncated = cleaned.slice(0, 11);
         setPhoneNumber(truncated);
     };
 
     return (
         <ThemedView style={styles.container}>
-            <Header variant='close' />
+            <Header variant='back' />
 
             <View style={styles.content}>
                 <View style={styles.spacer} />
+                <ThemedText style={styles.helloText}> 😇 Hello there</ThemedText>
                 <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
-                    What's your phone number?
+                    Welcome back
                 </ThemedText>
 
                 <View style={styles.inputWrapper}>
@@ -99,42 +103,48 @@ export default function PhoneNumberScreen() {
                             phoneNumber.length > 0 && styles.inputActive,
                         ]}
                     >
-                        <ThemedText style={styles.countryCode}>+234</ThemedText>
-                        <TextInput
-                            style={[styles.input, { marginTop: 0 }]}
-                            placeholder='(555) 555-5555'
-                            placeholderTextColor='#999'
-                            keyboardType='phone-pad'
-                            autoFocus
-                            value={phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')}
-                            onChangeText={handlePhoneNumberChange}
-                            accessibilityLabel='Phone number input'
-                            accessibilityHint='Enter your phone number'
-                        />
+                        <View>
+                            <TextInput
+                                style={[styles.input, { marginTop: 0 }]}
+                                placeholder='Phone no'
+                                placeholderTextColor='#999'
+                                keyboardType='phone-pad'
+                                autoFocus
+                                value={phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')}
+                                onChangeText={handlePhoneNumberChange}
+                                accessibilityLabel='Phone number input'
+                                accessibilityHint='Enter your phone number'
+                            />
+                        </View>
+                        <View>
+                            <TextInput
+                                style={[styles.input, { marginTop: 0 }]}
+                                placeholder='Password'
+                                placeholderTextColor='#999'
+                                autoFocus
+                                value={password}
+                                onChangeText={(text) => setPassword(text)}
+                                accessibilityLabel='Password input'
+                                accessibilityHint='Enter your password'
+                            />
+                        </View>
                     </View>
                 </View>
 
-                <View style={styles.checkboxContainer}>
-                    <TouchableOpacity
-                        style={[styles.checkbox, !isChecked && styles.checkboxInactive]}
-                        onPress={() => setIsChecked(!isChecked)}
-                        accessibilityRole='checkbox'
-                        accessibilityState={{ checked: isChecked }}
-                    >
-                        {isChecked && <View style={styles.checkmark} />}
-                    </TouchableOpacity>
-                    <ThemedText style={styles.checkboxText}>
-                        I would like to receive updates and news from Karama
-                    </ThemedText>
+                <View style={styles.bottomContainer}>
+                    <ThemedText style={styles.redText}>Forgot Password ?</ThemedText>
+                    <Button
+                        label='Login'
+                        onPress={handleSignIn}
+                        variant={phoneNumber.length === 11 || password.length > 0 ? 'primary' : 'disabled'}
+                        disabled={phoneNumber.length !== 11 || password.length === 0}
+                        loading={signIn.isPending}
+                    />
+                    <View style={styles.textContainer}>
+                        <ThemedText style={styles.greyText}>Don’t have an account?{' '}</ThemedText>
+                        <ThemedText style={styles.redText}>Sign up</ThemedText>
+                    </View>
                 </View>
-
-                <Button
-                    label='Next'
-                    onPress={handleNext}
-                    variant={phoneNumber.length === 10 ? 'primary' : 'disabled'}
-                    disabled={phoneNumber.length !== 10}
-                    loading={signIn.isPending}
-                />
             </View>
         </ThemedView>
     );
@@ -144,6 +154,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: Colors.light.background,
+        borderWidth: 1
     },
     closeButton: {
         position: 'absolute',
@@ -169,6 +180,7 @@ const styles = StyleSheet.create({
         fontSize: 32,
         fontWeight: '600',
         color: Colors.light.text,
+        marginTop: 20,
         marginBottom: 20,
         lineHeight: 36,
     },
@@ -176,10 +188,7 @@ const styles = StyleSheet.create({
         marginBottom: 40,
     },
     inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderBottomWidth: 2,
-        borderBottomColor: Colors.light.primary,
+        gap: 40,
     },
     countryCode: {
         fontFamily: 'Poppins',
@@ -188,45 +197,40 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
     input: {
-        flex: 1,
         fontFamily: 'Poppins',
         fontSize: 24,
         paddingVertical: 8,
         color: Colors.light.text,
     },
-    checkboxContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 40,
-    },
-    checkbox: {
-        width: 24,
-        height: 24,
-        borderRadius: 12,
-        backgroundColor: Colors.light.primary,
-        marginRight: 12,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    checkboxInactive: {
-        backgroundColor: '#EEEEEE',
-    },
-    checkmark: {
-        width: 12,
-        height: 8,
-        borderLeftWidth: 2,
-        borderBottomWidth: 2,
-        borderColor: Colors.light.white,
-        transform: [{ rotate: '-45deg' }],
-    },
-    checkboxText: {
-        fontFamily: 'Poppins',
-        flex: 1,
-        fontSize: 16,
-        color: Colors.light.text,
-        lineHeight: 24,
-    },
     inputActive: {
         borderBottomColor: Colors.light.primary,
     },
+    bottomContainer: {
+        alignItems: 'center',
+        gap: 24,
+    },
+    redText: {
+        fontWeight: 500, 
+        fontSize: 14, 
+        lineHeight: 18, 
+        color: '#EB4430',
+        fontFamily: 'Poppins'
+    },
+    greyText: {
+        fontWeight: 500,
+        fontSize: 14,
+        lineHeight: 18,
+        color: '#261D2A80',
+        fontFamily: 'Poppins'
+    },
+    helloText:{
+        fontWeight: 400,
+        fontSize: 15,
+        lineHeight: 19,
+        color:'#052222',
+    },
+    textContainer :{
+       flexDirection:'row',
+       alignItems:'center'
+    }
 });
