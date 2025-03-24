@@ -3,6 +3,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Colors } from '@/constants/Colors';
+import useAuthMutation from '@/hooks/useAuthMutation';
 import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
 import { useMutation } from '@tanstack/react-query';
@@ -36,19 +37,13 @@ export default function PhoneNumberScreen() {
 
   console.log('phoneNumber', phoneNumber);
 
-    const signIn = useMutation({
+    const signIn = useAuthMutation({
         mutationFn: (data: any) => {
             return customAxios.post(`/auth/phone/signin/complete`, data);
         },
         onSuccess: async (data: any) => {
             console.log(data.data)
-            router.push({
-                pathname: '/(tabs)/discover',
-                params: {
-                    isChecked: isChecked ? '1' : '0',
-                    phoneNumber: phoneNumber,
-                },
-            });
+            router.push('/(tabs)/discover');
         },
         onError: (error: any) => {
             console.log('error', error['response'].data);
