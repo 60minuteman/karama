@@ -10,6 +10,8 @@ import { useRouter } from 'expo-router';
 import { useReducer, useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '@/app/store/auth';
 
 const reducer = (state: any, action: any) => {
   switch (action.type) {
@@ -32,16 +34,30 @@ export default function PhoneNumberScreen() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('')
     const [isChecked, setIsChecked] = useState(false);
-    const { subscribed_to_promotions, setPromotionSubscription } = useUserStore();
+    const [showPassword, setShowPassword] = useState(false);
+    const { subscribed_to_promotions, setPromotionSubscription, setUser, setToken } = useUserStore();
+    const { signIn: authSignIn } = useAuth();
 
-  console.log('phoneNumber', phoneNumber);
+    console.log('phoneNumber', phoneNumber);
 
     const signIn = useMutation({
         mutationFn: (data: any) => {
             return customAxios.post(`/auth/phone/signin/complete`, data);
         },
         onSuccess: async (data: any) => {
-            console.log(data.data)
+            console.log(data.data);
+            
+            // Store the auth token in user store
+            setToken(data?.data?.data?.token);
+            
+            // Store user data in user store
+            setUser(data?.data?.data?.user);
+            
+            // Update promotion subscription if needed
+            if (isChecked) {
+                setPromotionSubscription(true);
+            }
+
             router.push({
                 pathname: '/(tabs)/discover',
                 params: {
@@ -53,7 +69,7 @@ export default function PhoneNumberScreen() {
         onError: (error: any) => {
             console.log('error', error['response'].data);
             Toast.show({
-                type: 'problem',
+                type: 'error',
                 text1: 'Something went wrong',
                 text2: error['response'].data?.message,
             });
@@ -65,23 +81,28 @@ export default function PhoneNumberScreen() {
             // });
         },
     });
-    function cleanNumber(phoneNumber : string) {
-        return phoneNumber.replace(/^0/, '+234');
-    }
+
+    const formatPhoneNumber = (number: string) => {
+        // Ensure number starts with +1 and remove any non-digit characters
+        const cleaned = number.replace(/\D/g, '');
+        return `+1${cleaned}`;
+    };
+
     const handleSignIn = () => {
-        const number = cleanNumber(phoneNumber)
-        if (phoneNumber.length === 11) {
+        if (phoneNumber.length === 10) {
+            const formattedNumber = formatPhoneNumber(phoneNumber);
             signIn.mutate({
-                phone_number: number,
+                phone_number: formattedNumber,
                 password: password,
             });
         }
     };
+
     const handlePhoneNumberChange = (text: string) => {
         // Only allow digits
         const cleaned = text.replace(/\D/g, '');
         // Limit to 10 digits
-        const truncated = cleaned.slice(0, 11);
+        const truncated = cleaned.slice(0, 10);
         setPhoneNumber(truncated);
     };
 
@@ -104,29 +125,45 @@ export default function PhoneNumberScreen() {
                         ]}
                     >
                         <View>
-                            <TextInput
-                                style={[styles.input, { marginTop: 0 }]}
-                                placeholder='Phone no'
-                                placeholderTextColor='#999'
-                                keyboardType='phone-pad'
-                                autoFocus
-                                value={phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')}
-                                onChangeText={handlePhoneNumberChange}
-                                accessibilityLabel='Phone number input'
-                                accessibilityHint='Enter your phone number'
-                            />
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#999'}}>
+                                <ThemedText style={styles.countryCode}>+1</ThemedText>
+                                <TextInput
+                                    style={[styles.input, { marginTop: 0 }]}
+                                    placeholder='Phone no'
+                                    placeholderTextColor='#999'
+                                    keyboardType='phone-pad'
+                                    autoFocus
+                                    value={phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')}
+                                    onChangeText={handlePhoneNumberChange}
+                                    accessibilityLabel='Phone number input'
+                                    accessibilityHint='Enter your phone number'
+                                    textContentType="telephoneNumber"
+                                    onPaste={true}
+                                />
+                            </View>
                         </View>
                         <View>
-                            <TextInput
-                                style={[styles.input, { marginTop: 0 }]}
-                                placeholder='Password'
-                                placeholderTextColor='#999'
-                                autoFocus
-                                value={password}
-                                onChangeText={(text) => setPassword(text)}
-                                accessibilityLabel='Password input'
-                                accessibilityHint='Enter your password'
-                            />
+                            <View style={{flexDirection: 'row', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#999'}}>
+                                <TextInput
+                                    style={[styles.input, { marginTop: 0, flex: 1 }]}
+                                    placeholder='Password'
+                                    placeholderTextColor='#999'
+                                    autoFocus
+                                    value={password}
+                                    onChangeText={(text) => setPassword(text)}
+                                    secureTextEntry={!showPassword}
+                                    accessibilityLabel='Password input'
+                                    accessibilityHint='Enter your password'
+                                    textContentType="password"
+                                />
+                                <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                                    <Ionicons 
+                                        name={showPassword ? "eye-off" : "eye"} 
+                                        size={24} 
+                                        color={Colors.light.text}
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
                 </View>
@@ -136,12 +173,12 @@ export default function PhoneNumberScreen() {
                     <Button
                         label='Login'
                         onPress={handleSignIn}
-                        variant={phoneNumber.length === 11 || password.length > 0 ? 'primary' : 'disabled'}
-                        disabled={phoneNumber.length !== 11 || password.length === 0}
+                        variant={phoneNumber.length === 10 && password.length > 0 ? 'primary' : 'secondary'}
+                        disabled={phoneNumber.length !== 10 || password.length === 0}
                         loading={signIn.isPending}
                     />
                     <View style={styles.textContainer}>
-                        <ThemedText style={styles.greyText}>Don’t have an account?{' '}</ThemedText>
+                        <ThemedText style={styles.greyText}>Don't have an account?{' '}</ThemedText>
                         <ThemedText style={styles.redText}>Sign up</ThemedText>
                     </View>
                 </View>
@@ -195,6 +232,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         color: Colors.light.text,
         marginRight: 8,
+        lineHeight: 32,
     },
     input: {
         fontFamily: 'Poppins',

@@ -134,7 +134,7 @@ export default function Discover() {
     return age;
   };
 
-  const profileData = {
+  const profileData = currentProfile ? {
     image: 'URL_TO_PROFILE_IMAGE',
     name: currentProfile?.caregiver_profile?.name,
     age: currentProfile?.caregiver_profile?.date_of_birth
@@ -166,7 +166,7 @@ export default function Discover() {
     disabilities:
       currentProfile?.caregiver_profile?.experience_with_disabilities
         ?.disabilities,
-  };
+  } : null;
 
   // console.log('profileData***=======', currentProfile?.caregiver_profile?.lan);
 
@@ -178,14 +178,6 @@ export default function Discover() {
           <View style={[styles.containerWrapper, { height: '80%' }]}>
             {isLoadingCurrentUser || isLoading ? (
               <ProfileCardLoader />
-            ) : profiles.length === 0 ? (
-              <View style={styles.emptyStateContainer}>
-                <Text style={styles.emptyStateText}>
-                  {currentUser?.role === 'FAMILY'
-                    ? 'No caregivers available at the moment'
-                    : 'No families available at the moment'}
-                </Text>
-              </View>
             ) : (
               <Container profileData={profileData} data={currentProfile} />
             )}

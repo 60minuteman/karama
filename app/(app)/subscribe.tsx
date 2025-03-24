@@ -59,7 +59,7 @@ export default function Subscribe() {
           <View style={styles.header}>
             <TouchableOpacity 
               style={styles.backButton}
-              onPress={() => router.back()}
+              onPress={() => router.push('/(tabs)/profile')}
             >
               <Image 
                 source={require('@/assets/icons/back2.png')}

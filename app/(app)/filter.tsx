@@ -24,6 +24,10 @@ export default function Filter() {
   const [payType, setPayType] = useState('Hourly');
   const [payRange, setPayRange] = useState([20, 30]);
 
+  const handleBack = () => {
+    router.push('/(tabs)/discover');
+  };  
+
   if (!fontsLoaded) {
     return null;
   }
@@ -54,14 +58,14 @@ export default function Filter() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={handleBack}>
           <Image 
             source={require('@/assets/icons/back.png')}
             style={styles.backIcon}
           />
         </TouchableOpacity>
         <ThemedText style={styles.headerTitle}>Filter</ThemedText>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={handleBack}>
           <ThemedText style={styles.doneButton}>Done</ThemedText>
         </TouchableOpacity>
       </View>

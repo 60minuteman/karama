@@ -17,6 +17,7 @@ import {
   View,
 } from 'react-native';
 import ProfileCardLoader from '../cards/ProfileCardLoader';
+import { ThemedText } from '@/components/ThemedText';
 
 interface ContainerProps {
   profileData: {
@@ -37,17 +38,30 @@ interface ContainerProps {
     personality: string[];
     disabilities?: string[];
     address: string;
-  };
+  } | null;
   data: any;
 }
 
 export const Container = ({ profileData, data }: ContainerProps) => {
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
   const isLargeScreen = windowWidth > 768;
+  const containerWidth = Math.min(windowWidth * 0.9, 500);
 
-  // console.log('data=======', data);
-
-  const containerWidth = Math.min(windowWidth * 0.9, 500); // Max width of 500
+  // Early return if no profile data
+  if (!profileData || !data) {
+    return (
+      <View style={[styles.container, { width: containerWidth }]}>
+        <View style={styles.emptyStateContainer}>
+          <ThemedText style={styles.emptyStateText}>
+            No profiles available at the moment
+          </ThemedText>
+          <ThemedText style={styles.emptyStateSubText}>
+            Check back later for new matches
+          </ThemedText>
+        </View>
+      </View>
+    );
+  }
 
   const dynamicStyles = StyleSheet.create({
     container: {
@@ -70,8 +84,6 @@ export const Container = ({ profileData, data }: ContainerProps) => {
       marginBottom: containerWidth * 0.03,
     },
   });
-
-  // console.log('data=======', data?.caregiver_profile);
 
   const content = (
     <>
@@ -203,5 +215,24 @@ const styles = StyleSheet.create({
   },
   bottomSpacer: {
     height: 80,
+  },
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  emptyStateText: {
+    fontSize: 24,
+    fontFamily: 'Bogart-Bold',
+    color: '#002140',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  emptyStateSubText: {
+    fontSize: 16,
+    fontFamily: 'Poppins_400Regular',
+    color: '#666666',
+    textAlign: 'center',
   },
 });
