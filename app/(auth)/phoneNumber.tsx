@@ -67,7 +67,7 @@ export default function PhoneNumberScreen() {
   const handleNext = () => {
     if (phoneNumber.length === 10) {
       signIn.mutate({
-        phone_number: `+234${phoneNumber}`,
+        phone_number: `+1${phoneNumber}`,
         strategy: 'SIGN_UP',
       });
     }
