@@ -98,7 +98,7 @@ export default function PhoneNumberScreen() {
               phoneNumber.length > 0 && styles.inputActive,
             ]}
           >
-            <ThemedText style={styles.countryCode}>+234</ThemedText>
+            <ThemedText style={styles.countryCode}>+1</ThemedText>
             <TextInput
               style={[styles.input, { marginTop: 0 }]}
               placeholder='(555) 555-5555'
@@ -185,6 +185,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: Colors.light.text,
     marginRight: 8,
+    lineHeight: 32,
   },
   input: {
     flex: 1,

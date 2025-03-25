@@ -11,6 +11,15 @@ export const HomeHeader = () => {
 
   const router = useRouter();
 
+  const handleUndoSwipe = () => {
+    // This would trigger the undo action to bring back the last unliked profile card
+    // The actual implementation would need to be connected to the card stack/swipe logic
+    Toast.show({
+      type: 'info',
+      text1: 'Returning to previous profile',
+    });
+  };
+
   return (
     <View style={styles.container}>
       <Image
@@ -22,7 +31,7 @@ export const HomeHeader = () => {
         <TouchableOpacity
           style={styles.iconButton}
           activeOpacity={0.7}
-          onPress={() => router.push('/liked-you')}
+          onPress={handleUndoSwipe}
         >
           <Image
             source={require('@/assets/images/BackIcon.png')}
@@ -44,16 +53,7 @@ export const HomeHeader = () => {
         <TouchableOpacity
           style={styles.iconButton}
           activeOpacity={0.7}
-          onPress={() => {
-            // router.push('/profile')
-            clearUser();
-            logout();
-            // Toast.show({
-            //   type: 'profile',
-            //   text1: 'Success',
-            //   // onClose: () => {},
-            // });
-          }}
+          onPress={() => router.push('/profile')}
         >
           <Image
             source={require('@/assets/images/profile-placeholder.png')}

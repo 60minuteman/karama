@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, Platform, FlatList } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, router } from 'expo-router';
 import { MessageHeader } from '@/components/messages/MessageHeader';
 import { MessageInput } from '@/components/messages/MessageInput';
 import { ChatBubble } from '@/components/messages/ChatBubble';
@@ -78,6 +78,10 @@ export default function MessageScreen() {
     }
   };
 
+  const handleBack = () => {
+    router.push('/matches');
+  };
+
   const renderMessage = ({ item }: { item: Message }) => {
     if (item.type === 'system') {
       return (
@@ -101,6 +105,7 @@ export default function MessageScreen() {
         name={name as string} 
         activeTab={activeTab}
         onTabChange={setActiveTab}
+        onBack={handleBack}
       />
       
       {activeTab === 'chat' ? (

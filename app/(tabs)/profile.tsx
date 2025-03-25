@@ -1,5 +1,6 @@
 import { ThemedText } from '@/components/ThemedText';
 import { HomeNav } from '@/components/home/HomeNav';
+import { useUserStore } from '@/services/state/user';
 import {
   Poppins_400Regular,
   Poppins_600SemiBold,
@@ -17,6 +18,7 @@ import {
 
 export default function Profile() {
   const router = useRouter();
+  const { logout } = useUserStore();
   const [fontsLoaded] = useFonts({
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
     Poppins_400Regular,
@@ -120,6 +122,25 @@ export default function Profile() {
                 />
               </TouchableOpacity>
             ))}
+          </View>
+          <View style={styles.menuSection}>
+            <TouchableOpacity
+              style={styles.menuItem}
+              onPress={() => {
+                logout();
+              }}
+              activeOpacity={0.7}
+            >
+              <Image
+                source={require('@/assets/icons/preferences.png')}
+                style={styles.menuIcon}
+              />
+              <ThemedText style={styles.menuLabel}>Logout</ThemedText>
+              <Image
+                source={require('@/assets/icons/chevron-right2.png')}
+                style={styles.chevronIcon}
+              />
+            </TouchableOpacity>
           </View>
         </View>
       </View>

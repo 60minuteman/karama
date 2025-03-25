@@ -1,3 +1,4 @@
+import { useAuth } from '@/app/store/auth';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
@@ -5,6 +6,7 @@ import { Header } from '@/components/ui/Header';
 import { Colors } from '@/constants/Colors';
 import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
+import { Ionicons } from '@expo/vector-icons';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useReducer, useState } from 'react';
@@ -32,7 +34,14 @@ export default function PhoneNumberScreen() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
-  const { subscribed_to_promotions, setPromotionSubscription } = useUserStore();
+  const [showPassword, setShowPassword] = useState(false);
+  const {
+    subscribed_to_promotions,
+    setPromotionSubscription,
+    setUser,
+    setToken,
+  } = useUserStore();
+  const { signIn: authSignIn } = useAuth();
 
   console.log('phoneNumber', phoneNumber);
 
@@ -42,6 +51,18 @@ export default function PhoneNumberScreen() {
     },
     onSuccess: async (data: any) => {
       console.log(data.data);
+
+      // Store the auth token in user store
+      setToken(data?.data?.data?.token);
+
+      // Store user data in user store
+      setUser(data?.data?.data?.user);
+
+      // Update promotion subscription if needed
+      if (isChecked) {
+        setPromotionSubscription(true);
+      }
+
       router.push({
         pathname: '/(tabs)/discover',
         params: {
@@ -53,35 +74,34 @@ export default function PhoneNumberScreen() {
     onError: (error: any) => {
       console.log('error', error['response'].data);
       Toast.show({
-        type: 'problem',
+        type: 'error',
         text1: 'Something went wrong',
         text2: error['response'].data?.message,
       });
-      // router.push('/phoneNumber');
-      // Toast.show({
-      //   type: 'problem',
-      //   text1: 'Something went wrong',
-      //   text2: error['response'].data?.message,
-      // });
     },
   });
-  function cleanNumber(phoneNumber: string) {
-    return phoneNumber.replace(/^0/, '+234');
-  }
+
+  const formatPhoneNumber = (number: string) => {
+    // Ensure number starts with +1 and remove any non-digit characters
+    const cleaned = number.replace(/\D/g, '');
+    return `+1${cleaned}`;
+  };
+
   const handleSignIn = () => {
-    const number = cleanNumber(phoneNumber);
-    if (phoneNumber.length === 11) {
+    if (phoneNumber.length === 10) {
+      const formattedNumber = formatPhoneNumber(phoneNumber);
       signIn.mutate({
-        phone_number: number,
+        phone_number: formattedNumber,
         password: password,
       });
     }
   };
+
   const handlePhoneNumberChange = (text: string) => {
     // Only allow digits
     const cleaned = text.replace(/\D/g, '');
     // Limit to 10 digits
-    const truncated = cleaned.slice(0, 11);
+    const truncated = cleaned.slice(0, 10);
     setPhoneNumber(truncated);
   };
 
@@ -104,47 +124,77 @@ export default function PhoneNumberScreen() {
             ]}
           >
             <View>
-              <TextInput
-                style={[styles.input, { marginTop: 0 }]}
-                placeholder='Phone no'
-                placeholderTextColor='#999'
-                keyboardType='phone-pad'
-                autoFocus
-                value={phoneNumber.replace(
-                  /(\d{3})(\d{3})(\d{4})/,
-                  '($1) $2-$3'
-                )}
-                onChangeText={handlePhoneNumberChange}
-                accessibilityLabel='Phone number input'
-                accessibilityHint='Enter your phone number'
-              />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  borderBottomWidth: 1,
+                  borderBottomColor: '#999',
+                }}
+              >
+                <ThemedText style={styles.countryCode}>+1</ThemedText>
+                <TextInput
+                  style={[styles.input, { marginTop: 0 }]}
+                  placeholder='Phone no'
+                  placeholderTextColor='#999'
+                  keyboardType='phone-pad'
+                  autoFocus
+                  value={phoneNumber.replace(
+                    /(\d{3})(\d{3})(\d{4})/,
+                    '($1) $2-$3'
+                  )}
+                  onChangeText={handlePhoneNumberChange}
+                  accessibilityLabel='Phone number input'
+                  accessibilityHint='Enter your phone number'
+                  textContentType='telephoneNumber'
+                />
+              </View>
             </View>
             <View>
-              <TextInput
-                style={[styles.input, { marginTop: 0 }]}
-                placeholder='Password'
-                placeholderTextColor='#999'
-                autoFocus
-                value={password}
-                onChangeText={(text) => setPassword(text)}
-                accessibilityLabel='Password input'
-                accessibilityHint='Enter your password'
-              />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  borderBottomWidth: 1,
+                  borderBottomColor: '#999',
+                }}
+              >
+                <TextInput
+                  style={[styles.input, { marginTop: 0, flex: 1 }]}
+                  placeholder='Password'
+                  placeholderTextColor='#999'
+                  value={password}
+                  onChangeText={(text) => setPassword(text)}
+                  secureTextEntry={!showPassword}
+                  accessibilityLabel='Password input'
+                  accessibilityHint='Enter your password'
+                  textContentType='password'
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Ionicons
+                    name={showPassword ? 'eye-off' : 'eye'}
+                    size={24}
+                    color={Colors.light.text}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </View>
 
         <View style={styles.bottomContainer}>
-          {/* <ThemedText style={styles.redText}>Forgot Password ?</ThemedText> */}
+          <ThemedText style={styles.redText}>Forgot Password ?</ThemedText>
           <Button
             label='Login'
             onPress={handleSignIn}
             variant={
-              phoneNumber.length === 11 || password.length > 0
+              phoneNumber.length === 10 && password.length > 0
                 ? 'primary'
                 : 'disabled'
             }
-            disabled={phoneNumber.length !== 11 || password.length === 0}
+            disabled={phoneNumber.length !== 10 || password.length === 0}
             loading={signIn.isPending}
           />
           <TouchableOpacity
@@ -152,7 +202,7 @@ export default function PhoneNumberScreen() {
             onPress={() => router.push('/phoneNumber')}
           >
             <ThemedText style={styles.greyText}>
-              Don’t have an account?{' '}
+              Don't have an account?{' '}
             </ThemedText>
             <ThemedText style={styles.redText}>Sign up</ThemedText>
           </TouchableOpacity>
@@ -207,6 +257,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: Colors.light.text,
     marginRight: 8,
+    lineHeight: 32,
   },
   input: {
     fontFamily: 'Poppins',
