@@ -131,7 +131,7 @@ export default function MessageScreen() {
   };
 
   const handleBack = () => {
-    router.push('/matches');
+    router.back();
   };
 
   const renderMessage = ({ item }: { item: Message }) => {
