@@ -253,7 +253,7 @@ interface UserProfile {
   updated_at: string;
   _v: number;
   user_id: string;
-  phone_number: string;
+  phone_number: string | null;
   email: string | null;
   role: 'NEW_USER' | 'USER' | 'ADMIN'; // Add other roles if needed
   name: string | null;
@@ -479,9 +479,9 @@ interface UserState {
   caregiverSchedule: CaregiverDaySchedule[] | undefined;
   caregiverChildcareResponsibilities: string[] | null;
   caregiverHouseholdResponsibilities: string[] | null;
-  caregiverPaymentType: 'Hourly' | 'Salary Base' | null;
   caregiverHourlyRate: number | null;
   caregiverSalaryAmount: string | null;
+  caregiverPaymentType: 'Hourly' | 'Salary Base' | null;
   caregiverPaymentMethod: string;
   showCaregiverPaymentMethod: boolean | undefined;
   caregiverRequiredBenefits: string[] | null;
@@ -494,6 +494,9 @@ interface UserState {
   caregiverMoreInfo: string | undefined;
   caregiverImages: string[];
   steps: string;
+  firebasePhoneNumber: string | null;
+  firebasePassword: string | null;
+  firebaseUsername: string | null;
 
   // Actions
   setUser: (user: UserProfile | null) => void;
@@ -643,6 +646,9 @@ interface UserState {
   setFamilyImages: (images: string[]) => void;
   logout: () => Promise<void>;
   setFirebaseCurrentUser: (user: any | null) => void;
+  setFirebasePhoneNumber: (phoneNumber: string | null) => void;
+  setFirebasePassword: (password: string | null) => void;
+  setFirebaseUsername: (username: string | null) => void;
 }
 
 export const useUserStore = create<UserState>()(
@@ -908,6 +914,9 @@ export const useUserStore = create<UserState>()(
       caregiverMoreInfo: '',
       caregiverImages: [],
       steps: '',
+      firebasePhoneNumber: null,
+      firebasePassword: null,
+      firebaseUsername: null,
 
       //
       setUser: (user) => set({ user, error: null }),
@@ -1385,9 +1394,16 @@ export const useUserStore = create<UserState>()(
           user: null,
           token: null,
           firebaseCurrentUser: null,
+          firebasePhoneNumber: null,
+          firebasePassword: null,
+          firebaseUsername: null,
         });
       },
       setFirebaseCurrentUser: (user) => set({ firebaseCurrentUser: user }),
+      setFirebasePhoneNumber: (phoneNumber) =>
+        set({ firebasePhoneNumber: phoneNumber }),
+      setFirebasePassword: (password) => set({ firebasePassword: password }),
+      setFirebaseUsername: (username) => set({ firebaseUsername: username }),
     }),
     {
       name: 'user-storage',

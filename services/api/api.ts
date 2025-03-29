@@ -133,3 +133,24 @@ export const useCurrentUser = () => {
     enabled: !!token,
   });
 };
+
+export const fetchCompletedMatches = async (role: string) => {
+  const endpoint =
+    role.toLowerCase() === 'FAMILY'
+      ? '/family-matches/completed-matches'
+      : '/caregiver-matches/completed-matches';
+
+  const { data } = await customAxios.get(endpoint);
+  return data;
+};
+
+export const useCompletedMatches = (role: string) => {
+  const { token } = useUserStore();
+
+  return useAuthQuery({
+    queryKey: ['completed-matches', role],
+    queryFn: () => fetchCompletedMatches(role),
+    retry: 3,
+    enabled: !!token && !!role,
+  });
+};

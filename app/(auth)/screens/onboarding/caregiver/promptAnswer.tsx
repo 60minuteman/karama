@@ -6,6 +6,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import useAuthMutation from '@/hooks/useAuthMutation';
 import customAxios from '@/services/api/envConfig';
+import { signUp } from '@/services/chat';
 import { useUserStore } from '@/services/state/user';
 import { useMutation } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -86,7 +87,10 @@ export default function PromptAnswer() {
     showCaregiverRequiredBenefit,
     setCaregiverFirstPromptAnswer,
     setOnboardingScreen,
+    firebasePhoneNumber,
+    firebasePassword,
   } = useUserStore();
+  const setFirebaseUser = useUserStore((state) => state.setFirebaseCurrentUser);
   // const [answer, setAnswer] = useState('');
   const onboadingInfo = {
     name: caregiverName,
@@ -148,12 +152,12 @@ export default function PromptAnswer() {
       commitment: caregiverCommitmentType,
       start_date: formatDate(caregiverCommitmentStartDate),
     },
-    service_days: caregiverSchedule?.map((schedule)=>{
+    service_days: caregiverSchedule?.map((schedule) => {
       return {
-        day :schedule.day,
-        begin : schedule.timeSlot.begin,
-        end : schedule.timeSlot.end,
-      }
+        day: schedule.day,
+        begin: schedule.timeSlot.begin,
+        end: schedule.timeSlot.end,
+      };
     }),
     responsibilities: {
       childcare_responsibilities: caregiverChildcareResponsibilities,
@@ -223,7 +227,22 @@ export default function PromptAnswer() {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/moreInfo');
     router.push('/(auth)/screens/onboarding/caregiver/moreInfo');
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    try {
+      const res = await signUp(
+        `karama${firebasePhoneNumber}@mail.com`,
+        firebasePassword as string,
+        caregiverName as string
+      );
+      console.log('res', res);
+      setFirebaseUser(res);
+    } catch (error) {
+      return Toast.show({
+        type: 'error',
+        text1: 'Something went wrong',
+        text2: (error as Error)?.message || 'Something went wrong',
+      });
+    }
     createProfile.mutate(onboadingInfo);
   };
   return (

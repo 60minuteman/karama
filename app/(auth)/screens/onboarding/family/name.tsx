@@ -17,7 +17,12 @@ import {
 } from 'react-native';
 export default function FamilyNameScreen() {
   const router = useRouter();
-  const { familyName, setFamilyName, setOnboardingScreen } = useUserStore();
+  const {
+    familyName,
+    setFamilyName,
+    setOnboardingScreen,
+    setFirebaseUsername,
+  } = useUserStore();
   const [keyboardVisible, setKeyboardVisible] = useState(false);
 
   useEffect(() => {

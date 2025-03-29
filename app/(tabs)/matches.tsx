@@ -5,6 +5,7 @@ import { EmptyMatches } from '@/components/matches/EmptyMatches';
 import { MatchCircle } from '@/components/matches/MatchCircle';
 import { SearchBar } from '@/components/matches/SearchBar';
 import MatchesSkeleton from '@/components/matches/matchesSkeleton';
+import { useCompletedMatches, useCurrentUser } from '@/services/api/api';
 import {
   getUserById,
   getUserChatRooms,
@@ -21,6 +22,9 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function Matches() {
   const [searchQuery, setSearchQuery] = useState('');
+  const { data: user, isLoading: isLoadingUser } = useCurrentUser();
+  const { data: matchesApi, isLoading: isLoadingMatchesApi } =
+    useCompletedMatches(user?.role as string);
   const [matches, setMatches] = useState([
     {
       created_at: '2025-03-27T11:24:23.903Z',
@@ -830,7 +834,7 @@ export default function Matches() {
 
   const hasMatches = matches.length > 0;
 
-  if (loading || authLoading) {
+  if (loading || authLoading || isLoadingUser || isLoadingMatchesApi) {
     return <MatchesSkeleton />;
   }
 
@@ -848,13 +852,15 @@ export default function Matches() {
             />
 
             <View style={styles.section}>
-              <ThemedText style={styles.sectionTitle}>Matches</ThemedText>
+              {matchesApi?.data?.matches?.length > 0 && (
+                <ThemedText style={styles.sectionTitle}>Matches</ThemedText>
+              )}
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.matchesScroll}
               >
-                {matches.map((match) => (
+                {matchesApi?.data?.matches.map((match: any) => (
                   <MatchCircle
                     key={match.id}
                     imageUrl={match?.caregiver_profile?.pictures[0]?.path}

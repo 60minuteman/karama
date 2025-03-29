@@ -6,6 +6,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import useAuthMutation from '@/hooks/useAuthMutation';
 import customAxios from '@/services/api/envConfig';
+import { signUp } from '@/services/chat';
 import { useUserStore } from '@/services/state/user';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
@@ -33,7 +34,10 @@ export default function IntermissionScreen() {
     family_philosophies,
     family_allergies,
     setSteps,
+    firebasePhoneNumber,
+    firebasePassword,
   } = useUserStore();
+  const setFirebaseUser = useUserStore((state) => state.setFirebaseCurrentUser);
 
   console.log('family_allergies', family_allergies);
 
@@ -68,7 +72,23 @@ export default function IntermissionScreen() {
 
   console.log('family_submit', family_interests);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    try {
+      const res = await signUp(
+        `karama${firebasePhoneNumber}@mail.com`,
+        firebasePassword as string,
+        familyName as string
+      );
+      console.log('res', res);
+      setFirebaseUser(res);
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Something went wrong',
+        text2: (error as Error)?.message || 'Something went wrong',
+      });
+    }
+
     submit.mutate({
       name: familyName,
       description: {

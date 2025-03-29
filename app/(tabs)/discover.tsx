@@ -76,7 +76,7 @@ export default function Discover() {
   const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
   const [nextCursor, setNextCursor] = useState('');
   const { data: currentUser, isLoading: isLoadingCurrentUser } =
-    useCurrentUser<User>();
+    useCurrentUser();
 
   const { data, isLoading, error, refetch } = useMatchingCaregivers(
     cursor,
