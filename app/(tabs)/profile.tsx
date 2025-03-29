@@ -1,5 +1,6 @@
 import { ThemedText } from '@/components/ThemedText';
 import { HomeNav } from '@/components/home/HomeNav';
+import { useCurrentUser } from '@/services/api/api';
 import { useUserStore } from '@/services/state/user';
 import {
   Poppins_400Regular,
@@ -17,6 +18,8 @@ import {
 } from 'react-native';
 
 export default function Profile() {
+  const { data: currentUser, isLoading: isLoadingCurrentUser }: any =
+    useCurrentUser();
   const router = useRouter();
   const { logout } = useUserStore();
   const [fontsLoaded] = useFonts({
@@ -33,22 +36,22 @@ export default function Profile() {
     {
       icon: require('@/assets/icons/edit-profile.png'),
       label: 'Edit profile',
-      route: '/edit-profile',
+      route: currentUser?.role === 'FAMILY' ? ' /app/(app)/profileScreens/familyEditProfile' : ' /app/(app)/profileScreens/caregiverEditProfile',
     },
     {
       icon: require('@/assets/icons/preferences.png'),
       label: 'Preferences',
-      route: '/preferences',
+      route: currentUser?.role === 'FAMILY' ? ' /app/(app)/profileScreens/familyPreferences' : ' /app/(app)/profileScreens/caregiverPreferences',
     },
     {
       icon: require('@/assets/icons/settings.png'),
       label: 'Settings',
-      route: '/settings',
+      route: currentUser?.role === 'FAMILY' ? ' /app/(app)/profileScreens/familySettings' : ' /app/(app)/profileScreens/caregiverSettings',
     },
     {
       icon: require('@/assets/icons/help.png'),
       label: 'Help',
-      route: '/help',
+      route: ' /app/ (app)/profileScreens/help',
     },
   ];
 
@@ -76,7 +79,7 @@ export default function Profile() {
             <View style={styles.profileInfo}>
               <ThemedText style={styles.name}>Sako Reuben</ThemedText>
               <TouchableOpacity
-                onPress={() => handleNavigation('/view-profile')}
+                onPress={() => handleNavigation(currentUser?.role === 'FAMILY' ? ' /app/(app)/profileScreens/familyProfileView' : ' /app/(app)/profileScreens/caregiverProfileView',)}
                 activeOpacity={0.7}
               >
                 <ThemedText style={styles.viewProfile}>View profile</ThemedText>
