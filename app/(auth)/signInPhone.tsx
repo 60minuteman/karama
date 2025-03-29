@@ -9,9 +9,16 @@ import { useUserStore } from '@/services/state/user';
 import { Ionicons } from '@expo/vector-icons';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
+import {
+  browserLocalPersistence,
+  createUserWithEmailAndPassword,
+  setPersistence,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
 import { useReducer, useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import { auth } from '../../services/firebase';
 
 const reducer = (state: any, action: any) => {
   switch (action.type) {
@@ -35,6 +42,8 @@ export default function PhoneNumberScreen() {
   const [password, setPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const setFirebaseUser = useUserStore((state) => state.setFirebaseCurrentUser);
   const {
     subscribed_to_promotions,
     setPromotionSubscription,
@@ -87,9 +96,31 @@ export default function PhoneNumberScreen() {
     return `+1${cleaned}`;
   };
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (phoneNumber.length === 10) {
       const formattedNumber = formatPhoneNumber(phoneNumber);
+      setIsLoading(true);
+      console.log('formattedNumber', `karama${phoneNumber}@mail.com`, password);
+      try {
+        // await setPersistence(auth, browserLocalPersistence);
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          `karama${phoneNumber}@mail.com`,
+          password
+        );
+        setFirebaseUser(userCredential.user);
+        console.log('userCredential', userCredential);
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Something went wrong',
+          text2: 'Invalid email or password',
+        });
+        setIsLoading(false);
+        console.log('error', error);
+        return;
+      }
+      setIsLoading(false);
       signIn.mutate({
         phone_number: formattedNumber,
         password: password,
@@ -195,7 +226,7 @@ export default function PhoneNumberScreen() {
                 : 'disabled'
             }
             disabled={phoneNumber.length !== 10 || password.length === 0}
-            loading={signIn.isPending}
+            loading={signIn.isPending || isLoading}
           />
           <TouchableOpacity
             style={styles.textContainer}
@@ -203,8 +234,8 @@ export default function PhoneNumberScreen() {
           >
             <ThemedText style={styles.greyText}>
               Don't have an account?{' '}
+              <ThemedText style={styles.redText}>Sign up</ThemedText>
             </ThemedText>
-            <ThemedText style={styles.redText}>Sign up</ThemedText>
           </TouchableOpacity>
         </View>
       </View>

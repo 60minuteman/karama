@@ -339,6 +339,7 @@ interface FamilyAllergies {
 interface UserState {
   user: UserProfile | null;
   token: string | null;
+  firebaseCurrentUser: any | null;
   isLoading: boolean;
   error: string | null;
   hydrated: boolean;
@@ -641,6 +642,7 @@ interface UserState {
   setFamilyPromptCategory: (category: string | null) => void;
   setFamilyImages: (images: string[]) => void;
   logout: () => Promise<void>;
+  setFirebaseCurrentUser: (user: any | null) => void;
 }
 
 export const useUserStore = create<UserState>()(
@@ -648,6 +650,7 @@ export const useUserStore = create<UserState>()(
     (set) => ({
       user: null,
       token: null,
+      firebaseCurrentUser: null,
       isLoading: false,
       error: null,
       hydrated: false,
@@ -1381,8 +1384,10 @@ export const useUserStore = create<UserState>()(
         set({
           user: null,
           token: null,
+          firebaseCurrentUser: null,
         });
       },
+      setFirebaseCurrentUser: (user) => set({ firebaseCurrentUser: user }),
     }),
     {
       name: 'user-storage',

@@ -6,8 +6,8 @@ import { StyleSheet, View } from 'react-native';
 import { Image } from './Image';
 
 interface InterestsProps {
-  interests: string[];
-  data: any;
+  interests?: string[];
+  data?: any;
 }
 
 export const Interests = ({
@@ -45,24 +45,21 @@ export const Interests = ({
     return null;
   }
 
-  console.log('data=======******', data?.caregiver_profile?.pictures[3]?.path);
-
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        {/* <View style={styles.imagePlaceholder} /> */}
         <Image
-          data={data?.caregiver_profile?.pictures[2]?.path}
+          data={data?.caregiver_profile?.pictures?.[2]?.path}
           style={styles.imagePlaceholder}
         />
       </View>
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>My Interests</ThemedText>
         <View style={styles.interestsContainer}>
-          {interests.map((interest, index) => (
+          {interests?.map((interest, index) => (
             <Pill2
               key={index}
-              icon={interestIcons[interest]}
+              icon={interestIcons[interest] || '✨'}
               label={interest}
               style={styles.interestPill}
             />

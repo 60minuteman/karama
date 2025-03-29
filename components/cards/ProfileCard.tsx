@@ -54,12 +54,14 @@ export const ProfileCard = ({
     return null;
   }
 
-  // console.log('data&&&&&&', data?.caregiver_profile?.pictures);
+  const imageSource = data?.caregiver_profile?.pictures?.[0]?.path
+    ? { uri: data.caregiver_profile.pictures[0].path }
+    : require('@/assets/icons/fallback.png');
 
   return (
     <View style={styles.container}>
       <Image
-        source={{ uri: data?.caregiver_profile?.pictures[0]?.path }}
+        source={imageSource}
         style={[styles.image, { height: Math.min(windowHeight * 0.7, 700) }]}
       />
 
@@ -70,19 +72,21 @@ export const ProfileCard = ({
         >
           <View style={styles.header}>
             <View style={styles.pronounsContainer}>
-              <ThemedText style={styles.pronouns}>{pronouns}</ThemedText>
+              <ThemedText style={styles.pronouns}>{pronouns || ''}</ThemedText>
             </View>
             <View style={styles.ratingContainer}>
-              <ThemedText style={styles.rating}>{rating}</ThemedText>
+              <ThemedText style={styles.rating}>{rating || 0}</ThemedText>
               <ThemedText style={styles.star}>⭐</ThemedText>
             </View>
           </View>
           <View style={styles.infoOverlay}>
             <View style={styles.infoContainer}>
               <ThemedText style={styles.nameAge}>
-                {name}, {age}
+                {name || 'Anonymous'}, {age || '?'}
               </ThemedText>
-              <ThemedText style={styles.role}>{role}</ThemedText>
+              <ThemedText style={styles.role}>
+                {role || 'Role not specified'}
+              </ThemedText>
               {/* <ThemedText style={styles.address}>{address}</ThemedText> */}
             </View>
           </View>

@@ -46,7 +46,7 @@ export default function OTPInputScreen() {
       return customAxios.post(`/auth/phone/start-verification`, data);
     },
     onSuccess: async (data: any) => {
-      console.log('OTP resent successfully')
+      console.log('OTP resent successfully');
     },
     onError: (error: any) => {
       console.log('error', error['response'].data);
@@ -64,10 +64,12 @@ export default function OTPInputScreen() {
     },
   });
 
-  const handleResend = () => {
+  const handleResend = async () => {
     if (canResend) {
+      // const  user = await signUp(`karama${phoneNumber}@mail.com`, `karama${phoneNumber}@mail.com`, 'karama')
+
       phoneVerification.mutate({
-        phone_number: `+234${phoneNumber}`,
+        phone_number: `+1${phoneNumber}`,
       });
       setTimeLeft(50);
       setCanResend(false);
@@ -92,7 +94,7 @@ export default function OTPInputScreen() {
           isChecked: isChecked ? '1' : '0',
           phoneNumber: phoneNumber,
         },
-      });;
+      });
     },
     onError: (error: any) => {
       console.log('error', error['response'].data);

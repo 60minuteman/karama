@@ -48,11 +48,16 @@ export const Responsibilities = ({
     return null;
   }
 
+  const childcareResp =
+    data?.caregiver_profile?.responsibilities?.childcare_responsibilities || [];
+  const householdResp =
+    data?.caregiver_profile?.responsibilities?.household_responsibilities || [];
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          data={data?.caregiver_profile?.pictures[3]?.path}
+          data={data?.caregiver_profile?.pictures?.[3]?.path}
           style={styles.imagePlaceholder}
         />
       </View>
@@ -62,16 +67,14 @@ export const Responsibilities = ({
           Childcare Responsibilities
         </ThemedText>
         <View style={styles.pillsContainer}>
-          {data?.caregiver_profile?.responsibilities?.childcare_responsibilities?.map(
-            (item: any, index: any) => (
-              <Pill2
-                key={index}
-                icon={item.icon}
-                label={item}
-                style={styles.pill}
-              />
-            )
-          )}
+          {childcareResp.map((item: any, index: number) => (
+            <Pill2
+              key={index}
+              icon={item.icon || '👶'}
+              label={item}
+              style={styles.pill}
+            />
+          ))}
         </View>
       </View>
 
@@ -80,16 +83,14 @@ export const Responsibilities = ({
           Household Responsibilities
         </ThemedText>
         <View style={styles.pillsContainer}>
-          {data?.caregiver_profile?.responsibilities?.household_responsibilities?.map(
-            (item: any, index: any) => (
-              <Pill2
-                key={index}
-                icon={item.icon}
-                label={item}
-                style={styles.pill}
-              />
-            )
-          )}
+          {householdResp.map((item: any, index: number) => (
+            <Pill2
+              key={index}
+              icon={item.icon || '🏠'}
+              label={item}
+              style={styles.pill}
+            />
+          ))}
         </View>
       </View>
     </View>
@@ -113,7 +114,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#E8F3F3', // Pastel blue-green color
   },
   section: {
-    marginBottom: 14, // Changed from 8 to 10
+    marginBottom: 14,
     marginTop: 24,
   },
   sectionTitle: {

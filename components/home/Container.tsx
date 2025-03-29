@@ -9,6 +9,7 @@ import { Religion } from '@/components/cards/Religion';
 import { Responsibilities } from '@/components/cards/Responsibilities';
 import { Work } from '@/components/cards/Work';
 import { ProfileDetails } from '@/components/home/ProfileDetails';
+import { ThemedText } from '@/components/ThemedText';
 import React from 'react';
 import {
   ScrollView,
@@ -17,7 +18,6 @@ import {
   View,
 } from 'react-native';
 import ProfileCardLoader from '../cards/ProfileCardLoader';
-import { ThemedText } from '@/components/ThemedText';
 
 interface ContainerProps {
   profileData: {
@@ -63,6 +63,15 @@ export const Container = ({ profileData, data }: ContainerProps) => {
     );
   }
 
+  // Add safety checks for nested data
+  const caregiverProfile = data?.caregiver_profile || {};
+  const pictures = caregiverProfile?.pictures || [];
+  const abilitiesAndCerts =
+    caregiverProfile?.abilities_and_certifications || {};
+  const experienceWithDisabilities =
+    caregiverProfile?.experience_with_disabilities || {};
+  const experienceWithPets = caregiverProfile?.experience_with_pets || {};
+
   const dynamicStyles = StyleSheet.create({
     container: {
       alignSelf: 'center',
@@ -99,7 +108,7 @@ export const Container = ({ profileData, data }: ContainerProps) => {
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>
         <ExperienceAndLanguages
-          yearsOfExperience={data?.caregiver_profile?.years_of_experience}
+          yearsOfExperience={caregiverProfile?.years_of_experience}
           languages={profileData.languages}
         />
       </View>
@@ -128,36 +137,28 @@ export const Container = ({ profileData, data }: ContainerProps) => {
       <View style={dynamicStyles.componentContainer}>
         <Certifications
           certifications={[
-            ...(data?.caregiver_profile?.abilities_and_certifications
-              ?.abilities || []),
-            ...(data?.caregiver_profile?.abilities_and_certifications
-              ?.certifications || []),
+            ...(abilitiesAndCerts?.abilities || []),
+            ...(abilitiesAndCerts?.certifications || []),
           ].filter(Boolean)}
           data={data}
         />
       </View>
       <View style={styles.spacer} />
       <View style={[dynamicStyles.componentContainer, styles.imageContainer]}>
-        <Image
-          data={
-            data?.caregiver_profile?.pictures[5]?.path ||
-            data?.caregiver_profile?.pictures[4]?.path
-          }
-        />
+        <Image data={pictures[5]?.path || pictures[4]?.path || null} />
       </View>
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>
         <Work
           animals={[
-            ...(data?.caregiver_profile?.experience_with_disabilities
-              ?.disabilities || []),
-            ...(data?.caregiver_profile?.experience_with_pets?.pets || []),
+            ...(experienceWithDisabilities?.disabilities || []),
+            ...(experienceWithPets?.pets || []),
           ].filter(Boolean)}
         />
       </View>
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>
-        <Position positions={data?.caregiver_profile?.past_positions} />
+        <Position positions={caregiverProfile?.past_positions || []} />
       </View>
       <View style={styles.bottomSpacer} />
     </>

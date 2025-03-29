@@ -1,7 +1,7 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
 type ChatBubbleVariant = 'sent' | 'received' | 'system';
 
@@ -13,11 +13,31 @@ interface ChatBubbleProps {
   isDelivered?: boolean;
 }
 
-export function ChatBubble({ message, timestamp, variant, isRead, isDelivered }: ChatBubbleProps) {
+export function ChatBubble({
+  message,
+  timestamp,
+  variant,
+  isRead,
+  isDelivered,
+}: ChatBubbleProps) {
+  console.log(
+    'timestamp',
+    new Date(Number(timestamp) * 1000).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    })
+  );
   if (variant === 'system') {
     return (
       <View style={styles.systemContainer}>
-        <ThemedText style={styles.systemDate}>{timestamp}</ThemedText>
+        <ThemedText style={styles.systemDate}>
+          {new Date(Number(timestamp) * 1000).toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true,
+          }) || ''}
+        </ThemedText>
         <View style={styles.systemBubble}>
           <ThemedText style={styles.systemText}>{message}</ThemedText>
         </View>
@@ -30,34 +50,48 @@ export function ChatBubble({ message, timestamp, variant, isRead, isDelivered }:
   const renderTicks = () => {
     if (!isReceived) {
       if (isRead) {
-        return <Ionicons name="checkmark-done" size={16} color="#002140" />;
+        return <Ionicons name='checkmark-done' size={16} color='#002140' />;
       } else if (isDelivered) {
-        return <Ionicons name="checkmark" size={16} color="#002140" />;
+        return <Ionicons name='checkmark' size={16} color='#002140' />;
       }
     }
     return null;
   };
 
   return (
-    <View style={[
-      styles.container,
-      isReceived ? styles.receivedContainer : styles.sentContainer
-    ]}>
-      <View style={[
-        styles.bubble,
-        isReceived ? styles.receivedBubble : styles.sentBubble
-      ]}>
-        <ThemedText style={[
-          styles.messageText,
-          isReceived ? styles.receivedText : styles.sentText
-        ]}>
+    <View
+      style={[
+        styles.container,
+        isReceived ? styles.receivedContainer : styles.sentContainer,
+      ]}
+    >
+      <View
+        style={[
+          styles.bubble,
+          isReceived ? styles.receivedBubble : styles.sentBubble,
+        ]}
+      >
+        <ThemedText
+          style={[
+            styles.messageText,
+            isReceived ? styles.receivedText : styles.sentText,
+          ]}
+        >
           {message}
         </ThemedText>
         <View style={styles.messageFooter}>
-          <ThemedText style={[
-            styles.timestamp,
-            isReceived ? styles.receivedTimestamp : styles.sentTimestamp
-          ]}>{timestamp}</ThemedText>
+          <ThemedText
+            style={[
+              styles.timestamp,
+              isReceived ? styles.receivedTimestamp : styles.sentTimestamp,
+            ]}
+          >
+            {new Date(Number(timestamp) * 1000).toLocaleTimeString('en-US', {
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true,
+            }) || ''}
+          </ThemedText>
           {renderTicks()}
         </View>
       </View>

@@ -22,7 +22,7 @@ export const Religion = ({
     'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
   });
 
-  console.log('data=======', data?.caregiver_profile?.pictures[2]?.path);
+  // console.log('data=======', data?.caregiver_profile?.pictures[2]?.path);
 
   const religionIcons: { [key: string]: string } = {
     Buddhism: '☸️',

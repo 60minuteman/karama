@@ -109,22 +109,35 @@ export default function Discover() {
     }
   }, [currentIndex, profiles.length, nextCursor, currentUser?.plan]);
 
-  console.log('currentUser***===', currentProfile?.caregiver_profile?.id);
+  console.log(
+    'currentUser***===',
+    currentProfile?.score,
+    currentProfile?.caregiver_profile?.id
+  );
 
   const submitLike = useAuthMutation({
     mutationFn: (data: any) => {
       const endpoint =
         currentUser?.role === 'FAMILY'
-          ? `/family-discovery/like-caregiver/${currentProfile?.caregiver_profile?.id}`
-          : `/caregiver-discovery/like-families/${currentProfile?.family_profile?.id}`;
-      return customAxios.patch(endpoint);
+          ? `/family-discovery/like-caregiver`
+          : `/caregiver-discovery/like-families`;
+      return customAxios.patch(endpoint, {
+        caregiver_profile_id: currentProfile?.caregiver_profile?.id,
+        score: currentProfile?.score,
+      });
+    },
+    onSuccess: (data: any) => {
+      console.log('data***', data);
     },
     onMutate: async () => {
       moveToNextProfile();
     },
     onError: (error: any) => {
+      console.log('error***', error['response'].data);
+      if (error['response'].data?.message === 'Caregiver already liked') {
+        return moveToNextProfile();
+      }
       setCurrentIndex(Math.max(0, currentIndex - 1));
-      console.log('error', error['response'].data);
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
@@ -170,6 +183,8 @@ export default function Discover() {
     return age;
   };
 
+  console.log('currentProfile***', currentUser?.role);
+
   const profileData = currentProfile
     ? {
         image: 'URL_TO_PROFILE_IMAGE',
@@ -184,7 +199,9 @@ export default function Discover() {
         rating: currentProfile?.score || 0,
         experience: currentProfile?.caregiver_profile?.ages_best_with || [],
         lookingFor: currentProfile?.caregiver_profile?.availability || [],
-        hourlyRate: `$${currentProfile?.payment_info?.hourly_min} - $${currentProfile?.payment_info?.hourly_max}`,
+        hourlyRate: `$${currentProfile?.payment_info?.hourly_min || 0} - $${
+          currentProfile?.payment_info?.hourly_max || 0
+        }`,
         languages: [
           ...(currentProfile?.caregiver_profile?.language?.languages || []),
           currentProfile?.caregiver_profile?.language?.other,
