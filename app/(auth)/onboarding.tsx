@@ -18,31 +18,8 @@ export default function OnboardingScreen() {
 
   const handleGetStarted = async () => {
     await completeOnboarding();
-    if (onboarding_screen) {
-      // router.push(onboarding_screen);
-      // router.push('/(auth)/screens/onboarding/family/payment');
-      // router.push('/(auth)/bridge');
-      // router.push('/(auth)/phoneNumber');
-      // router.push('/(auth)/bridge');
-
-      if (selectedType === 'family') {
-        if (steps === 'intermission') {
-          return router.push('/(auth)/screens/onboarding/family/gender');
-        }
-        if (steps === 'responsibilities') {
-          return router.push('/(auth)/screens/onboarding/family/payment');
-        }
-        if (steps === 'more-info') {
-          return router.push('/(auth)/screens/onboarding/family/upload');
-        }
-        if (steps === 'upload') {
-          return router.push('/(auth)/screens/onboarding/family/success');
-        }
-      }
-
-      return router.push('/(auth)/bridge');
-    }
-    return router.push('/(auth)/phoneNumber');
+    // Always go to phone number screen first
+    router.push('/(auth)/phoneNumber');
   };
 
   const handleSignIn = () => {

@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
@@ -9,124 +9,159 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
 import { Colors } from '@/constants/Colors';
 import { TextInput } from 'react-native';
-import { Slider } from '@/components/ui/Slider';
+import Slider from '@react-native-community/slider';
 import { useUserStore } from '@/services/state/user';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 type PaymentType = 'Hourly' | 'Salary Base';
 
 export default function PaymentScreen() {
   const router = useRouter();
-  // const [selected, setSelected] = useState<PaymentType | null>(null);
-  // const [hourlyRate, setHourlyRate] = useState(15);
-  // const [salaryAmount, setSalaryAmount] = useState('50,000');
   const [hasInteracted, setHasInteracted] = useState(false);
-  const {caregiverHourlyRate,setCaregiverHourlyRate,caregiverSalaryAmount,
-    setCaregiverSalaryAmount,setOnboardingScreen,caregiverPaymentType,setCaregiverPaymentType}=useUserStore()
+  const {
+    caregiverHourlyRate,
+    setCaregiverHourlyRate,
+    caregiverSalaryAmount,
+    setCaregiverSalaryAmount,
+    setOnboardingScreen,
+    caregiverPaymentType,
+    setCaregiverPaymentType
+  } = useUserStore();
+
+  // Initialize hourly rate if not set
+  useEffect(() => {
+    if (caregiverPaymentType === 'Hourly' && !caregiverHourlyRate) {
+      setCaregiverHourlyRate(20); // Default value
+    }
+  }, [caregiverPaymentType]);
+
   const paymentOptions: Array<{ label: PaymentType; icon: string }> = [
     { label: 'Hourly', icon: '🤑' },
     { label: 'Salary Base', icon: '💰' },
   ];
 
   const handleNext = () => {
-    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/PaymentMethod',)
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/PaymentMethod');
     router.push({
       pathname: '/(auth)/screens/onboarding/caregiver/PaymentMethod',
       params: {
         type: caregiverPaymentType,
-        rate: caregiverPaymentType === 'Hourly' ? caregiverHourlyRate : 
-        parseInt(caregiverSalaryAmount?.replace(/,/g, ''))
+        rate: caregiverPaymentType === 'Hourly' 
+          ? caregiverHourlyRate || 0
+          : parseInt(caregiverSalaryAmount?.replace(/,/g, '') || '0')
       }
     });
   };
 
+  const handleSliderChange = (value: number) => {
+    setHasInteracted(true);
+    setCaregiverHourlyRate(Math.round(value));
+  };
+
+  const handleTextInputChange = (text: string) => {
+    const numValue = parseInt(text) || 0;
+    if (numValue >= 15 && numValue <= 45) {
+      setHasInteracted(true);
+      setCaregiverHourlyRate(numValue);
+    }
+  };
+
+  const handleSalaryChange = (text: string) => {
+    // Only allow numbers and commas
+    const cleanText = text.replace(/[^0-9,]/g, '');
+    // Format with commas
+    const formattedText = cleanText.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    setCaregiverSalaryAmount(formattedText);
+  };
+
   return (
-    <ThemedView style={styles.container}>
-      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-      
-      <View style={styles.content}>
-        <View style={styles.spacerTop} />
-        <ProgressBar progress={0.95} />
+    <GestureHandlerRootView style={{flex: 1}}>
+      <ThemedView style={styles.container}>
+        <Header variant="back" />
+        
+        <View style={styles.content}>
+          <View style={styles.spacerTop} />
+          <ProgressBar progress={0.95} />
 
-        <View style={styles.mainContent}>
-          <ThemedText style={styles.title}>
-            How do you plan to{'\n'}pay your caregiver?
-          </ThemedText>
+          <View style={styles.mainContent}>
+            <ThemedText style={styles.title}>
+              How would you like to be paid?
+            </ThemedText>
 
-          <View style={styles.optionsContainer}>
-            {paymentOptions.map((option) => (
-              <Pill
-                key={option.label}
-                label={option.label}
-                icon={option.icon}
-                selected={caregiverPaymentType=== option.label}
-                onPress={() => setCaregiverPaymentType(option.label)}
-              />
-            ))}
-          </View>
+            <View style={styles.optionsContainer}>
+              {paymentOptions.map((option) => (
+                <Pill
+                  key={option.label}
+                  label={option.label}
+                  icon={option.icon}
+                  selected={caregiverPaymentType === option.label}
+                  onPress={() => setCaregiverPaymentType(option.label)}
+                />
+              ))}
+            </View>
 
-          {caregiverPaymentType === 'Hourly' && (
-            <>
+            {caregiverPaymentType === 'Hourly' && (
               <View style={styles.inputContainer}>
-                <View style={styles.sliderContainer}>
+                <View style={[styles.sliderContainer, { backgroundColor: '#FAFAFA' }]}>
                   <View style={styles.sliderWrapper}>
                     <Slider
-                      min={15}
-                      max={45}
-                      value={caregiverHourlyRate}
-                      onValueChange={(value) => {
-                        setHasInteracted(true);
-                        setCaregiverHourlyRate(value);
-                      }}
+                      style={{width: '100%', height: 40}}
+                      minimumValue={15}
+                      maximumValue={45}
+                      value={caregiverHourlyRate || 20}
+                      step={1}
+                      onValueChange={handleSliderChange}
+                      minimumTrackTintColor={Colors.light.primary}
+                      maximumTrackTintColor="#E5E5E5"
+                      thumbTintColor={Colors.light.primary}
                     />
                   </View>
                 </View>
-                <View style={[styles.inputBorder, caregiverHourlyRate > 0 && styles.inputBorderActive]}>
+                <View style={[styles.inputBorder, (caregiverHourlyRate || 0) > 0 && styles.inputBorderActive]}>
                   <TextInput
                     style={styles.input}
                     placeholder="$20-$30/hr"
                     placeholderTextColor="#999"
-                    value={caregiverHourlyRate?.toString()}
-                    onChangeText={(text) => {
-                      setHasInteracted(true);
-                      setCaregiverHourlyRate(Number(text));
-                    }}
+                    value={caregiverHourlyRate?.toString() || ''}
+                    onChangeText={handleTextInputChange}
                     keyboardType="numeric"
-                    maxLength={3}
+                    maxLength={2}
                   />
                 </View>
               </View>
-            </>
-          )}
+            )}
 
-          {caregiverPaymentType === 'Salary Base' && (
-            <View style={styles.inputContainer}>
-              <View style={[styles.inputBorder, caregiverSalaryAmount?.length > 0 && styles.inputBorderActive]}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="50,000"
-                  placeholderTextColor="#999"
-                  value={caregiverSalaryAmount}
-                  onChangeText={setCaregiverSalaryAmount}
-                  keyboardType="numeric"
-                  autoFocus
-                  maxLength={7}
-                />
+            {caregiverPaymentType === 'Salary Base' && (
+              <View style={styles.inputContainer}>
+                <View style={[styles.inputBorder, (caregiverSalaryAmount?.length || 0) > 0 && styles.inputBorderActive]}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="50,000"
+                    placeholderTextColor="#999"
+                    value={caregiverSalaryAmount || ''}
+                    onChangeText={handleSalaryChange}
+                    keyboardType="numeric"
+                    autoFocus
+                    maxLength={7}
+                  />
+                </View>
               </View>
-            </View>
-          )}
-        </View>
+            )}
+          </View>
 
-        <View style={styles.buttonContainer}>
-          <Button
-            label="Next"
-            onPress={handleNext}
-            variant="compact"
-            disabled={!caregiverPaymentType}
-            style={styles.button}
-          />
+          <View style={styles.buttonContainer}>
+            <Button
+              label="Next"
+              onPress={handleNext}
+              variant="compact"
+              disabled={!caregiverPaymentType || 
+                (caregiverPaymentType === 'Hourly' && !caregiverHourlyRate) ||
+                (caregiverPaymentType === 'Salary Base' && !caregiverSalaryAmount)}
+            />
+          </View>
         </View>
-      </View>
-    </ThemedView>
+      </ThemedView>
+    </GestureHandlerRootView>
   );
 }
 
@@ -163,9 +198,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '100%',
     alignItems: 'center',
+    borderRadius: 10,
   },
   sliderWrapper: {
     width: '80%',
+    borderRadius: 60,
   },
   inputContainer: {
     marginTop: 20,

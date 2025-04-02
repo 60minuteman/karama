@@ -22,6 +22,7 @@ const benefitsOptions = [
   { id: 'metro_card' as const, label: 'Monthly Metro Card', icon: '🚇' },
   { id: 'mileage' as const, label: 'Mileage Reimbursement', icon: '🚗' },
   { id: 'extra_child_pay' as const, label: 'Extra Pay For Additional Children', icon: '👶' },
+  { id: 'other' as const, label: 'Other', icon: '✨' },
 ];
 
 export default function Benefits() {
@@ -40,8 +41,13 @@ export default function Benefits() {
 };
 
 const handleNext = () => {
-  setOnboardingScreen('/(auth)/screens/onboarding/caregiver/PastPosition')
-  router.push('/(auth)/screens/onboarding/caregiver/PastPosition');
+  if (caregiverRequiredBenefits?.includes('other')) {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/OtherBenefits');
+    router.push('/(auth)/screens/onboarding/caregiver/OtherBenefits');
+  } else {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/PastPosition');
+    router.push('/(auth)/screens/onboarding/caregiver/PastPosition');
+  }
 };
 
 return (
@@ -73,8 +79,6 @@ return (
             </View>
           ))}
         </View>
-
-        <ThemedText style={styles.sectionHeader}>Other</ThemedText>
 
         <View style={styles.toggleContainer}>
           <ThemedText style={styles.toggleText}>Show on profile</ThemedText>
@@ -126,7 +130,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 40,
+    paddingBottom: 120,
   },
   title: {
     fontSize: 32,
@@ -144,12 +148,6 @@ const styles = StyleSheet.create({
   },
   pillWrapper: {
     alignSelf: 'flex-start',
-  },
-  sectionHeader: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 16,
-    color: '#002140',
   },
   toggleContainer: {
     flexDirection: 'row',

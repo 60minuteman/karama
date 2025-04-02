@@ -31,15 +31,26 @@ export default function PhoneNumberScreen() {
   const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isChecked, setIsChecked] = useState(false);
-  const { subscribed_to_promotions, setPromotionSubscription } = useUserStore();
+  const { 
+    onboarding_screen, 
+    selectedType,
+    steps,
+    setOnboardingScreen,
+    subscribed_to_promotions,
+    setPromotionSubscription
+  } = useUserStore();
 
   console.log('phoneNumber', phoneNumber);
 
   const signIn = useMutation({
     mutationFn: (data: any) => {
-      return customAxios.post(`/auth/phone/start-verification`, data);
+      return customAxios.post(`/auth/phone/start-verification`, {
+        phone_number: `+1${phoneNumber}`,
+        strategy: 'SIGN_UP'
+      });
     },
     onSuccess: async (data: any) => {
+      // Always proceed to verification, whether user exists or not
       router.push({
         pathname: '/(auth)/verification',
         params: {
@@ -49,18 +60,24 @@ export default function PhoneNumberScreen() {
       });
     },
     onError: (error: any) => {
-      console.log('error', error['response'].data);
+      // If user exists, still proceed to verification
+      if (error.response?.status === 409) {
+        router.push({
+          pathname: '/(auth)/verification',
+          params: {
+            isChecked: isChecked ? '1' : '0',
+            phoneNumber: phoneNumber,
+          },
+        });
+        return;
+      }
+
+      // Only show error for other types of errors
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
         text2: error['response'].data?.message,
       });
-      // router.push('/phoneNumber');
-      // Toast.show({
-      //   type: 'problem',
-      //   text1: 'Something went wrong',
-      //   text2: error['response'].data?.message,
-      // });
     },
   });
 
@@ -74,7 +91,7 @@ export default function PhoneNumberScreen() {
   };
 
   const handlePhoneNumberChange = (text: string) => {
-    // Only allow digits
+    // Only allow digits and handle pasted content
     const cleaned = text.replace(/\D/g, '');
     // Limit to 10 digits
     const truncated = cleaned.slice(0, 10);
@@ -109,6 +126,7 @@ export default function PhoneNumberScreen() {
               onChangeText={handlePhoneNumberChange}
               accessibilityLabel='Phone number input'
               accessibilityHint='Enter your phone number'
+              textContentType="telephoneNumber"
             />
           </View>
         </View>

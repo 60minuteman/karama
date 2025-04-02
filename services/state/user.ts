@@ -339,7 +339,6 @@ interface FamilyAllergies {
 interface UserState {
   user: UserProfile | null;
   token: string | null;
-  firebaseCurrentUser: any | null;
   isLoading: boolean;
   error: string | null;
   hydrated: boolean;
@@ -494,10 +493,6 @@ interface UserState {
   caregiverMoreInfo: string | undefined;
   caregiverImages: string[];
   steps: string;
-  firebasePhoneNumber: string | null;
-  firebasePassword: string | null;
-  firebaseUsername: string | null;
-
   // Actions
   setUser: (user: UserProfile | null) => void;
   setToken: (token: string | null) => void;
@@ -645,10 +640,7 @@ interface UserState {
   setFamilyPromptCategory: (category: string | null) => void;
   setFamilyImages: (images: string[]) => void;
   logout: () => Promise<void>;
-  setFirebaseCurrentUser: (user: any | null) => void;
-  setFirebasePhoneNumber: (phoneNumber: string | null) => void;
-  setFirebasePassword: (password: string | null) => void;
-  setFirebaseUsername: (username: string | null) => void;
+  resetOnboarding: () => void;
 }
 
 export const useUserStore = create<UserState>()(
@@ -656,7 +648,6 @@ export const useUserStore = create<UserState>()(
     (set) => ({
       user: null,
       token: null,
-      firebaseCurrentUser: null,
       isLoading: false,
       error: null,
       hydrated: false,
@@ -914,19 +905,20 @@ export const useUserStore = create<UserState>()(
       caregiverMoreInfo: '',
       caregiverImages: [],
       steps: '',
-      firebasePhoneNumber: null,
-      firebasePassword: null,
-      firebaseUsername: null,
 
       //
       setUser: (user) => set({ user, error: null }),
 
-      setToken: async (token) => {
-        set({ token });
-        if (token) {
-          await AsyncStorage.setItem('token', token);
-        } else {
-          await AsyncStorage.removeItem('token');
+      setToken: async (token: string | null) => {
+        try {
+          if (token) {
+            await AsyncStorage.setItem('token', token);
+          } else {
+            await AsyncStorage.removeItem('token');
+          }
+          set({ token });
+        } catch (error) {
+          console.error('Error setting token:', error);
         }
       },
 
@@ -1018,7 +1010,7 @@ export const useUserStore = create<UserState>()(
         set({ caregiverExperienceDuration: experience }),
       setCaregiverEducation: (education) =>
         set({ caregiverEducation: education }),
-      setCaregiverShowEducation: (show) => set({ caregiverShowPronouns: show }),
+      setCaregiverShowEducation: (show) => set({ caregiverShowEducation: show }),
       setCaregiverAbilities: (abilities) =>
         set({ caregiverAbilities: abilities }),
       setCaregiverCertification: (certification) =>
@@ -1389,21 +1381,171 @@ export const useUserStore = create<UserState>()(
       setSteps: (steps) => set({ steps }),
 
       logout: async () => {
-        await AsyncStorage.removeItem('token');
-        set({
-          user: null,
-          token: null,
-          firebaseCurrentUser: null,
-          firebasePhoneNumber: null,
-          firebasePassword: null,
-          firebaseUsername: null,
-        });
+        try {
+          // Clear AsyncStorage
+          await AsyncStorage.removeItem('token');
+          await AsyncStorage.removeItem('user-storage');
+          
+          // Reset all state
+          set({
+            user: null,
+            token: null,
+            isLoading: false,
+            error: null,
+            hydrated: false,
+            subscribed_to_promotions: false,
+            selectedType: null,
+            familyName: null,
+            family_description: null,
+            family_age_groups: defaultAgeGroups,
+            family_behaviour: {
+              has_condition: null,
+              conditions: [],
+            },
+            onboarding_screen: null,
+            family_selected_source: null,
+            family_zipcode: '',
+            family_keyboard_height: 0,
+            family_languages: [],
+            family_pets: [],
+            family_interests: {
+              creative_interests: [],
+              instrument_interests: [],
+              sport_interests: [],
+              stem_interests: [],
+            },
+            family_household_selections: {
+              Diet: [],
+              Rules: [],
+              Religion: [],
+            },
+            family_household_visibility: {
+              Diet: false,
+              Rules: false,
+              Religion: false,
+            },
+            family_selections: {},
+            family_show_diet: false,
+            family_show_rules: false,
+            family_show_religion: false,
+            family_philosophies: [],
+            family_show_philosophy: false,
+            family_gender_preference: {
+              has_preference: null,
+              selected_gender: null,
+              is_dealbreaker: false,
+            },
+            caregiver_type: {
+              selected_type: null,
+              is_dealbreaker: false,
+            },
+            caregiver_traits: {
+              selected_traits: [],
+              is_dealbreaker: false,
+            },
+            caregiver_age: {
+              has_preference: null,
+              selected_age_range: null,
+              is_dealbreaker: false,
+            },
+            caregiver_experience: {
+              selected_experience: null,
+              is_dealbreaker: false,
+            },
+            caregiver_language_required: null,
+            caregiver_requirements: {
+              selected_requirements: [],
+              selected_certifications: [],
+              requirements_dealbreaker: false,
+              certifications_dealbreaker: false,
+            },
+            family_availability: {
+              selected_availability: null,
+              is_dealbreaker: false,
+            },
+            family_arrangement: {
+              selected_arrangement: null,
+              is_dealbreaker: false,
+            },
+            family_commitment: {
+              selected_commitment: null,
+              start_date: new Date(),
+              end_date: new Date(),
+            },
+            family_schedule: [
+              {
+                day: 'Mon',
+                timeSlot: { begin: '00:00', end: '00:00' },
+                isActive: false,
+              },
+              {
+                day: 'Tue',
+                timeSlot: { begin: '00:00', end: '00:00' },
+                isActive: false,
+              },
+              {
+                day: 'Wed',
+                timeSlot: { begin: '00:00', end: '00:00' },
+                isActive: false,
+              },
+              {
+                day: 'Thu',
+                timeSlot: { begin: '00:00', end: '00:00' },
+                isActive: false,
+              },
+              {
+                day: 'Fri',
+                timeSlot: { begin: '00:00', end: '00:00' },
+                isActive: false,
+              },
+              {
+                day: 'Sat',
+                timeSlot: { begin: '00:00', end: '00:00' },
+                isActive: false,
+              },
+              {
+                day: 'Sun',
+                timeSlot: { begin: '00:00', end: '00:00' },
+                isActive: false,
+              },
+            ],
+            family_responsibilities: [],
+            family_payment: {
+              selected_type: null,
+              hourly_rate: 15,
+              salary_amount: '50,000',
+              has_interacted: false,
+            },
+            family_payment_method: {
+              selected_method: '',
+              show_on_profile: false,
+            },
+            family_benefits: {
+              selected_benefits: [],
+              show_on_profile: false,
+            },
+            family_prompt: '',
+            family_prompt_answer: '',
+            family_more_info: '',
+            family_has_allergies: null,
+            family_allergies: {
+              food: [],
+              environmental: [],
+              other: [],
+            },
+            family_prompt_category: 'get_to_know',
+            family_images: [],
+          });
+        } catch (error) {
+          console.error('Error during logout:', error);
+        }
       },
-      setFirebaseCurrentUser: (user) => set({ firebaseCurrentUser: user }),
-      setFirebasePhoneNumber: (phoneNumber) =>
-        set({ firebasePhoneNumber: phoneNumber }),
-      setFirebasePassword: (password) => set({ firebasePassword: password }),
-      setFirebaseUsername: (username) => set({ firebaseUsername: username }),
+
+      resetOnboarding: () => set({ 
+        onboarding_screen: null, 
+        steps: null,
+        selectedType: null 
+      }),
     }),
     {
       name: 'user-storage',

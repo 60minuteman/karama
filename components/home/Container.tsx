@@ -10,12 +10,14 @@ import { Responsibilities } from '@/components/cards/Responsibilities';
 import { Work } from '@/components/cards/Work';
 import { ProfileDetails } from '@/components/home/ProfileDetails';
 import { ThemedText } from '@/components/ThemedText';
-import React from 'react';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import {
   ScrollView,
   StyleSheet,
   useWindowDimensions,
   View,
+  Animated,
+  PanResponder,
 } from 'react-native';
 import ProfileCardLoader from '../cards/ProfileCardLoader';
 
@@ -40,14 +42,57 @@ interface ContainerProps {
     address: string;
   } | null;
   data: any;
+  onLike?: () => void;
+  onReject?: () => void;
 }
 
-export const Container = ({ profileData, data }: ContainerProps) => {
-  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+// Create a type for the ref
+export interface ContainerRef {
+  animateLike: () => void;
+  animateReject: () => void;
+}
+
+// Properly type the forwardRef
+const Container = forwardRef<ContainerRef, ContainerProps>(({ profileData, data, onLike, onReject }, ref) => {
+  const { width: windowWidth } = useWindowDimensions();
   const isLargeScreen = windowWidth > 768;
   const containerWidth = Math.min(windowWidth * 0.9, 500);
 
-  // Early return if no profile data
+  // Add animation value
+  const slideAnim = new Animated.Value(0);
+  
+  // Animation functions
+  const animateLike = () => {
+    Animated.timing(slideAnim, {
+      toValue: windowWidth,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      slideAnim.setValue(0);
+      onLike?.();
+    });
+  };
+
+  const animateReject = () => {
+    Animated.timing(slideAnim, {
+      toValue: -windowWidth,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      slideAnim.setValue(0);
+      onReject?.();
+    });
+  };
+
+  // Expose animation functions to parent
+  useImperativeHandle(ref, () => ({
+    animateLike,
+    animateReject
+  }));
+
+  // Add debug log
+  console.log('Container received:', { profileData, data });
+
   if (!profileData || !data) {
     return (
       <View style={[styles.container, { width: containerWidth }]}>
@@ -66,11 +111,16 @@ export const Container = ({ profileData, data }: ContainerProps) => {
   // Add safety checks for nested data
   const caregiverProfile = data?.caregiver_profile || {};
   const pictures = caregiverProfile?.pictures || [];
-  const abilitiesAndCerts =
-    caregiverProfile?.abilities_and_certifications || {};
-  const experienceWithDisabilities =
-    caregiverProfile?.experience_with_disabilities || {};
-  const experienceWithPets = caregiverProfile?.experience_with_pets || {};
+  const abilitiesAndCerts = {
+    abilities: caregiverProfile?.required_benfits || [],
+    certifications: [caregiverProfile?.education_level].filter(Boolean)
+  };
+  const experienceWithDisabilities = {
+    disabilities: []
+  };
+  const experienceWithPets = {
+    pets: []
+  };
 
   const dynamicStyles = StyleSheet.create({
     container: {
@@ -79,7 +129,7 @@ export const Container = ({ profileData, data }: ContainerProps) => {
       borderRadius: 20,
       overflow: 'hidden',
       width: containerWidth,
-      height: isLargeScreen ? windowHeight * 0.8 : 'auto',
+      height: isLargeScreen ? windowWidth * 0.8 : 'auto',
     },
     profileCardContainer: {
       width: '100%',
@@ -165,7 +215,15 @@ export const Container = ({ profileData, data }: ContainerProps) => {
   );
 
   return (
-    <View style={dynamicStyles.container}>
+    <Animated.View 
+      style={[
+        styles.container, 
+        { 
+          width: containerWidth,
+          transform: [{ translateX: slideAnim }]
+        }
+      ]}
+    >
       {isLargeScreen ? (
         <View style={styles.largeScreenLayout}>
           <View style={dynamicStyles.profileCardContainer}>
@@ -189,9 +247,12 @@ export const Container = ({ profileData, data }: ContainerProps) => {
           {content}
         </ScrollView>
       )}
-    </View>
+    </Animated.View>
   );
-};
+});
+
+// Export the component
+export { Container };
 
 const styles = StyleSheet.create({
   container: {

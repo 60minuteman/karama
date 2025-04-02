@@ -11,59 +11,82 @@ import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 
 const CreatePassword = () => {
   const [password, setPassword] = useState<string>('');
   const { phoneNumber, isChecked } = useLocalSearchParams();
-  const {
-    firebasePhoneNumber,
-    firebasePassword,
-    firebaseUsername,
-    setFirebasePhoneNumber,
-    setFirebasePassword,
-    setFirebaseUsername,
-  } = useUserStore();
+  const { setToken, setUser } = useUserStore();
 
   const createPassword = useMutation({
-    mutationFn: (data: any) => {
+    mutationFn: async (data: any) => {
       return customAxios.post(`/auth/phone/signup/complete`, data);
     },
-    onSuccess: async (data: any) => {
-      console.log(data.data);
-      console.log('password created');
-      setFirebasePhoneNumber(phoneNumber as string);
-      setFirebasePassword(password);
-      router.push({
-        pathname: '/(auth)/signInPhone',
-      });
+    onSuccess: async (response: any) => {
+      try {
+        console.log('Password creation response:', response?.data);
+        
+        if (response?.data?.data?.token) {
+          const newToken = response.data.data.token;
+          const userData = response.data.data.user;
+          
+          // Save token
+          await AsyncStorage.setItem('userToken', newToken);
+          customAxios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+          
+          // Update user store with token and user data
+          setToken(newToken);
+          setUser(userData);
+
+          // Navigate to bridge screen
+          router.replace('/(auth)/bridge');
+        } else {
+          throw new Error('No token received');
+        }
+      } catch (error) {
+        console.error('Error in password creation:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error creating password',
+          text2: error instanceof Error ? error.message : 'Unknown error occurred',
+        });
+      }
     },
     onError: (error: any) => {
-      console.log('error', error['response'].data);
+      console.error('Password creation error:', error?.response?.data);
       Toast.show({
-        type: 'problem',
+        type: 'error',
         text1: 'Something went wrong',
-        text2: error['response'].data?.message,
+        text2: error?.response?.data?.message || 'Please try again',
       });
     },
   });
+
   function containsUppercaseAndNumber(str: string) {
-    const regex = /^(?=.*[A-Z])(?=.*\d)(?!.*\s)/;
-    return regex.test(str);
+    const hasUpperCase = /[A-Z]/.test(str);
+    const hasNumber = /\d/.test(str);
+    const hasNoSpaces = !/\s/.test(str);
+    const hasMinLength = str.length >= 8;
+    return hasUpperCase && hasNumber && hasNoSpaces && hasMinLength;
   }
+
   const handleCreatePassword = () => {
     if (containsUppercaseAndNumber(password)) {
       createPassword.mutate({
-        phone_number: phoneNumber,
+        phone_number: `+1${phoneNumber}`,
         password: password.trim(),
         subscribed_to_promotions: isChecked === '1' ? true : false,
       });
     } else {
       Toast.show({
-        type: 'problem',
-        text1: 'Password must contain an uppercase and number',
+        type: 'error',
+        text1: 'Password Requirements:',
+        text2: '• Minimum 8 characters\n• At least 1 uppercase letter\n• At least 1 number\n• No spaces',
       });
     }
   };
+
   return (
     <ThemedView style={styles.container}>
       <Header variant='back' />
@@ -74,26 +97,17 @@ const CreatePassword = () => {
           Create Password
         </ThemedText>
 
-        <View style={styles.inputWrapper}>
-          <View style={[styles.inputContainer, styles.inputActive]}>
-            <TextInput
-              style={[styles.input, { marginTop: 0 }]}
-              placeholder='Password'
-              placeholderTextColor='#261D2A4D'
-              autoFocus
-              value={password.trim()}
-              onChangeText={(value) => setPassword(value.trim())}
-              accessibilityLabel='create password input'
-              accessibilityHint='create your password'
-            />
-          </View>
-        </View>
+        <PasswordInput
+          password={password}
+          onChangePassword={setPassword}
+          autoFocus
+        />
 
         <Button
           label='Next'
           onPress={handleCreatePassword}
-          variant={password?.length > 5 ? 'primary' : 'disabled'}
-          disabled={password.length < 5}
+          variant={password?.length >= 8 ? 'primary' : 'disabled'}
+          disabled={password.length < 8}
           loading={createPassword.isPending}
         />
       </View>
@@ -107,17 +121,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.light.background,
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 60,
-    left: 20,
-    zIndex: 1,
-    padding: 10,
-  },
-  closeIcon: {
-    fontSize: 24,
-    color: Colors.light.text,
   },
   content: {
     flex: 1,
@@ -134,26 +137,5 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     marginBottom: 20,
     lineHeight: 37,
-  },
-  inputWrapper: {
-    marginBottom: 40,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: Colors.light.primary,
-    marginTop: 12,
-  },
-  input: {
-    flex: 1,
-    fontFamily: 'Poppins',
-    fontSize: 24,
-    paddingVertical: 8,
-    color: '000000',
-  },
-
-  inputActive: {
-    borderBottomColor: Colors.light.primary,
   },
 });

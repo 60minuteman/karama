@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput } from 'react-native';
+import { StyleSheet, View, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { ProgressBar } from '@/components/ui/ProgressBar';
@@ -20,43 +20,49 @@ export default function MoreInfo() {
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-      
-      <View style={styles.content}>
-        <View style={styles.spacerTop} />
-        <ProgressBar progress={0.9} />
+    <KeyboardAvoidingView 
+      style={{flex: 1}} 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    >
+      <ThemedView style={styles.container}>
+        <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+        
+        <View style={styles.content}>
+          <View style={styles.spacerTop} />
+          <ProgressBar progress={0.9} />
 
-        <ThemedText style={styles.title}>
-          Is there anything{'\n'}else you'd like{'\n'}caregivers to know?
-        </ThemedText>
+          <ThemedText style={styles.title}>
+            Is there anything{'\n'}else you'd like{'\n'}caregivers to know?
+          </ThemedText>
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            multiline
-            placeholder="Write your answer here..."
-            placeholderTextColor="#A8A3A5"
-            value={caregiverMoreInfo}
-            onChangeText={setCaregiverMoreInfo}
-            textAlignVertical="top"
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              multiline
+              placeholder="Write your answer here..."
+              placeholderTextColor="#A8A3A5"
+              value={caregiverMoreInfo}
+              onChangeText={setCaregiverMoreInfo}
+              textAlignVertical="top"
+            />
+          </View>
+        </View>
+
+        <View style={styles.bottomNav}>
+          <Button
+            label="Skip"
+            onPress={() => router.back()}
+            variant="skip"
+          />
+          <Button
+            label="Next"
+            onPress={handleNext}
+            variant="compact"
           />
         </View>
-      </View>
-
-      <View style={styles.bottomNav}>
-        <Button
-          label="Skip"
-          onPress={() => router.back()}
-          variant="skip"
-        />
-        <Button
-          label="Next"
-          onPress={handleNext}
-          variant="compact"
-        />
-      </View>
-    </ThemedView>
+      </ThemedView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -102,6 +108,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 20,
-    paddingBottom: 40,
+    paddingBottom: 20,
   }
 });

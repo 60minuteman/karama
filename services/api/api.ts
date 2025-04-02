@@ -42,13 +42,24 @@ export const fetchMatchingCaregivers = async (cursor = '', role: any) => {
   return data;
 };
 
-export const useMatchingCaregivers = (cursor = '', role: any) => {
-  const { token } = useUserStore();
-  return useAuthQuery({
-    queryKey: ['matching-caregivers', cursor, role],
-    queryFn: () => fetchMatchingCaregivers(cursor, role),
-    retry: 3,
-    enabled: !!token && !!role,
+export const useMatchingCaregivers = (cursor: string, endpoint: string, options?: any) => {
+  return useQuery({
+    queryKey: ['matchingCaregivers', cursor],
+    queryFn: async () => {
+      const response = await customAxios.get(endpoint, {
+        params: { 
+          cursor,
+          page_size: 10 // Request 10 profiles at a time
+        },
+        headers: {
+          ...options?.headers
+        }
+      });
+      return response.data;
+    },
+    ...options,
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    cacheTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 };
 

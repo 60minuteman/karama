@@ -20,13 +20,23 @@ const educationOptions = [
 ];
 
 export default function Page() {
-  const { caregiverEducation, setCaregiverEducation, setOnboardingScreen , caregiverShowEducation,setCaregiverShowEducation} = useUserStore()
-  // const [selectedEducation, setSelectedEducation] = useState<string | null>(null);
-  // const [showOnProfile, setShowOnProfile] = useState(false);
+  const { 
+    caregiverEducation, 
+    setCaregiverEducation, 
+    setOnboardingScreen, 
+    caregiverShowEducation,
+    setCaregiverShowEducation 
+  } = useUserStore();
+
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/abilities')
     router.push('/(auth)/screens/onboarding/caregiver/abilities')
   }
+
+  const handleToggle = (value: boolean) => {
+    setCaregiverShowEducation(value);
+  };
+
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
@@ -56,9 +66,10 @@ export default function Page() {
           <ThemedText style={styles.toggleText}>Show on profile</ThemedText>
           <Switch
             value={caregiverShowEducation}
-            onValueChange={setCaregiverShowEducation}
-            trackColor={{ false: '#E2E8F0', true: '#F45B69' }}
+            onValueChange={handleToggle}
+            trackColor={{ false: '#E2E8F0', true: Colors.light.primary }}
             thumbColor={'#FFFFFF'}
+            ios_backgroundColor="#E2E8F0"
           />
         </View>
       </View>

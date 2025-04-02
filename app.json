@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/icons/Splash.png",
       "resizeMode": "contain",
@@ -19,6 +18,10 @@
       "supportsTablet": true,
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
+      },
+      "usesAppleSignIn": false,
+      "entitlements": {
+        "aps-environment": "development"
       }
     },
     "android": {
@@ -45,10 +48,7 @@
           "imageResizeMode": "cover",
           "androidScaleType": "CENTER_CROP",
           "splashScreenBackground": "#F15858",
-          "splashScreenAnimation": "fade",
-          "hideExponentIconDuringLoading": true,
-          "enableFullScreenImage_legacy": true,
-          "imageWidth": 500
+          "splashScreenAnimation": "fade"
         }
       ]
     ],
@@ -57,24 +57,13 @@
         "projectId": "439c483b-7ef1-4a7b-b7ca-eaa6937c6ed3"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "enabled": true,
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/439c483b-7ef1-4a7b-b7ca-eaa6937c6ed3",
       "checkAutomatically": "ON_LOAD"
     },
-    "build": {
-      "production": {
-        "channel": "production"
-      },
-      "preview": {
-        "channel": "preview"
-      }
-    },
-    "owner": "60minute",
-    "assets": ["./assets/fonts/bogart/*"]
+    "owner": "60minute"
   }
 }

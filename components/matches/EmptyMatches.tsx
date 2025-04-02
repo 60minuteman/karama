@@ -1,25 +1,13 @@
 import { ThemedText } from '@/components/ThemedText';
 import { getOrCreateChatRoom, getUserIdByEmail } from '@/services/chat';
-import { auth, db } from '@/services/firebase';
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 export const EmptyMatches = () => {
   const handleCreateRoom = async () => {
     try {
-      const currentUser = auth.currentUser;
-      // console.log('Current user:', currentUser?.email);
-      if (!currentUser?.email) {
-        throw new Error('No user email found');
-      }
-      const userId1 = await getUserIdByEmail(currentUser?.email);
-      const userId2 = await getUserIdByEmail('karama2568465484@mail.com');
-      console.log('userId1', userId1, 'userId2', userId2);
-      if (!userId1 || !userId2) {
-        throw new Error('No user ID found');
-      }
-      const room = await getOrCreateChatRoom(userId1, userId2);
-      console.log('Room created:', room);
+      // Placeholder for future chat implementation
+      console.log('Chat functionality coming soon');
     } catch (error) {
       console.error('Error creating room:', error);
     }
@@ -79,7 +67,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#002140',
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 8,
+    borderRadius: 60,
     width: '100%',
     alignItems: 'center',
   },

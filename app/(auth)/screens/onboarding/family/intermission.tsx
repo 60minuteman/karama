@@ -6,9 +6,8 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import useAuthMutation from '@/hooks/useAuthMutation';
 import customAxios from '@/services/api/envConfig';
-import { signUp } from '@/services/chat';
 import { useUserStore } from '@/services/state/user';
-import { useMutation } from '@tanstack/react-query';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { Image, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -34,12 +33,7 @@ export default function IntermissionScreen() {
     family_philosophies,
     family_allergies,
     setSteps,
-    firebasePhoneNumber,
-    firebasePassword,
   } = useUserStore();
-  const setFirebaseUser = useUserStore((state) => state.setFirebaseCurrentUser);
-
-  console.log('family_allergies', family_allergies);
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/family/gender');
@@ -47,59 +41,53 @@ export default function IntermissionScreen() {
     router.push('/(auth)/screens/onboarding/family/gender');
   };
 
-  const submit: any = useAuthMutation({
-    mutationFn: (data: any) => {
-      return customAxios.post(`/family-profile/create-profile`, data);
+  const submit = useAuthMutation({
+    mutationFn: async (data: any) => {
+      const token = await AsyncStorage.getItem('userToken');
+      if (!token) {
+        throw new Error('Authentication required');
+      }
+
+      return customAxios.post('/family-profile/create-profile', data, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
     },
     onSuccess: async (data: any) => {
       handleNext();
     },
     onError: (error: any) => {
-      console.log('error', error['response'].data);
+      console.error('Profile creation error:', error?.response?.data);
+      
+      if (error?.response?.status === 401) {
+        Toast.show({
+          type: 'error',
+          text1: 'Authentication Required',
+          text2: 'Please sign in again',
+        });
+        router.push('/(auth)/signInPhone');
+        return;
+      }
+
       Toast.show({
         type: 'error',
-        text1: 'Something went wrong',
-        text2: error['response'].data?.message,
+        text1: 'Profile Creation Failed',
+        text2: error?.response?.data?.message || 'Please try again',
       });
-      // router.push('/phoneNumber');
-      // Toast.show({
-      //   type: 'problem',
-      //   text1: 'Something went wrong',
-      //   text2: error['response'].data?.message,
-      // });
     },
   });
 
-  console.log('family_submit', family_interests);
-
   const handleSubmit = async () => {
-    try {
-      const res = await signUp(
-        `karama${firebasePhoneNumber}@mail.com`,
-        firebasePassword as string,
-        familyName as string
-      );
-      console.log('res', res);
-      setFirebaseUser(res);
-    } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: 'Something went wrong',
-        text2: (error as Error)?.message || 'Something went wrong',
-      });
-    }
-
     submit.mutate({
       name: familyName,
       description: {
         description: family_description?.type,
-        // other: 'N/A',
         show_on_profile: family_description?.showOnProfile,
       },
       children: family_age_groups,
       behavioural_difference: {
         differences: family_behaviour?.conditions || [],
-        // other: 'N/A',
       },
       zipcode: family_zipcode,
       languages: {
@@ -107,40 +95,28 @@ export default function IntermissionScreen() {
       },
       pets: {
         pets: family_pets || [],
-        // other: 'N/A',
       },
       allergies: {
         food_allergies: family_allergies?.food,
-        // other_food_allergies: 'N/A',
         environmental_allergies: family_allergies?.environmental,
-        // other_environmental_allergies: 'N/A',
         other_allergies: family_allergies?.other,
-        // other_other_allergies: 'N/A',
       },
       children_interests: {
         creative_interests: family_interests?.creative_interests,
-        // other_creative_interest: 'N/A',
         instrument_interests: family_interests?.instrument_interests,
-        // other_instrument_interest: 'N/A',
         sport_interests: family_interests?.sport_interests,
-        // other_sport_interest: 'N/A',
         stem_interests: family_interests?.stem_interests,
-        // other_stem_interest: 'N/A',
       },
       household_info: {
         diets: family_selections?.diets,
-        // other_diets: 'N/A',
         show_diet_on_profile: family_show_diet,
         rules: family_selections?.rules,
-        // other_rules: 'N/A',
         show_rules_on_profile: family_show_rules,
         religion: family_selections?.religion,
-        // other_religion: 'N/A',
         show_religion_on_profile: family_show_religion,
       },
       philosophies: {
         philosophies: family_philosophies,
-        // other: 'N/A',
         show_on_profile: family_show_philosophy,
       },
       aquisition_source: family_selected_source,

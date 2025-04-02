@@ -15,7 +15,7 @@ export default function NotFoundScreen() {
         <ThemedText type="title" style={[styles.subtitle, { fontFamily: 'Bogart-Medium' }]}>
           We're working hard to bring you this feature soon.
         </ThemedText>
-        <Link href="/" style={styles.link}>
+        <Link href="/(tabs)/discover" style={styles.link}>
           <ThemedText type="link" style={[styles.linkText, { fontFamily: 'Bogart-Medium' }]}>
             Return to Home
           </ThemedText>

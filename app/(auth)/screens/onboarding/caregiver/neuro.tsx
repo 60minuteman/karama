@@ -54,6 +54,12 @@ export default function Page() {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/pet')
     router.push('/(auth)/screens/onboarding/caregiver/pet')
   }
+
+  const handleNoPress = () => {
+    setHasNeuroDivergentExperience('no');
+    handleNext();
+  }
+
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
@@ -74,7 +80,7 @@ export default function Page() {
           />
           <Pill
             label="No"
-            onPress={() => setHasNeuroDivergentExperience('no')}
+            onPress={handleNoPress}
             selected={hasNeuroDivergentExperience === 'no'}
           />
         </View>

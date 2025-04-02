@@ -9,16 +9,10 @@ import { useUserStore } from '@/services/state/user';
 import { Ionicons } from '@expo/vector-icons';
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
-import {
-  browserLocalPersistence,
-  createUserWithEmailAndPassword,
-  setPersistence,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
 import { useReducer, useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { auth } from '../../services/firebase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const reducer = (state: any, action: any) => {
   switch (action.type) {
@@ -43,55 +37,60 @@ export default function PhoneNumberScreen() {
   const [isChecked, setIsChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const setFirebaseUser = useUserStore((state) => state.setFirebaseCurrentUser);
-  const {
-    subscribed_to_promotions,
-    setPromotionSubscription,
-    setUser,
-    setToken,
-  } = useUserStore();
+  const { setUser, setToken } = useUserStore();
   const { signIn: authSignIn } = useAuth();
-
-  console.log('phoneNumber', phoneNumber);
 
   const signIn = useMutation({
     mutationFn: (data: any) => {
       return customAxios.post(`/auth/phone/signin/complete`, data);
     },
-    onSuccess: async (data: any) => {
-      console.log(data.data);
+    onSuccess: async (response: any) => {
+      try {
+        const token = response?.data?.data?.token;
+        const userData = response?.data?.data?.user;
 
-      // Store the auth token in user store
-      setToken(data?.data?.data?.token);
+        if (token && userData) {
+          // Save token to AsyncStorage
+          await AsyncStorage.setItem('userToken', token);
+          await AsyncStorage.setItem('user', JSON.stringify(userData));
+          
+          // Set auth header for future requests
+          customAxios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          
+          // Update user store
+          setToken(token);
+          setUser(userData);
 
-      // Store user data in user store
-      setUser(data?.data?.data?.user);
+          // Call auth context sign in
+          await authSignIn(token);
 
-      // Update promotion subscription if needed
-      if (isChecked) {
-        setPromotionSubscription(true);
+          // Small delay to ensure state is updated
+          setTimeout(() => {
+            router.replace('/(tabs)/discover');
+          }, 100);
+        } else {
+          throw new Error('Invalid response data');
+        }
+      } catch (error) {
+        console.error('Error in sign in:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'Sign in failed',
+          text2: 'Please try again',
+        });
       }
-
-      router.push({
-        pathname: '/(tabs)/discover',
-        params: {
-          isChecked: isChecked ? '1' : '0',
-          phoneNumber: phoneNumber,
-        },
-      });
     },
     onError: (error: any) => {
-      console.log('error', error['response'].data);
+      console.error('Sign in error:', error?.response?.data);
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
-        text2: error['response'].data?.message,
+        text2: error?.response?.data?.message || 'Please try again',
       });
     },
   });
 
   const formatPhoneNumber = (number: string) => {
-    // Ensure number starts with +1 and remove any non-digit characters
     const cleaned = number.replace(/\D/g, '');
     return `+1${cleaned}`;
   };
@@ -100,31 +99,17 @@ export default function PhoneNumberScreen() {
     if (phoneNumber.length === 10) {
       const formattedNumber = formatPhoneNumber(phoneNumber);
       setIsLoading(true);
-      console.log('formattedNumber', `karama${phoneNumber}@mail.com`, password);
+      
       try {
-        // await setPersistence(auth, browserLocalPersistence);
-        const userCredential = await signInWithEmailAndPassword(
-          auth,
-          `karama${phoneNumber}@mail.com`,
-          password
-        );
-        setFirebaseUser(userCredential.user);
-        console.log('userCredential', userCredential);
-      } catch (error) {
-        Toast.show({
-          type: 'error',
-          text1: 'Something went wrong',
-          text2: 'Invalid email or password',
+        await signIn.mutateAsync({
+          phone_number: formattedNumber,
+          password: password,
         });
+      } catch (error) {
+        console.error('Sign in mutation error:', error);
+      } finally {
         setIsLoading(false);
-        console.log('error', error);
-        return;
       }
-      setIsLoading(false);
-      signIn.mutate({
-        phone_number: formattedNumber,
-        password: password,
-      });
     }
   };
 

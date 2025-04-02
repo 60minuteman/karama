@@ -1,6 +1,5 @@
 import { ThemedText } from '@/components/ThemedText';
 import { HomeNav } from '@/components/home/HomeNav';
-import { auth } from '@/services/firebase';
 import { useUserStore } from '@/services/state/user';
 import {
   Poppins_400Regular,
@@ -127,9 +126,9 @@ export default function Profile() {
           <View style={styles.menuSection}>
             <TouchableOpacity
               style={styles.menuItem}
-              onPress={async () => {
-                await auth.signOut();
+              onPress={() => {
                 logout();
+                router.replace('/(auth)/signInPhone');
               }}
               activeOpacity={0.7}
             >
