@@ -98,7 +98,7 @@ const CaregiverProfileView = () => {
                                         {
                                             caregiverProfile?.caregiverProfile?.arrangement_type?.map((option :string) => {
                                                 return <View>
-                                                    <InfoPill key={option} label={option.} />
+                                                    <InfoPill key={option} label={option} />
                                                 </View>
                                             })
                                         }
