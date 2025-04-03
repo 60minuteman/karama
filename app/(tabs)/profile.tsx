@@ -131,6 +131,7 @@ export default function Profile() {
               style={styles.menuItem}
               onPress={() => {
                 logout();
+                router.replace('/(auth)/signInPhone');
               }}
               activeOpacity={0.7}
             >

@@ -2,8 +2,12 @@ import React from 'react';
 import { Image as RNImage, StyleSheet, View } from 'react-native';
 
 export const Image = ({ data }: any) => {
+  const imageSource = data
+    ? { uri: data }
+    : require('@/assets/icons/fallback.png');
+
   return (
-    <RNImage source={{ uri: data }} style={styles.image} resizeMode='cover' />
+    <RNImage source={imageSource} style={styles.image} resizeMode='cover' />
   );
 };
 

@@ -33,11 +33,13 @@ export default function CommitmentScreen() {
   // Initialize default dates if they don't exist
   useEffect(() => {
     if (!caregiverCommitmentStartDate) {
-      setCaregiverCommitmentStartDate( new Date());
+      const defaultStartDate = new Date();
+      defaultStartDate.setDate(defaultStartDate.getDate() + 1); // Start tomorrow by default
+      setCaregiverCommitmentStartDate(defaultStartDate);
     }
-    if (!caregiverCommitmentEndDate) {
+    if (!caregiverCommitmentEndDate && caregiverCommitmentType === 'Short Term') {
       const defaultEndDate = new Date();
-      defaultEndDate.setMonth(defaultEndDate.getMonth() + 1); // Set default end date to 1 month from now
+      defaultEndDate.setMonth(defaultEndDate.getMonth() + 1); // End in 1 month by default
       setCaregiverCommitmentEndDate(defaultEndDate);
     }
   }, []);

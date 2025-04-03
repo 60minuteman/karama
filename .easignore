@@ -1,0 +1,70 @@
+# Common VCS directories
+.git
+.github
+.svn
+.hg
+
+# Native folders (since we're using EAS Build)
+android/
+ios/
+
+# Build directories
+node_modules
+web-build
+dist
+.next
+
+# Cache directories
+.cache
+.expo
+.turbo
+
+# Environment files
+.env*
+.envrc
+
+# IDE directories
+.idea
+.vscode
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Test directories
+__tests__
+coverage
+jest
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Temporary files
+*.swp
+*.swo
+*~
+
+# Documentation
+docs
+*.md
+LICENSE
+
+# Development assets
+assets/**/*.psd
+assets/**/*.ai
+assets/**/*.sketch
+
+# Source maps
+*.map
+
+# TypeScript source
+*.ts.map
+*.tsx.map 

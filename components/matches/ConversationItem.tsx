@@ -1,8 +1,9 @@
-import React from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Text } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import { Swipeable } from 'react-native-gesture-handler';
+import { getUserById, getUserDataById } from '@/services/chat';
 import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Swipeable } from 'react-native-gesture-handler';
 
 type ConversationItemProps = {
   imageUrl: string;
@@ -10,22 +11,42 @@ type ConversationItemProps = {
   lastMessage: string;
   time: string;
   onPress: () => void;
+  otherUser: any;
 };
 
-export function ConversationItem({ imageUrl, name, lastMessage, time, onPress }: ConversationItemProps) {
+export function ConversationItem({
+  imageUrl,
+  name,
+  lastMessage,
+  time,
+  onPress,
+  otherUser,
+}: ConversationItemProps) {
+  const [otherUserData, setOtherUserData] = useState<any>(null);
+
+  useEffect(() => {
+    console.log('otherUser', otherUser);
+    const fetchOtherUserData = async () => {
+      const userData = await getUserDataById(otherUser);
+      console.log('userData', userData);
+      setOtherUserData(userData);
+    };
+    fetchOtherUserData();
+  }, []);
+
   const renderRightActions = () => {
     return (
       <View style={styles.rightActions}>
         <TouchableOpacity style={[styles.action, styles.removeAction]}>
-          <Ionicons name="close" size={24} color="#fff" />
+          <Ionicons name='close' size={24} color='#fff' />
           <Text style={styles.actionText}>Remove</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.action, styles.hideAction]}>
-          <Ionicons name="eye-off" size={24} color="#fff" />
+          <Ionicons name='eye-off' size={24} color='#fff' />
           <Text style={styles.actionText}>Hide</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.action, styles.metAction]}>
-          <Ionicons name="people" size={24} color="#fff" />
+          <Ionicons name='people' size={24} color='#fff' />
           <Text style={styles.actionText}>We Met</Text>
         </TouchableOpacity>
       </View>
@@ -43,18 +64,20 @@ export function ConversationItem({ imageUrl, name, lastMessage, time, onPress }:
       >
         <View style={styles.container}>
           <Image source={{ uri: imageUrl }} style={styles.avatar} />
-          <TouchableOpacity 
-            onPress={onPress} 
+          <TouchableOpacity
+            onPress={onPress}
             style={styles.touchableContent}
             activeOpacity={0.7}
           >
             <View style={styles.content}>
               <View style={styles.header}>
-                <ThemedText style={styles.name}>{name}</ThemedText>
+                <ThemedText style={styles.name}>
+                  {otherUserData?.name}
+                </ThemedText>
                 <ThemedText style={styles.time}>{time}</ThemedText>
               </View>
               <ThemedText style={styles.message} numberOfLines={1}>
-                {lastMessage}
+                {lastMessage || 'No message yet'}
               </ThemedText>
             </View>
           </TouchableOpacity>

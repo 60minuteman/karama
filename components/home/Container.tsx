@@ -9,15 +9,17 @@ import { Religion } from '@/components/cards/Religion';
 import { Responsibilities } from '@/components/cards/Responsibilities';
 import { Work } from '@/components/cards/Work';
 import { ProfileDetails } from '@/components/home/ProfileDetails';
-import React from 'react';
+import { ThemedText } from '@/components/ThemedText';
+import React, { forwardRef, useImperativeHandle } from 'react';
 import {
   ScrollView,
   StyleSheet,
   useWindowDimensions,
   View,
+  Animated,
+  PanResponder,
 } from 'react-native';
 import ProfileCardLoader from '../cards/ProfileCardLoader';
-import { ThemedText } from '@/components/ThemedText';
 
 interface ContainerProps {
   profileData: {
@@ -40,14 +42,57 @@ interface ContainerProps {
     address: string;
   } | null;
   data: any;
+  onLike?: () => void;
+  onReject?: () => void;
 }
 
-export const Container = ({ profileData, data }: ContainerProps) => {
-  const { width: windowWidth, height: windowHeight } = useWindowDimensions();
+// Create a type for the ref
+export interface ContainerRef {
+  animateLike: () => void;
+  animateReject: () => void;
+}
+
+// Properly type the forwardRef
+const Container = forwardRef<ContainerRef, ContainerProps>(({ profileData, data, onLike, onReject }, ref) => {
+  const { width: windowWidth } = useWindowDimensions();
   const isLargeScreen = windowWidth > 768;
   const containerWidth = Math.min(windowWidth * 0.9, 500);
 
-  // Early return if no profile data
+  // Add animation value
+  const slideAnim = new Animated.Value(0);
+  
+  // Animation functions
+  const animateLike = () => {
+    Animated.timing(slideAnim, {
+      toValue: windowWidth,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      slideAnim.setValue(0);
+      onLike?.();
+    });
+  };
+
+  const animateReject = () => {
+    Animated.timing(slideAnim, {
+      toValue: -windowWidth,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      slideAnim.setValue(0);
+      onReject?.();
+    });
+  };
+
+  // Expose animation functions to parent
+  useImperativeHandle(ref, () => ({
+    animateLike,
+    animateReject
+  }));
+
+  // Add debug log
+  console.log('Container received:', { profileData, data });
+
   if (!profileData || !data) {
     return (
       <View style={[styles.container, { width: containerWidth }]}>
@@ -63,6 +108,20 @@ export const Container = ({ profileData, data }: ContainerProps) => {
     );
   }
 
+  // Add safety checks for nested data
+  const caregiverProfile = data?.caregiver_profile || {};
+  const pictures = caregiverProfile?.pictures || [];
+  const abilitiesAndCerts = {
+    abilities: caregiverProfile?.required_benfits || [],
+    certifications: [caregiverProfile?.education_level].filter(Boolean)
+  };
+  const experienceWithDisabilities = {
+    disabilities: []
+  };
+  const experienceWithPets = {
+    pets: []
+  };
+
   const dynamicStyles = StyleSheet.create({
     container: {
       alignSelf: 'center',
@@ -70,7 +129,7 @@ export const Container = ({ profileData, data }: ContainerProps) => {
       borderRadius: 20,
       overflow: 'hidden',
       width: containerWidth,
-      height: isLargeScreen ? windowHeight * 0.8 : 'auto',
+      height: isLargeScreen ? windowWidth * 0.8 : 'auto',
     },
     profileCardContainer: {
       width: '100%',
@@ -99,7 +158,7 @@ export const Container = ({ profileData, data }: ContainerProps) => {
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>
         <ExperienceAndLanguages
-          yearsOfExperience={data?.caregiver_profile?.years_of_experience}
+          yearsOfExperience={caregiverProfile?.years_of_experience}
           languages={profileData.languages}
         />
       </View>
@@ -128,43 +187,43 @@ export const Container = ({ profileData, data }: ContainerProps) => {
       <View style={dynamicStyles.componentContainer}>
         <Certifications
           certifications={[
-            ...(data?.caregiver_profile?.abilities_and_certifications
-              ?.abilities || []),
-            ...(data?.caregiver_profile?.abilities_and_certifications
-              ?.certifications || []),
+            ...(abilitiesAndCerts?.abilities || []),
+            ...(abilitiesAndCerts?.certifications || []),
           ].filter(Boolean)}
           data={data}
         />
       </View>
       <View style={styles.spacer} />
       <View style={[dynamicStyles.componentContainer, styles.imageContainer]}>
-        <Image
-          data={
-            data?.caregiver_profile?.pictures[5]?.path ||
-            data?.caregiver_profile?.pictures[4]?.path
-          }
-        />
+        <Image data={pictures[5]?.path || pictures[4]?.path || null} />
       </View>
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>
         <Work
           animals={[
-            ...(data?.caregiver_profile?.experience_with_disabilities
-              ?.disabilities || []),
-            ...(data?.caregiver_profile?.experience_with_pets?.pets || []),
+            ...(experienceWithDisabilities?.disabilities || []),
+            ...(experienceWithPets?.pets || []),
           ].filter(Boolean)}
         />
       </View>
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>
-        <Position positions={data?.caregiver_profile?.past_positions} />
+        <Position positions={caregiverProfile?.past_positions || []} />
       </View>
       <View style={styles.bottomSpacer} />
     </>
   );
 
   return (
-    <View style={dynamicStyles.container}>
+    <Animated.View 
+      style={[
+        styles.container, 
+        { 
+          width: containerWidth,
+          transform: [{ translateX: slideAnim }]
+        }
+      ]}
+    >
       {isLargeScreen ? (
         <View style={styles.largeScreenLayout}>
           <View style={dynamicStyles.profileCardContainer}>
@@ -188,9 +247,12 @@ export const Container = ({ profileData, data }: ContainerProps) => {
           {content}
         </ScrollView>
       )}
-    </View>
+    </Animated.View>
   );
-};
+});
+
+// Export the component
+export { Container };
 
 const styles = StyleSheet.create({
   container: {

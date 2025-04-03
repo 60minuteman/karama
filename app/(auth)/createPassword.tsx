@@ -1,158 +1,141 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
-import { Header } from '@/components/ui/Header'
-import { ThemedView } from '@/components/ThemedView'
-import { ThemedText } from '@/components/ThemedText'
-import { TextInput } from '@/components/ui/TextInput'
-import { Button } from '@/components/ui/Button'
-import { useUserStore } from '@/services/state/user'
-import { useMutation } from '@tanstack/react-query'
-import customAxios from '@/services/api/envConfig'
-import { router, useLocalSearchParams } from 'expo-router'
-import Toast from 'react-native-toast-message'
-import { Colors } from '@/constants/Colors'
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
+import { TextInput } from '@/components/ui/TextInput';
+import { Colors } from '@/constants/Colors';
+import customAxios from '@/services/api/envConfig';
+import { useUserStore } from '@/services/state/user';
+import { useMutation } from '@tanstack/react-query';
+import { router, useLocalSearchParams } from 'expo-router';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 
 const CreatePassword = () => {
-    const [password, setPassword] = useState<string>('')
-    const { phoneNumber, isChecked } = useLocalSearchParams();
+  const [password, setPassword] = useState<string>('');
+  const { phoneNumber, isChecked } = useLocalSearchParams();
+  const { setToken, setUser } = useUserStore();
 
-    const createPassword = useMutation({
-        mutationFn: (data: any) => {
-            return customAxios.post(`/auth/phone/signup/complete`, data);
-        },
-        onSuccess: async (data: any) => {
-            console.log(data.data)
-            console.log('password created')
-            router.push({
-                pathname: '/(auth)/signInPhone',
-            });
-        },
-        onError: (error: any) => {
-            console.log('error', error['response'].data);
-            Toast.show({
-                type: 'problem',
-                text1: 'Something went wrong',
-                text2: error['response'].data?.message,
-            });
-        }
-    });
-    function containsUppercaseAndNumber(str: string) {
-        const regex = /^(?=.*[A-Z])(?=.*\d)(?!.*\s)/;
-        return regex.test(str);
-    }
-    const handleCreatePassword = () => {
-        if (containsUppercaseAndNumber(password)) {
-            createPassword.mutate({
-                phone_number: phoneNumber,
-                password: password.trim(),
-                subscribed_to_promotions: isChecked === '1' ? true : false,
+  const createPassword = useMutation({
+    mutationFn: async (data: any) => {
+      return customAxios.post(`/auth/phone/signup/complete`, data);
+    },
+    onSuccess: async (response: any) => {
+      try {
+        console.log('Password creation response:', response?.data);
+        
+        if (response?.data?.data?.token) {
+          const newToken = response.data.data.token;
+          const userData = response.data.data.user;
+          
+          // Save token
+          await AsyncStorage.setItem('userToken', newToken);
+          customAxios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+          
+          // Update user store with token and user data
+          setToken(newToken);
+          setUser(userData);
 
-            })
+          // Navigate to bridge screen
+          router.replace('/(auth)/bridge');
         } else {
-            Toast.show({
-                type: 'problem',
-                text1: 'Password must contain an uppercase and number',
-            });
+          throw new Error('No token received');
         }
+      } catch (error) {
+        console.error('Error in password creation:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error creating password',
+          text2: error instanceof Error ? error.message : 'Unknown error occurred',
+        });
+      }
+    },
+    onError: (error: any) => {
+      console.error('Password creation error:', error?.response?.data);
+      Toast.show({
+        type: 'error',
+        text1: 'Something went wrong',
+        text2: error?.response?.data?.message || 'Please try again',
+      });
+    },
+  });
 
+  function containsUppercaseAndNumber(str: string) {
+    const hasUpperCase = /[A-Z]/.test(str);
+    const hasNumber = /\d/.test(str);
+    const hasNoSpaces = !/\s/.test(str);
+    const hasMinLength = str.length >= 8;
+    return hasUpperCase && hasNumber && hasNoSpaces && hasMinLength;
+  }
+
+  const handleCreatePassword = () => {
+    if (containsUppercaseAndNumber(password)) {
+      createPassword.mutate({
+        phone_number: `+1${phoneNumber}`,
+        password: password.trim(),
+        subscribed_to_promotions: isChecked === '1' ? true : false,
+      });
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: 'Password Requirements:',
+        text2: '• Minimum 8 characters\n• At least 1 uppercase letter\n• At least 1 number\n• No spaces',
+      });
     }
-    return (
-        <ThemedView style={styles.container}>
-            <Header variant='back' />
+  };
 
-            <View style={styles.content}>
-                <View style={styles.spacer} />
-                <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
-                    Create Password
-                </ThemedText>
+  return (
+    <ThemedView style={styles.container}>
+      <Header variant='back' />
 
-                <View style={styles.inputWrapper}>
-                    <View
-                        style={[
-                            styles.inputContainer,
-                            styles.inputActive,
-                        ]}
-                    >
-                        <TextInput
-                            style={[styles.input, { marginTop: 0 }]}
-                            placeholder='Password'
-                            placeholderTextColor='#261D2A4D'
+      <View style={styles.content}>
+        <View style={styles.spacer} />
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
+          Create Password
+        </ThemedText>
 
-                            autoFocus
-                            value={password.trim()}
-                            onChangeText={(value) => setPassword(value.trim())}
-                            accessibilityLabel='create password input'
-                            accessibilityHint='create your password'
-                        />
-                    </View>
-                </View>
+        <PasswordInput
+          password={password}
+          onChangePassword={setPassword}
+          autoFocus
+        />
 
-                <Button
-                    label='Next'
-                    onPress={handleCreatePassword}
-                    variant={password?.length > 5 ? 'primary' : 'disabled'}
-                    disabled={password.length < 5}
-                    loading={createPassword.isPending}
-                />
-            </View>
-        </ThemedView>
-    )
-}
+        <Button
+          label='Next'
+          onPress={handleCreatePassword}
+          variant={password?.length >= 8 ? 'primary' : 'disabled'}
+          disabled={password.length < 8}
+          loading={createPassword.isPending}
+        />
+      </View>
+    </ThemedView>
+  );
+};
 
-export default CreatePassword
+export default CreatePassword;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: Colors.light.background,
-    },
-    closeButton: {
-        position: 'absolute',
-        top: 60,
-        left: 20,
-        zIndex: 1,
-        padding: 10,
-    },
-    closeIcon: {
-        fontSize: 24,
-        color: Colors.light.text,
-    },
-    content: {
-        flex: 1,
-        paddingHorizontal: 20,
-        paddingTop: 24,
-    },
-    spacer: {
-        height: 120,
-    },
-    title: {
-        fontFamily: 'Poppins',
-        fontSize: 32,
-        fontWeight: '600',
-        color: Colors.light.text,
-        marginBottom: 20,
-        lineHeight: 37,
-    },
-    inputWrapper: {
-        marginBottom: 40,
-    },
-    inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderBottomWidth: 2,
-        borderBottomColor: Colors.light.primary,
-        marginTop: 12,
-
-    },
-    input: {
-        flex: 1,
-        fontFamily: 'Poppins',
-        fontSize: 24,
-        paddingVertical: 8,
-        color: "000000",
-    },
-
-    inputActive: {
-        borderBottomColor: Colors.light.primary,
-    },
+  container: {
+    flex: 1,
+    backgroundColor: Colors.light.background,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+  },
+  spacer: {
+    height: 120,
+  },
+  title: {
+    fontFamily: 'Poppins',
+    fontSize: 32,
+    fontWeight: '600',
+    color: Colors.light.text,
+    marginBottom: 20,
+    lineHeight: 37,
+  },
 });

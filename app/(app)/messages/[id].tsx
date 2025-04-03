@@ -1,11 +1,26 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, Platform, FlatList } from 'react-native';
-import { useLocalSearchParams, router } from 'expo-router';
+import { Container } from '@/components/home/Container';
+import MessageScreenSkeleton from '@/components/matches/MessageSkeleton';
+import { ChatBubble } from '@/components/messages/ChatBubble';
 import { MessageHeader } from '@/components/messages/MessageHeader';
 import { MessageInput } from '@/components/messages/MessageInput';
-import { ChatBubble } from '@/components/messages/ChatBubble';
 import { ThemedText } from '@/components/ThemedText';
-import { Container } from '@/components/home/Container';
+import {
+  getChatMessages,
+  getUserDataById,
+  getUserIdByEmail,
+  sendMessage,
+} from '@/services/chat';
+import { auth } from '@/services/firebase';
+import { useUserStore } from '@/services/state/user';
+import { router, useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 interface Message {
   id: string;
@@ -15,35 +30,49 @@ interface Message {
 }
 
 export default function MessageScreen() {
-  const { name } = useLocalSearchParams();
+  const { name, otherUserId } = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
+  console.log('name', name, 'id', id);
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState<'chat' | 'profile'>('chat');
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      text: 'Matched Sat, 17/10',
-      timestamp: '',
-      type: 'system'
-    },
-    {
-      id: '2',
-      text: 'You liked Ray\'s photo',
-      timestamp: '',
-      type: 'received'
-    },
-    {
-      id: '3',
-      text: 'Hello there 👋',
-      timestamp: '11:10',
-      type: 'received'
-    },
-    {
-      id: '4',
-      text: 'How are you doing today?',
-      timestamp: '11:10',
-      type: 'sent'
-    }
-  ]);
+  const [otherUserData, setOtherUserData] = useState<any>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [currentUserId, setCurrentUserId] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
+  const firebaseUser = useUserStore((state) => state.firebaseCurrentUser);
+
+  useEffect(() => {
+    const fetchOtherUserData = async () => {
+      setIsLoading(true);
+      try {
+        const userData = await getUserDataById(name as string);
+        const currentUser = firebaseUser;
+        if (!currentUser?.email) {
+          throw new Error('No user email found');
+        }
+        const userId = await getUserIdByEmail(currentUser?.email);
+        if (userId) {
+          setCurrentUserId(userId);
+        }
+        console.log('userData', userData);
+        setOtherUserData(userData);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchOtherUserData();
+  }, []);
+
+  console.log('messages', messages);
+
+  useEffect(() => {
+    const unsubscribe = getChatMessages(id as string, setMessages);
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    }; // Cleanup listener on unmount
+  }, [id]);
 
   // Mock profile data to pass to Container component
   const profileData = {
@@ -63,27 +92,52 @@ export default function MessageScreen() {
     obsession: 'Chickens! The kids love them.',
     religion: 'Buddhism',
     personality: ['Chill', 'Patient', 'Wacky'],
-    disabilities: ['Dyslexia', 'ADHD']
+    disabilities: ['Dyslexia', 'ADHD'],
   };
 
-  const handleSend = () => {
-    if (message.trim()) {
-      setMessages([...messages, {
-        id: Date.now().toString(),
-        text: message,
-        timestamp: new Date().toLocaleTimeString(),
-        type: 'sent'
-      }]);
+  const handleSend = async () => {
+    try {
+      const currentUser = firebaseUser;
+      if (!currentUser?.email) {
+        throw new Error('No user email found');
+      }
+      const userId = await getUserIdByEmail(currentUser.email);
+      if (!userId) {
+        throw new Error('No user ID found');
+      }
+      const userData = await getUserDataById(userId);
+      console.log(
+        'userData',
+        // userData,
+        id,
+        currentUserId,
+        userData?.name,
+        message.trim()
+      );
+      // setCurrentUserId(userId);
+      await sendMessage(
+        id as string,
+        currentUserId,
+        userData?.name,
+        'https://example.com/avatar.jpg',
+        message.trim()
+      );
       setMessage('');
+      console.log('message sent');
+    } catch (error) {
+      console.error('Error sending message:', error);
+      // Handle error appropriately, e.g. show error message to user
     }
   };
 
   const handleBack = () => {
-    router.push('/matches');
+    router.back();
   };
 
   const renderMessage = ({ item }: { item: Message }) => {
-    if (item.type === 'system') {
+    console.log('currentUserId sender', item?.senderId === currentUserId);
+    console.log('item', item);
+    if (item.senderId === 'system') {
       return (
         <View style={styles.systemContainer}>
           <ThemedText style={styles.systemText}>{item.text}</ThemedText>
@@ -93,21 +147,25 @@ export default function MessageScreen() {
     return (
       <ChatBubble
         message={item.text}
-        timestamp={item.timestamp}
-        variant={item.type}
+        timestamp={item?.createdAt?.seconds}
+        variant={item?.senderId === currentUserId ? 'sent' : 'received'}
       />
     );
   };
 
+  if (isLoading) {
+    return <MessageScreenSkeleton />;
+  }
+
   return (
     <View style={styles.container}>
-      <MessageHeader 
-        name={name as string} 
+      <MessageHeader
+        name={otherUserData?.name}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onBack={handleBack}
       />
-      
+
       {activeTab === 'chat' ? (
         <FlatList<Message>
           style={styles.messagesList}
@@ -117,11 +175,11 @@ export default function MessageScreen() {
           inverted={false}
           contentContainerStyle={[
             styles.messagesContent,
-            { paddingBottom: 100 }
+            { paddingBottom: 100 },
           ]}
         />
       ) : (
-        <View style={{height: '80%'}}>
+        <View style={{ height: '80%' }}>
           <Container profileData={profileData} />
         </View>
       )}
@@ -182,5 +240,5 @@ const styles = StyleSheet.create({
   systemText: {
     fontSize: 14,
     color: '#999999',
-  }
-}); 
+  },
+});

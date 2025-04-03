@@ -1,8 +1,8 @@
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Pill2 } from '@/components/ui/Pill2';
-import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import { Poppins_400Regular, useFonts } from '@expo-google-fonts/poppins';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
 interface ProfileDetailsProps {
   role: string;
@@ -12,14 +12,14 @@ interface ProfileDetailsProps {
 }
 
 export const ProfileDetails = ({
-  role = "Caregiver/Household Manager",
-  experience = ["School Age", "Toddler", "Pre Schooler"],
-  lookingFor = ["Full Time", "Long Term", "Live In"],
-  hourlyRate = "$20 - $35"
+  role,
+  experience,
+  lookingFor,
+  hourlyRate,
 }: ProfileDetailsProps) => {
   const [fontsLoaded] = useFonts({
     'Poppins-Regular': Poppins_400Regular,
-    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf')
+    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
   });
 
   if (!fontsLoaded) {
@@ -28,21 +28,17 @@ export const ProfileDetails = ({
 
   return (
     <View style={styles.container}>
-      <Section title="I am">
-        <Pill2
-          label={role}
-          icon="👩"
-          style={styles.pill}
-        />
+      <Section title='I am'>
+        <Pill2 label={role} icon='👩' style={styles.pill} />
       </Section>
 
-      <Section title="I have experience with">
+      <Section title='I have experience with'>
         <View style={styles.pillsContainer}>
           {experience.map((exp, index) => {
             const icons = {
-              "School Age": "🛴",
-              "Toddler": "🧸", 
-              "Pre Schooler": "✏️"
+              'School Age': '🛴',
+              Toddler: '🧸',
+              'Pre Schooler': '✏️',
             };
             return (
               <Pill2
@@ -60,9 +56,9 @@ export const ProfileDetails = ({
         <View style={styles.pillsContainer}>
           {lookingFor.map((item, index) => {
             const icons = {
-              "Full Time": "⏰",
-              "Long Term": "📋",
-              "Live In": "💤"
+              'Full Time': '⏰',
+              'Long Term': '📋',
+              'Live In': '💤',
             };
             return (
               <Pill2
@@ -76,22 +72,18 @@ export const ProfileDetails = ({
         </View>
       </Section>
 
-      <Section title="My Hourly Rate">
-        <Pill2
-          label={hourlyRate}
-          icon="⌛"
-          style={styles.pill}
-        />
+      <Section title='My Hourly Rate'>
+        <Pill2 label={hourlyRate} icon='⌛' style={styles.pill} />
       </Section>
     </View>
   );
 };
 
-const Section = ({ 
-  title, 
-  children 
-}: { 
-  title: string; 
+const Section = ({
+  title,
+  children,
+}: {
+  title: string;
   children: React.ReactNode;
 }) => (
   <View style={styles.section}>

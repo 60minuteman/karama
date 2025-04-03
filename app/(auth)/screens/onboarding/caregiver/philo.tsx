@@ -48,7 +48,7 @@ export default function PhiloScreen() {
   if (hasPhilosophyExperience === null) {
     return (
       <ThemedView style={styles.container}>
-        <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+        <Header variant="back" />
         
         <View style={styles.content}>
           <View style={styles.spacerTop} />
@@ -63,7 +63,6 @@ export default function PhiloScreen() {
               label="Yes"
               onPress={() => setHasPhilosophyExperience('yes')}
               selected={hasPhilosophyExperience === 'yes'}
-              variant="primary"
             />
             <Pill
               label="No"
@@ -100,7 +99,6 @@ export default function PhiloScreen() {
           <Pill
             label="Yes"
             selected={true}
-            variant="primary"
           />
           <Pill
             label="No"
@@ -160,7 +158,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Bogart',
     fontSize: 32,
     lineHeight: 44,
-    color: Colors.light.text,
+    color: '#002140',
     marginBottom: 40,
     fontWeight: '600',
     marginTop: 20,

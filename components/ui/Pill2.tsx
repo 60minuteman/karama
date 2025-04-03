@@ -24,7 +24,7 @@ export const Pill2 = ({ label, icon, style, onPress }: Pill2Props) => {
   return (
     <Component style={[styles.container, style]} onPress={onPress}>
       {icon && <ThemedText style={styles.icon}>{icon}</ThemedText>}
-      <ThemedText style={styles.label}>{label}</ThemedText>
+      <ThemedText style={styles.label}>{label || ''}</ThemedText>
     </Component>
   );
 };

@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Bogart',
     fontSize: 32,
     lineHeight: 40,
-    color: Colors.light.text,
+    color: '#002140',
     marginBottom: 40,
     fontWeight: '500',
     marginTop: 20,

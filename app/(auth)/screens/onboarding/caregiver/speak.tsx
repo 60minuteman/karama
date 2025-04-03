@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Bogart',
     fontSize: 32,
     lineHeight: 44,
-    color: Colors.light.text,
+    color: '#002140',
     marginBottom: 40,
     fontWeight: '600',
     marginTop: 20,

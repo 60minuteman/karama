@@ -16,10 +16,18 @@ import Toast from 'react-native-toast-message';
 export default function PromptAnswer() {
   const router = useRouter();
   const { prompt } = useLocalSearchParams();
-  const formatDate = (date: Date | undefined) => {
-    if (!date) return 'MM/DD/YYYY';
-    const dateObj = new Date(date);
-    if (isNaN(dateObj.getTime())) return 'MM/DD/YYYY';
+  const formatDate = (date: string | Date | undefined | null) => {
+    if (!date) return undefined;
+    
+    let dateObj: Date;
+    if (typeof date === 'string') {
+      const [month, day, year] = date.split('/');
+      dateObj = new Date(`${year}-${month}-${day}`);
+    } else {
+      dateObj = new Date(date);
+    }
+
+    if (isNaN(dateObj.getTime())) return undefined;
 
     const month = String(dateObj.getMonth() + 1).padStart(2, '0');
     const day = String(dateObj.getDate()).padStart(2, '0');
@@ -87,7 +95,6 @@ export default function PromptAnswer() {
     setCaregiverFirstPromptAnswer,
     setOnboardingScreen,
   } = useUserStore();
-  // const [answer, setAnswer] = useState('');
   const onboadingInfo = {
     name: caregiverName,
     date_of_birth: caregiverDob,
@@ -101,9 +108,7 @@ export default function PromptAnswer() {
     show_edu_level_on_profile: caregiverShowEducation,
     abilities_and_certifications: {
       abilities: caregiverAbilities,
-      // "other_ability": "Child Yoga",
       certifications: caregiverCertifications,
-      // "other_certification": "Infant Care Specialist"
     },
     languages: caregiverLanguages,
     other_languages: 'French',
@@ -111,55 +116,45 @@ export default function PromptAnswer() {
     children_capacity: caregiverChildrenCount,
     experience_with_disabilities: {
       disabilities: caregiverConditionExperience,
-      // "other": "Sensory Processing Disorder"
     },
     experience_with_pets: {
       pets: caregiverPetExperience,
-      // "other": "Birds"
     },
     hobbies: {
       creative_interests: caregiverCreativeInterests,
-      // "other_creative_interests": "N/A",
       instrument_interests: caregiverInstrumentInterests,
-      // "other_instrument_interest": "N/A",
       sport_interests: caregiverSportInterest,
-      // "other_sport_interest": "N/A",
       stem_interests: caregiverStemInterests,
-      // "other_stem_interest": "N/A"
     },
     characteristics: {
       personalities: caregiverPersonality,
       diets: caregiverDiet,
-      // "other_diets": "N/A",
       show_diet_on_profile: showCaregiverDiet,
       rules: caregiverRules,
-      // "other_rules": "N/A",
-      // "show_rules_on_profile": showR,
       religion: caregiverReligion,
-      // "other_religion": "N/A",
       show_religion_on_profile: showCaregiverReligion,
-      // "religion_is_dealbreaker": true
     },
     childcare_philosophies: caregiverPhilosophyExperience,
     family_must_speak_same_language: caregiverLanguageMatch,
-    availability: caregiverPreferredPositions,
+    availability: (caregiverPreferredPositions || []).slice(0, 2),
     arrangement_type: caregiverPreferredArrangement,
     job_commitment: {
       commitment: caregiverCommitmentType,
-      start_date: formatDate(caregiverCommitmentStartDate),
+      start_date: caregiverCommitmentStartDate ? formatDate(caregiverCommitmentStartDate) : getDefaultStartDate(),
+      ...(caregiverCommitmentType === 'Short Term' && {
+        end_date: caregiverCommitmentEndDate ? formatDate(caregiverCommitmentEndDate) : undefined
+      })
     },
-    service_days: caregiverSchedule?.map((schedule)=>{
+    service_days: caregiverSchedule?.map((schedule) => {
       return {
-        day :schedule.day,
-        begin : schedule.timeSlot.begin,
-        end : schedule.timeSlot.end,
-      }
+        day: schedule.day,
+        begin: schedule.timeSlot.begin,
+        end: schedule.timeSlot.end,
+      };
     }),
     responsibilities: {
       childcare_responsibilities: caregiverChildcareResponsibilities,
-      // "other_childcare_responsibilities": "Assist with bedtime routines",
       household_responsibilities: caregiverHouseholdResponsibilities,
-      // "other_household_responsibilities": "Help with grocery shopping"
     },
     payment_info: {
       type: caregiverPaymentType,
@@ -169,29 +164,30 @@ export default function PromptAnswer() {
       show_method_on_profile: showCaregiverPaymentMethod,
     },
     required_benefits: caregiverRequiredBenefits,
-    // "other_required_benefits": "something else",
     past_positions: [
-      {
+      caregiverFirstPosition && {
         family_or_business_name: caregiverFirstPosition.familyName,
-        start_date: caregiverFirstPosition.startDate,
-        end_date: caregiverFirstPosition.endDate,
+        start_date: caregiverFirstPosition.startDate ? formatDate(caregiverFirstPosition.startDate) : undefined,
+        end_date: caregiverFirstPosition.endDate ? formatDate(caregiverFirstPosition.endDate) : undefined,
         position_type: caregiverFirstPosition.position,
         children_age_group: [caregiverFirstPosition.ageGroup],
         availability: caregiverFirstPosition.employmentType,
         childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
         household_responsibilities: ['Property Management', 'Meal Prep'],
       },
-      {
+      caregiverSecondPosition?.familyName && {
         family_or_business_name: caregiverSecondPosition.familyName,
-        start_date: caregiverSecondPosition.startDate,
-        end_date: caregiverSecondPosition.endDate,
+        start_date: caregiverSecondPosition.startDate ? formatDate(caregiverSecondPosition.startDate) : undefined,
+        end_date: caregiverSecondPosition.endDate ? formatDate(caregiverSecondPosition.endDate) : undefined,
         position_type: caregiverSecondPosition.position,
         children_age_group: [caregiverSecondPosition.ageGroup],
         availability: caregiverSecondPosition.employmentType,
         childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
         household_responsibilities: ['Property Management', 'Meal Prep'],
-      },
-    ],
+      }
+    ].filter(Boolean).filter(position => 
+      position.start_date && position.end_date
+    ),
     prompts: [
       {
         category: caregiverPromptCategory,
@@ -223,8 +219,13 @@ export default function PromptAnswer() {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/moreInfo');
     router.push('/(auth)/screens/onboarding/caregiver/moreInfo');
   };
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     createProfile.mutate(onboadingInfo);
+  };
+  const getDefaultStartDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return formatDate(tomorrow) || '01/01/2025';
   };
   return (
     <ThemedView style={styles.container}>

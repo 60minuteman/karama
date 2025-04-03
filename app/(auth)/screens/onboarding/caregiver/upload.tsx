@@ -21,23 +21,31 @@ import {
 
 export default function Page() {
   const { caregiverImages, setCaregiverImages } = useUserStore();
-  // const [image, setImage] = useState<string | null>(null);
+
   const uploadImages = useAuthMutation({
     mutationFn: async () => {
       const formData = new FormData();
       caregiverImages?.forEach((uri, index) => {
         const fileName = uri.split('/').pop() || `image${index}.jpg`;
-
+        
         formData.append('files', {
           uri,
           name: fileName,
           type: 'image/jpeg',
         } as any);
+
+        formData.append('indices', index.toString());
       });
+
+      console.log('Uploading images:', caregiverImages);
 
       return customAxios.post('/caregiver-profile/add-photos', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+          'Accept': 'application/json',
+        },
+        transformRequest: (data, headers) => {
+          return data;
         },
       });
     },
@@ -46,35 +54,32 @@ export default function Page() {
       console.log('CAREGIVER IMAGES UPLOADED SUCCESSFULLY');
     },
     onError: (error: any) => {
-      console.error('Error uploading images:', error);
-      alert('Failed to upload images. Please try again.');
+      console.error('Error uploading images:', error.response?.data || error);
+      alert(error.response?.data?.message || 'Failed to upload images. Please try again.');
     },
   });
-  const pickImage = async () => {
+
+  const pickImageForIndex = async (index: number) => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [1, 1],
       quality: 1,
-      allowsMultipleSelection: true,
-      selectionLimit: 6,
+      allowsMultipleSelection: false
     });
 
-    console.log(result, 'is result');
-
-    if (!result.canceled) {
-      const selectedImages = result?.assets?.map((item) => {
-        return item?.uri;
-      });
-      setCaregiverImages(selectedImages);
+    if (!result.canceled && result.assets[0]) {
+      const newImages = [...(caregiverImages || [])];
+      newImages[index] = result.assets[0].uri;
+      setCaregiverImages(newImages);
     }
   };
+
   const removeImage = (index: number) => {
-    const newImages = caregiverImages?.filter((_, i) => i !== index);
-    setCaregiverImages(newImages);
+    const newImages = [...(caregiverImages || [])];
+    newImages[index] = undefined;
+    setCaregiverImages(newImages.filter(Boolean));
   };
-  useEffect(() => {
-    console.log(caregiverImages);
-  }, [caregiverImages]);
+
   return (
     <ThemedView style={styles.container}>
       <Header variant='back' />
@@ -97,8 +102,12 @@ export default function Page() {
 
           <View style={styles.photoGrid}>
             {[...Array(6)].map((_, index) => (
-              <View key={index} style={styles.photoPlaceholder}>
-                {index < caregiverImages?.length ? (
+              <TouchableOpacity 
+                key={index} 
+                style={styles.photoPlaceholder}
+                onPress={() => pickImageForIndex(index)}
+              >
+                {caregiverImages?.[index] ? (
                   <View>
                     <Image
                       source={{ uri: caregiverImages[index] }}
@@ -114,7 +123,7 @@ export default function Page() {
                 ) : (
                   <View style={styles.photoPlaceholderInner} />
                 )}
-              </View>
+              </TouchableOpacity>
             ))}
           </View>
 
@@ -125,11 +134,7 @@ export default function Page() {
           <View style={styles.addPhotoContainer}>
             <Button
               label='Add photo'
-              onPress={() => {
-                // We'll implement this later
-                // console.log('Add photo pressed');
-                pickImage();
-              }}
+              onPress={() => pickImageForIndex(caregiverImages?.length || 0)}
               variant='compact'
               disabled={caregiverImages?.length === 6}
             />

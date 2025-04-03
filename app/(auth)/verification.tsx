@@ -15,6 +15,8 @@ import {
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '@/app/store/auth';
 
 export default function OTPInputScreen() {
   const router = useRouter();
@@ -24,8 +26,8 @@ export default function OTPInputScreen() {
   const inputRef = useRef<TextInput>(null);
   const { phoneNumber, isChecked } = useLocalSearchParams();
   const [user, setUser] = useState<any>(null);
-  const { setUser: setUserStore, setOnboardingScreen } = useUserStore();
-  const { setToken } = useUserStore();
+  const { setUser: setUserStore, setOnboardingScreen, setToken } = useUserStore();
+  const { signIn: authSignIn } = useAuth();
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -46,7 +48,7 @@ export default function OTPInputScreen() {
       return customAxios.post(`/auth/phone/start-verification`, data);
     },
     onSuccess: async (data: any) => {
-      console.log('OTP resent successfully')
+      console.log('OTP resent successfully');
     },
     onError: (error: any) => {
       console.log('error', error['response'].data);
@@ -55,19 +57,15 @@ export default function OTPInputScreen() {
         text1: 'Something went wrong',
         text2: error['response'].data?.message,
       });
-      // router.push('/phoneNumber');
-      // Toast.show({
-      //   type: 'problem',
-      //   text1: 'Something went wrong',
-      //   text2: error['response'].data?.message,
-      // });
     },
   });
 
-  const handleResend = () => {
+  const handleResend = async () => {
     if (canResend) {
+      // const  user = await signUp(`karama${phoneNumber}@mail.com`, `karama${phoneNumber}@mail.com`, 'karama')
+
       phoneVerification.mutate({
-        phone_number: `+234${phoneNumber}`,
+        phone_number: `+1${phoneNumber}`,
       });
       setTimeLeft(50);
       setCanResend(false);
@@ -75,31 +73,44 @@ export default function OTPInputScreen() {
     }
   };
 
-  console.log('verify', user?.data?.data);
-
   const verify = useMutation({
     mutationFn: (data: any) => {
       return customAxios.post(`/auth/phone/confirm-otp`, data);
     },
-    onSuccess: async (data: any) => {
-      setUser(data?.data?.data);
-      setUserStore(data?.data?.data?.user);
-      setToken(data?.data?.data?.token);
-      setOnboardingScreen('/createPassword');
-      router.push({
-        pathname: '/createPassword',
-        params: {
-          isChecked: isChecked ? '1' : '0',
-          phoneNumber: phoneNumber,
-        },
-      });;
+    onSuccess: async (response: any) => {
+      try {
+        console.log('Full verification response:', JSON.stringify(response?.data, null, 2));
+        
+        if (response?.data?.success) {
+          // Store phone number in user store
+          setUserStore({ phone_number: `+1${phoneNumber}` });
+          
+          // Navigate to createPassword screen with params
+          router.push({
+            pathname: '/(auth)/createPassword',
+            params: {
+              isChecked: isChecked ? '1' : '0',
+              phoneNumber: phoneNumber,
+            },
+          });
+        } else {
+          throw new Error('Verification failed');
+        }
+      } catch (error) {
+        console.error('Error in verification:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'Error in verification',
+          text2: error instanceof Error ? error.message : 'Unknown error occurred',
+        });
+      }
     },
     onError: (error: any) => {
-      console.log('error', error['response'].data);
+      console.error('Verification error:', error?.response?.data);
       Toast.show({
         type: 'error',
-        text1: 'Something went wrong',
-        text2: error['response'].data?.message,
+        text1: 'Verification failed',
+        text2: error?.response?.data?.message || 'Please try again',
       });
     },
   });
@@ -109,15 +120,12 @@ export default function OTPInputScreen() {
     const cleaned = text.replace(/[^0-9]/g, '').slice(0, 6);
     setCode(cleaned);
 
-    // When 6 digits are entered, navigate to bridge screen
+    // When 6 digits are entered, verify the code
     if (cleaned.length === 6) {
       verify.mutate({
-        phone_number: `+234${phoneNumber}`,
+        phone_number: `+1${phoneNumber}`,
         code: cleaned,
       });
-      // setUserStore(user?.data?.data?.user);
-      // setToken(user?.data?.data?.token);
-      // router.push('/bridge');
     }
   };
 
