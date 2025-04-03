@@ -145,6 +145,26 @@ export const useCurrentUser = () => {
   });
 };
 
+export const fetchProfile= async (role: any) => {
+  const endpoint =
+    role == 'FAMILY'
+      ? '/family-profile/'
+      : '/caregiver-profile/';
+
+  const { data } = await customAxios.get(endpoint)
+  return data?.data;
+};
+
+export const useProfile = ( role: any) => {
+  const { token } = useUserStore();
+  return useAuthQuery({
+    queryKey: ['user-profile'],
+    queryFn: () => fetchProfile(role),
+    retry: 3,
+    enabled: !!token && !!role,
+  });
+};
+
 export const fetchCompletedMatches = async (role: string) => {
   const endpoint =
     role.toLowerCase() === 'FAMILY'
