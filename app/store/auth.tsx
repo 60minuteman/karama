@@ -1,76 +1,71 @@
 import { useUserStore } from '@/services/state/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router, useRootNavigation, useSegments } from 'expo-router';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { router } from 'expo-router';
+import { createContext, useContext, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface AuthContextType {
-  signIn: (token: string) => Promise<void>;
+  signIn: (data: { token: string }) => Promise<void>;
   signOut: () => Promise<void>;
   isLoading: boolean;
-  isLoggedIn: boolean | null;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function useAuth() {
-  const value = useContext(AuthContext);
-  if (!value) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return value;
+  return useContext(AuthContext) as AuthContextType;
 }
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isNavigationReady, setIsNavigationReady] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const { user, logout, hydrated } = useUserStore();
-  const rootSegments = useSegments();
-  const rootNavigation = useRootNavigation();
+  const [isLoading, setIsLoading] = useState(false);
+  const { setToken, clearUser } = useUserStore();
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    if (!rootNavigation?.isReady || !hydrated) return;
-
-    const timer = setTimeout(() => {
-      if (!rootNavigation.isReady) return;
-
-      const inAuthGroup = rootSegments[0] === '(auth)';
-      
-      if (!user && !inAuthGroup) {
-        // If no user and not in auth group, clear everything and redirect
-        logout().then(() => {
-          router.replace('/(auth)');
-        });
-      }
-    }, 50);
-
-    return () => clearTimeout(timer);
-  }, [user, rootNavigation?.isReady, rootSegments, hydrated]);
-
-  const signIn = async (token: string) => {
+  const signIn = async (data: { token: string }) => {
     try {
-      await AsyncStorage.setItem('userToken', token);
-      setIsLoggedIn(true);
+      setIsLoading(true);
+      
+      if (!data?.token) {
+        throw new Error('Invalid token format');
+      }
+
+      // Save token to AsyncStorage first
+      await AsyncStorage.setItem('userToken', data.token);
+      
+      // Then update store
+      await setToken(data.token);
+      
+      // Finally navigate
+      router.replace('/(tabs)/discover');
     } catch (error) {
       console.error('Error signing in:', error);
       throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const signOut = async () => {
     try {
-      await AsyncStorage.removeItem('userToken');
-      await logout(); // Clear user state
-      setIsLoggedIn(false);
-      router.replace('/(auth)');
+      setIsLoading(true);
+      
+      // Clear everything first
+      await AsyncStorage.clear();
+      queryClient.clear();
+      await clearUser();
+      
+      // Then navigate
+      router.replace('/(auth)/signInPhone');
     } catch (error) {
       console.error('Error signing out:', error);
-      throw error;
+      router.replace('/(auth)/signInPhone');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ signIn, signOut, isLoading, isLoggedIn }}>
+    <AuthContext.Provider value={{ signIn, signOut, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

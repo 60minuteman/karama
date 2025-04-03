@@ -10,12 +10,20 @@ import { useUserStore } from '@/services/state/user';
 import { useMutation } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, View, KeyboardAvoidingView, Platform } from 'react-native';
 import Toast from 'react-native-toast-message';
+import { benefitsOptions } from './benefits';
 
 export default function PromptAnswer() {
   const router = useRouter();
   const { prompt } = useLocalSearchParams();
+  
+  const getDefaultStartDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return formatDate(tomorrow) || '01/01/2025';
+  };
+
   const formatDate = (date: string | Date | undefined | null) => {
     if (!date) return undefined;
     
@@ -35,6 +43,7 @@ export default function PromptAnswer() {
 
     return `${month}/${day}/${year}`;
   };
+
   const {
     caregiverAbilities,
     caregiverAgeExperience,
@@ -140,9 +149,9 @@ export default function PromptAnswer() {
     arrangement_type: caregiverPreferredArrangement,
     job_commitment: {
       commitment: caregiverCommitmentType,
-      start_date: caregiverCommitmentStartDate ? formatDate(caregiverCommitmentStartDate) : getDefaultStartDate(),
+      start_date: formatDate(caregiverCommitmentStartDate) || getDefaultStartDate(),
       ...(caregiverCommitmentType === 'Short Term' && {
-        end_date: caregiverCommitmentEndDate ? formatDate(caregiverCommitmentEndDate) : undefined
+        end_date: formatDate(caregiverCommitmentEndDate)
       })
     },
     service_days: caregiverSchedule?.map((schedule) => {
@@ -163,7 +172,9 @@ export default function PromptAnswer() {
       method: caregiverPaymentMethod,
       show_method_on_profile: showCaregiverPaymentMethod,
     },
-    required_benefits: caregiverRequiredBenefits,
+    required_benefits: (caregiverRequiredBenefits || [])
+        .filter(benefit => benefit && benefitsOptions?.find(opt => opt.id === benefit))
+        .slice(0, 10),
     past_positions: [
       caregiverFirstPosition && {
         family_or_business_name: caregiverFirstPosition.familyName,
@@ -222,52 +233,52 @@ export default function PromptAnswer() {
   const handleSubmit = async () => {
     createProfile.mutate(onboadingInfo);
   };
-  const getDefaultStartDate = () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return formatDate(tomorrow) || '01/01/2025';
-  };
   return (
-    <ThemedView style={styles.container}>
-      <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <ThemedView style={styles.container}>
+        <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
 
-      <View style={styles.content}>
-        <View style={styles.spacerTop} />
-        <ProgressBar progress={0.9} />
+        <View style={styles.content}>
+          <View style={styles.spacerTop} />
+          <ProgressBar progress={0.9} />
 
-        <ThemedText style={styles.title}>{prompt}</ThemedText>
+          <ThemedText style={styles.title}>{prompt}</ThemedText>
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            multiline
-            placeholder='Type prompt answer here...'
-            placeholderTextColor='#A8A3A5'
-            value={caregiverFirstPromptAnswer}
-            onChangeText={setCaregiverFirstPromptAnswer}
-            textAlignVertical='top'
-          />
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              multiline
+              placeholder='Type prompt answer here...'
+              placeholderTextColor='#A8A3A5'
+              value={caregiverFirstPromptAnswer}
+              onChangeText={setCaregiverFirstPromptAnswer}
+              textAlignVertical='top'
+            />
+          </View>
+
+          <View style={styles.addButtonContainer}>
+            <Button
+              label='Add Another Prompt'
+              onPress={() => router.back()}
+              variant='compact'
+              style={styles.addButton}
+            />
+          </View>
         </View>
 
-        <View style={styles.addButtonContainer}>
+        <View style={styles.bottomNav}>
           <Button
-            label='Add Another Prompt'
-            onPress={() => router.back()}
+            label='Next'
+            onPress={handleSubmit}
             variant='compact'
-            style={styles.addButton}
+            loading={createProfile.isPending}
           />
         </View>
-      </View>
-
-      <View style={styles.bottomNav}>
-        <Button
-          label='Next'
-          onPress={handleSubmit}
-          variant='compact'
-          loading={createProfile.isPending}
-        />
-      </View>
-    </ThemedView>
+      </ThemedView>
+    </KeyboardAvoidingView>
   );
 }
 

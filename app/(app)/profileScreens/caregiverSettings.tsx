@@ -1,18 +1,65 @@
-import { View, Text, Switch, SafeAreaView, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native'
+import { View, Switch, SafeAreaView, TouchableOpacity, StyleSheet, Image, ScrollView } from 'react-native'
 import React, { useState } from 'react'
-import { ThemedView } from '@/components/ThemedView';
-import ProfileHeader from '@/components/Profile/ProfileHeader';
-import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView'
+import ProfileHeader from '@/components/Profile/ProfileHeader'
+import { ThemedText } from '@/components/ThemedText'
+import { useRouter } from 'expo-router'
+import { useUserStore } from '@/services/state/user'
+import { useCurrentUser } from '@/services/api/api'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { queryClient } from '@/services/api/queryClient'
+
+interface SettingsState {
+  isPaused: boolean;
+  showLastActive: boolean;
+  showAge: boolean;
+}
 
 const CaregiverSettings = () => {
-    const [isEnabled, setIsEnabled] = useState(false);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    const router = useRouter();
+    const { clearUser } = useUserStore();
+    const { data: currentUser } = useCurrentUser();
+    
+    const [settings, setSettings] = useState<SettingsState>({
+        isPaused: false,
+        showLastActive: true,
+        showAge: true
+    });
+
+    const toggleSetting = (setting: keyof SettingsState) => {
+        setSettings(prev => ({
+            ...prev,
+            [setting]: !prev[setting]
+        }));
+    };
+
+    const handleLogout = async () => {
+        try {
+            // Clear token first
+            await AsyncStorage.removeItem('userToken');
+            
+            // Clear user store
+            await clearUser();
+            
+            // Clear query cache
+            queryClient.clear();
+            
+            // Finally navigate to onboarding
+            router.replace('/(auth)/onboarding');
+        } catch (error) {
+            console.error('Logout error:', error);
+            // Still try to navigate even if cleanup fails
+            router.replace('/(auth)/onboarding');
+        }
+    };
 
     return (
-
-        <SafeAreaView>
-            <ThemedView>
-                <ProfileHeader heading='Settings' />
+        <SafeAreaView style={{ flex: 1 }}>
+            <ThemedView style={{ flex: 1 }}>
+                <ProfileHeader 
+                    heading='Settings' 
+                    onBack={() => router.push('/(tabs)/profile')}
+                />
                 <ScrollView contentContainerStyle={{ paddingBottom: 160 }}>
                     <ThemedView style={styles.container}>
                         <View style={styles.section}>
@@ -23,13 +70,12 @@ const CaregiverSettings = () => {
                                         trackColor={{ false: "#D7D7DC", true: '#EB4430' }}
                                         thumbColor={'#ffffff'}
                                         ios_backgroundColor="#D7D7DC"
-                                        onValueChange={toggleSwitch}
-                                        value={isEnabled}
+                                        onValueChange={() => toggleSetting('isPaused')}
+                                        value={settings.isPaused}
                                     />
                                 </View>
                                 <ThemedText style={[styles.text, { marginTop: 8 }]}>
-                                    Pausing prevents your
-                                    profile from being shown to new people.
+                                    Pausing prevents your profile from being shown to new people.
                                     You can still chat with your current matches
                                 </ThemedText>
                             </View>
@@ -40,14 +86,13 @@ const CaregiverSettings = () => {
                                         trackColor={{ false: "#D7D7DC", true: '#EB4430' }}
                                         thumbColor={'#ffffff'}
                                         ios_backgroundColor="#D7D7DC"
-                                        onValueChange={toggleSwitch}
-                                        value={isEnabled}
+                                        onValueChange={() => toggleSetting('showLastActive')}
+                                        value={settings.showLastActive}
                                     />
                                 </View>
                                 <ThemedText style={[styles.text, { marginTop: 8 }]}>
                                     People viewing your profile can see your last active status,
-                                    and you can see theirs.
-                                    Your matches won't be shown your last active status
+                                    and you can see theirs. Your matches won't be shown your last active status
                                 </ThemedText>
                             </View>
                             <View>
@@ -57,8 +102,8 @@ const CaregiverSettings = () => {
                                         trackColor={{ false: "#D7D7DC", true: '#EB4430' }}
                                         thumbColor={'#ffffff'}
                                         ios_backgroundColor="#D7D7DC"
-                                        onValueChange={toggleSwitch}
-                                        value={isEnabled}
+                                        onValueChange={() => toggleSetting('showAge')}
+                                        value={settings.showAge}
                                     />
                                 </View>
                                 <ThemedText style={[styles.text, { marginTop: 8 }]}>
@@ -66,50 +111,65 @@ const CaregiverSettings = () => {
                                 </ThemedText>
                             </View>
                         </View>
+
                         <View style={styles.section}>
                             <ThemedText style={styles.text}>Phone & Email</ThemedText>
                             <View style={styles.subSection}>
-                                <ThemedText style={styles.heading}>+2348028276612</ThemedText>
-                                <ThemedText style={styles.heading}>sakoaminat@gmail.com</ThemedText>
+                                <ThemedText style={styles.heading}>{currentUser?.phone_number || ''}</ThemedText>
+                                <ThemedText style={styles.heading}>{currentUser?.email || ''}</ThemedText>
                             </View>
                         </View>
+
                         <View style={styles.section}>
-                            <ThemedText style={styles.text}>Notifications </ThemedText>
+                            <ThemedText style={styles.text}>Notifications</ThemedText>
                             <View style={styles.subSection}>
-                                <TouchableOpacity>
+                                <TouchableOpacity onPress={() => router.push('/(app)/profileScreens/pushNotifications')}>
                                     <View style={styles.flexContainer}>
                                         <ThemedText style={styles.heading}>Push Notifications</ThemedText>
-                                        <View style={styles.imageContainer}>
-                                            <Image style={{ width: '100%', height: '100%' }} source={require('@/assets/icons/chevron-right2.png')} />
-                                        </View>
+                                        <Image 
+                                            style={styles.chevronIcon} 
+                                            source={require('@/assets/icons/chevron-right2.png')} 
+                                        />
                                     </View>
                                 </TouchableOpacity>
-                                <TouchableOpacity>
+                                <TouchableOpacity onPress={() => router.push('/(app)/profileScreens/emailSettings')}>
                                     <View style={styles.flexContainer}>
                                         <ThemedText style={styles.heading}>Emails</ThemedText>
-                                        <View style={styles.imageContainer}>
-                                            <Image style={{ width: '100%', height: '100%' }} source={require('@/assets/icons/chevron-right2.png')} />
-                                        </View>
+                                        <Image 
+                                            style={styles.chevronIcon} 
+                                            source={require('@/assets/icons/chevron-right2.png')} 
+                                        />
                                     </View>
                                 </TouchableOpacity>
                             </View>
                         </View>
+
                         <View style={styles.section2}>
-                            <TouchableOpacity style={[styles.button, { backgroundColor: '#261D2A1A' }]}>
-                                <ThemedText style={[styles.buttonText, { color: '#261D2A4D' }]}>Delete account</ThemedText>
+                            <TouchableOpacity 
+                                style={[styles.button, styles.deleteButton]}
+                                onPress={() => router.push('/(app)/profileScreens/deleteAccount')}
+                            >
+                                <ThemedText style={[styles.buttonText, styles.deleteButtonText]}>
+                                    Delete account
+                                </ThemedText>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={[styles.button, { backgroundColor: '#EB4430' }]}>
-                                <ThemedText style={[styles.buttonText, { color: '#FFFFFF' }]}>Log out</ThemedText>
+                            <TouchableOpacity 
+                                style={[styles.button, styles.logoutButton]}
+                                onPress={handleLogout}
+                            >
+                                <ThemedText style={[styles.buttonText, styles.logoutButtonText]}>
+                                    Log out
+                                </ThemedText>
                             </TouchableOpacity>
                         </View>
                     </ThemedView>
                 </ScrollView>
             </ThemedView>
         </SafeAreaView>
-
     )
 }
+
 const styles = StyleSheet.create({
     container: {
         marginHorizontal: 16,
@@ -130,14 +190,13 @@ const styles = StyleSheet.create({
     },
     text: {
         fontFamily: 'Poppins',
-        fontWeight: 400,
         fontSize: 16,
         lineHeight: 20,
         color: "#261D2A4D",
     },
     heading: {
         fontFamily: 'Poppins',
-        fontWeight: 600,
+        fontWeight: '600',
         fontSize: 16,
         lineHeight: 20,
         color: "#261D2AE5"
@@ -147,7 +206,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-    imageContainer: {
+    chevronIcon: {
         width: 24,
         height: 24,
     },
@@ -157,11 +216,23 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    deleteButton: {
+        backgroundColor: '#261D2A1A',
+    },
+    logoutButton: {
+        backgroundColor: '#EB4430',
+    },
     buttonText: {
         fontFamily: 'Poppins',
-        fontWeight: 400,
         fontSize: 16,
-        lineHeight: 20
+        lineHeight: 20,
+    },
+    deleteButtonText: {
+        color: '#261D2A4D',
+    },
+    logoutButtonText: {
+        color: '#FFFFFF',
     }
-})
-export default CaregiverSettings
+});
+
+export default CaregiverSettings; 

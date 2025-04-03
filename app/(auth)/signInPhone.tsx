@@ -2,7 +2,6 @@ import { useAuth } from '@/app/store/auth';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
-import { Header } from '@/components/ui/Header';
 import { Colors } from '@/constants/Colors';
 import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
@@ -37,7 +36,7 @@ export default function PhoneNumberScreen() {
   const [isChecked, setIsChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { setUser, setToken } = useUserStore();
+  const { setToken, setUser } = useUserStore();
   const { signIn: authSignIn } = useAuth();
 
   const signIn = useMutation({
@@ -98,15 +97,34 @@ export default function PhoneNumberScreen() {
   const handleSignIn = async () => {
     if (phoneNumber.length === 10) {
       const formattedNumber = formatPhoneNumber(phoneNumber);
-      setIsLoading(true);
       
       try {
-        await signIn.mutateAsync({
+        setIsLoading(true);
+        const response = await signIn.mutateAsync({
           phone_number: formattedNumber,
           password: password,
         });
+
+        if (response?.data) {
+          const { token, user } = response.data;
+          
+          // Ensure we have both token and user before proceeding
+          if (!token) {
+            throw new Error('No token received from server');
+          }
+
+          await authSignIn(token);
+          
+          // Navigate to discover screen
+          router.replace('/(tabs)/discover');
+        }
       } catch (error) {
-        console.error('Sign in mutation error:', error);
+        console.error('Error in sign in:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'Sign in failed',
+          text2: 'Please check your credentials and try again'
+        });
       } finally {
         setIsLoading(false);
       }
@@ -123,8 +141,6 @@ export default function PhoneNumberScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant='back' />
-
       <View style={styles.content}>
         <View style={styles.spacer} />
         <ThemedText style={styles.helloText}> 😇 Hello there</ThemedText>

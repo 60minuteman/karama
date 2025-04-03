@@ -9,10 +9,11 @@ import {
   fetchMatchingCaregiversInfinity,
   useCurrentUser,
   useMatchingCaregivers,
+  fetchCurrentUser,
 } from '@/services/api/api';
 import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import React, { useCallback, useEffect, useState, useRef } from 'react';
 import {
   Image,
@@ -102,7 +103,13 @@ interface FamilyProfile {
   };
 }
 
-export default function Discover() {
+interface UserData {
+  role?: 'FAMILY' | 'CAREGIVER';
+  plan?: string;
+  // Add other properties that you use from userData
+}
+
+export default function DiscoverScreen() {
   const router = useRouter();
   const { token, user: storedUser } = useUserStore();
   const { width: windowWidth } = useWindowDimensions();
@@ -112,42 +119,26 @@ export default function Discover() {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
   const [nextCursor, setNextCursor] = useState('');
-  const { data: currentUser, isLoading: isLoadingCurrentUser } = useCurrentUser({
-    initialData: storedUser,
-    enabled: !!token
-  });
   const containerRef = useRef<ContainerRef>(null);
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const storedToken = await AsyncStorage.getItem('userToken');
-      if (!storedToken) {
-        router.replace('/(auth)/signInPhone');
-        return;
-      }
-      customAxios.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
-    };
-    
-    checkAuth();
-  }, [router]);
-
-  useEffect(() => {
-    console.log('Auth State:', {
-      token: token,
-      currentUser: currentUser,
-      storedUser: storedUser
-    });
-  }, [token, currentUser, storedUser]);
-
-  useEffect(() => {
-    if (token) {
-      customAxios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    if (!token) {
+      router.replace('/(auth)/signInPhone');
+      return;
     }
   }, [token]);
 
+  const { data: userData, isLoading: isLoadingUser } = useQuery<UserData>({
+    queryKey: ['currentUser'],
+    queryFn: fetchCurrentUser,
+    enabled: !!token,
+    staleTime: 30000,
+    retry: false
+  });
+
   const { data, isLoading, error, refetch } = useMatchingCaregivers(
     cursor,
-    currentUser?.role === 'FAMILY' 
+    userData?.role === 'FAMILY' 
       ? '/family-discovery/get-matching-caregivers'
       : '/caregiver-discovery/get-matching-families',
     {
@@ -155,7 +146,7 @@ export default function Discover() {
       onSuccess: (response) => {
         console.log('API Success:', response);
         // Handle both caregiver and family data
-        const profiles = currentUser?.role === 'FAMILY' 
+        const profiles = userData?.role === 'FAMILY' 
           ? response.data?.scored_caregivers 
           : response.data?.scored_families;
         
@@ -173,14 +164,14 @@ export default function Discover() {
   );
 
   useEffect(() => {
-    if (currentUser?.role === 'FAMILY' && data?.data?.scored_caregivers) {
+    if (userData?.role === 'FAMILY' && data?.data?.scored_caregivers) {
       const caregivers = data.data.scored_caregivers;
       setProfiles(caregivers);
       
       if (caregivers.length > 0 && currentIndex < caregivers.length) {
         setCurrentProfile(caregivers[currentIndex]);
       }
-    } else if (currentUser?.role === 'CAREGIVER' && data?.data?.scored_families) {
+    } else if (userData?.role === 'CAREGIVER' && data?.data?.scored_families) {
       const families = data.data.scored_families;
       setProfiles(families);
       
@@ -200,11 +191,11 @@ export default function Discover() {
   const moveToNextProfile = useCallback(() => {
     if (currentIndex < profiles.length - 1) {
       setCurrentIndex(currentIndex + 1);
-    } else if (nextCursor && currentUser?.plan === 'STANDARD') {
+    } else if (nextCursor && userData?.plan === 'STANDARD') {
       setCursor(nextCursor);
       setCurrentIndex(0);
     }
-  }, [currentIndex, profiles.length, nextCursor, currentUser?.plan]);
+  }, [currentIndex, profiles.length, nextCursor, userData?.plan]);
 
   console.log(
     'currentUser***===',
@@ -215,7 +206,7 @@ export default function Discover() {
   const submitLike = useAuthMutation({
     mutationFn: (data: any) => {
       const endpoint =
-        currentUser?.role === 'FAMILY'
+        userData?.role === 'FAMILY'
           ? `/family-discovery/like-caregiver`
           : `/caregiver-discovery/like-families`;
       console.log('Like Request:', {
@@ -254,7 +245,7 @@ export default function Discover() {
   const submitReject = useAuthMutation({
     mutationFn: (data: any) => {
       const endpoint =
-        currentUser?.role === 'FAMILY'
+        userData?.role === 'FAMILY'
           ? `/family-discovery/reject-caregiver/${currentProfile?.caregiver_profile?.id}`
           : `/caregiver-discovery/reject-families/${currentProfile?.family_profile?.id}`;
       console.log('Reject Request:', {
@@ -297,53 +288,53 @@ export default function Discover() {
     return age;
   };
 
-  console.log('currentProfile***', currentUser?.role);
+  console.log('currentProfile***', userData?.role);
 
   const profileData = currentProfile ? {
-    image: currentUser?.role === 'FAMILY'
+    image: userData?.role === 'FAMILY'
       ? currentProfile?.caregiver_profile?.pictures?.[0]?.path
       : currentProfile?.family_profile?.pictures?.find(pic => pic.type === 'PROFILE_PICTURE')?.path || '',
-    name: currentUser?.role === 'FAMILY'
+    name: userData?.role === 'FAMILY'
       ? currentProfile?.caregiver_profile?.name
       : currentProfile?.family_profile?.name || '',
-    description: currentUser?.role === 'FAMILY'
+    description: userData?.role === 'FAMILY'
       ? undefined 
       : currentProfile?.family_profile?.description?.description,
-    children: currentUser?.role === 'FAMILY'
+    children: userData?.role === 'FAMILY'
       ? undefined
       : currentProfile?.family_profile?.children?.map(child => 
           `${child.count} ${child.age_group}${child.count > 1 ? 's' : ''}`
         ).join(', '),
     location: `📍 ${
-      currentUser?.role === 'FAMILY' 
+      userData?.role === 'FAMILY' 
         ? currentProfile?.caregiver_profile?.zipcode 
         : currentProfile?.family_profile?.zipcode
     }`,
-    age: currentUser?.role === 'FAMILY'
+    age: userData?.role === 'FAMILY'
       ? currentProfile?.caregiver_profile?.date_of_birth
         ? calculateAge(currentProfile.caregiver_profile.date_of_birth)
         : 0
       : 0,
-    role: currentUser?.role === 'FAMILY'
+    role: userData?.role === 'FAMILY'
       ? currentProfile?.caregiver_profile?.caregiver_type 
         ? `🧢 ${currentProfile.caregiver_profile.caregiver_type}`
         : ''
       : '',
     address: '📍 ',
-    pronouns: currentUser?.role === 'FAMILY'
+    pronouns: userData?.role === 'FAMILY'
       ? currentProfile?.caregiver_profile?.pronouns || ''
       : '',
     rating: parseFloat(currentProfile?.score || '0'),
     experience: [
-      currentUser?.role === 'FAMILY'
+      userData?.role === 'FAMILY'
         ? currentProfile?.caregiver_profile?.years_of_experience || ''
         : '',
-      ...(currentUser?.role === 'FAMILY' ? currentProfile?.caregiver_profile?.ages_best_with || [] : [])
+      ...(userData?.role === 'FAMILY' ? currentProfile?.caregiver_profile?.ages_best_with || [] : [])
     ].filter(Boolean),
-    lookingFor: currentUser?.role === 'FAMILY'
+    lookingFor: userData?.role === 'FAMILY'
       ? currentProfile?.caregiver_profile?.availability || []
       : [],
-    hourlyRate: currentUser?.role === 'FAMILY'
+    hourlyRate: userData?.role === 'FAMILY'
       ? currentProfile?.caregiver_profile?.payment_info?.type === 'Hourly'
         ? `$${currentProfile?.caregiver_profile?.payment_info?.hourly_min || 0} - $${
             currentProfile?.caregiver_profile?.payment_info?.hourly_max || 0
@@ -351,25 +342,25 @@ export default function Discover() {
         : `$${currentProfile?.caregiver_profile?.payment_info?.salary || 0}/year`
       : '',
     languages: [
-      ...(currentUser?.role === 'FAMILY' ? currentProfile?.caregiver_profile?.language?.languages || [] : []),
-      currentUser?.role === 'FAMILY' ? currentProfile?.caregiver_profile?.language?.other : '',
+      ...(userData?.role === 'FAMILY' ? currentProfile?.caregiver_profile?.language?.languages || [] : []),
+      userData?.role === 'FAMILY' ? currentProfile?.caregiver_profile?.language?.other : '',
     ].filter(Boolean),
     interests: [
-      ...(currentUser?.role === 'FAMILY' ? currentProfile?.caregiver_profile?.hobbies?.creative_interests || [] : []),
-      ...(currentUser?.role === 'FAMILY' ? currentProfile?.caregiver_profile?.hobbies?.sport_interests || [] : []),
-      ...(currentUser?.role === 'FAMILY' ? currentProfile?.caregiver_profile?.hobbies?.instrument_interests || [] : []),
-      ...(currentUser?.role === 'FAMILY' ? currentProfile?.caregiver_profile?.hobbies?.stem_interests || [] : [])
+      ...(userData?.role === 'FAMILY' ? currentProfile?.caregiver_profile?.hobbies?.creative_interests || [] : []),
+      ...(userData?.role === 'FAMILY' ? currentProfile?.caregiver_profile?.hobbies?.sport_interests || [] : []),
+      ...(userData?.role === 'FAMILY' ? currentProfile?.caregiver_profile?.hobbies?.instrument_interests || [] : []),
+      ...(userData?.role === 'FAMILY' ? currentProfile?.caregiver_profile?.hobbies?.stem_interests || [] : [])
     ].filter(Boolean),
-    obsession: currentUser?.role === 'FAMILY'
+    obsession: userData?.role === 'FAMILY'
       ? currentProfile?.caregiver_profile?.prompts?.[0]?.answer || '-'
       : '',
-    religion: currentUser?.role === 'FAMILY'
+    religion: userData?.role === 'FAMILY'
       ? currentProfile?.caregiver_profile?.characteristics?.religion || ''
       : '',
-    personality: currentUser?.role === 'FAMILY'
+    personality: userData?.role === 'FAMILY'
       ? currentProfile?.caregiver_profile?.characteristics?.personalities || []
       : [],
-    disabilities: currentUser?.role === 'FAMILY'
+    disabilities: userData?.role === 'FAMILY'
       ? currentProfile?.caregiver_profile?.experience_with_disabilities?.disabilities || []
       : [],
   } : null;
@@ -388,17 +379,20 @@ export default function Discover() {
     submitReject.mutate();
   };
 
+  // Show loading or return early if not authenticated
+  if (!token || isLoadingUser) return null;
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         <HomeHeader />
         <View style={styles.content}>
           <View style={[styles.containerWrapper, { height: '80%' }]}>
-            {isLoadingCurrentUser || isLoading ? (
+            {isLoadingUser || isLoading ? (
               <ProfileCardLoader />
             ) : !currentProfile ? (
               <View style={styles.emptyStateContainer}>
-                <EmptyDiscovery role={currentUser?.role} />
+                <EmptyDiscovery role={userData?.role} />
               </View>
             ) : (
               <Container 

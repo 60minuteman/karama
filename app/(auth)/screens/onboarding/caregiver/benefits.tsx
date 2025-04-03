@@ -11,7 +11,7 @@ import { Pill } from '@/components/ui/Pill';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useUserStore } from '@/services/state/user';
 
-const benefitsOptions = [
+export const benefitsOptions = [
   { id: 'yearly_bonus' as const, label: 'Yearly Bonus', icon: '💰' },
   { id: 'paid_time_off' as const, label: 'Paid Time Off', icon: '🏖' },
   { id: 'yearly_raise' as const, label: 'Yearly Raise', icon: '💸' },
@@ -33,14 +33,22 @@ export default function Benefits() {
     showCaregiverRequiredBenefit, setShowCaregiverRequiredBenefits, setOnboardingScreen } = useUserStore();
   const toggleBenefit = (benefitId: string) => {
     const prev = caregiverRequiredBenefits ?? [];
-    const updatedBenefits = prev.includes(benefitId)
-      ? prev.filter(id => id !== benefitId)
-      : [...prev, benefitId]
-    setCaregiverRequiredBenefits(updatedBenefits); 
     
-};
+    // Only allow valid benefits from benefitsOptions
+    if (!benefitsOptions.find(opt => opt.id === benefitId)) {
+        return;
+    }
+    
+    // Remove if exists, add if doesn't exist and under 10 items
+    const updatedBenefits = prev.includes(benefitId)
+        ? prev.filter(id => id !== benefitId)
+        : prev.length < 10 ? [...prev, benefitId] : prev;
+        
+    setCaregiverRequiredBenefits(updatedBenefits);
+  };
 
 const handleNext = () => {
+  console.log('Benefits being sent:', caregiverRequiredBenefits);
   if (caregiverRequiredBenefits?.includes('other')) {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/OtherBenefits');
     router.push('/(auth)/screens/onboarding/caregiver/OtherBenefits');

@@ -18,40 +18,54 @@ import {
 } from 'react-native';
 
 export default function Profile() {
-  const { data: currentUser, isLoading: isLoadingCurrentUser }: any =
-    useCurrentUser();
+  const { data: currentUser, isLoading: isLoadingCurrentUser } = useCurrentUser();
   const router = useRouter();
-  const { logout } = useUserStore();
+  const { clearUser } = useUserStore();
   const [fontsLoaded] = useFonts({
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
     Poppins_400Regular,
     Poppins_600SemiBold,
   });
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded || isLoadingCurrentUser) {
     return null;
   }
+
+  // Get profile picture with fallback
+  const profilePicture = currentUser?.role === 'FAMILY'
+    ? currentUser?.family_profile?.pictures?.find(pic => pic?.type === 'PROFILE_PICTURE')?.path
+    : currentUser?.caregiver_profile?.pictures?.find(pic => pic?.type === 'PROFILE_PICTURE')?.path;
+
+  const imageSource = profilePicture
+    ? { uri: profilePicture }
+    : require('@/assets/images/profile-placeholder.jpg');
 
   const menuItems = [
     {
       icon: require('@/assets/icons/edit-profile.png'),
       label: 'Edit profile',
-      route: currentUser?.role === 'FAMILY' ? ' /app/(app)/profileScreens/familyEditProfile' : ' /app/(app)/profileScreens/caregiverEditProfile',
+      route: currentUser?.role === 'FAMILY' 
+        ? '/(app)/profileScreens/familyEditProfile'
+        : '/(app)/profileScreens/caregiverEditProfile',
     },
     {
       icon: require('@/assets/icons/preferences.png'),
       label: 'Preferences',
-      route: currentUser?.role === 'FAMILY' ? ' /app/(app)/profileScreens/familyPreferences' : ' /app/(app)/profileScreens/caregiverPreferences',
+      route: currentUser?.role === 'FAMILY'
+        ? '/(app)/profileScreens/familyPreferences'
+        : '/(app)/profileScreens/caregiverPreferences',
     },
     {
       icon: require('@/assets/icons/settings.png'),
       label: 'Settings',
-      route: currentUser?.role === 'FAMILY' ? ' /app/(app)/profileScreens/familySettings' : ' /app/(app)/profileScreens/caregiverSettings',
+      route: currentUser?.role === 'FAMILY'
+        ? '/(app)/profileScreens/familySettings'
+        : '/(app)/profileScreens/caregiverSettings',
     },
     {
       icon: require('@/assets/icons/help.png'),
       label: 'Help',
-      route: ' /app/ (app)/profileScreens/help',
+      route: '/(app)/profileScreens/help',
     },
   ];
 
@@ -68,7 +82,7 @@ export default function Profile() {
           <View style={styles.profileSection}>
             <View style={styles.profileImageContainer}>
               <Image
-                source={require('@/assets/images/profile-placeholder.jpg')}
+                source={imageSource}
                 style={styles.profileImage}
               />
               <View style={styles.percentageContainer}>
@@ -77,9 +91,13 @@ export default function Profile() {
             </View>
 
             <View style={styles.profileInfo}>
-              <ThemedText style={styles.name}>Sako Reuben</ThemedText>
+              <ThemedText style={styles.name}>{currentUser?.name || 'User'}</ThemedText>
               <TouchableOpacity
-                onPress={() => handleNavigation(currentUser?.role === 'FAMILY' ? ' /app/(app)/profileScreens/familyProfileView' : ' /app/(app)/profileScreens/caregiverProfileView',)}
+                onPress={() => handleNavigation(
+                  currentUser?.role === 'FAMILY' 
+                    ? '/(app)/profileScreens/familyProfileView'
+                    : '/(app)/profileScreens/caregiverProfileView'
+                )}
                 activeOpacity={0.7}
               >
                 <ThemedText style={styles.viewProfile}>View profile</ThemedText>
@@ -89,7 +107,7 @@ export default function Profile() {
 
           <TouchableOpacity
             style={styles.karamaPlus}
-            onPress={() => handleNavigation('/subscribe')}
+            onPress={() => handleNavigation('/profileScreens/subscribe')}
             activeOpacity={0.7}
           >
             <Image
@@ -125,26 +143,6 @@ export default function Profile() {
                 />
               </TouchableOpacity>
             ))}
-          </View>
-          <View style={styles.menuSection}>
-            <TouchableOpacity
-              style={styles.menuItem}
-              onPress={() => {
-                logout();
-                router.replace('/(auth)/signInPhone');
-              }}
-              activeOpacity={0.7}
-            >
-              <Image
-                source={require('@/assets/icons/preferences.png')}
-                style={styles.menuIcon}
-              />
-              <ThemedText style={styles.menuLabel}>Logout</ThemedText>
-              <Image
-                source={require('@/assets/icons/chevron-right2.png')}
-                style={styles.chevronIcon}
-              />
-            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -208,7 +206,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 24,
-    fontFamily: 'Poppins_600Bold',
+    fontFamily: 'Poppins_600SemiBold',
     fontWeight: '600',
     lineHeight: 34,
     color: '#002140',

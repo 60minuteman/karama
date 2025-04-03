@@ -27,7 +27,7 @@ export default function OTPInputScreen() {
   const { phoneNumber, isChecked } = useLocalSearchParams();
   const [user, setUser] = useState<any>(null);
   const { setUser: setUserStore, setOnboardingScreen, setToken } = useUserStore();
-  const { signIn: authSignIn } = useAuth();
+  const { signIn } = useAuth();
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -75,44 +75,46 @@ export default function OTPInputScreen() {
 
   const verify = useMutation({
     mutationFn: (data: any) => {
-      return customAxios.post(`/auth/phone/confirm-otp`, data);
+      return customAxios.post(`/auth/phone/confirm-otp`, {
+        phone_number: `+1${phoneNumber}`,
+        code: data.code
+      });
     },
     onSuccess: async (response: any) => {
       try {
-        console.log('Full verification response:', JSON.stringify(response?.data, null, 2));
+        console.log('Verification response:', response?.data);
         
-        if (response?.data?.success) {
-          // Store phone number in user store
-          setUserStore({ phone_number: `+1${phoneNumber}` });
-          
-          // Navigate to createPassword screen with params
+        if (response?.data?.token) {
+          // Existing user - sign in and go to discover
+          await signIn({ token: response.data.token });
+        } else if (response?.data?.success) {
+          // New user - go to password creation first
           router.push({
             pathname: '/(auth)/createPassword',
-            params: {
-              isChecked: isChecked ? '1' : '0',
-              phoneNumber: phoneNumber,
-            },
+            params: { 
+              phoneNumber,
+              isChecked 
+            }
           });
         } else {
-          throw new Error('Verification failed');
+          throw new Error('Invalid response from server');
         }
       } catch (error) {
         console.error('Error in verification:', error);
         Toast.show({
           type: 'error',
           text1: 'Error in verification',
-          text2: error instanceof Error ? error.message : 'Unknown error occurred',
+          text2: 'Please try again'
         });
       }
     },
     onError: (error: any) => {
-      console.error('Verification error:', error?.response?.data);
       Toast.show({
         type: 'error',
-        text1: 'Verification failed',
-        text2: error?.response?.data?.message || 'Please try again',
+        text1: 'Verification failed', 
+        text2: error?.response?.data?.message || 'Please try again'
       });
-    },
+    }
   });
 
   const handleCodeChange = (text: string) => {
@@ -123,7 +125,6 @@ export default function OTPInputScreen() {
     // When 6 digits are entered, verify the code
     if (cleaned.length === 6) {
       verify.mutate({
-        phone_number: `+1${phoneNumber}`,
         code: cleaned,
       });
     }

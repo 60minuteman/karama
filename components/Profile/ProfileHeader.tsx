@@ -1,24 +1,16 @@
-
 import { Header } from '@/components/ui/Header'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useRouter, usePathname } from 'expo-router'
 import { ThemedText } from '@/components/ThemedText'
 import { Colors } from '@/constants/Colors'
 
-const ProfileHeader = ({ onPress, edit,heading }: any) => {
+const ProfileHeader = ({ onBack, edit, heading }: { onBack: () => void, edit?: boolean, heading: string }) => {
     const router = useRouter();
 
-    const handlePress = () => {
-        if (onPress) {
-            onPress();
-        } else {
-            router.back();
-        }
-    };
     return (
         <View style={[styles.container, { justifyContent: edit && 'space-between' }]}>
             <TouchableOpacity
-                onPress={handlePress}
+                onPress={onBack}
                 accessibilityLabel={'Go back'}
             >
                 <ThemedText style={styles.icon}>
@@ -38,6 +30,7 @@ const ProfileHeader = ({ onPress, edit,heading }: any) => {
         </View>
     )
 }
+
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal:16,
@@ -78,4 +71,5 @@ const styles = StyleSheet.create({
         alignSelf :'center',
     }
 });
+
 export default ProfileHeader

@@ -21,7 +21,16 @@ interface ProfileCardProps {
   pronouns: string;
   rating: number;
   role: string;
-  data: any;
+  data: {
+    profilePicture?: string;
+    pictures?: string[];
+    caregiver_profile?: {
+      pictures?: Array<{ path: string; type: string; }>;
+    };
+    family_profile?: {
+      pictures?: Array<{ path: string; type: string; }>;
+    };
+  };
 }
 
 export const ProfileCard = ({
@@ -54,15 +63,19 @@ export const ProfileCard = ({
     return null;
   }
 
-  const imageSource = data?.caregiver_profile?.pictures?.[0]?.path
-    ? { uri: data.caregiver_profile.pictures[0].path }
+  // Get profile picture with fallback
+  const imageSource = data.profilePicture
+    ? { uri: data.profilePicture }
     : require('@/assets/icons/fallback.png');
+
+  console.log('Profile picture being used:', imageSource);
 
   return (
     <View style={styles.container}>
       <Image
         source={imageSource}
         style={[styles.image, { height: Math.min(windowHeight * 0.7, 700) }]}
+        onError={(error) => console.log('Image loading error:', error)}
       />
 
       <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>

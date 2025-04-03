@@ -1,77 +1,37 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
-import { ThemedText } from '@/components/ThemedText'
+import { View, StyleSheet } from 'react-native';
+import { ThemedText } from '@/components/ThemedText';
 
-const InfoPill = ({ icon, label, count}: any) => {
-    return (
-        <View style={styles.view}>
-            {icon && (
-                <ThemedText style={styles.icon}>{icon}</ThemedText>
-            )}
-            <ThemedText
-                style={[
-                    styles.label,
-                ]}
-                numberOfLines={2}
-            >
-                {label}
-            </ThemedText>
-            {count &&
-                <View style={styles.count}>
-                    <ThemedText style={styles.countText}>{count}</ThemedText>
-                </View>
-            }
-        </View>
-    )
+interface InfoPillProps {
+  icon: string;
+  label: string;
 }
-const styles = StyleSheet.create({
-    pill: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: 'rgba(38, 29, 42, 0.05)',
-        minHeight: 38,
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        borderRadius: 28,
-        gap: 8,
-    },
-    icon: {
-        fontSize: 16,
-    },
-    label: {
-        fontFamily: 'Poppins',
-        fontSize: 14,
-        color: '#052222',
-        fontWeight: '400',
-        flexShrink: 1,
-    },
-    view: {
-        backgroundColor: '#261D2A0D',
-        flexDirection: 'row',
-        alignItems: 'center',
-        minHeight: 38,
-        paddingVertical: 4,
-        paddingHorizontal: 20,
-        borderRadius: 100,
-        gap: 8,
-    },
-    count :{
-        borderRadius:'50%',
-        width:24,
-        height : 24,
-        padding:4,
-        justifyContent :'center',
-        alignItems:'center',
-        position : 'absolute',
-        top:-10,
-        right : -10,
-        backgroundColor : '#FFFFFF'
-    },
-    countText :{
-        fontWeight : 500,
-        fontSize : 15,
-        lineHeight : 15
-    }
-})
 
-export default InfoPill
+const InfoPill = ({ icon, label }: InfoPillProps) => {
+  return (
+    <View style={styles.pill}>
+      <ThemedText style={styles.icon}>{icon}</ThemedText>
+      <ThemedText style={styles.label}>{label}</ThemedText>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#261D2A0D',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+  },
+  icon: {
+    marginRight: 4,
+    fontSize: 14,
+  },
+  label: {
+    fontSize: 14,
+    color: '#666666',
+  },
+});
+
+export default InfoPill; 
