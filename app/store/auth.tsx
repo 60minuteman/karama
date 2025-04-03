@@ -24,7 +24,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isNavigationReady, setIsNavigationReady] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const { user, logout, hydrated } = useUserStore();
+  const { user, logout, hydrated, onboarding_screen } = useUserStore();
   const rootSegments = useSegments();
   const rootNavigation = useRootNavigation();
 
@@ -36,11 +36,13 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const inAuthGroup = rootSegments[0] === '(auth)';
 
+      if (user && !onboarding_screen && inAuthGroup) {
+        return router.push('/(tabs)/discover');
+      }
+
       if (!user && !inAuthGroup) {
         // If no user and not in auth group, clear everything and redirect
-        logout().then(() => {
-          router.replace('/(auth)');
-        });
+        router.push('/(auth)');
       }
     }, 50);
 

@@ -2,22 +2,22 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
+import { PasswordInput } from '@/components/ui/PasswordInput';
 import { TextInput } from '@/components/ui/TextInput';
 import { Colors } from '@/constants/Colors';
 import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { PasswordInput } from '@/components/ui/PasswordInput';
 
 const CreatePassword = () => {
   const [password, setPassword] = useState<string>('');
   const { phoneNumber, isChecked } = useLocalSearchParams();
-  const { setToken, setUser } = useUserStore();
+  const { setToken, setUser, setOnboardingScreen } = useUserStore();
 
   const createPassword = useMutation({
     mutationFn: async (data: any) => {
@@ -26,16 +26,19 @@ const CreatePassword = () => {
     onSuccess: async (response: any) => {
       try {
         console.log('Password creation response:', response?.data);
-        
+
         if (response?.data?.data?.token) {
           const newToken = response.data.data.token;
           const userData = response.data.data.user;
-          
+
           // Save token
           await AsyncStorage.setItem('userToken', newToken);
-          customAxios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-          
+          customAxios.defaults.headers.common[
+            'Authorization'
+          ] = `Bearer ${newToken}`;
+
           // Update user store with token and user data
+          setOnboardingScreen('create password');
           setToken(newToken);
           setUser(userData);
 
@@ -49,7 +52,8 @@ const CreatePassword = () => {
         Toast.show({
           type: 'error',
           text1: 'Error creating password',
-          text2: error instanceof Error ? error.message : 'Unknown error occurred',
+          text2:
+            error instanceof Error ? error.message : 'Unknown error occurred',
         });
       }
     },
@@ -82,7 +86,8 @@ const CreatePassword = () => {
       Toast.show({
         type: 'error',
         text1: 'Password Requirements:',
-        text2: '• Minimum 8 characters\n• At least 1 uppercase letter\n• At least 1 number\n• No spaces',
+        text2:
+          '• Minimum 8 characters\n• At least 1 uppercase letter\n• At least 1 number\n• No spaces',
       });
     }
   };

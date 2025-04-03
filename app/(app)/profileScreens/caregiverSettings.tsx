@@ -44,21 +44,21 @@ const CaregiverSettings = () => {
   const handleLogout = async () => {
     try {
       // Clear token first
-      await AsyncStorage.removeItem('userToken');
+      //   await AsyncStorage.removeItem('userToken');
 
       // Clear user store
       clearUser();
       logout();
 
       // Clear query cache
-      queryClient.clear();
+      //   queryClient.clear();
 
       // Finally navigate to onboarding
-      router.replace('/(auth)/onboarding');
+      //   router.replace('/(auth)/onboarding');
     } catch (error) {
       console.error('Logout error:', error);
       // Still try to navigate even if cleanup fails
-      router.replace('/(auth)/onboarding');
+      //   router.replace('/(auth)/onboarding');
     }
   };
 

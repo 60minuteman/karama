@@ -3,6 +3,7 @@ import { Colors } from '@/constants/Colors';
 import { FontProvider } from '@/providers/FontProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { useUserStore } from '@/services/state/user';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Slot, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -13,7 +14,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import AuthProvider from './store/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Keep splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -58,18 +58,20 @@ export default function RootLayout() {
     const inAuthGroup = segments[0] === '(auth)';
     const inTabsGroup = segments[0] === '(tabs)';
 
-    if (token && inAuthGroup) {
-      router.replace('/(tabs)/discover');
-    } else if (!token && inTabsGroup) {
-      router.replace('/(auth)/auth');
-    }
+    // if (token && inAuthGroup) {
+    //   router.replace('/(tabs)/discover');
+    // } else if (!token && inTabsGroup) {
+    //   router.replace('/(auth)/auth');
+    // }
 
     // Hide splash screen after navigation is ready
     SplashScreen.hideAsync().catch(console.warn);
   }, [isReady, hydrated, segments, token]);
 
   if (!isReady || !hydrated) {
-    return <View style={{ flex: 1, backgroundColor: Colors.light.background }} />;
+    return (
+      <View style={{ flex: 1, backgroundColor: Colors.light.background }} />
+    );
   }
 
   return (
@@ -79,9 +81,14 @@ export default function RootLayout() {
           <ThemeProvider>
             <FontProvider>
               <AuthProvider>
-                <View style={{ flex: 1, backgroundColor: Colors.light.background }}>
+                <View
+                  style={{ flex: 1, backgroundColor: Colors.light.background }}
+                >
                   <Slot />
-                  <StatusBar style='dark' backgroundColor={Colors.light.background} />
+                  <StatusBar
+                    style='dark'
+                    backgroundColor={Colors.light.background}
+                  />
                   <Toast config={toastConfig} position='top' />
                 </View>
               </AuthProvider>
@@ -92,4 +99,3 @@ export default function RootLayout() {
     </QueryClientProvider>
   );
 }
-
