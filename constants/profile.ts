@@ -1,7 +1,7 @@
 
 const children = [
-    { icon: '🍼', age_group: 'Infant', count: '1'},
-    { icon: '🧸', age_group: 'Toddler', count: '1'},
+    { icon: '🍼', age_group: 'Infant', count: '1' },
+    { icon: '🧸', age_group: 'Toddler', count: '1' },
     { icon: '✏️', age_group: 'Pre Schooler' },
 
 ]
@@ -62,14 +62,15 @@ const schedule = [
     'Fri : 7am - 70pm',
 ]
 const workOptions = [
+    { label: 'Hybrid', icon: '🔗' },
     { label: 'Full Time', icon: '🕐' },
     { label: 'Long Term', icon: '📋' },
     { label: 'Live In', icon: '💤' },
 ]
 const requirements = [
+    { label: 'First Aid', icon: '🏥' },
     { label: 'Can Travel', icon: '✈️' },
     { label: 'Able To Drive', icon: '🚗' },
-    { label: 'First Aid', icon: '🏥' },
     { label: 'Can Swim', icon: '🏊' },
     { label: 'COVID Vaccination', icon: '💉' },
 ]
@@ -99,6 +100,35 @@ const benefits = [
     { id: 'retirement_account' as const, label: 'Retirement Account', icon: '🤑' },
     { id: 'metro_card' as const, label: 'Monthly Metro Card', icon: '🚇' },
 ]
+const diets = [
+    { label: 'Meat Eater', icon: '🍖', },
+    { label: 'Sugar Free', icon: '🚫', },
+
+]
+const writtenPrompts = [
+    {
+        id: 'prompt1',
+        heading: 'Our go to meal is',
+        details: 'Pasta ! any pasta at all',
+    },
+    {
+        id: 'prompt2',
+        heading: 'Our favourite place to go is',
+        details: 'The children museum of arts!',
+    },
+    {
+        id: 'prompt3',
+        heading: 'We are a huge fans of',
+        details: 'Arsenal & Manchester United!',
+    },
+]
+const familyImages: string[] = [
+    require('@/assets/images/d2.png'),
+    require('@/assets/images/d3.png'),
+    require('@/assets/images/d4.png'),
+    require('@/assets/images/d5.png'),
+    require('@/assets/images/d6.png'),
+]
 export {
     children,
     pets,
@@ -114,4 +144,7 @@ export {
     childcareResponsibilities,
     householdResponsibilities,
     benefits,
+    diets,
+    writtenPrompts,
+    familyImages
 }
