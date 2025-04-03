@@ -44,11 +44,15 @@ const FamilyEditProfile = () => {
                                                     </TouchableOpacity>
                                                 </>
                                             ) : (
-                                                <ImageBackground resizeMode='contain' source={require('@/assets/icons/plus.png')} style={styles.photoPlaceholderInner} />
+                                                <View style={styles.photoPlaceholderInner}>
+                                                    <Image style={{ width: 42, height: 42 }} resizeMode='contain' source={require('@/assets/icons/plus.png')} />
+                                                </View>
                                             )}
                                         </View>
                                     ))}
                                 </View>
+                                <ThemedText style={styles.heading}>Tap to edit</ThemedText>
+
                             </View>
                         </View>
                         <View style={styles.section}>
@@ -69,13 +73,13 @@ const FamilyEditProfile = () => {
                         </View>
                         <View style={styles.section}>
                             <View style={styles.subSection}>
-                                <ThemedText>About Us</ThemedText>
+                                <ThemedText style={styles.heading}>About Us</ThemedText>
                             </View>
                             <View style={styles.subSection}>
                                 <View style={styles.subContainer}>
-                                    <View>
-                                        <ThemedText style={styles.text}>Name</ThemedText>
-                                        <ThemedText style={styles.text}>Adebayos</ThemedText>
+                                    <View style={{gap:8}}>
+                                        <ThemedText style={styles.text1}>Name</ThemedText>
+                                        <ThemedText style={styles.text2}>Adebayos</ThemedText>
                                     </View>
                                     <View style={styles.imageContainer}>
                                         <Image style={{ width: '100%', height: '100%' }} source={require('@/assets/icons/chevron-right2.png')} />
@@ -206,8 +210,6 @@ const styles = StyleSheet.create({
         gap: 16,
         alignSelf: 'center',
         borderRadius: 20,
-        borderWidth: 1,
-        marginTop: 24,
         marginBottom: 16,
         alignItems: 'center'
     },
@@ -215,15 +217,15 @@ const styles = StyleSheet.create({
         width: 110,
         height: 110,
         aspectRatio: 1,
-        padding: 3,
-        borderWidth: 1,
+        borderWidth: 3,
         borderRadius: '50%',
         overflow: 'hidden',
-        backgroundColor: '',
+        borderColor: '#FD9204',
     },
     container: {
         marginHorizontal: 16,
-        marginTop: 31,
+        marginTop: 24,
+        gap: 16
     },
     inputStyle: {
         fontFamily: 'Poppins_400Regular',
@@ -313,8 +315,9 @@ const styles = StyleSheet.create({
     },
     photoPlaceholderInner: {
         flex: 1,
-        backgroundColor: '#A4A1A1',
-        opacity: 0.2
+        backgroundColor: 'rgba(164, 161, 161, 0.2)',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     removeButton: {
         position: 'absolute',
@@ -350,7 +353,24 @@ const styles = StyleSheet.create({
         fontWeight: 600,
         fontSize: 16,
         lineHeight: 20,
-        color:'#261D2AE5'
+        color: '#261D2AE5'
+    },
+    text1: {
+        fontFamily: 'Poppins',
+        fontSize: 14,
+        fontWeight: 500,
+        color: "#261D2A4D",
+        lineHeight: 18,
+        marginBottom:8
+
+    },
+    text2: {
+        fontFamily: 'Poppins',
+        color: '#261D2AE5',
+        fontSize: 20,
+        lineHeight: 20,
+        fontWeight: 600
+
     }
 }
 )

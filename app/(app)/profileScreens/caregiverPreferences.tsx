@@ -6,8 +6,8 @@ import { ThemedText } from '@/components/ThemedText';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import InfoPill from '@/app/components/ui/InfoPill';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import LockedIndicator from '../../components/ui/LockedIndicator';
 import { benefits, children, disability, householdResponsibilities, pets, requirements, rules, workOptions } from '@/constants/profile';
+import LockedIndicator from '@/app/components/ui/LockedIndicator';
 
 const CaregiverPreferences = () => {
     const [payType, setPayType] = useState('Hourly');
@@ -84,9 +84,8 @@ const CaregiverPreferences = () => {
                                         }}
                                         onValuesChange={setPayRange}
                                         enabledTwo={true}
-                                        snapped={true}
-                                        sliderLength={270}
-
+                                        snapped={true} 
+                                        sliderLength={300}
                                     />
                                 </View>
                             </View>
@@ -109,7 +108,6 @@ const CaregiverPreferences = () => {
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>I Can Work With</ThemedText>
-                                    <LockedIndicator isEditable />
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {
@@ -122,75 +120,7 @@ const CaregiverPreferences = () => {
                             </View>
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>I Can Work With</ThemedText>
-                                    <LockedIndicator />
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        pets.slice(0, 2).map((pet) => {
-                                            return <InfoPill key={pet.label} label={pet.label} icon={pet.emoji} />
-                                        })
-                                    }
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Work Type</ThemedText>
-                                    <LockedIndicator />
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        workOptions.slice(0, 1).map((work) => {
-                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
-                                        })
-                                    }
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>I Can Work</ThemedText>
-                                    <LockedIndicator />
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        workOptions.slice(1, 2).map((work) => {
-                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
-                                        })
-                                    }
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Duration</ThemedText>
-                                    <LockedIndicator />
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        workOptions.slice(2, 3).map((work) => {
-                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
-                                        })
-                                    }
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>My Certification/Requirement</ThemedText>
-                                    <LockedIndicator />
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        requirements.map((work) => {
-                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
-                                        })
-                                    }
-                                </View>
-                            </View>
-                        </View>
-                        <View style={styles.section}>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Household Responsibilities</ThemedText>
-                                    <LockedIndicator isEditable />
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {
@@ -203,7 +133,6 @@ const CaregiverPreferences = () => {
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Household Rules / Philosophies</ThemedText>
-                                    <LockedIndicator isEditable />
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {
@@ -213,6 +142,10 @@ const CaregiverPreferences = () => {
                                     }
                                 </View>
                             </View>
+                            
+                        </View>
+                        <View style={styles.section}>
+                           
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Benefits I Require</ThemedText>
@@ -226,10 +159,64 @@ const CaregiverPreferences = () => {
                                     }
                                 </View>
                             </View>
-                            <View style={{ backgroundColor: '#FFFFFF', padding: 16, borderRadius: 20, gap: 8 ,marginBottom:25}}>
-                                <ThemedText style={styles.heading}>Anything else you'd like the families to know? </ThemedText>
+                            <View style={styles.subSection}>
+                                <View style={styles.headerStyle}>
+                                    <ThemedText style={styles.heading}>I Can Work With</ThemedText>
+                                </View>
                                 <View style={styles.pillContainer}>
-                                    <ThemedText style={styles.sectionText2}>We are a very sports oriented family. Having a caregiver that is passionate about sports is a huge plus. </ThemedText>
+                                    {
+                                        pets.map((pet) => {
+                                            return <InfoPill key={pet.label} label={pet.label} icon={pet.emoji} />
+                                        })
+                                    }
+                                </View>
+                            </View>
+                            <View style={styles.subSection}>
+                                <View style={styles.headerStyle}>
+                                    <ThemedText style={styles.heading}>Work Type</ThemedText>
+                                </View>
+                                <View style={styles.pillContainer}>
+                                    {
+                                        workOptions.slice(0, 1).map((work) => {
+                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
+                                        })
+                                    }
+                                </View>
+                            </View>
+                            <View style={styles.subSection}>
+                                <View style={styles.headerStyle}>
+                                    <ThemedText style={styles.heading}>I Can Work</ThemedText>
+                                </View>
+                                <View style={styles.pillContainer}>
+                                    {
+                                        workOptions.slice(1, 2).map((work) => {
+                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
+                                        })
+                                    }
+                                </View>
+                            </View>
+                            <View style={styles.subSection}>
+                                <View style={styles.headerStyle}>
+                                    <ThemedText style={styles.heading}>Duration</ThemedText>
+                                </View>
+                                <View style={styles.pillContainer}>
+                                    {
+                                        workOptions.slice(2, 3).map((work) => {
+                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
+                                        })
+                                    }
+                                </View>
+                            </View>
+                            <View style={styles.subSection}>
+                                <View style={styles.headerStyle}>
+                                    <ThemedText style={styles.heading}>My Certification/Requirement</ThemedText>
+                                </View>
+                                <View style={styles.pillContainer}>
+                                    {
+                                        requirements.map((work) => {
+                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
+                                        })
+                                    }
                                 </View>
                             </View>
                         </View>
@@ -245,6 +232,7 @@ const styles = StyleSheet.create({
     container: {
         marginHorizontal: 16,
         marginTop: 31,
+        gap:16,
     },
     header: {
         flexDirection: 'row',
@@ -295,7 +283,7 @@ const styles = StyleSheet.create({
     sliderLabels: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        width: 275
+        width: '100%'
     },
     payTypeContainer: {
         flexDirection: 'row',

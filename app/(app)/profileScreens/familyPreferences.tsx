@@ -6,7 +6,7 @@ import ProfileHeader from '@/components/Profile/ProfileHeader'
 import { ThemedText } from '@/components/ThemedText'
 import LockedIndicator from '../../components/ui/LockedIndicator'
 import InfoPill from '../../components/ui/InfoPill'
-import { benefits, householdResponsibilities, languages, requirements, rules, schedule, workOptions } from '@/constants/profile'
+import { benefits, householdResponsibilities, languages, personality, requirements, rules, schedule, workOptions } from '@/constants/profile'
 
 const FamilyPreferences = () => {
     const [payType, setPayType] = useState('Hourly');
@@ -50,15 +50,6 @@ const FamilyPreferences = () => {
                         <View style={styles.section}>
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>I Can Work With</ThemedText>
-                                    <LockedIndicator isEditable />
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    <InfoPill label={'06/26/2024'} />
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Start date</ThemedText>
                                     <LockedIndicator isEditable />
                                 </View>
@@ -69,7 +60,6 @@ const FamilyPreferences = () => {
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>We need a...</ThemedText>
-                                    <LockedIndicator isEditable />
                                 </View>
                                 <View style={styles.pillContainer}>
                                     <InfoPill label={'Caregiver/Household Manager'} icon={'🧢'} />
@@ -78,25 +68,15 @@ const FamilyPreferences = () => {
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Should be an age range of</ThemedText>
-                                    <LockedIndicator isEditable />
                                 </View>
                                 <View style={styles.pillContainer}>
                                     <InfoPill label={'26 - 30 years old'} />
                                 </View>
                             </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Should have an experience of</ThemedText>
-                                    <LockedIndicator />
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    <InfoPill label={'11-20 years'} />
-                                </View>
-                            </View>
+
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Educational level</ThemedText>
-                                    <LockedIndicator />
                                 </View>
                                 <View style={styles.pillContainer}>
                                     <InfoPill icon={'🎓'} label={'Bachelors Degree'} />
@@ -104,8 +84,7 @@ const FamilyPreferences = () => {
                             </View>
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>ELanguage Requirement</ThemedText>
-                                    <LockedIndicator isEditable />
+                                    <ThemedText style={styles.heading}>Language Requirement</ThemedText>
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {
@@ -119,53 +98,24 @@ const FamilyPreferences = () => {
                             </View>
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Work option</ThemedText>
-                                    <LockedIndicator />
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        workOptions.slice(1, 2).map((work) => {
-                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
-                                        })
-                                    }
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Work Type</ThemedText>
-                                    <LockedIndicator />
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        workOptions.slice(0, 1).map((work) => {
-                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
-                                        })
-                                    }
-                                </View>
-                            </View>
-
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Duration</ThemedText>
-                                    <LockedIndicator />
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        workOptions.slice(2, 3).map((work) => {
-                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
-                                        })
-                                    }
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Requirements/Requirement</ThemedText>
-                                    <LockedIndicator isEditable />
+                                    <ThemedText style={styles.heading}>Requirements/Requirements</ThemedText>
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {
                                         requirements.map((work) => {
                                             return <InfoPill key={work.label} label={work.label} icon={work.icon} />
+                                        })
+                                    }
+                                </View>
+                            </View>
+                            <View style={styles.subSection}>
+                                <View style={styles.headerStyle}>
+                                    <ThemedText style={styles.heading}>Household Responsibilities</ThemedText>
+                                </View>
+                                <View style={styles.pillContainer}>
+                                    {
+                                        householdResponsibilities.map((work) => {
+                                            return <InfoPill key={work.id} label={work.label} icon={work.icon} />
                                         })
                                     }
                                 </View>
@@ -182,7 +132,7 @@ const FamilyPreferences = () => {
                                 <View style={styles.pillContainer}>
                                     {
                                         schedule.map((work) => {
-                                            return <InfoPill key={work} label={work}/>
+                                            return <InfoPill key={work} label={work} />
                                         })
                                     }
                                 </View>
@@ -191,26 +141,58 @@ const FamilyPreferences = () => {
                         <View style={styles.section}>
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Household Responsibilities</ThemedText>
-                                    <LockedIndicator isEditable />
+                                    <ThemedText style={styles.heading}>Should have an experience of</ThemedText>
+                                    <LockedIndicator />
+                                </View>
+                                <View style={styles.pillContainer}>
+                                    <InfoPill label={'11-20 years'} />
+                                </View>
+                            </View>
+                            <View style={styles.subSection}>
+                                <View style={styles.headerStyle}>
+                                    <ThemedText style={styles.heading}>Work option</ThemedText>
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {
-                                        householdResponsibilities.map((work) => {
-                                            return <InfoPill key={work.id} label={work.label} icon={work.icon} />
+                                        workOptions.slice(1, 2).map((work) => {
+                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
                                         })
                                     }
                                 </View>
                             </View>
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Household Rules </ThemedText>
-                                    <LockedIndicator isEditable />
+                                    <ThemedText style={styles.heading}>Caregiver personality</ThemedText>
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {
-                                        rules.map((rule) => {
-                                            return <InfoPill key={rule.label} label={rule.label} icon={rule.icon} />
+                                        personality.map((person) => {
+                                            return <InfoPill key={person.label} label={person.label} icon={person.icon} />
+                                        })
+                                    }
+                                </View>
+                            </View>
+                            <View style={styles.subSection}>
+                                <View style={styles.headerStyle}>
+                                    <ThemedText style={styles.heading}>Work Type</ThemedText>
+                                </View>
+                                <View style={styles.pillContainer}>
+                                    {
+                                        workOptions.slice(0, 1).map((work) => {
+                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
+                                        })
+                                    }
+                                </View>
+                            </View>
+
+                            <View style={styles.subSection}>
+                                <View style={styles.headerStyle}>
+                                    <ThemedText style={styles.heading}>Duration</ThemedText>
+                                </View>
+                                <View style={styles.pillContainer}>
+                                    {
+                                        workOptions.slice(2, 3).map((work) => {
+                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
                                         })
                                     }
                                 </View>
@@ -218,7 +200,6 @@ const FamilyPreferences = () => {
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Benefits </ThemedText>
-                                    <LockedIndicator />
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {
@@ -228,7 +209,7 @@ const FamilyPreferences = () => {
                                     }
                                 </View>
                             </View>
-                            <View style={{ backgroundColor: '#FFFFFF', padding: 16, borderRadius: 20, gap: 8 ,marginBottom:25}}>
+                            <View style={{ backgroundColor: '#FFFFFF', padding: 16, borderRadius: 20, gap: 8, marginBottom: 25 }}>
                                 <ThemedText style={styles.heading}>Anything else you'd like caregivers to know? </ThemedText>
                                 <View style={styles.pillContainer}>
                                     <ThemedText style={styles.sectionText2}>We are a very sports oriented family. Having a caregiver that is passionate about sports is a huge plus. </ThemedText>
@@ -247,6 +228,7 @@ const styles = StyleSheet.create({
     container: {
         marginHorizontal: 16,
         marginTop: 31,
+        gap :16,
     },
     inputStyle: {
         fontFamily: 'Poppins_400Regular',
@@ -325,7 +307,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 20,
         color: '#261D2A'
-    }, 
+    },
     subHeading: {
         fontFamily: 'Poppins_400Regular',
         fontWeight: 400,
