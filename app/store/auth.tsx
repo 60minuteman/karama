@@ -1,71 +1,93 @@
 import { useUserStore } from '@/services/state/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
-import { createContext, useContext, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { router, useRootNavigation, useSegments } from 'expo-router';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 interface AuthContextType {
-  signIn: (data: { token: string }) => Promise<void>;
+  signIn: (token: string) => Promise<void>;
   signOut: () => Promise<void>;
   isLoading: boolean;
+  isLoggedIn: boolean | null;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function useAuth() {
-  return useContext(AuthContext) as AuthContextType;
+  const value = useContext(AuthContext);
+  if (!value) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return value;
 }
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const { setToken, clearUser } = useUserStore();
-  const queryClient = useQueryClient();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isNavigationReady, setIsNavigationReady] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const { user, clearUser, onboarding_screen, logout, hydrated } =
+    useUserStore();
+  const rootSegments = useSegments();
+  const rootNavigation = useRootNavigation();
 
-  const signIn = async (data: { token: string }) => {
-    try {
-      setIsLoading(true);
-      
-      if (!data?.token) {
-        throw new Error('Invalid token format');
+  // Check if the user is authenticated when the app loads
+
+  useEffect(() => {
+    // Ensure everything is ready before attempting navigation
+    if (!rootNavigation?.isReady || !hydrated || !rootSegments) return;
+
+    // Add a longer initial delay to ensure complete mounting
+    const timer = setTimeout(() => {
+      // Double-check navigation readiness
+      if (!rootNavigation.isReady) return;
+
+      const inAuthGroup = rootSegments[0] === '(auth)';
+
+      try {
+        if (user && !onboarding_screen && inAuthGroup) {
+          // Redirect away from auth group if authenticated
+          router.navigate('/(tabs)/discover');
+        } else if (!user && !inAuthGroup) {
+          // Redirect to auth group if not authenticated
+          router.navigate('/(auth)/onboarding');
+        }
+      } catch (error) {
+        console.error('Navigation error:', error);
       }
+    }, 50); // Increased delay to 100ms
 
-      // Save token to AsyncStorage first
-      await AsyncStorage.setItem('userToken', data.token);
-      
-      // Then update store
-      await setToken(data.token);
-      
-      // Finally navigate
-      router.replace('/(tabs)/discover');
+    return () => clearTimeout(timer);
+  }, [
+    user,
+    rootNavigation?.isReady,
+    rootSegments,
+    hydrated,
+    onboarding_screen,
+  ]);
+
+  const signIn = async (token: string) => {
+    try {
+      await AsyncStorage.setItem('userToken', token);
+      setIsLoggedIn(true);
     } catch (error) {
       console.error('Error signing in:', error);
       throw error;
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const signOut = async () => {
     try {
-      setIsLoading(true);
-      
-      // Clear everything first
-      await AsyncStorage.clear();
-      queryClient.clear();
-      await clearUser();
-      
-      // Then navigate
-      router.replace('/(auth)/signInPhone');
+      await AsyncStorage.removeItem('userToken');
+      await logout(); // Clear user state
+      setIsLoggedIn(false);
+      router.replace('/(auth)');
     } catch (error) {
       console.error('Error signing out:', error);
-      router.replace('/(auth)/signInPhone');
-    } finally {
-      setIsLoading(false);
+      throw error;
     }
   };
 
   return (
-    <AuthContext.Provider value={{ signIn, signOut, isLoading }}>
+    <AuthContext.Provider value={{ signIn, signOut, isLoading, isLoggedIn }}>
       {children}
     </AuthContext.Provider>
   );

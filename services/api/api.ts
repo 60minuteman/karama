@@ -42,18 +42,22 @@ export const fetchMatchingCaregivers = async (cursor = '', role: any) => {
   return data;
 };
 
-export const useMatchingCaregivers = (cursor: string, endpoint: string, options?: any) => {
+export const useMatchingCaregivers = (
+  cursor: string,
+  endpoint: string,
+  options?: any
+) => {
   return useQuery({
     queryKey: ['matchingCaregivers', cursor],
     queryFn: async () => {
       const response = await customAxios.get(endpoint, {
-        params: { 
+        params: {
           cursor,
-          page_size: 10 // Request 10 profiles at a time
+          page_size: 10, // Request 10 profiles at a time
         },
         headers: {
-          ...options?.headers
-        }
+          ...options?.headers,
+        },
       });
       return response.data;
     },
@@ -137,6 +141,7 @@ export const fetchCurrentUser = async () => {
 
 export const useCurrentUser = () => {
   const { token } = useUserStore();
+  console.log('token***==========', token);
   return useAuthQuery({
     queryKey: ['current-user'],
     queryFn: fetchCurrentUser,
@@ -145,17 +150,15 @@ export const useCurrentUser = () => {
   });
 };
 
-export const fetchProfile= async (role: any) => {
+export const fetchProfile = async (role: any) => {
   const endpoint =
-    role == 'FAMILY'
-      ? '/family-profile/'
-      : '/caregiver-profile/';
+    role == 'FAMILY' ? '/family-profile/' : '/caregiver-profile/';
 
-  const { data } = await customAxios.get(endpoint)
+  const { data } = await customAxios.get(endpoint);
   return data?.data;
 };
 
-export const useProfile = ( role: any) => {
+export const useProfile = (role: any) => {
   const { token } = useUserStore();
   return useAuthQuery({
     queryKey: ['user-profile'],

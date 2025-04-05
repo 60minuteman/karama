@@ -18,7 +18,8 @@ import {
 } from 'react-native';
 
 export default function Profile() {
-  const { data: currentUser, isLoading: isLoadingCurrentUser } = useCurrentUser();
+  const { data: currentUser, isLoading: isLoadingCurrentUser } =
+    useCurrentUser();
   const router = useRouter();
   const { clearUser } = useUserStore();
   const [fontsLoaded] = useFonts({
@@ -32,9 +33,14 @@ export default function Profile() {
   }
 
   // Get profile picture with fallback
-  const profilePicture = currentUser?.role === 'FAMILY'
-    ? currentUser?.family_profile?.pictures?.find(pic => pic?.type === 'PROFILE_PICTURE')?.path
-    : currentUser?.caregiver_profile?.pictures?.find(pic => pic?.type === 'PROFILE_PICTURE')?.path;
+  const profilePicture =
+    currentUser?.data?.role === 'FAMILY'
+      ? currentUser?.data?.family_profile?.pictures?.find(
+          (pic) => pic?.type === 'PROFILE_PICTURE'
+        )?.path
+      : currentUser?.data?.caregiver_profile?.pictures?.find(
+          (pic) => pic?.type === 'PROFILE_PICTURE'
+        )?.path;
 
   const imageSource = profilePicture
     ? { uri: profilePicture }
@@ -44,23 +50,26 @@ export default function Profile() {
     {
       icon: require('@/assets/icons/edit-profile.png'),
       label: 'Edit profile',
-      route: currentUser?.role === 'FAMILY' 
-        ? '/(app)/profileScreens/familyEditProfile'
-        : '/(app)/profileScreens/caregiverEditProfile',
+      route:
+        currentUser?.data?.role === 'FAMILY'
+          ? '/(app)/profileScreens/familyEditProfile'
+          : '/(app)/profileScreens/caregiverEditProfile',
     },
     {
       icon: require('@/assets/icons/preferences.png'),
       label: 'Preferences',
-      route: currentUser?.role === 'FAMILY'
-        ? '/(app)/profileScreens/familyPreferences'
-        : '/(app)/profileScreens/caregiverPreferences',
+      route:
+        currentUser?.data?.role === 'FAMILY'
+          ? '/(app)/profileScreens/familyPreferences'
+          : '/(app)/profileScreens/caregiverPreferences',
     },
     {
       icon: require('@/assets/icons/settings.png'),
       label: 'Settings',
-      route: currentUser?.role === 'FAMILY'
-        ? '/(app)/profileScreens/familySettings'
-        : '/(app)/profileScreens/caregiverSettings',
+      route:
+        currentUser?.data?.role === 'FAMILY'
+          ? '/(app)/profileScreens/familySettings'
+          : '/(app)/profileScreens/caregiverSettings',
     },
     {
       icon: require('@/assets/icons/help.png'),
@@ -81,23 +90,24 @@ export default function Profile() {
 
           <View style={styles.profileSection}>
             <View style={styles.profileImageContainer}>
-              <Image
-                source={imageSource}
-                style={styles.profileImage}
-              />
+              <Image source={imageSource} style={styles.profileImage} />
               <View style={styles.percentageContainer}>
                 <ThemedText style={styles.percentageText}>90%</ThemedText>
               </View>
             </View>
 
             <View style={styles.profileInfo}>
-              <ThemedText style={styles.name}>{currentUser?.name || 'User'}</ThemedText>
+              <ThemedText style={styles.name}>
+                {currentUser?.data?.name || 'User'}
+              </ThemedText>
               <TouchableOpacity
-                onPress={() => handleNavigation(
-                  currentUser?.role === 'FAMILY' 
-                    ? '/(app)/profileScreens/familyProfileView'
-                    : '/(app)/profileScreens/caregiverProfileView'
-                )}
+                onPress={() =>
+                  handleNavigation(
+                    currentUser?.data?.role === 'FAMILY'
+                      ? '/(app)/profileScreens/familyProfileView'
+                      : '/(app)/profileScreens/caregiverProfileView'
+                  )
+                }
                 activeOpacity={0.7}
               >
                 <ThemedText style={styles.viewProfile}>View profile</ThemedText>
