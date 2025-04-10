@@ -12,12 +12,12 @@ import { ProfileDetails } from '@/components/home/ProfileDetails';
 import { ThemedText } from '@/components/ThemedText';
 import React, { forwardRef, useImperativeHandle } from 'react';
 import {
+  Animated,
+  PanResponder,
   ScrollView,
   StyleSheet,
   useWindowDimensions,
   View,
-  Animated,
-  PanResponder,
 } from 'react-native';
 import ProfileCardLoader from '../cards/ProfileCardLoader';
 
@@ -41,7 +41,7 @@ interface ContainerProps {
     disabilities?: string[];
     address: string;
   } | null;
-  data: any;
+  data?: any;
   onLike?: () => void;
   onReject?: () => void;
 }
@@ -53,203 +53,205 @@ export interface ContainerRef {
 }
 
 // Properly type the forwardRef
-const Container = forwardRef<ContainerRef, ContainerProps>(({ profileData, data, onLike, onReject }, ref) => {
-  const { width: windowWidth } = useWindowDimensions();
-  const isLargeScreen = windowWidth > 768;
-  const containerWidth = Math.min(windowWidth * 0.9, 500);
+const Container = forwardRef<ContainerRef, ContainerProps>(
+  ({ profileData, data, onLike, onReject }, ref) => {
+    const { width: windowWidth } = useWindowDimensions();
+    const isLargeScreen = windowWidth > 768;
+    const containerWidth = Math.min(windowWidth * 0.9, 500);
 
-  // Add animation value
-  const slideAnim = new Animated.Value(0);
-  
-  // Animation functions
-  const animateLike = () => {
-    Animated.timing(slideAnim, {
-      toValue: windowWidth,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(() => {
-      slideAnim.setValue(0);
-      onLike?.();
-    });
-  };
+    // Add animation value
+    const slideAnim = new Animated.Value(0);
 
-  const animateReject = () => {
-    Animated.timing(slideAnim, {
-      toValue: -windowWidth,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(() => {
-      slideAnim.setValue(0);
-      onReject?.();
-    });
-  };
+    // Animation functions
+    const animateLike = () => {
+      Animated.timing(slideAnim, {
+        toValue: windowWidth,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        slideAnim.setValue(0);
+        onLike?.();
+      });
+    };
 
-  // Expose animation functions to parent
-  useImperativeHandle(ref, () => ({
-    animateLike,
-    animateReject
-  }));
+    const animateReject = () => {
+      Animated.timing(slideAnim, {
+        toValue: -windowWidth,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(() => {
+        slideAnim.setValue(0);
+        onReject?.();
+      });
+    };
 
-  // Add debug log
-  console.log('Container received:', { profileData, data });
+    // Expose animation functions to parent
+    useImperativeHandle(ref, () => ({
+      animateLike,
+      animateReject,
+    }));
 
-  if (!profileData || !data) {
-    return (
-      <View style={[styles.container, { width: containerWidth }]}>
-        <View style={styles.emptyStateContainer}>
-          <ThemedText style={styles.emptyStateText}>
-            No profiles available at the moment
-          </ThemedText>
-          <ThemedText style={styles.emptyStateSubText}>
-            Check back later for new matches
-          </ThemedText>
-        </View>
-      </View>
-    );
-  }
+    // Add debug log
+    console.log('Container received:', { profileData, data });
 
-  // Add safety checks for nested data
-  const caregiverProfile = data?.caregiver_profile || {};
-  const pictures = caregiverProfile?.pictures || [];
-  const abilitiesAndCerts = {
-    abilities: caregiverProfile?.required_benfits || [],
-    certifications: [caregiverProfile?.education_level].filter(Boolean)
-  };
-  const experienceWithDisabilities = {
-    disabilities: []
-  };
-  const experienceWithPets = {
-    pets: []
-  };
-
-  const dynamicStyles = StyleSheet.create({
-    container: {
-      alignSelf: 'center',
-      backgroundColor: '#F6F6F6',
-      borderRadius: 20,
-      overflow: 'hidden',
-      width: containerWidth,
-      height: isLargeScreen ? windowWidth * 0.8 : 'auto',
-    },
-    profileCardContainer: {
-      width: '100%',
-      height: isLargeScreen ? '100%' : 'auto',
-    },
-    componentContainer: {
-      width: '100%',
-      padding: containerWidth * 0.02, // Responsive padding
-      backgroundColor: '#ECEBEC',
-      borderRadius: 10,
-      marginBottom: containerWidth * 0.03,
-    },
-  });
-
-  const content = (
-    <>
-      <View style={styles.spacer} />
-      <View style={dynamicStyles.componentContainer}>
-        <ProfileDetails
-          role={profileData.role}
-          experience={profileData.experience}
-          lookingFor={profileData.lookingFor}
-          hourlyRate={profileData.hourlyRate}
-        />
-      </View>
-      <View style={styles.spacer} />
-      <View style={dynamicStyles.componentContainer}>
-        <ExperienceAndLanguages
-          yearsOfExperience={caregiverProfile?.years_of_experience}
-          languages={profileData.languages}
-        />
-      </View>
-      <View style={styles.spacer} />
-      <View style={dynamicStyles.componentContainer}>
-        <Obsession obsession={profileData.obsession} />
-      </View>
-      <View style={styles.spacer} />
-      <View style={dynamicStyles.componentContainer}>
-        <Interests data={data} interests={profileData.interests} />
-      </View>
-      <View style={styles.spacer} />
-      <View style={dynamicStyles.componentContainer}>
-        <Religion
-          religion={profileData.religion}
-          personality={profileData.personality}
-          disabilities={profileData.disabilities}
-          data={data}
-        />
-      </View>
-      <View style={styles.spacer} />
-      <View style={dynamicStyles.componentContainer}>
-        <Responsibilities data={data} />
-      </View>
-      <View style={styles.spacer} />
-      <View style={dynamicStyles.componentContainer}>
-        <Certifications
-          certifications={[
-            ...(abilitiesAndCerts?.abilities || []),
-            ...(abilitiesAndCerts?.certifications || []),
-          ].filter(Boolean)}
-          data={data}
-        />
-      </View>
-      <View style={styles.spacer} />
-      <View style={[dynamicStyles.componentContainer, styles.imageContainer]}>
-        <Image data={pictures[5]?.path || pictures[4]?.path || null} />
-      </View>
-      <View style={styles.spacer} />
-      <View style={dynamicStyles.componentContainer}>
-        <Work
-          animals={[
-            ...(experienceWithDisabilities?.disabilities || []),
-            ...(experienceWithPets?.pets || []),
-          ].filter(Boolean)}
-        />
-      </View>
-      <View style={styles.spacer} />
-      <View style={dynamicStyles.componentContainer}>
-        <Position positions={caregiverProfile?.past_positions || []} />
-      </View>
-      <View style={styles.bottomSpacer} />
-    </>
-  );
-
-  return (
-    <Animated.View 
-      style={[
-        styles.container, 
-        { 
-          width: containerWidth,
-          transform: [{ translateX: slideAnim }]
-        }
-      ]}
-    >
-      {isLargeScreen ? (
-        <View style={styles.largeScreenLayout}>
-          <View style={dynamicStyles.profileCardContainer}>
-            <ProfileCard data={data} {...profileData} />
+    if (!profileData || !data) {
+      return (
+        <View style={[styles.container, { width: containerWidth }]}>
+          <View style={styles.emptyStateContainer}>
+            <ThemedText style={styles.emptyStateText}>
+              No profiles available at the moment
+            </ThemedText>
+            <ThemedText style={styles.emptyStateSubText}>
+              Check back later for new matches
+            </ThemedText>
           </View>
+        </View>
+      );
+    }
+
+    // Add safety checks for nested data
+    const caregiverProfile = data?.caregiver_profile || {};
+    const pictures = caregiverProfile?.pictures || [];
+    const abilitiesAndCerts = {
+      abilities: caregiverProfile?.required_benfits || [],
+      certifications: [caregiverProfile?.education_level].filter(Boolean),
+    };
+    const experienceWithDisabilities = {
+      disabilities: [],
+    };
+    const experienceWithPets = {
+      pets: [],
+    };
+
+    const dynamicStyles = StyleSheet.create({
+      container: {
+        alignSelf: 'center',
+        backgroundColor: '#F6F6F6',
+        borderRadius: 20,
+        overflow: 'hidden',
+        width: containerWidth,
+        height: isLargeScreen ? windowWidth * 0.8 : 'auto',
+      },
+      profileCardContainer: {
+        width: '100%',
+        height: isLargeScreen ? '100%' : 'auto',
+      },
+      componentContainer: {
+        width: '100%',
+        padding: containerWidth * 0.02, // Responsive padding
+        backgroundColor: '#ECEBEC',
+        borderRadius: 10,
+        marginBottom: containerWidth * 0.03,
+      },
+    });
+
+    const content = (
+      <>
+        <View style={styles.spacer} />
+        <View style={dynamicStyles.componentContainer}>
+          <ProfileDetails
+            role={profileData.role}
+            experience={profileData.experience}
+            lookingFor={profileData.lookingFor}
+            hourlyRate={profileData.hourlyRate}
+          />
+        </View>
+        <View style={styles.spacer} />
+        <View style={dynamicStyles.componentContainer}>
+          <ExperienceAndLanguages
+            yearsOfExperience={caregiverProfile?.years_of_experience}
+            languages={profileData.languages}
+          />
+        </View>
+        <View style={styles.spacer} />
+        <View style={dynamicStyles.componentContainer}>
+          <Obsession obsession={profileData.obsession} />
+        </View>
+        <View style={styles.spacer} />
+        <View style={dynamicStyles.componentContainer}>
+          <Interests data={data} interests={profileData.interests} />
+        </View>
+        <View style={styles.spacer} />
+        <View style={dynamicStyles.componentContainer}>
+          <Religion
+            religion={profileData.religion}
+            personality={profileData.personality}
+            disabilities={profileData.disabilities}
+            data={data}
+          />
+        </View>
+        <View style={styles.spacer} />
+        <View style={dynamicStyles.componentContainer}>
+          <Responsibilities data={data} />
+        </View>
+        <View style={styles.spacer} />
+        <View style={dynamicStyles.componentContainer}>
+          <Certifications
+            certifications={[
+              ...(abilitiesAndCerts?.abilities || []),
+              ...(abilitiesAndCerts?.certifications || []),
+            ].filter(Boolean)}
+            data={data}
+          />
+        </View>
+        <View style={styles.spacer} />
+        <View style={[dynamicStyles.componentContainer, styles.imageContainer]}>
+          <Image data={pictures[5]?.path || pictures[4]?.path || null} />
+        </View>
+        <View style={styles.spacer} />
+        <View style={dynamicStyles.componentContainer}>
+          <Work
+            animals={[
+              ...(experienceWithDisabilities?.disabilities || []),
+              ...(experienceWithPets?.pets || []),
+            ].filter(Boolean)}
+          />
+        </View>
+        <View style={styles.spacer} />
+        <View style={dynamicStyles.componentContainer}>
+          <Position positions={caregiverProfile?.past_positions || []} />
+        </View>
+        <View style={styles.bottomSpacer} />
+      </>
+    );
+
+    return (
+      <Animated.View
+        style={[
+          styles.container,
+          {
+            width: containerWidth,
+            transform: [{ translateX: slideAnim }],
+          },
+        ]}
+      >
+        {isLargeScreen ? (
+          <View style={styles.largeScreenLayout}>
+            <View style={dynamicStyles.profileCardContainer}>
+              <ProfileCard data={data} {...profileData} />
+            </View>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.scrollContent}
+            >
+              {content}
+            </ScrollView>
+          </View>
+        ) : (
           <ScrollView
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollContent}
           >
+            <View style={dynamicStyles.profileCardContainer}>
+              <ProfileCard data={data} {...profileData} />
+            </View>
             {content}
           </ScrollView>
-        </View>
-      ) : (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-        >
-          <View style={dynamicStyles.profileCardContainer}>
-            <ProfileCard data={data} {...profileData} />
-          </View>
-          {content}
-        </ScrollView>
-      )}
-    </Animated.View>
-  );
-});
+        )}
+      </Animated.View>
+    );
+  }
+);
 
 // Export the component
 export { Container };

@@ -1,8 +1,8 @@
-import React from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { router } from 'expo-router';
 import { ThemedText } from '@/components/ThemedText';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import React from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type MessageHeaderProps = {
@@ -11,35 +11,53 @@ type MessageHeaderProps = {
   onTabChange: (tab: 'chat' | 'profile') => void;
 };
 
-export function MessageHeader({ name, activeTab, onTabChange }: MessageHeaderProps) {
+export function MessageHeader({
+  name,
+  activeTab,
+  onTabChange,
+}: MessageHeaderProps) {
   const insets = useSafeAreaInsets();
-  
+  const router = useRouter();
+
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={24} color="#002140" />
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.backButton}
+        >
+          <Ionicons name='chevron-back' size={24} color='#002140' />
         </TouchableOpacity>
         <ThemedText style={styles.name}>{name}</ThemedText>
         <TouchableOpacity style={styles.menuButton}>
-          <Ionicons name="ellipsis-vertical" size={24} color="#002140" />
+          <Ionicons name='ellipsis-vertical' size={24} color='#002140' />
         </TouchableOpacity>
       </View>
-      
+
       <View style={styles.tabs}>
-        <TouchableOpacity 
-          style={[styles.tab, activeTab === 'chat' && styles.activeTab]} 
+        <TouchableOpacity
+          style={[styles.tab, activeTab === 'chat' && styles.activeTab]}
           onPress={() => onTabChange('chat')}
         >
-          <ThemedText style={[styles.tabText, activeTab === 'chat' && styles.activeTabText]}>
+          <ThemedText
+            style={[
+              styles.tabText,
+              activeTab === 'chat' && styles.activeTabText,
+            ]}
+          >
             Chat
           </ThemedText>
         </TouchableOpacity>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.tab, activeTab === 'profile' && styles.activeTab]}
           onPress={() => onTabChange('profile')}
         >
-          <ThemedText style={[styles.tabText, activeTab === 'profile' && styles.activeTabText]}>
+          <ThemedText
+            style={[
+              styles.tabText,
+              activeTab === 'profile' && styles.activeTabText,
+            ]}
+          >
             Profile
           </ThemedText>
         </TouchableOpacity>
@@ -101,4 +119,4 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '600',
   },
-}); 
+});

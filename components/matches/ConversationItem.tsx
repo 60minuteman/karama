@@ -1,9 +1,11 @@
 import { ThemedText } from '@/components/ThemedText';
 import { getUserById, getUserDataById } from '@/services/chat';
+import { useUserStore } from '@/services/state/user';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
+import { io } from 'socket.io-client';
 
 type ConversationItemProps = {
   imageUrl: string;
@@ -12,6 +14,7 @@ type ConversationItemProps = {
   time: string;
   onPress: () => void;
   otherUser: any;
+  conversation: any;
 };
 
 export function ConversationItem({
@@ -21,8 +24,13 @@ export function ConversationItem({
   time,
   onPress,
   otherUser,
+  conversation,
 }: ConversationItemProps) {
   const [otherUserData, setOtherUserData] = useState<any>(null);
+  const { token, user } = useUserStore();
+  const [chatHistory, setChatHistory] = useState<any>([]);
+
+  console.log('conversatio================', conversation);
 
   useEffect(() => {
     console.log('otherUser', otherUser);
@@ -33,6 +41,8 @@ export function ConversationItem({
     };
     fetchOtherUserData();
   }, []);
+
+  console.log('conversation', conversation);
 
   const renderRightActions = () => {
     return (
@@ -72,7 +82,7 @@ export function ConversationItem({
             <View style={styles.content}>
               <View style={styles.header}>
                 <ThemedText style={styles.name}>
-                  {otherUserData?.name}
+                  {conversation?.recipient?.name}
                 </ThemedText>
                 <ThemedText style={styles.time}>{time}</ThemedText>
               </View>

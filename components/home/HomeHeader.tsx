@@ -1,4 +1,5 @@
 import { Colors } from '@/constants/Colors';
+import { useCurrentUser } from '@/services/api/api';
 import { useUserStore } from '@/services/state/user';
 import { Ionicons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
@@ -8,8 +9,23 @@ import Toast from 'react-native-toast-message';
 
 export const HomeHeader = () => {
   const { logout, clearUser } = useUserStore();
+  const { data: currentUser, isLoading: isLoadingCurrentUser } =
+    useCurrentUser();
 
   const router = useRouter();
+
+  const profilePicture =
+    currentUser?.data?.role === 'FAMILY'
+      ? currentUser?.data?.family_profile?.pictures?.find(
+          (pic) => pic?.type === 'PROFILE_PICTURE'
+        )?.path
+      : currentUser?.data?.caregiver_profile?.pictures?.find(
+          (pic) => pic?.type === 'PROFILE_PICTURE'
+        )?.path;
+
+  const imageSource = profilePicture
+    ? { uri: profilePicture }
+    : require('@/assets/images/profile-placeholder.jpg');
 
   const handleUndoSwipe = () => {
     // This would trigger the undo action to bring back the last unliked profile card
@@ -56,7 +72,7 @@ export const HomeHeader = () => {
           onPress={() => router.push('/profile')}
         >
           <Image
-            source={require('@/assets/images/profile-placeholder.png')}
+            source={imageSource}
             style={styles.profileImage}
             resizeMode='cover'
           />

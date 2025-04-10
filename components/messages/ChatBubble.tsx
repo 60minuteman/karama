@@ -20,24 +20,11 @@ export function ChatBubble({
   isRead,
   isDelivered,
 }: ChatBubbleProps) {
-  console.log(
-    'timestamp',
-    new Date(Number(timestamp) * 1000).toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true,
-    })
-  );
+  console.log('timestamp', timestamp);
   if (variant === 'system') {
     return (
       <View style={styles.systemContainer}>
-        <ThemedText style={styles.systemDate}>
-          {new Date(Number(timestamp) * 1000).toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true,
-          }) || ''}
-        </ThemedText>
+        <ThemedText style={styles.systemDate}>{timestamp}</ThemedText>
         <View style={styles.systemBubble}>
           <ThemedText style={styles.systemText}>{message}</ThemedText>
         </View>
@@ -86,11 +73,7 @@ export function ChatBubble({
               isReceived ? styles.receivedTimestamp : styles.sentTimestamp,
             ]}
           >
-            {new Date(Number(timestamp) * 1000).toLocaleTimeString('en-US', {
-              hour: 'numeric',
-              minute: 'numeric',
-              hour12: true,
-            }) || ''}
+            {timestamp}
           </ThemedText>
           {renderTicks()}
         </View>

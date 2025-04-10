@@ -1,3 +1,4 @@
+import { getSocket } from '@/app/_layout';
 import { Container } from '@/components/home/Container';
 import MessageScreenSkeleton from '@/components/matches/MessageSkeleton';
 import { ChatBubble } from '@/components/messages/ChatBubble';
@@ -21,6 +22,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import { io } from 'socket.io-client';
 
 interface Message {
   id: string;
@@ -30,9 +32,8 @@ interface Message {
 }
 
 export default function MessageScreen() {
-  const { name, otherUserId } = useLocalSearchParams();
+  const { name, recipientId, senderId } = useLocalSearchParams();
   const { id } = useLocalSearchParams();
-  console.log('name', name, 'id', id);
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState<'chat' | 'profile'>('chat');
   const [otherUserData, setOtherUserData] = useState<any>(null);
@@ -40,6 +41,10 @@ export default function MessageScreen() {
   const [currentUserId, setCurrentUserId] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const firebaseUser = useUserStore((state) => state.firebaseCurrentUser);
+  const { token, user } = useUserStore();
+  const socket: any = getSocket();
+
+  console.log('current logged in user id:', user?.user_id);
 
   useEffect(() => {
     const fetchOtherUserData = async () => {
@@ -54,7 +59,6 @@ export default function MessageScreen() {
         if (userId) {
           setCurrentUserId(userId);
         }
-        console.log('userData', userData);
         setOtherUserData(userData);
       } finally {
         setIsLoading(false);
@@ -62,8 +66,6 @@ export default function MessageScreen() {
     };
     fetchOtherUserData();
   }, []);
-
-  console.log('messages', messages);
 
   useEffect(() => {
     const unsubscribe = getChatMessages(id as string, setMessages);
@@ -73,6 +75,7 @@ export default function MessageScreen() {
       }
     }; // Cleanup listener on unmount
   }, [id]);
+  console.log('senderId++++++++++++', senderId);
 
   // Mock profile data to pass to Container component
   const profileData = {
@@ -95,48 +98,59 @@ export default function MessageScreen() {
     disabilities: ['Dyslexia', 'ADHD'],
   };
 
-  const handleSend = async () => {
-    try {
-      const currentUser = firebaseUser;
-      if (!currentUser?.email) {
-        throw new Error('No user email found');
-      }
-      const userId = await getUserIdByEmail(currentUser.email);
-      if (!userId) {
-        throw new Error('No user ID found');
-      }
-      const userData = await getUserDataById(userId);
-      console.log(
-        'userData',
-        // userData,
-        id,
-        currentUserId,
-        userData?.name,
-        message.trim()
-      );
-      // setCurrentUserId(userId);
-      await sendMessage(
-        id as string,
-        currentUserId,
-        userData?.name,
-        'https://example.com/avatar.jpg',
-        message.trim()
-      );
-      setMessage('');
-      console.log('message sent');
-    } catch (error) {
-      console.error('Error sending message:', error);
-      // Handle error appropriately, e.g. show error message to user
-    }
-  };
-
   const handleBack = () => {
     router.back();
   };
 
+  const handleSendMessage: any = () => {
+    socket.emit('sendMessage', {
+      conversationId: id,
+      text: message,
+    });
+    setMessage('');
+  };
+
+  useEffect(() => {
+    socket.emit('getChatHistory', {
+      conversationId: id,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('chatHistory', (data: any) => {
+        setMessages(data?.messages);
+        setIsLoading(false);
+      });
+
+      socket.on('newMessage conversationUpdated', (data: any) => {
+        // console.log('newMessage=++++++++++++', data?.sender?.user_id);
+        // setMessages(data);
+      });
+
+      socket.on('exception', (data: any) => {
+        console.log('exception', data);
+      });
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    socket.on('newMessage', (data: any) => {
+      console.log('newMessage===========', data?.sender?.id, socket);
+      setMessages((prevMessages) => {
+        const messageExists = prevMessages.some((msg) => msg.id === data.id);
+        if (!messageExists) {
+          return [...prevMessages, data];
+        }
+        return prevMessages;
+      });
+    });
+  }, [socket]);
+
+  // console.log('messages=====+++++++', messages);
+
   const renderMessage = ({ item }: { item: Message }) => {
-    console.log('currentUserId sender', item?.senderId === currentUserId);
-    console.log('item', item);
+    console.log('item++++++++++++', item?.sender?.id || item?.sender?.user_id);
     if (item.senderId === 'system') {
       return (
         <View style={styles.systemContainer}>
@@ -147,8 +161,21 @@ export default function MessageScreen() {
     return (
       <ChatBubble
         message={item.text}
-        timestamp={item?.createdAt?.seconds}
-        variant={item?.senderId === currentUserId ? 'sent' : 'received'}
+        timestamp={
+          item?.created_at
+            ? new Date(item.created_at).toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+              })
+            : ''
+        }
+        variant={
+          item?.sender?.user_id === user?.user_id ||
+          item?.sender?.id === user?.user_id
+            ? 'sent'
+            : 'received'
+        }
       />
     );
   };
@@ -160,7 +187,7 @@ export default function MessageScreen() {
   return (
     <View style={styles.container}>
       <MessageHeader
-        name={otherUserData?.name}
+        name={name}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onBack={handleBack}
@@ -199,7 +226,7 @@ export default function MessageScreen() {
             <MessageInput
               value={message}
               onChangeText={setMessage}
-              onSend={handleSend}
+              onSend={handleSendMessage}
             />
           </View>
         </KeyboardAvoidingView>

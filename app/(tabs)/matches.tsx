@@ -15,7 +15,7 @@ import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { io } from 'socket.io-client';
+import { getSocket } from '../_layout';
 
 export default function Matches() {
   const [conversations, setConversations] = useState<any>([]);
@@ -24,67 +24,131 @@ export default function Matches() {
   const { data: completeMatches, isLoading: isLoadingCompleteMatches } =
     useCompleteMatches(currentUser?.data?.role);
   const { token, user } = useUserStore();
+  const [isLoading, setIsLoading] = useState(true);
+  const [filteredMatches, setFilteredMatches] = useState<any>([]);
 
-  console.log('user_id from user object:', user?.user_id);
-
-  const socket = io('wss://starfish-app-7pbch.ondigitalocean.app', {
-    path: '/chat',
-    transports: ['websocket'],
-    query: {
-      userId: `${user?.user_id}`,
-      token: `${token}`,
-    },
-    auth: {
-      token: `${token}`,
-    },
-  });
-
-  useEffect(() => {
-    socket.emit('getAllConversations');
-  }, []);
+  console.log('user_id from user object:', conversations);
+  console.log('user_id from user completeMatches:', completeMatches?.data);
+  const socket = getSocket();
 
   useEffect(() => {
     if (socket) {
-      console.log('socket before', socket);
       socket.emit('getAllConversations');
+      // socket.emit('getChatHistory');
       socket.on('allConversations', (data) => {
+        setIsLoading(false);
+        setConversations(data);
         console.log('allConversations', data);
-        // setConversations(data?.eventEarnings);
       });
       socket.on('exception', (data) => {
+        setIsLoading(false);
         console.log('exception', data);
-        // setConversations(data?.eventEarnings);
       });
-      console.log('socket after');
+      socket.on('newMessage conversationUpdated', (data: any) => {
+        setIsLoading(false);
+        console.log('newMessage===========', data);
+        // setMessages(data);
+      });
     }
-  }, [socket]);
+  }, [user?.user_id, token, socket]);
 
-  console.log(
-    'lfnskanfs',
-    completeMatches?.data?.matches,
-    currentUser?.data?.role
-  );
+  useEffect(() => {
+    if (completeMatches?.data?.matches && conversations) {
+      const conversationIds = conversations.map(
+        (conv: any) => conv?.recipient?.id
+      );
+      console.log('conversationIds', conversationIds);
+      const filtered = completeMatches?.data?.matches?.filter(
+        (match: any) =>
+          !conversationIds.includes(match?.caregiver_profile?.user?.user_id)
+      );
+      console.log('filtered', filtered);
+      setFilteredMatches(filtered);
+    }
+  }, [completeMatches?.data?.matches, conversations]);
+
+  console.log('lfnskanfs=========', filteredMatches);
 
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ThemedText style={styles.title}>Matches</ThemedText>
-        {isLoadingCompleteMatches ? (
+        {isLoadingCompleteMatches || isLoading ? (
           <MatchesSkeleton />
         ) : (
           <>
-            {completeMatches?.data?.matches?.length < 1 ? (
+            {filteredMatches?.length < 1 && conversations?.length < 1 ? (
               <EmptyMatches />
             ) : (
               <>
-                <SearchBar />
+                <SearchBar
+                  // value={searchQuery}
+                  // onChangeText={setSearchQuery}
+                  onSearch={() => {}}
+                />
+                {/* <SearchBar />
                 <View style={styles.matchesScroll}>
                   {completeMatches?.data?.matches?.map(
                     (match: any, index: any) => (
                       <MatchCircle key={index} match={match} />
                     )
                   )}
-                </View>
+                </View> */}
+
+                {filteredMatches?.length > 0 && (
+                  <View style={styles.section}>
+                    <ThemedText style={styles.sectionTitle}>Matches</ThemedText>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.matchesScroll}
+                    >
+                      {filteredMatches?.map((match: any, index: any) => (
+                        <MatchCircle key={index} match={match} />
+                      ))}
+                    </ScrollView>
+                  </View>
+                )}
+
+                {conversations?.length > 0 && (
+                  <View style={styles.section}>
+                    <View style={styles.conversationsHeader}>
+                      <ThemedText style={styles.sectionTitle}>
+                        Conversations
+                      </ThemedText>
+                      <ThemedText style={styles.filterText}>All</ThemedText>
+                    </View>
+
+                    <ScrollView>
+                      {conversations.map((conversation: any) => (
+                        <ConversationItem
+                          key={conversation.id}
+                          imageUrl={conversation?.recipient?.image}
+                          name={conversation?.recipient?.name}
+                          otherUser={conversation?.recipient?.name}
+                          lastMessage={conversation?.last_message?.text}
+                          time={
+                            conversation?.last_message?.timestamp
+                              ? new Date(
+                                  conversation?.last_message?.timestamp
+                                ).toLocaleTimeString('en-US', {
+                                  hour: 'numeric',
+                                  minute: 'numeric',
+                                  hour12: true,
+                                })
+                              : ''
+                          }
+                          conversation={conversation}
+                          onPress={() =>
+                            router.push(
+                              `/messages/${conversation.id}?name=${conversation?.recipient?.name}&recipientId=${conversation?.recipient?.id}&senderId=${conversation?.creator?.id}`
+                            )
+                          }
+                        />
+                      ))}
+                    </ScrollView>
+                  </View>
+                )}
               </>
             )}
           </>
@@ -129,8 +193,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingRight: 16,
-    marginBottom: 12,
-    marginTop: -28,
   },
   filterText: {
     fontSize: 14,
