@@ -11,8 +11,6 @@ const useAuthQuery = (...options: any) => {
   // const { setUser, token, clear } = useAuth();
   const { token } = useUserStore();
 
-  console.log('token', token);
-
   if (token) {
     if (
       query?.error?.response?.status === 401 ||

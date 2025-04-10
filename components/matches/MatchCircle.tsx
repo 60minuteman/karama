@@ -1,8 +1,17 @@
+import useAuthMutation from '@/hooks/useAuthMutation';
+import customAxios from '@/services/api/envConfig';
 import { getOrCreateChatRoom, getUserIdByEmail } from '@/services/chat';
 import { useUserStore } from '@/services/state/user';
 import { router } from 'expo-router';
-import React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import {
+  Animated,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import Toast from 'react-native-toast-message';
 
 interface MatchCircleProps {
   imageUrl?: string;
@@ -17,46 +26,67 @@ export const MatchCircle = ({
   onPress,
   match,
 }: MatchCircleProps) => {
-  console.log('imageUrl***', match?.caregiver_profile?.user);
-  const firebaseUser = useUserStore((state) => state.firebaseCurrentUser);
+  const [isLoading, setIsLoading] = useState(false);
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+
+  const createMessage: any = useAuthMutation({
+    mutationFn: (data: any) => {
+      return customAxios.post(`/chats`, data);
+    },
+    onSuccess: async (response: any) => {
+      console.log('response', response?.data?.data);
+      handleImageLoad();
+      router.push(
+        `/messages/${response?.data?.data?.id}?name=${match?.caregiver_profile?.name}`
+      );
+    },
+    onError: (error: any) => {
+      console.error('error:', error?.response?.data);
+      handleImageLoad();
+      Toast.show({
+        type: 'error',
+        text1: 'Something went wrong',
+        text2: error?.response?.data?.message || 'Please try again',
+      });
+    },
+  });
 
   const handleCreateRoom = async () => {
-    try {
-      const currentUser = firebaseUser;
-      // console.log('Current user:', currentUser?.email);
-      if (!currentUser?.email) {
-        throw new Error('No user email found');
-      }
-      const userId1 = await getUserIdByEmail(currentUser?.email);
-      const userId2 = await getUserIdByEmail(
-        `karama${match?.caregiver_profile?.user?.phone_number}@mail.com`
-      );
-      console.log('userId1', userId1, 'userId2', userId2);
-      if (!userId1 || !userId2) {
-        throw new Error('No user ID found');
-      }
-      const room = await getOrCreateChatRoom(userId1, userId2);
-
-      if (room) {
-        router.push(`/messages/${room?.id}?name=${userId2}`);
-      }
-      console.log('Room created:', room);
-    } catch (error) {
-      console.error('Error creating room:', error);
-    }
+    setIsLoading(true);
+    createMessage.mutate({
+      recipientId: match?.caregiver_profile?.user?.user_id,
+      text: 'Hello',
+    });
   };
 
+  const handleImageLoad = () => {
+    setIsLoading(false);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  console.log('caregiver name:', match?.caregiver_profile?.name);
+
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity onPress={handleCreateRoom} activeOpacity={0.7}>
       <View style={[styles.container, isActive && styles.activeContainer]}>
-        <Image
-          source={
-            imageUrl ? { uri: imageUrl } : require('@/assets/images/img.png')
-          }
-          style={styles.image}
-          resizeMode='cover'
-          defaultSource={require('@/assets/images/img.png')}
-        />
+        {isLoading && <View style={styles.skeleton} />}
+        <Animated.View style={{ opacity: fadeAnim }}>
+          <Image
+            source={
+              match?.caregiver_profile?.pictures[0]?.path
+                ? { uri: match?.caregiver_profile?.pictures[0]?.path }
+                : require('@/assets/images/img.png')
+            }
+            style={styles.image}
+            resizeMode='cover'
+            defaultSource={require('@/assets/images/img.png')}
+            onLoad={handleImageLoad}
+          />
+        </Animated.View>
       </View>
     </TouchableOpacity>
   );
@@ -78,5 +108,11 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%',
+  },
+  skeleton: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#E0E0E0',
   },
 });

@@ -12,6 +12,7 @@ import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
+import { io } from 'socket.io-client';
 import AuthProvider, { useAuth } from './store/auth';
 
 // Keep splash screen visible while we fetch resources
@@ -21,6 +22,8 @@ SplashScreen.setOptions({
   duration: 1000,
   fade: true,
 });
+
+console.log('useUserStore.getState().token', useUserStore.getState().token);
 
 export const queryClient = new QueryClient({
   defaultOptions: {

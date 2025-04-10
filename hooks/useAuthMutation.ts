@@ -11,8 +11,6 @@ const useAuthMutation = (...options: any) => {
   // const { setUser, token, clear } = useAuth();
   const { token } = useUserStore();
 
-  console.log('token', token);
-
   if (token) {
     if (
       mutation?.error?.response?.status === 401 ||

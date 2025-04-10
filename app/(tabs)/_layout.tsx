@@ -1,6 +1,8 @@
 import { Colors } from '@/constants/Colors';
+import { useUserStore } from '@/services/state/user';
 import { Tabs } from 'expo-router';
 import { Image } from 'react-native';
+import { io } from 'socket.io-client';
 
 const navImages = {
   You: require('@/assets/nav/You.png'),
@@ -14,6 +16,22 @@ const navImages = {
   Community: require('@/assets/nav/Community.png'),
   'active-Community': require('@/assets/nav/Community-active.png'),
 };
+
+const token = useUserStore.getState().token;
+const user = useUserStore.getState().user;
+
+console.log('user======+++++++++', user, token);
+
+export const socket = io('wss://starfish-app-7pbch.ondigitalocean.app', {
+  path: '/chat',
+  transports: ['websocket'],
+  query: {
+    userId: 'USER-01JR0M9P2Y16E7EQFJQY9Q9XSS',
+  },
+  auth: {
+    token: `Bearer ${token}`,
+  },
+});
 
 export default function TabsLayout() {
   return (
@@ -30,7 +48,7 @@ export default function TabsLayout() {
           fontFamily: 'Poppins_400Regular',
           fontSize: 12,
           width: 'auto',
-          flexWrap: 'nowrap'
+          flexWrap: 'nowrap',
         },
         headerShown: false,
       }}

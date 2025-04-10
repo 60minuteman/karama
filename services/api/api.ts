@@ -141,7 +141,6 @@ export const fetchCurrentUser = async () => {
 
 export const useCurrentUser = () => {
   const { token } = useUserStore();
-  console.log('token***==========', token);
   return useAuthQuery({
     queryKey: ['current-user'],
     queryFn: fetchCurrentUser,
@@ -184,6 +183,27 @@ export const useCompletedMatches = (role: string) => {
   return useAuthQuery({
     queryKey: ['completed-matches', role],
     queryFn: () => fetchCompletedMatches(role),
+    retry: 3,
+    enabled: !!token && !!role,
+  });
+};
+
+export const fetchCompleteMatches = async (role: string) => {
+  const endpoint =
+    role === 'FAMILY'
+      ? '/family-matches/completed-matches'
+      : '/caregiver-matches/completed-matches';
+
+  const { data } = await customAxios.get(endpoint);
+  return data;
+};
+
+export const useCompleteMatches = (role: string) => {
+  const { token } = useUserStore();
+
+  return useAuthQuery({
+    queryKey: ['complete-matches', role],
+    queryFn: () => fetchCompleteMatches(role),
     retry: 3,
     enabled: !!token && !!role,
   });

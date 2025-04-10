@@ -189,13 +189,6 @@ export default function DiscoverScreen() {
     }
   }, [data, currentIndex]);
 
-  console.log('Query Data:', data);
-  console.log('Profiles:', profiles);
-  console.log('Current Index:', currentIndex);
-  console.log('Current Profile:', currentProfile);
-
-  console.log('nextCursor***', nextCursor);
-
   const moveToNextProfile = useCallback(() => {
     if (currentIndex < profiles.length - 1) {
       setCurrentIndex(currentIndex + 1);
@@ -420,10 +413,10 @@ export default function DiscoverScreen() {
     : null;
 
   // Add debug logs
-  console.log('Data received:', data?.data?.scored_caregivers);
-  console.log('Current Index:', currentIndex);
-  console.log('Current Profile:', currentProfile);
-  console.log('Transformed Profile Data:', profileData);
+  // console.log('Data received:', data?.data?.scored_caregivers);
+  // console.log('Current Index:', currentIndex);
+  // console.log('Current Profile:', currentProfile);
+  // console.log('Transformed Profile Data:', profileData);
 
   const handleLike = (index: number) => {
     submitLike.mutate();
