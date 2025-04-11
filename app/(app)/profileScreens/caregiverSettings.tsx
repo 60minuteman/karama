@@ -49,12 +49,16 @@ const CaregiverSettings = () => {
     queryClient.clear();
   };
 
+  const handleBack = () => {
+    router.push('/(tabs)/profile');
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView style={{ flex: 1 }}>
         <ProfileHeader
           heading='Settings'
-          onBack={() => router.push('/(tabs)/profile')}
+          onBack={handleBack}
         />
         <ScrollView contentContainerStyle={{ paddingBottom: 160 }}>
           <ThemedView style={styles.container}>

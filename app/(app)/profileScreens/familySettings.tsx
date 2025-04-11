@@ -30,10 +30,14 @@ const FamilySettings = () => {
     // router.replace('/(auth)/onboarding');
   };
 
+  const handleBack = () => {
+    router.push('/(tabs)/profile');
+  };
+
   return (
     <SafeAreaView>
       <ThemedView>
-        <ProfileHeader heading='Settings' />
+        <ProfileHeader heading='Settings' onBack={handleBack} />
         <ScrollView contentContainerStyle={{ paddingBottom: 160 }}>
           <ThemedView style={styles.container}>
             <View style={styles.section}>
