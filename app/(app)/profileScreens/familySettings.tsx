@@ -14,6 +14,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert
 } from 'react-native';
 
 const FamilySettings = () => {
@@ -32,6 +33,27 @@ const FamilySettings = () => {
 
   const handleBack = () => {
     router.push('/(tabs)/profile');
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to delete your account? This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        { 
+          text: "Delete", 
+          onPress: () => {
+            // Handle delete account logic here
+            console.log("Delete account");
+          },
+          style: "destructive"
+        }
+      ]
+    );
   };
 
   return (
@@ -86,7 +108,7 @@ const FamilySettings = () => {
                 </ThemedText>
               </View>
             </View>
-            <View style={styles.section}>
+            {/* <View style={styles.section}>
               <ThemedText style={styles.text}>Notifications </ThemedText>
               <View style={styles.subSection}>
                 <TouchableOpacity>
@@ -145,7 +167,7 @@ const FamilySettings = () => {
                   </View>
                 </TouchableOpacity>
               </View>
-            </View>
+            </View> */}
             <View style={styles.section}>
               <ThemedText style={styles.text}>
                 For Support Please Email{' '}
@@ -157,8 +179,9 @@ const FamilySettings = () => {
             <View style={styles.section2}>
               <TouchableOpacity
                 style={[styles.button, { backgroundColor: '#261D2A1A' }]}
+                onPress={handleDelete}
               >
-                <ThemedText style={[styles.buttonText, { color: '#261D2A4D' }]}>
+                <ThemedText style={[styles.buttonText, { color: '#052222' }]}>
                   Delete account
                 </ThemedText>
               </TouchableOpacity>

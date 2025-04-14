@@ -1,4 +1,4 @@
-import { View, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, StyleSheet, ActivityIndicator, Alert } from 'react-native'
 import React from 'react'
 import { ThemedView } from '@/components/ThemedView'
 import ProfileHeader from '@/components/Profile/ProfileHeader'
@@ -47,6 +47,14 @@ const CaregiverProfileView = () => {
         const today = new Date();
         return today.getFullYear() - birth.getFullYear();
     }
+
+    const handleEdit = () => {
+        Alert.alert(
+            "Feature Not Available",
+            "This feature is not available yet. We will notify you when it becomes available.",
+            [{ text: "OK" }]
+        );
+    };
 
     if (caregiverProfileLoading) {
     return (
@@ -137,7 +145,7 @@ const CaregiverProfileView = () => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <ThemedView style={styles.container}>
-                <ProfileHeader heading='Profile' edit onBack={() => router.push('/profile')} />
+                <ProfileHeader heading='Profile' edit onEdit={handleEdit} onBack={() => router.push('/profile')} />
                 <View style={styles.contentContainer}>
                     <Container 
                         profileData={profileData}

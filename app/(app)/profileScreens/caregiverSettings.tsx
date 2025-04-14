@@ -15,6 +15,7 @@ import {
   Switch,
   TouchableOpacity,
   View,
+  Alert
 } from 'react-native';
 
 interface SettingsState {
@@ -51,6 +52,26 @@ const CaregiverSettings = () => {
 
   const handleBack = () => {
     router.push('/(tabs)/profile');
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to delete your account? This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Delete",
+          onPress: () => {
+            router.push('/(app)/profileScreens/deleteAccount');
+          },
+          style: "destructive"
+        }
+      ]
+    );
   };
 
   return (
@@ -117,7 +138,7 @@ const CaregiverSettings = () => {
               </View>
             </View>
 
-            <View style={styles.section}>
+            {/* <View style={styles.section}>
               <ThemedText style={styles.text}>Phone & Email</ThemedText>
               <View style={styles.subSection}>
                 <ThemedText style={styles.heading}>
@@ -127,9 +148,9 @@ const CaregiverSettings = () => {
                   {currentUser?.email || ''}
                 </ThemedText>
               </View>
-            </View>
+            </View> */}
 
-            <View style={styles.section}>
+            {/* <View style={styles.section}>
               <ThemedText style={styles.text}>Notifications</ThemedText>
               <View style={styles.subSection}>
                 <TouchableOpacity
@@ -161,19 +182,17 @@ const CaregiverSettings = () => {
                   </View>
                 </TouchableOpacity>
               </View>
-            </View>
+            </View> */}
 
             <View style={styles.section2}>
               <TouchableOpacity
                 style={[styles.button, styles.deleteButton]}
-                onPress={() =>
-                  router.push('/(app)/profileScreens/deleteAccount')
-                }
+                onPress={handleDelete}
               >
                 <ThemedText
                   style={[styles.buttonText, styles.deleteButtonText]}
                 >
-                  {/* Delete account */}
+                  Delete account
                 </ThemedText>
               </TouchableOpacity>
 

@@ -47,14 +47,14 @@ export default function Profile() {
     : require('@/assets/images/profile-placeholder.jpg');
 
   const menuItems = [
-    {
-      icon: require('@/assets/icons/edit-profile.png'),
-      label: 'Edit profile',
-      route:
-        currentUser?.data?.role === 'FAMILY'
-          ? '/(app)/profileScreens/familyEditProfile'
-          : '/(app)/profileScreens/caregiverEditProfile',
-    },
+    // {
+    //   icon: require('@/assets/icons/edit-profile.png'),
+    //   label: 'Edit profile',
+    //   route:
+    //     currentUser?.data?.role === 'FAMILY'
+    //       ? '/(app)/profileScreens/familyEditProfile'
+    //       : '/(app)/profileScreens/caregiverEditProfile',
+    // },
     {
       icon: require('@/assets/icons/preferences.png'),
       label: 'Preferences',

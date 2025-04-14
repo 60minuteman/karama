@@ -29,6 +29,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  Alert
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -39,11 +40,19 @@ const FamilyProfileView = () => {
   const { data: familyProfile, isLoading: familyProfileLoading }: any =
     useProfile(currentUser?.data?.role);
 
+  const handleEdit = () => {
+    Alert.alert(
+      "Feature Not Available",
+      "This feature is not available yet. We will notify you when it becomes available.",
+      [{ text: "OK" }]
+    );
+  };
+
   console.log('familyProfile', familyProfile);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView>
-        <ProfileHeader heading='Profile' edit onBack={() => router.back()} />
+        <ProfileHeader heading='Profile' edit onEdit={handleEdit} onBack={() => router.back()} />
         <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           {familyProfileLoading ? (
             <View
