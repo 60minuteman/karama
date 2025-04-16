@@ -1,9 +1,11 @@
+import { useAuth } from '@/app/store/auth';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Header } from '@/components/ui/Header';
 import { Colors } from '@/constants/Colors';
 import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation } from '@tanstack/react-query';
 import { router, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
@@ -15,8 +17,6 @@ import {
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAuth } from '@/app/store/auth';
 
 export default function OTPInputScreen() {
   const router = useRouter();
@@ -26,7 +26,11 @@ export default function OTPInputScreen() {
   const inputRef = useRef<TextInput>(null);
   const { phoneNumber, isChecked } = useLocalSearchParams();
   const [user, setUser] = useState<any>(null);
-  const { setUser: setUserStore, setOnboardingScreen, setToken } = useUserStore();
+  const {
+    setUser: setUserStore,
+    setOnboardingScreen,
+    setToken,
+  } = useUserStore();
   const { signIn } = useAuth();
 
   useEffect(() => {
@@ -48,10 +52,10 @@ export default function OTPInputScreen() {
       return customAxios.post(`/auth/phone/start-verification`, data);
     },
     onSuccess: async (data: any) => {
-      console.log('OTP resent successfully');
+      // console.log('OTP resent successfully');
     },
     onError: (error: any) => {
-      console.log('error', error['response'].data);
+      // console.log('error', error['response'].data);
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
@@ -77,13 +81,13 @@ export default function OTPInputScreen() {
     mutationFn: (data: any) => {
       return customAxios.post(`/auth/phone/confirm-otp`, {
         phone_number: `+1${phoneNumber}`,
-        code: data.code
+        code: data.code,
       });
     },
     onSuccess: async (response: any) => {
       try {
-        console.log('Verification response:', response?.data);
-        
+        // console.log('Verification response:', response?.data);
+
         if (response?.data?.token) {
           // Existing user - sign in and go to discover
           await signIn({ token: response.data.token });
@@ -91,10 +95,10 @@ export default function OTPInputScreen() {
           // New user - go to password creation first
           router.push({
             pathname: '/(auth)/createPassword',
-            params: { 
+            params: {
               phoneNumber,
-              isChecked 
-            }
+              isChecked,
+            },
           });
         } else {
           throw new Error('Invalid response from server');
@@ -104,17 +108,17 @@ export default function OTPInputScreen() {
         Toast.show({
           type: 'error',
           text1: 'Error in verification',
-          text2: 'Please try again'
+          text2: 'Please try again',
         });
       }
     },
     onError: (error: any) => {
       Toast.show({
         type: 'error',
-        text1: 'Verification failed', 
-        text2: error?.response?.data?.message || 'Please try again'
+        text1: 'Verification failed',
+        text2: error?.response?.data?.message || 'Please try again',
       });
-    }
+    },
   });
 
   const handleCodeChange = (text: string) => {

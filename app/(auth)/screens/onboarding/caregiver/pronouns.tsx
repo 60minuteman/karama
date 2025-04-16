@@ -1,34 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Switch } from 'react-native';
-import { router } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
-import { useFonts } from 'expo-font';
-import * as Font from 'expo-font';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
+import * as Font from 'expo-font';
+import { useFonts } from 'expo-font';
+import { router } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Switch, View } from 'react-native';
 
 const pronounOptions = [
   {
     label: 'She/Her',
-    emoji: '👱‍♀️'
+    emoji: '👱‍♀️',
   },
   {
     label: 'He/Him',
-    emoji: '👨🏽'
+    emoji: '👨🏽',
   },
   {
     label: 'They/Them',
-    emoji: '∞'
-  }
+    emoji: '∞',
+  },
 ];
 
 export default function Page() {
-  const {caregiverPronouns,setCaregiverPronouns,setOnboardingScreen, caregiverShowPronouns,setCaregiverShowPronouns}=useUserStore()
+  const {
+    caregiverPronouns,
+    setCaregiverPronouns,
+    setOnboardingScreen,
+    caregiverShowPronouns,
+    setCaregiverShowPronouns,
+  } = useUserStore();
   // const [selectedPronouns, setSelectessssDietdPronouns] = useState<string | null>(null);
   // const [showOnProfile, setShowOnProfile] = useState(false);
   const [fontsLoaded] = useFonts({
@@ -36,15 +42,14 @@ export default function Page() {
   });
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/hear');
-    router.push('/(auth)/screens/onboarding/caregiver/hear')  };
-  useEffect(()=>{
-    console.log(caregiverPronouns)
-  },[caregiverPronouns])
+    router.push('/(auth)/screens/onboarding/caregiver/hear');
+  };
+  useEffect(() => {}, [caregiverPronouns]);
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
@@ -76,15 +81,11 @@ export default function Page() {
       </View>
 
       <View style={styles.bottomNav}>
+        <Button label='Skip' onPress={handleNext} variant='skip' />
         <Button
-          label="Skip"
+          label='Next'
           onPress={handleNext}
-          variant="skip"
-        />
-        <Button
-          label="Next"
-          onPress={handleNext }
-          variant="compact"
+          variant='compact'
           disabled={!caregiverPronouns}
         />
       </View>
@@ -137,5 +138,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     paddingBottom: 40,
-  }
-}); 
+  },
+});

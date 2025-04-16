@@ -46,7 +46,6 @@ export default function PhoneNumberScreen() {
     onSuccess: async (response: any) => {
       const token = response?.data?.data?.token;
       const userData = response?.data?.data?.user;
-      console.log('token', token, userData);
       setToken(token);
       setUser(userData);
     },
@@ -68,7 +67,6 @@ export default function PhoneNumberScreen() {
   const handleSignIn = async () => {
     if (phoneNumber.length === 10) {
       const formattedNumber = formatPhoneNumber(phoneNumber);
-      console.log('formattedNumber', formattedNumber, password);
       signIn.mutate({
         phone_number: formattedNumber,
         password: password,

@@ -1,11 +1,15 @@
 import ProfileHeader from '@/components/Profile/ProfileHeader';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import useAuthMutation from '@/hooks/useAuthMutation';
+import customAxios from '@/services/api/envConfig';
 import { queryClient } from '@/services/api/queryClient';
 import { useUserStore } from '@/services/state/user';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   Image,
   SafeAreaView,
   ScrollView,
@@ -20,20 +24,70 @@ const FamilySettings = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   const { clearUser, logout } = useUserStore();
+  const [deviceId, setDeviceId] = useState(null);
+
+  useEffect(() => {
+    const getDeviceId = async () => {
+      let deviceId: any = await AsyncStorage.getItem('karama_id_device');
+      setDeviceId(deviceId);
+    };
+    getDeviceId();
+  }, []);
+
+  const removeDevice: any = useAuthMutation({
+    mutationFn: (data: any) => {
+      return customAxios.post(`/notifications/devices/register`, data);
+    },
+    onSuccess: async (data: any) => {
+      // console.log('token data success =====', data?.data);
+      // console.log('end====');
+    },
+    onError: (error: any) => {
+      // console.log('token error **********', error['response'].data);
+      // Toast.show({
+      //   type: 'problem',
+      //   text1: error['response'].data.error,
+      //   text2: error['response'].data.message,
+      // });
+    },
+  });
 
   const handleLogout = () => {
-    console.log('clearing');
     clearUser();
+    removeDevice.mutate({ device_id: deviceId });
     logout();
-    console.log('cleared');
     queryClient.clear();
     // router.replace('/(auth)/onboarding');
+  };
+
+  const handleBack = () => {
+    router.push('/(tabs)/profile');
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      'Delete Account',
+      'Are you sure you want to delete your account? This action cannot be undone.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: () => {
+            // Handle delete account logic here
+          },
+          style: 'destructive',
+        },
+      ]
+    );
   };
 
   return (
     <SafeAreaView>
       <ThemedView>
-        <ProfileHeader heading='Settings' />
+        <ProfileHeader heading='Settings' onBack={handleBack} />
         <ScrollView contentContainerStyle={{ paddingBottom: 160 }}>
           <ThemedView style={styles.container}>
             <View style={styles.section}>
@@ -82,7 +136,7 @@ const FamilySettings = () => {
                 </ThemedText>
               </View>
             </View>
-            <View style={styles.section}>
+            {/* <View style={styles.section}>
               <ThemedText style={styles.text}>Notifications </ThemedText>
               <View style={styles.subSection}>
                 <TouchableOpacity>
@@ -141,7 +195,7 @@ const FamilySettings = () => {
                   </View>
                 </TouchableOpacity>
               </View>
-            </View>
+            </View> */}
             <View style={styles.section}>
               <ThemedText style={styles.text}>
                 For Support Please Email{' '}
@@ -153,8 +207,9 @@ const FamilySettings = () => {
             <View style={styles.section2}>
               <TouchableOpacity
                 style={[styles.button, { backgroundColor: '#261D2A1A' }]}
+                onPress={handleDelete}
               >
-                <ThemedText style={[styles.buttonText, { color: '#261D2A4D' }]}>
+                <ThemedText style={[styles.buttonText, { color: '#052222' }]}>
                   Delete account
                 </ThemedText>
               </TouchableOpacity>

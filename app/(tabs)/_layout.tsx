@@ -1,7 +1,26 @@
 import { Colors } from '@/constants/Colors';
+import useAuthMutation from '@/hooks/useAuthMutation';
+import {
+  useCurrentUser,
+  useUserDevice,
+  useUserDevices,
+} from '@/services/api/api';
+import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
+import { usePushNotifications } from '@/services/usePushNotifications';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Device from 'expo-device';
 import { Tabs } from 'expo-router';
-import { Image } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  AppState,
+  AppStateStatus,
+  Image,
+  Platform,
+  StyleSheet,
+  View,
+} from 'react-native';
+import uuid from 'react-native-uuid';
 import { io } from 'socket.io-client';
 
 const navImages = {
@@ -20,8 +39,6 @@ const navImages = {
 const token = useUserStore.getState().token;
 const user = useUserStore.getState().user;
 
-console.log('user======+++++++++', user, token);
-
 export const socket = io('wss://starfish-app-7pbch.ondigitalocean.app', {
   path: '/chat',
   transports: ['websocket'],
@@ -34,6 +51,75 @@ export const socket = io('wss://starfish-app-7pbch.ondigitalocean.app', {
 });
 
 export default function TabsLayout() {
+  const { data: userDevices } = useUserDevices();
+  const [deviceId, setDeviceId] = useState(null);
+  const { data: currentUser } = useCurrentUser();
+  const { expoPushToken } = usePushNotifications();
+  const { data: userDevice } = useUserDevice(deviceId);
+
+  console.log('user devices', userDevice);
+
+  async function getDeviceId() {
+    let deviceId: any = await AsyncStorage.getItem('karama_id_device');
+    const valt = deviceId;
+
+    if (!deviceId) {
+      deviceId = uuid.v4();
+      await AsyncStorage.setItem('karama_id_device', deviceId);
+    }
+    return deviceId;
+  }
+
+  console.log('deviceId', !!deviceId, expoPushToken);
+
+  useEffect(() => {
+    const getDeviceId = async () => {
+      let deviceId: any = await AsyncStorage.getItem('karama_id_device');
+      setDeviceId(deviceId);
+    };
+    getDeviceId();
+  }, []);
+
+  const registerDevice: any = useAuthMutation({
+    mutationFn: (data: any) => {
+      return customAxios.post(`/notifications/devices/register`, data);
+    },
+    onSuccess: async (data: any) => {
+      // console.log('token data success =====', data?.data);
+      // console.log('end====');
+    },
+    onError: (error: any) => {
+      // console.log('token error **********', error['response'].data);
+      // Toast.show({
+      //   type: 'problem',
+      //   text1: error['response'].data.error,
+      //   text2: error['response'].data.message,
+      // });
+    },
+  });
+
+  async function registerDeviceWithBackend(expoPushToken: any) {
+    if (!expoPushToken) return;
+
+    const device_id = await getDeviceId();
+
+    const payload = {
+      device_id: device_id,
+      name: Device.modelName || 'Unknown Device',
+      push_token: expoPushToken.data,
+      type: 'PHONE',
+      platform: Platform.OS === 'ios' ? 'IOS' : 'ANDROID',
+      provider: 'EXPO',
+    };
+    registerDevice.mutate(payload);
+  }
+
+  useEffect(() => {
+    if (currentUser && (!!deviceId == false || !userDevice) && expoPushToken) {
+      registerDeviceWithBackend(expoPushToken);
+    }
+  }, [expoPushToken, currentUser, deviceId]);
+
   return (
     <Tabs
       screenOptions={{

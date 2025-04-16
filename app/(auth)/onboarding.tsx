@@ -14,8 +14,6 @@ export default function OnboardingScreen() {
   const { user, onboarding_screen, steps, selectedType } = useUserStore();
   const { completeOnboarding } = useOnboarding();
 
-  console.log('user', user);
-
   const handleGetStarted = async () => {
     await completeOnboarding();
     // Always go to phone number screen first

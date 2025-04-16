@@ -45,8 +45,6 @@ export default function CommitmentScreen() {
     }
   }, []);
 
-  console.log('family_commitment', family_commitment);
-
   const commitmentOptions: Array<{ label: Commitment; icon: string }> = [
     { label: 'Long Term', icon: '📋' },
     { label: 'Short Term', icon: '⌛' },

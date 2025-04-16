@@ -92,7 +92,6 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
     }));
 
     // Add debug log
-    console.log('Container received:', { profileData, data });
 
     if (!profileData || !data) {
       return (

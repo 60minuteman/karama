@@ -36,15 +36,6 @@ export default function ServiceDaysScreen() {
     field: 'begin' | 'end';
   } | null>(null);
 
-  console.log(
-    'family_schedule',
-    family_schedule.map((day) => ({
-      day: day.day,
-      begin: day.timeSlot?.begin,
-      end: day.timeSlot?.end,
-    }))
-  );
-
   const handleTimeSelect = (event: any, selectedTime?: Date) => {
     setShowTimePicker(false);
     if (selectedTime && selectedDay) {

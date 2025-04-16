@@ -38,15 +38,12 @@ export default function Matches() {
       socket.on('allConversations', (data) => {
         setIsLoading(false);
         setConversations(data);
-        console.log('allConversations', data);
       });
       socket.on('exception', (data) => {
         setIsLoading(false);
-        console.log('exception', data);
       });
       socket.on('newMessage conversationUpdated', (data: any) => {
         setIsLoading(false);
-        console.log('newMessage===========', data);
         // setMessages(data);
       });
     }
@@ -57,17 +54,13 @@ export default function Matches() {
       const conversationIds = conversations.map(
         (conv: any) => conv?.recipient?.id
       );
-      console.log('conversationIds', conversationIds);
       const filtered = completeMatches?.data?.matches?.filter(
         (match: any) =>
           !conversationIds.includes(match?.caregiver_profile?.user?.user_id)
       );
-      console.log('filtered', filtered);
       setFilteredMatches(filtered);
     }
   }, [completeMatches?.data?.matches, conversations]);
-
-  console.log('lfnskanfs=========', filteredMatches);
 
   return (
     <GestureHandlerRootView style={styles.container}>

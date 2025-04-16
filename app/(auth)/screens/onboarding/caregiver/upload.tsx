@@ -27,7 +27,7 @@ export default function Page() {
       const formData = new FormData();
       caregiverImages?.forEach((uri, index) => {
         const fileName = uri.split('/').pop() || `image${index}.jpg`;
-        
+
         formData.append('files', {
           uri,
           name: fileName,
@@ -42,7 +42,7 @@ export default function Page() {
       return customAxios.post('/caregiver-profile/add-photos', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          'Accept': 'application/json',
+          Accept: 'application/json',
         },
         transformRequest: (data, headers) => {
           return data;
@@ -51,11 +51,13 @@ export default function Page() {
     },
     onSuccess: () => {
       router.push('/(auth)/screens/onboarding/family/success');
-      console.log('CAREGIVER IMAGES UPLOADED SUCCESSFULLY');
     },
     onError: (error: any) => {
       console.error('Error uploading images:', error.response?.data || error);
-      alert(error.response?.data?.message || 'Failed to upload images. Please try again.');
+      alert(
+        error.response?.data?.message ||
+          'Failed to upload images. Please try again.'
+      );
     },
   });
 
@@ -64,7 +66,7 @@ export default function Page() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [1, 1],
       quality: 1,
-      allowsMultipleSelection: false
+      allowsMultipleSelection: false,
     });
 
     if (!result.canceled && result.assets[0]) {
@@ -102,8 +104,8 @@ export default function Page() {
 
           <View style={styles.photoGrid}>
             {[...Array(6)].map((_, index) => (
-              <TouchableOpacity 
-                key={index} 
+              <TouchableOpacity
+                key={index}
                 style={styles.photoPlaceholder}
                 onPress={() => pickImageForIndex(index)}
               >

@@ -39,13 +39,6 @@ export default function HouseholdScreen() {
     setOnboardingScreen,
   } = useUserStore();
 
-  console.log(
-    'family_selections',
-    family_selections,
-    family_show_diet,
-    family_show_rules
-  );
-
   const categories = {
     Diet: [
       { label: 'Vegan', icon: '🥬' },

@@ -44,8 +44,6 @@ export default function MessageScreen() {
   const { token, user } = useUserStore();
   const socket: any = getSocket();
 
-  console.log('current logged in user id:', user?.user_id);
-
   useEffect(() => {
     const fetchOtherUserData = async () => {
       setIsLoading(true);
@@ -75,7 +73,6 @@ export default function MessageScreen() {
       }
     }; // Cleanup listener on unmount
   }, [id]);
-  console.log('senderId++++++++++++', senderId);
 
   // Mock profile data to pass to Container component
   const profileData = {
@@ -129,14 +126,14 @@ export default function MessageScreen() {
       });
 
       socket.on('exception', (data: any) => {
-        console.log('exception', data);
+        // console.log('exception', data);
       });
     }
   }, [socket]);
 
   useEffect(() => {
     socket.on('newMessage', (data: any) => {
-      console.log('newMessage===========', data?.sender?.id, socket);
+      // console.log('newMessage===========', data?.sender?.id, socket);
       setMessages((prevMessages) => {
         const messageExists = prevMessages.some((msg) => msg.id === data.id);
         if (!messageExists) {
@@ -150,7 +147,7 @@ export default function MessageScreen() {
   // console.log('messages=====+++++++', messages);
 
   const renderMessage = ({ item }: { item: Message }) => {
-    console.log('item++++++++++++', item?.sender?.id || item?.sender?.user_id);
+    // console.log('item++++++++++++', item?.sender?.id || item?.sender?.user_id);
     if (item.senderId === 'system') {
       return (
         <View style={styles.systemContainer}>
@@ -199,7 +196,7 @@ export default function MessageScreen() {
           data={messages}
           renderItem={renderMessage}
           keyExtractor={(item: Message) => item.id}
-          inverted={false}
+          inverted={true}
           contentContainerStyle={[
             styles.messagesContent,
             { paddingBottom: 100 },

@@ -62,7 +62,7 @@ SplashScreen.setOptions({
   fade: true,
 });
 
-console.log('useUserStore.getState().token', useUserStore.getState().token);
+// console.log('useUserStore.getState().token', useUserStore.getState().token);
 
 export const queryClient = new QueryClient({
   defaultOptions: {

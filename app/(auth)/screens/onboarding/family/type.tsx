@@ -17,8 +17,6 @@ export default function TypeScreen() {
     useUserStore();
   const { selected_type, is_dealbreaker } = caregiver_type;
 
-  console.log('caregiver_type', caregiver_type);
-
   const caregiverTypes = [
     { label: 'Night Nurse', icon: '🌙' },
     { label: 'Governess', icon: '👩' },

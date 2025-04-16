@@ -24,6 +24,7 @@ import { router } from 'expo-router';
 import React from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Image,
   ImageBackground,
   ScrollView,
@@ -39,11 +40,23 @@ const FamilyProfileView = () => {
   const { data: familyProfile, isLoading: familyProfileLoading }: any =
     useProfile(currentUser?.data?.role);
 
-  console.log('familyProfile', familyProfile);
+  const handleEdit = () => {
+    Alert.alert(
+      'Feature Not Available',
+      'This feature is not available yet. We will notify you when it becomes available.',
+      [{ text: 'OK' }]
+    );
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView>
-        <ProfileHeader heading='Profile' edit onBack={() => router.back()} />
+        <ProfileHeader
+          heading='Profile'
+          edit
+          onEdit={handleEdit}
+          onBack={() => router.back()}
+        />
         <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           {familyProfileLoading ? (
             <View

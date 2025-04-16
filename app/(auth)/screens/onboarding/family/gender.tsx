@@ -33,8 +33,6 @@ export default function GenderScreen() {
     'Other',
   ];
 
-  console.log('family_gender_preference', family_gender_preference);
-
   const handleResponse = (response: 'yes' | 'no') => {
     setFamilyGenderPreference({ has_preference: response });
     if (response === 'yes') {

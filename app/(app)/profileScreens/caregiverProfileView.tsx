@@ -4,7 +4,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { useProfile } from '@/services/api/api';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface CaregiverProfile {
@@ -40,17 +40,25 @@ const CaregiverProfileView = () => {
     };
 
   // Add debug logs
-  console.log('Raw caregiver profile data:', caregiverProfile);
-  console.log(
-    'Pictures from profile:',
-    caregiverProfile?.caregiverProfile?.pictures
-  );
+  // console.log('Raw caregiver profile data:', caregiverProfile);
+  // console.log(
+  //   'Pictures from profile:',
+  //   caregiverProfile?.caregiverProfile?.pictures
+  // );
 
   function calculateAge(birthDate: string) {
     const birth = new Date(birthDate);
     const today = new Date();
     return today.getFullYear() - birth.getFullYear();
   }
+
+  const handleEdit = () => {
+    Alert.alert(
+      'Feature Not Available',
+      'This feature is not available yet. We will notify you when it becomes available.',
+      [{ text: 'OK' }]
+    );
+  };
 
   if (caregiverProfileLoading) {
     return (
@@ -153,22 +161,13 @@ const CaregiverProfileView = () => {
       }
     : null;
 
-  console.log('Final profile data:', profileData);
-  console.log('Data being passed to Container:', {
-    profileData,
-    containerData: {
-      ...caregiverProfile?.caregiverProfile,
-      pictures,
-      pastPositions,
-    },
-  });
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView style={styles.container}>
         <ProfileHeader
           heading='Profile'
           edit
+          onEdit={handleEdit}
           onBack={() => router.push('/profile')}
         />
         <View style={styles.contentContainer}>

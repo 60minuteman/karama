@@ -30,19 +30,13 @@ export function ConversationItem({
   const { token, user } = useUserStore();
   const [chatHistory, setChatHistory] = useState<any>([]);
 
-  console.log('conversatio================', conversation);
-
   useEffect(() => {
-    console.log('otherUser', otherUser);
     const fetchOtherUserData = async () => {
       const userData = await getUserDataById(otherUser);
-      console.log('userData', userData);
       setOtherUserData(userData);
     };
     fetchOtherUserData();
   }, []);
-
-  console.log('conversation', conversation);
 
   const renderRightActions = () => {
     return (

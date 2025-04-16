@@ -1,5 +1,6 @@
 import ProfileCardLoader from '@/components/cards/ProfileCardLoader';
 import EmptyDiscovery from '@/components/discovery/EmptyDiscovery';
+import { CaregiverContainer } from '@/components/home/CaregiverContainer';
 import { Container } from '@/components/home/Container';
 import { HomeHeader } from '@/components/home/HomeHeader';
 import { HomeNav } from '@/components/home/HomeNav';
@@ -123,8 +124,6 @@ export default function DiscoverScreen() {
   const { data: currentUser, isLoading: isLoadingCurrentUser } =
     useCurrentUser();
 
-  console.log('currentUser***', currentUser?.data?.role, isLoadingCurrentUser);
-
   useEffect(() => {
     if (!token) {
       router.replace('/(auth)/signInPhone');
@@ -148,7 +147,6 @@ export default function DiscoverScreen() {
     {
       enabled: !!token && !!currentUser,
       onSuccess: (response) => {
-        console.log('API Success:', response);
         // Handle both caregiver and family data
         const profiles =
           currentUser?.data?.role === 'FAMILY'
@@ -167,6 +165,8 @@ export default function DiscoverScreen() {
       },
     }
   );
+
+  // console.log('currentProfilecaregiver see===', data);
 
   useEffect(() => {
     if (currentUser?.data?.role) {
@@ -203,39 +203,21 @@ export default function DiscoverScreen() {
     }
   }, [currentIndex, profiles.length, nextCursor, userData?.plan]);
 
-  console.log(
-    'currentUser***===',
-    currentProfile?.score,
-    currentProfile?.caregiver_profile?.id
-  );
-
   const submitLike = useAuthMutation({
     mutationFn: (data: any) => {
       const endpoint =
         currentUser?.data?.role === 'FAMILY'
           ? `/family-discovery/like-caregiver`
           : `/caregiver-discovery/like-families`;
-      console.log('Like Request:', {
-        endpoint,
-        payload: {
-          caregiver_profile_id: currentProfile?.caregiver_profile?.id,
-          score: currentProfile?.score,
-        },
-      });
       return customAxios.patch(endpoint, {
         caregiver_profile_id: currentProfile?.caregiver_profile?.id,
         score: currentProfile?.score,
       });
     },
     onSuccess: (data: any) => {
-      console.log('Like Success Response:', data);
       moveToNextProfile();
     },
     onError: (error: any) => {
-      console.log('Like Error Response:', {
-        error: error?.response?.data,
-        status: error?.response?.status,
-      });
       if (error['response'].data?.message === 'Caregiver already liked') {
         return moveToNextProfile();
       }
@@ -254,23 +236,13 @@ export default function DiscoverScreen() {
         currentUser?.data?.role === 'FAMILY'
           ? `/family-discovery/reject-caregiver/${currentProfile?.caregiver_profile?.id}`
           : `/caregiver-discovery/reject-families/${currentProfile?.family_profile?.id}`;
-      console.log('Reject Request:', {
-        endpoint,
-        profileId: currentProfile?.caregiver_profile?.id,
-      });
       return customAxios.patch(endpoint);
     },
     onSuccess: (data: any) => {
-      console.log('Reject Success Response:', data);
       moveToNextProfile();
     },
     onError: (error: any) => {
-      console.log('Reject Error Response:', {
-        error: error?.response?.data,
-        status: error?.response?.status,
-      });
       setCurrentIndex(Math.max(0, currentIndex - 1));
-      console.log('error', error['response'].data);
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
@@ -294,9 +266,7 @@ export default function DiscoverScreen() {
     return age;
   };
 
-  console.log('currentProfile***', userData);
-
-  const profileData = currentProfile
+  const profileDataFamily = currentProfile
     ? {
         image:
           currentUser?.data?.role === 'FAMILY'
@@ -417,6 +387,50 @@ export default function DiscoverScreen() {
       }
     : null;
 
+  const profileDataCaregiver = {
+    image: '', // No image path provided in the data
+    name: currentProfile?.family_profile?.name || '', // "Smith Family"
+    description: currentProfile?.family_profile?.description?.description || '', // "Mom & Dad"
+    children:
+      currentProfile?.family_profile?.children
+        .map(
+          (child) =>
+            `${child.count} ${child.age_group}${child.count > 1 ? 's' : ''}`
+        )
+        .join(', ') || '', // "1 Teenager, 1 Pre Schooler"
+    location: `📍 ${currentProfile?.family_profile?.zipcode}`, // "📍 12345"
+    rating: parseFloat(currentProfile?.score || '0'), // 5.0
+    experience: [
+      currentProfile?.family_profile?.household_info.rules.join('-') || '', // "1-5 years"
+      ...(currentProfile?.family_profile?.household_info.diets || []), // ["Nanny", "Babysitter"]
+    ],
+    lookingFor: [
+      currentProfile?.family_profile?.household_info.rules.join(', ') || '',
+    ], // ["Full Time"]
+    hourlyRate:
+      currentProfile?.family_profile?.extra_info.payment_info.type === 'Hourly'
+        ? `$${currentProfile?.family_profile?.extra_info.payment_info.hourly_min} - $${currentProfile?.family_profile?.extra_info.payment_info.hourly_max}`
+        : `$${currentProfile?.family_profile?.extra_info.payment_info.salary}/year`, // "$20 - $45"
+    languages: [
+      ...(currentProfile?.family_profile?.languages || []), // ["English", "Spanish"]
+      currentProfile?.family_profile?.other_languages || '',
+    ].filter(Boolean),
+    interests: [
+      ...(currentProfile?.family_profile?.children_interests
+        .creative_interests || []), // ["Painting", "Singing"]
+      ...(currentProfile?.family_profile?.children_interests
+        .instrument_interests || []), // ["Piano", "Guitar"]
+      ...(currentProfile?.family_profile?.children_interests.sport_interests ||
+        []), // ["Soccer", "Basketball"]
+      ...(currentProfile?.family_profile?.children_interests.stem_interests ||
+        []), // ["Coding", "Robotics"]
+    ].filter(Boolean),
+    religion: currentProfile?.family_profile?.household_info.religion || '', // "Christianity"
+    personality:
+      currentProfile?.family_profile?.caregiver_preference.personalities || [], // ["Bubbly", "Patient"]
+    disabilities: currentProfile?.family_profile?.behavioural_differences || [], // ["Dyslexia", "ADHD", "Schizophrenia", "Misophonia"]
+  };
+
   // Add debug logs
   // console.log('Data received:', data?.data?.scored_caregivers);
   // console.log('Current Index:', currentIndex);
@@ -447,9 +461,17 @@ export default function DiscoverScreen() {
                 <EmptyDiscovery role={userData?.role} />
               </View>
             ) : (
-              <Container
+              // <></>
+              // <Container
+              //   ref={containerRef}
+              //   profileData={profileData}
+              //   data={currentProfile}
+              //   onLike={() => handleLike(currentIndex)}
+              //   onReject={() => handleReject(currentIndex)}
+              // />
+              <CaregiverContainer
                 ref={containerRef}
-                profileData={profileData}
+                profileData={profileDataCaregiver}
                 data={currentProfile}
                 onLike={() => handleLike(currentIndex)}
                 onReject={() => handleReject(currentIndex)}
@@ -467,7 +489,6 @@ export default function DiscoverScreen() {
                 }
                 style={[styles.rejectButton, { width: buttonWidth }] as any}
                 onPress={() => {
-                  console.log('rejected');
                   containerRef.current?.animateReject();
                 }}
               />
@@ -480,7 +501,6 @@ export default function DiscoverScreen() {
                 }
                 style={[styles.likeButton, { width: buttonWidth }] as any}
                 onPress={() => {
-                  console.log('liked');
                   containerRef.current?.animateLike();
                 }}
               />

@@ -54,7 +54,7 @@ export const ProfileDetails = ({
 
       <Section title="I'm Looking For">
         <View style={styles.pillsContainer}>
-          {lookingFor.map((item, index) => {
+          {lookingFor?.map((item, index) => {
             const icons = {
               'Full Time': '⏰',
               'Long Term': '📋',

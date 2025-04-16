@@ -25,8 +25,6 @@ const CreatePassword = () => {
     },
     onSuccess: async (response: any) => {
       try {
-        console.log('Password creation response:', response?.data);
-
         if (response?.data?.data?.token) {
           const newToken = response.data.data.token;
           const userData = response.data.data.user;

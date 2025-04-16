@@ -31,22 +31,20 @@ export default function PhoneNumberScreen() {
   const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [isChecked, setIsChecked] = useState(false);
-  const { 
-    onboarding_screen, 
+  const {
+    onboarding_screen,
     selectedType,
     steps,
     setOnboardingScreen,
     subscribed_to_promotions,
-    setPromotionSubscription
+    setPromotionSubscription,
   } = useUserStore();
-
-  console.log('phoneNumber', phoneNumber);
 
   const signIn = useMutation({
     mutationFn: (data: any) => {
       return customAxios.post(`/auth/phone/start-verification`, {
         phone_number: `+1${phoneNumber}`,
-        strategy: 'SIGN_UP'
+        strategy: 'SIGN_UP',
       });
     },
     onSuccess: async (data: any) => {
@@ -126,7 +124,7 @@ export default function PhoneNumberScreen() {
               onChangeText={handlePhoneNumberChange}
               accessibilityLabel='Phone number input'
               accessibilityHint='Enter your phone number'
-              textContentType="telephoneNumber"
+              textContentType='telephoneNumber'
             />
           </View>
         </View>

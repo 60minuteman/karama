@@ -1,11 +1,19 @@
 import { Header } from '@/components/ui/Header'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native'
 import { useRouter, usePathname } from 'expo-router'
 import { ThemedText } from '@/components/ThemedText'
 import { Colors } from '@/constants/Colors'
 
 const ProfileHeader = ({ onBack, edit, heading }: { onBack: () => void, edit?: boolean, heading: string }) => {
     const router = useRouter();
+
+    const handleEdit = () => {
+        Alert.alert(
+            "Feature Not Available",
+            "This feature is not available yet. We will notify you when it becomes available.",
+            [{ text: "OK" }]
+        );
+    };
 
     return (
         <View style={[styles.container, { justifyContent: edit && 'space-between' }]}>
@@ -22,7 +30,7 @@ const ProfileHeader = ({ onBack, edit, heading }: { onBack: () => void, edit?: b
                     {heading}
                 </ThemedText>
             </View>
-            {edit && <TouchableOpacity style={styles.button}>
+            {edit && <TouchableOpacity style={styles.button} onPress={handleEdit}>
                 <ThemedText style={styles.buttonText}>
                     Edit
                 </ThemedText>

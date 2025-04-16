@@ -149,6 +149,37 @@ export const useCurrentUser = () => {
   });
 };
 
+export const fetchUserDevices = async () => {
+  const { data } = await customAxios.get('/notifications/devices/user');
+  return data;
+};
+
+export const useUserDevices = () => {
+  const { token } = useUserStore();
+  return useAuthQuery({
+    queryKey: ['user-devices'],
+    queryFn: fetchUserDevices,
+    retry: 3,
+    enabled: !!token,
+  });
+};
+
+export const fetchUserDevice = async (id: any) => {
+  console.log('id', id);
+  const { data } = await customAxios.get(`/notifications/devices/item/${id}`);
+  return data;
+};
+
+export const useUserDevice = (id: any) => {
+  const { token } = useUserStore();
+  return useAuthQuery({
+    queryKey: ['user-device', id],
+    queryFn: () => fetchUserDevice(id),
+    retry: 3,
+    enabled: !!token && !!id,
+  });
+};
+
 export const fetchProfile = async (role: any) => {
   const endpoint =
     role == 'FAMILY' ? '/family-profile/' : '/caregiver-profile/';

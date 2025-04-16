@@ -25,10 +25,10 @@ interface ProfileCardProps {
     profilePicture?: string;
     pictures?: string[];
     caregiver_profile?: {
-      pictures?: Array<{ path: string; type: string; }>;
+      pictures?: Array<{ path: string; type: string }>;
     };
     family_profile?: {
-      pictures?: Array<{ path: string; type: string; }>;
+      pictures?: Array<{ path: string; type: string }>;
     };
   };
 }
@@ -67,8 +67,6 @@ export const ProfileCard = ({
   const imageSource = data.profilePicture
     ? { uri: data.profilePicture }
     : require('@/assets/icons/fallback.png');
-
-  console.log('Profile picture being used:', imageSource);
 
   return (
     <View style={styles.container}>

@@ -41,8 +41,6 @@ export default function Prompt() {
     setFamilyPromptCategory,
   } = useUserStore();
 
-  console.log('family_prompt', family_prompt);
-
   const handleNext = () => {
     if (family_prompt) {
       setOnboardingScreen('/(auth)/screens/onboarding/family/promptAnswer');

@@ -20,7 +20,6 @@ export function ChatBubble({
   isRead,
   isDelivered,
 }: ChatBubbleProps) {
-  console.log('timestamp', timestamp);
   if (variant === 'system') {
     return (
       <View style={styles.systemContainer}>

@@ -23,8 +23,6 @@ export default function AvailabilityScreen() {
     useUserStore();
   const { selected_availability, is_dealbreaker } = family_availability;
 
-  console.log('family_availability', family_availability);
-
   const availabilityOptions: Array<{ label: Availability; icon: string }> = [
     { label: 'Full Time', icon: '⏰' },
     { label: 'Part Time', icon: '⌛' },

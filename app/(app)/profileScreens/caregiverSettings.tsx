@@ -1,13 +1,16 @@
 import ProfileHeader from '@/components/Profile/ProfileHeader';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import useAuthMutation from '@/hooks/useAuthMutation';
 import { useCurrentUser } from '@/services/api/api';
+import customAxios from '@/services/api/envConfig';
 import { queryClient } from '@/services/api/queryClient';
 import { useUserStore } from '@/services/state/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   Image,
   SafeAreaView,
   ScrollView,
@@ -27,6 +30,7 @@ const CaregiverSettings = () => {
   const router = useRouter();
   const { clearUser, logout } = useUserStore();
   const { data: currentUser } = useCurrentUser();
+  const [deviceId, setDeviceId] = useState(null);
 
   const [settings, setSettings] = useState<SettingsState>({
     isPaused: false,
@@ -41,21 +45,67 @@ const CaregiverSettings = () => {
     }));
   };
 
+  useEffect(() => {
+    const getDeviceId = async () => {
+      let deviceId: any = await AsyncStorage.getItem('karama_id_device');
+      setDeviceId(deviceId);
+    };
+    getDeviceId();
+  }, []);
+
+  const removeDevice: any = useAuthMutation({
+    mutationFn: (data: any) => {
+      return customAxios.post(`/notifications/devices/register`, data);
+    },
+    onSuccess: async (data: any) => {
+      // console.log('token data success =====', data?.data);
+      // console.log('end====');
+    },
+    onError: (error: any) => {
+      // console.log('token error **********', error['response'].data);
+      // Toast.show({
+      //   type: 'problem',
+      //   text1: error['response'].data.error,
+      //   text2: error['response'].data.message,
+      // });
+    },
+  });
+
   const handleLogout = () => {
-    console.log('clearing');
     clearUser();
+    removeDevice.mutate({ device_id: deviceId });
     logout();
-    console.log('cleared');
     queryClient.clear();
+  };
+
+  const handleBack = () => {
+    router.push('/(tabs)/profile');
+  };
+
+  const handleDelete = () => {
+    Alert.alert(
+      'Delete Account',
+      'Are you sure you want to delete your account? This action cannot be undone.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          onPress: () => {
+            router.push('/(app)/profileScreens/deleteAccount');
+          },
+          style: 'destructive',
+        },
+      ]
+    );
   };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView style={{ flex: 1 }}>
-        <ProfileHeader
-          heading='Settings'
-          onBack={() => router.push('/(tabs)/profile')}
-        />
+        <ProfileHeader heading='Settings' onBack={handleBack} />
         <ScrollView contentContainerStyle={{ paddingBottom: 160 }}>
           <ThemedView style={styles.container}>
             <View style={styles.section}>
@@ -113,7 +163,7 @@ const CaregiverSettings = () => {
               </View>
             </View>
 
-            <View style={styles.section}>
+            {/* <View style={styles.section}>
               <ThemedText style={styles.text}>Phone & Email</ThemedText>
               <View style={styles.subSection}>
                 <ThemedText style={styles.heading}>
@@ -123,9 +173,9 @@ const CaregiverSettings = () => {
                   {currentUser?.email || ''}
                 </ThemedText>
               </View>
-            </View>
+            </View> */}
 
-            <View style={styles.section}>
+            {/* <View style={styles.section}>
               <ThemedText style={styles.text}>Notifications</ThemedText>
               <View style={styles.subSection}>
                 <TouchableOpacity
@@ -157,19 +207,17 @@ const CaregiverSettings = () => {
                   </View>
                 </TouchableOpacity>
               </View>
-            </View>
+            </View> */}
 
             <View style={styles.section2}>
               <TouchableOpacity
                 style={[styles.button, styles.deleteButton]}
-                onPress={() =>
-                  router.push('/(app)/profileScreens/deleteAccount')
-                }
+                onPress={handleDelete}
               >
                 <ThemedText
                   style={[styles.buttonText, styles.deleteButtonText]}
                 >
-                  {/* Delete account */}
+                  Delete account
                 </ThemedText>
               </TouchableOpacity>
 

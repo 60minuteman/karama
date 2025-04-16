@@ -204,11 +204,6 @@ export default function ResponsibilitiesScreen() {
     });
   };
 
-  console.log(
-    'family_responsibilities',
-    caregiver_requirements?.selected_requirements
-  );
-
   return (
     <ThemedView style={styles.container}>
       <Header variant='back' />

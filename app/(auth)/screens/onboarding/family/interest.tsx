@@ -96,8 +96,6 @@ export default function InterestScreen() {
     useUserStore();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  console.log('family interest', family_interests);
-
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,

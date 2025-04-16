@@ -45,10 +45,10 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         if (user && !onboarding_screen && inAuthGroup) {
           // Redirect away from auth group if authenticated
-          router.navigate('/(tabs)/discover');
+          router.replace('/(tabs)/discover');
         } else if (!user && !inAuthGroup) {
           // Redirect to auth group if not authenticated
-          router.navigate('/(auth)/onboarding');
+          router.replace('/(auth)/onboarding');
         }
       } catch (error) {
         console.error('Navigation error:', error);

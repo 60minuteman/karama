@@ -34,7 +34,6 @@ export const MatchCircle = ({
       return customAxios.post(`/chats`, data);
     },
     onSuccess: async (response: any) => {
-      console.log('response', response?.data?.data);
       handleImageLoad();
       router.push(
         `/messages/${response?.data?.data?.id}?name=${match?.caregiver_profile?.name}`
@@ -67,8 +66,6 @@ export const MatchCircle = ({
       useNativeDriver: true,
     }).start();
   };
-
-  console.log('caregiver name:', match?.caregiver_profile?.name);
 
   return (
     <TouchableOpacity onPress={handleCreateRoom} activeOpacity={0.7}>

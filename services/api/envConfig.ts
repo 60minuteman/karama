@@ -27,7 +27,6 @@ const requestHandler = async (request: any) => {
   const token = await AsyncStorage.getItem('token');
   // console.log('token==========', token);
   if (token) {
-    console.log('token', token);
     request.headers.Authorization = `Bearer ${token}`;
   }
   return request;
