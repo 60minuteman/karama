@@ -1,6 +1,7 @@
 import { ThemedText } from '@/components/ThemedText';
 import { LikedYouCard } from '@/components/cards/LikedYouCard';
 import { HomeNav } from '@/components/home/HomeNav';
+import { router } from 'expo-router';
 import React from 'react';
 import {
   Dimensions,
@@ -38,6 +39,16 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
   const titleLineHeight = titleSize * 1.2;
   const upgradeButtonPadding = width * 0.06;
   const upgradeContainerBottom = height * 0.03;
+
+  const handleUpgradePress = () => {
+    // Navigate to the caregiver preview screen
+    router.push('/caregiver/preview');
+  };
+
+  const handleCardPress = (profileId: string) => {
+    // Navigate to the caregiver preview screen when a card is pressed
+    router.push('/caregiver/preview');
+  };
 
   const profiles: Profile[] = [
     {
@@ -101,7 +112,7 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
                   key={profile.id}
                   profile={profile}
                   isBlurred={false}
-                  onPress={() => {}}
+                  onPress={() => handleCardPress(profile.id)}
                 />
               ))}
             </View>
@@ -113,7 +124,7 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
                     key={profile.id}
                     profile={profile}
                     isBlurred={profile.id !== '1'} // Only the first card is unblurred
-                    onPress={() => {}}
+                    onPress={() => handleCardPress(profile.id)}
                   />
                 ))}
               </View>
@@ -122,9 +133,12 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
                   width: width - (horizontalPadding * 2),
                   height: height * 0.07
                 }]}>
-                  <TouchableOpacity style={[styles.upgradeButton, {
-                    paddingHorizontal: upgradeButtonPadding
-                  }]}>
+                  <TouchableOpacity 
+                    style={[styles.upgradeButton, {
+                      paddingHorizontal: upgradeButtonPadding
+                    }]}
+                    onPress={handleUpgradePress}
+                  >
                     <ThemedText style={[styles.upgradeButtonText, {
                       fontSize: width * 0.035
                     }]}>

@@ -46,9 +46,9 @@ const CaregiverProfileView = () => {
   //   caregiverProfile?.caregiverProfile?.pictures
   // );
 
-  function calculateAge(birthDate: string) {
-    const birth = new Date(birthDate);
-    const today = new Date();
+    function calculateAge(birthDate: string) {
+        const birth = new Date(birthDate);
+        const today = new Date();
     return today.getFullYear() - birth.getFullYear();
   }
 
@@ -62,8 +62,8 @@ const CaregiverProfileView = () => {
 
   if (caregiverProfileLoading) {
     return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <ThemedView>
+        <SafeAreaView style={{ flex: 1 }}>
+            <ThemedView>
           <ProfileHeader
             heading='Profile'
             edit
@@ -71,7 +71,7 @@ const CaregiverProfileView = () => {
           />
           <View style={styles.loadingContainer}>
             <ActivityIndicator size={'large'} />
-          </View>
+                                        </View>
         </ThemedView>
       </SafeAreaView>
     );
@@ -181,62 +181,62 @@ const CaregiverProfileView = () => {
               pastPositions,
             }}
           />
-        </View>
-      </ThemedView>
+                        </View>
+            </ThemedView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+    container: {
     flex: 1,
   },
   contentContainer: {
     flex: 1,
-    paddingHorizontal: 16,
+        paddingHorizontal: 16,
     paddingVertical: 8,
     backgroundColor: '#F6F6F6',
-    alignItems: 'center',
+        alignItems: 'center',
     justifyContent: 'center',
-  },
-  text1: {
-    color: 'white',
+    },
+    text1: {
+        color: 'white',
     fontFamily: 'Poppins',
-  },
-  ratingText: {
-    color: '#052222',
-    fontSize: 16,
-    fontWeight: 500,
-  },
-  parentHeading: {
-    fontFamily: 'Poppins',
-    fontSize: 32,
-    color: '#FFFFFF',
-    fontWeight: 500,
+    },
+    ratingText: {
+        color: '#052222',
+        fontSize: 16,
+        fontWeight: 500,
+    },
+    parentHeading: {
+        fontFamily: 'Poppins',
+        fontSize: 32,
+        color: '#FFFFFF',
+        fontWeight: 500,
     lineHeight: 36,
-  },
-  parentText: {
-    fontFamily: 'Poppins',
-    fontSize: 16,
-    fontWeight: 400,
-    lineHeight: 20,
+    },
+    parentText: {
+        fontFamily: 'Poppins',
+        fontSize: 16,
+        fontWeight: 400,
+        lineHeight: 20,
     color: 'white',
-  },
-  section: {
-    backgroundColor: '#261D2A0D',
-    paddingTop: 25,
-    paddingHorizontal: 25,
-    marginTop: 6,
+    },
+    section: {
+        backgroundColor: '#261D2A0D',
+        paddingTop: 25,
+        paddingHorizontal: 25,
+        marginTop: 6,
     borderRadius: 20,
-    overflow: 'hidden',
-    flex: 1,
+        overflow: 'hidden',
+        flex: 1,
     paddingVertical: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
   loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
+        flex: 1,
+        justifyContent: 'center',
     alignItems: 'center',
   },
 });

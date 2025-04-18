@@ -1,18 +1,22 @@
-import { Certifications } from '@/components/cards/Certifications';
-import { ExperienceAndLanguages } from '@/components/cards/ExperienceAndLanguages';
-import { Image } from '@/components/cards/Image';
-import { Interests } from '@/components/cards/Interests';
-import { Obsession } from '@/components/cards/Obsession';
-import { Position } from '@/components/cards/Position';
-import { ProfileCard } from '@/components/cards/ProfileCard';
-import { Religion } from '@/components/cards/Religion';
-import { Responsibilities } from '@/components/cards/Responsibilities';
-import { Work } from '@/components/cards/Work';
-import { ProfileDetails } from '@/components/home/ProfileDetails';
+import { CaregiverProfileCard } from '@/components/caregiver/CaregiverProfileCard';
 import { ThemedText } from '@/components/ThemedText';
+import { We } from '@/components/caregiver/We';
+import { Obsession } from '@/components/caregiver/Obsession';
+import { Interests } from '@/components/caregiver/Interests';
+import { Idea } from '@/components/caregiver/Idea';
+import { Personality } from '@/components/caregiver/Personality';
+import { Diets } from '@/components/caregiver/Diets';
+import { CaregiverImage } from '@/components/caregiver/CaregiverImage';
+import { OneThing } from '@/components/caregiver/OneThing';
+import { LookingFor } from '@/components/caregiver/LookingFor';
+import { Schedule } from '@/components/caregiver/Schedule';
+import { WorkType } from '@/components/caregiver/WorkType';
+import { ChildCare } from '@/components/caregiver/ChildCare';
+import { Benefits } from '@/components/caregiver/Benefits';
 import React, { forwardRef, useImperativeHandle } from 'react';
 import {
   Animated,
+  PanResponder,
   ScrollView,
   StyleSheet,
   useWindowDimensions,
@@ -21,23 +25,23 @@ import {
 
 interface CaregiverContainerProps {
   profileData: {
-    image: string;
-    name: string;
-    age: number;
-    location: string;
-    pronouns: string;
-    rating: number;
-    role: string;
-    experience: string[];
-    availability: string[];
-    hourlyRate: string;
-    languages: string[];
-    interests: string[];
-    specialties: string[];
+    image?: string;
+    name?: string;
+    age?: number;
+    location?: string;
+    pronouns?: string;
+    rating?: number;
+    role?: string;
+    experience?: string[];
+    availability?: string[];
+    hourlyRate?: string;
+    languages?: string[];
+    interests?: string[];
+    specialties?: string[];
     religion?: string;
-    personality: string[];
-    certifications: string[];
-    address: string;
+    personality?: string[];
+    certifications?: string[];
+    address?: string;
   } | null;
   data?: any;
   onLike?: () => void;
@@ -58,6 +62,30 @@ const CaregiverContainer = forwardRef<
   const containerWidth = Math.min(windowWidth * 0.9, 500);
 
   const slideAnim = new Animated.Value(0);
+  const swipeThreshold = windowWidth * 0.25;
+
+  // Setup PanResponder for swipe gestures
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderMove: (_, gesture) => {
+      slideAnim.setValue(gesture.dx);
+    },
+    onPanResponderRelease: (_, gesture) => {
+      if (gesture.dx > swipeThreshold) {
+        // Swiped right - like
+        animateLike();
+      } else if (gesture.dx < -swipeThreshold) {
+        // Swiped left - reject
+        animateReject();
+      } else {
+        // Reset position
+        Animated.spring(slideAnim, {
+          toValue: 0,
+          useNativeDriver: true,
+        }).start();
+      }
+    },
+  });
 
   const animateLike = () => {
     Animated.timing(slideAnim, {
@@ -86,6 +114,8 @@ const CaregiverContainer = forwardRef<
     animateReject,
   }));
 
+  console.log('CaregiverContainer received:', { profileData, data });
+
   if (!profileData || !data) {
     return (
       <View style={[styles.container, { width: containerWidth }]}>
@@ -101,129 +131,97 @@ const CaregiverContainer = forwardRef<
     );
   }
 
-  // const caregiverData = data?.caregiver || {};
-  // const pictures = caregiverData?.pictures || [];
-  // const certifications = {
-  //   professional: caregiverData?.certifications || [],
-  //   education: [caregiverData?.education_level].filter(Boolean),
-  // };
-  // const specialties = {
-  //   skills: caregiverData?.specialties || [],
-  //   experience: caregiverData?.experience_types || [],
-  // };
-
-  const dynamicStyles = StyleSheet.create({
-    container: {
-      alignSelf: 'center',
-      backgroundColor: '#F6F6F6',
-      borderRadius: 20,
-      overflow: 'hidden',
-      width: containerWidth,
-      height: isLargeScreen ? windowWidth * 0.8 : 'auto',
-    },
-    profileCardContainer: {
-      width: '100%',
-      height: isLargeScreen ? '100%' : 'auto',
-    },
-    componentContainer: {
-      width: '100%',
-      padding: containerWidth * 0.02,
-      backgroundColor: '#ECEBEC',
-      borderRadius: 10,
-      marginBottom: containerWidth * 0.03,
-    },
-  });
-
-  const content = (
-    <>
-      <View style={styles.spacer} />
-      <View style={dynamicStyles.componentContainer}>
-        <ProfileDetails
-          role={profileData.role}
-          experience={profileData.experience}
-          availability={profileData.availability}
-          hourlyRate={profileData.hourlyRate}
-        />
-      </View>
-      <View style={styles.spacer} />
-      {/* <View style={dynamicStyles.componentContainer}>
-        <ExperienceAndLanguages
-          yearsOfExperience={caregiverData?.years_of_experience}
-          languages={profileData.languages}
-        />
-      </View> */}
-      <View style={styles.spacer} />
-      {/* <View style={dynamicStyles.componentContainer}>
-        <Certifications
-          certifications={[
-            ...(certifications?.professional || []),
-            ...(certifications?.education || []),
-          ].filter(Boolean)}
-          data={data}
-        />
-      </View> */}
-      <View style={styles.spacer} />
-      {/* <View style={dynamicStyles.componentContainer}>
-        <Interests data={data} interests={profileData.interests} />
-      </View> */}
-      <View style={styles.spacer} />
-      {/* <View style={dynamicStyles.componentContainer}>
-        <Work specialties={specialties} />
-      </View> */}
-      <View style={styles.spacer} />
-      {/* <View style={dynamicStyles.componentContainer}>
-        <Religion
-          religion={profileData.religion}
-          personality={profileData.personality}
-          data={data}
-        />
-      </View> */}
-      <View style={styles.spacer} />
-      {/* <View style={[dynamicStyles.componentContainer, styles.imageContainer]}>
-        <Image data={pictures[0]?.path || null} />
-      </View> */}
-      <View style={styles.spacer} />
-      {/* <View style={dynamicStyles.componentContainer}>
-        <Position positions={caregiverData?.past_positions || []} />
-      </View> */}
-      <View style={styles.bottomSpacer} />
-    </>
-  );
+  // Prepare profile card props to ensure required props are provided
+  const profileCardProps = {
+    familyName: profileData.name || 'Family',
+    location: profileData.location || 'Location not provided',
+    salary: profileData.hourlyRate ? `${profileData.hourlyRate}/year` : '75,000/year',
+    familyType: 'Dads', // This could be made dynamic based on data
+    rating: profileData.rating || 4.5,
+    image: profileData.image || 'https://images.unsplash.com/photo-1561488111-5d800fd7089f?q=80&w=2574&auto=format&fit=crop',
+  };
 
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          width: containerWidth,
-          transform: [{ translateX: slideAnim }],
-        },
-      ]}
-    >
-      {isLargeScreen ? (
-        <View style={styles.largeScreenLayout}>
-          <View style={dynamicStyles.profileCardContainer}>
-            <ProfileCard data={data} {...profileData} />
-          </View>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollContent}
-          >
-            {content}
-          </ScrollView>
-        </View>
-      ) : (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-        >
-          <View style={dynamicStyles.profileCardContainer}>
-            <ProfileCard data={data} {...profileData} />
-          </View>
-          {content}
-        </ScrollView>
-      )}
-    </Animated.View>
+    <ScrollView>
+      <Animated.View
+        {...panResponder.panHandlers}
+        style={[
+          styles.container,
+          {
+            width: containerWidth,
+            transform: [{ translateX: slideAnim }],
+          },
+        ]}
+      >
+        <CaregiverProfileCard {...profileCardProps} />
+      </Animated.View>
+      
+      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+        <We />
+      </View>
+
+      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+        <Obsession />
+      </View>
+
+      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+        <Interests />
+      </View>
+
+      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+        <Idea />
+      </View>
+
+      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+        <Personality />
+      </View>
+
+      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+        <Diets />
+      </View>
+
+      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+        <CaregiverImage 
+          data="https://images.unsplash.com/photo-1587654780291-39c9404d746b?q=80&w=2940&auto=format&fit=crop"
+        />
+      </View>
+
+      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+        <OneThing />
+      </View>
+
+      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+        <CaregiverImage 
+          data="https://images.unsplash.com/photo-1587654780291-39c9404d746b?q=80&w=2940&auto=format&fit=crop"
+        />
+      </View>
+
+      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+        <LookingFor 
+          title="We are looking for .."
+          jobType={{ label: 'Nanny', icon: '👨‍⚕️' }}
+          startDate="06/26/2024"
+          hourlyRate={(profileData.hourlyRate as string) || '$20 - $35'}
+          education={{ label: 'Bachelors Degree', icon: '🎓' }}
+        />
+      </View>
+
+      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+        <Schedule />
+      </View>
+
+      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+        <WorkType />
+      </View>
+
+      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+        <ChildCare />
+      </View>
+
+      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+        <Benefits />
+      </View>
+    </ScrollView>
   );
 });
 
@@ -234,24 +232,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6F6F6',
     borderRadius: 20,
     overflow: 'hidden',
-  },
-  largeScreenLayout: {
-    flexDirection: 'row',
-    height: '120%',
-  },
-  scrollContent: {
-    flexGrow: 1,
-    width: '100%',
-  },
-  imageContainer: {
-    padding: 0,
-    overflow: 'hidden',
-  },
-  spacer: {
-    height: 8,
-  },
-  bottomSpacer: {
-    height: 80,
   },
   emptyStateContainer: {
     flex: 1,

@@ -461,17 +461,9 @@ export default function DiscoverScreen() {
                 <EmptyDiscovery role={userData?.role} />
               </View>
             ) : (
-              // <></>
-              // <Container
-              //   ref={containerRef}
-              //   profileData={profileData}
-              //   data={currentProfile}
-              //   onLike={() => handleLike(currentIndex)}
-              //   onReject={() => handleReject(currentIndex)}
-              // />
-              <CaregiverContainer
+              <Container
                 ref={containerRef}
-                profileData={profileDataCaregiver}
+                profileData={currentUser?.data?.role === 'FAMILY' ? profileDataFamily : profileDataCaregiver}
                 data={currentProfile}
                 onLike={() => handleLike(currentIndex)}
                 onReject={() => handleReject(currentIndex)}
