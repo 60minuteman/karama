@@ -1,6 +1,7 @@
 import { CaregiverContainer } from '@/components/home/CaregiverContainer';
 import { ThemedText } from '@/components/ThemedText';
 import { FloatingButton } from '@/components/ui/FloatingButton';
+import { Ionicons } from '@expo/vector-icons';
 import { Stack, router } from 'expo-router';
 import React, { useRef } from 'react';
 import {
@@ -11,10 +12,10 @@ import {
   View,
   useWindowDimensions,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 const mockCaregiverProfileData = {
-  image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2787&auto=format&fit=crop',
+  image:
+    'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2787&auto=format&fit=crop',
   name: 'Sarah Johnson',
   age: 28,
   location: 'New York, NY',
@@ -36,12 +37,23 @@ const mockCaregiverProfileData = {
 const mockCaregiverData = {
   caregiver: {
     pictures: [
-      { path: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2787&auto=format&fit=crop' },
-      { path: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=2788&auto=format&fit=crop' },
+      {
+        path: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2787&auto=format&fit=crop',
+      },
+      {
+        path: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=2788&auto=format&fit=crop',
+      },
     ],
-    certifications: ['CPR & First Aid', 'Early Childhood Education Certificate'],
-    education_level: 'Bachelor\'s Degree in Child Development',
-    specialties: ['Special needs care', 'Early childhood education', 'Infant care'],
+    certifications: [
+      'CPR & First Aid',
+      'Early Childhood Education Certificate',
+    ],
+    education_level: "Bachelor's Degree in Child Development",
+    specialties: [
+      'Special needs care',
+      'Early childhood education',
+      'Infant care',
+    ],
     experience_types: ['Daycare', 'Private nanny', 'School aide'],
     years_of_experience: 5,
     past_positions: [
@@ -49,13 +61,15 @@ const mockCaregiverData = {
         title: 'Lead Preschool Teacher',
         company: 'Sunshine Daycare',
         duration: 'Jan 2020 - Present',
-        description: 'Responsible for curriculum development and teaching 15 preschool-age children.',
+        description:
+          'Responsible for curriculum development and teaching 15 preschool-age children.',
       },
       {
         title: 'Private Nanny',
         company: 'Williams Family',
         duration: 'Mar 2018 - Dec 2019',
-        description: 'Cared for 2 children (ages 1 and 3), managed household tasks, and coordinated activities.',
+        description:
+          'Cared for 2 children (ages 1 and 3), managed household tasks, and coordinated activities.',
       },
     ],
   },
@@ -95,7 +109,7 @@ const CaregiverPreviewScreen = () => {
             headerTitleAlign: 'center',
             headerLeft: () => (
               <Pressable onPress={handleGoBack} style={styles.backButton}>
-                <Ionicons name="arrow-back" size={24} color="#002140" />
+                <Ionicons name='arrow-back' size={24} color='#002140' />
               </Pressable>
             ),
           }}
@@ -110,7 +124,7 @@ const CaregiverPreviewScreen = () => {
               onReject={handleReject}
             />
           </View>
-          
+
           <FloatingButton
             icon={
               <Image
@@ -126,7 +140,7 @@ const CaregiverPreviewScreen = () => {
             }}
             onPress={handleAnimateReject}
           />
-          
+
           <FloatingButton
             icon={
               <Image

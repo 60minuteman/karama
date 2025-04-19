@@ -23,7 +23,7 @@ export function MessageHeader({
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() => router.back()}
+          onPress={() => router.push('/matches')}
           style={styles.backButton}
         >
           <Ionicons name='chevron-back' size={24} color='#002140' />

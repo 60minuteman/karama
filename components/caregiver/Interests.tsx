@@ -10,11 +10,13 @@ interface Interest {
 
 interface InterestsProps {
   title?: string;
-  interests?: Interest[];
+  interests?: any[];
+  images?: any[];
 }
 
 export const Interests: React.FC<InterestsProps> = ({
   title = "Children's Interests",
+  images,
   interests = [
     { name: 'DIY', icon: '🧩' },
     { name: 'Dance', icon: '🩰' },
@@ -29,24 +31,39 @@ export const Interests: React.FC<InterestsProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image 
-          source={{ uri: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2920&auto=format&fit=crop' }} 
+        <Image
+          source={{
+            uri: images[1]?.path,
+          }}
           style={styles.image}
-          resizeMode="cover"
+          resizeMode='cover'
         />
       </View>
-      
+
       <ThemedText style={styles.title}>{title}</ThemedText>
-      
+
       <View style={styles.interestsContainer}>
-        {interests.map((interest, index) => (
-          <Pill2
-            key={index}
-            label={interest.name}
-            icon={interest.icon}
-            style={styles.interestPill}
-          />
-        ))}
+        {interests.map((interest, index) => {
+          let icon = '🎯'; // Default icon
+
+          // Match interest with appropriate icon from array
+          if (interest === 'Painting') icon = '🎨';
+          else if (interest === 'Singing') icon = '🎭';
+          else if (interest === 'Piano' || interest === 'Guitar') icon = '🎵';
+          else if (interest === 'Soccer' || interest === 'Basketball')
+            icon = '⚽';
+          else if (interest === 'Coding' || interest === 'Robotics')
+            icon = '🤖';
+
+          return (
+            <Pill2
+              key={index}
+              label={interest}
+              icon={icon}
+              style={styles.interestPill}
+            />
+          );
+        })}
       </View>
     </View>
   );
@@ -86,4 +103,4 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F4F4',
     marginBottom: 8,
   },
-}); 
+});

@@ -133,11 +133,10 @@ export default function MessageScreen() {
 
   useEffect(() => {
     socket.on('newMessage', (data: any) => {
-      // console.log('newMessage===========', data?.sender?.id, socket);
       setMessages((prevMessages) => {
         const messageExists = prevMessages.some((msg) => msg.id === data.id);
         if (!messageExists) {
-          return [...prevMessages, data];
+          return [data, ...prevMessages];
         }
         return prevMessages;
       });
@@ -248,7 +247,7 @@ const styles = StyleSheet.create({
   },
   messagesContent: {
     padding: 16,
-    paddingBottom: 120,
+    paddingTop: 120,
   },
   inputContainer: {
     backgroundColor: '#FFFFFF',

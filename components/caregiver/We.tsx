@@ -4,20 +4,9 @@ import { ThemedText } from '../ThemedText';
 import { Pill2 } from '../ui/Pill2';
 
 interface WeProps {
-  children?: {
-    infant?: boolean;
-    schoolAge?: boolean;
-  };
-  pets?: {
-    cat?: boolean;
-    chicken?: boolean;
-    smallDog?: boolean;
-  };
-  languages?: {
-    hausa?: boolean;
-    french?: boolean;
-    yoruba?: boolean;
-  };
+  children?: any;
+  pets?: any;
+  languages?: any;
   onToggle?: (section: string, item: string, value: boolean) => void;
 }
 
@@ -33,18 +22,19 @@ export const We: React.FC<WeProps> = ({
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>We have</ThemedText>
         <View style={styles.optionsContainer}>
-          <Pill2
-            label="Infant"
-            icon="👶"
-            style={children.infant ? styles.selectedPill : undefined}
-            onPress={onToggle ? () => onToggle('children', 'infant', !children.infant) : undefined}
-          />
-          <Pill2
-            label="School Age"
-            icon="🏫"
-            style={children.schoolAge ? styles.selectedPill : undefined}
-            onPress={onToggle ? () => onToggle('children', 'schoolAge', !children.schoolAge) : undefined}
-          />
+          {children?.map((child: any, index: number) => (
+            <Pill2
+              key={index}
+              label={child?.age_group}
+              icon={
+                child?.age_group == 'Pre Schooler' ||
+                child?.age_group == 'Infant'
+                  ? '👶'
+                  : '🏫'
+              }
+              // style={styles.selectedPill}
+            />
+          ))}
         </View>
       </View>
 
@@ -52,24 +42,25 @@ export const We: React.FC<WeProps> = ({
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>We have</ThemedText>
         <View style={styles.optionsContainer}>
-          <Pill2
-            label="Cat"
-            icon="😺"
-            style={pets.cat ? styles.selectedPill : undefined}
-            onPress={onToggle ? () => onToggle('pets', 'cat', !pets.cat) : undefined}
-          />
-          <Pill2
-            label="Chicken"
-            icon="🐔"
-            style={pets.chicken ? styles.selectedPill : undefined}
-            onPress={onToggle ? () => onToggle('pets', 'chicken', !pets.chicken) : undefined}
-          />
-          <Pill2
-            label="Small Dog"
-            icon="🐕"
-            style={pets.smallDog ? styles.selectedPill : undefined}
-            onPress={onToggle ? () => onToggle('pets', 'smallDog', !pets.smallDog) : undefined}
-          />
+          {pets?.map((pet: any, index: number) => (
+            <Pill2
+              key={index}
+              label={pet}
+              icon={
+                pet.toLowerCase().split(' ').includes('cat')
+                  ? '😺'
+                  : pet.toLowerCase().split(' ').includes('chicken')
+                  ? '🐔'
+                  : pet.toLowerCase().split(' ').includes('dog')
+                  ? '🐕'
+                  : '🐾'
+              }
+              style={pets.cat ? styles.selectedPill : undefined}
+              onPress={
+                onToggle ? () => onToggle('pets', 'cat', !pets.cat) : undefined
+              }
+            />
+          ))}
         </View>
       </View>
 
@@ -77,24 +68,19 @@ export const We: React.FC<WeProps> = ({
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>We speak</ThemedText>
         <View style={styles.optionsContainer}>
-          <Pill2
-            label="Hausa"
-            icon="💬"
-            style={languages.hausa ? styles.selectedPill : undefined}
-            onPress={onToggle ? () => onToggle('languages', 'hausa', !languages.hausa) : undefined}
-          />
-          <Pill2
-            label="French"
-            icon="💬"
-            style={languages.french ? styles.selectedPill : undefined}
-            onPress={onToggle ? () => onToggle('languages', 'french', !languages.french) : undefined}
-          />
-          <Pill2
-            label="Yoruba"
-            icon="💬"
-            style={languages.yoruba ? styles.selectedPill : undefined}
-            onPress={onToggle ? () => onToggle('languages', 'yoruba', !languages.yoruba) : undefined}
-          />
+          {languages?.map((language: any, index: number) => (
+            <Pill2
+              key={index}
+              label={language}
+              icon='💬'
+              // style={languages.hausa ? styles.selectedPill : undefined}
+              // onPress={
+              //   onToggle
+              //     ? () => onToggle('languages', 'hausa', !languages.hausa)
+              //     : undefined
+              // }
+            />
+          ))}
         </View>
       </View>
     </View>
@@ -121,7 +107,7 @@ export const WeExample: React.FC = () => {
   });
 
   const handleToggle = (section: string, item: string, value: boolean) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       [section]: {
         ...prev[section as keyof typeof prev],
@@ -174,4 +160,4 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#1890FF',
   },
-}); 
+});

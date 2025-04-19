@@ -29,7 +29,7 @@ export const CaregiverProfileCard = ({
   salary = '75,000/year',
   familyType = 'Dads',
   rating = 4.5,
-  image = 'https://images.unsplash.com/photo-1561488111-5d800fd7089f?q=80&w=2574&auto=format&fit=crop',
+  image = 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2920&auto=format&fit=crop',
 }: CaregiverProfileCardProps) => {
   const { height: windowHeight } = useWindowDimensions();
   const [fadeAnim] = React.useState(new Animated.Value(0));
@@ -67,24 +67,26 @@ export const CaregiverProfileCard = ({
         >
           <View style={styles.header}>
             <View style={styles.familyTypeTag}>
-              <ThemedText style={styles.familyTypeText}>{familyType}</ThemedText>
+              <ThemedText style={styles.familyTypeText}>
+                {familyType}
+              </ThemedText>
             </View>
             <View style={styles.ratingContainer}>
               <ThemedText style={styles.ratingText}>{rating}</ThemedText>
               <ThemedText style={styles.starIcon}>⭐</ThemedText>
             </View>
           </View>
-          
+
           <View style={styles.infoContainer}>
             <ThemedText style={styles.familyName}>{familyName}</ThemedText>
-            <View style={styles.locationContainer}>
+            {/* <View style={styles.locationContainer}>
               <ThemedText style={styles.locationIcon}>📍</ThemedText>
               <ThemedText style={styles.locationText}>{location}</ThemedText>
-            </View>
-            <View style={styles.salaryContainer}>
+            </View> */}
+            {/* <View style={styles.salaryContainer}>
               <ThemedText style={styles.salaryIcon}>💰</ThemedText>
               <ThemedText style={styles.salaryText}>{salary}</ThemedText>
-            </View>
+            </View> */}
           </View>
         </LinearGradient>
       </Animated.View>

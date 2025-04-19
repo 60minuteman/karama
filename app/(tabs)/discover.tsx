@@ -203,25 +203,29 @@ export default function DiscoverScreen() {
     }
   }, [currentIndex, profiles.length, nextCursor, userData?.plan]);
 
-  const submitLike = useAuthMutation({
+  const submitLike: any = useAuthMutation({
     mutationFn: (data: any) => {
       const endpoint =
         currentUser?.data?.role === 'FAMILY'
           ? `/family-discovery/like-caregiver`
-          : `/caregiver-discovery/like-families`;
-      return customAxios.patch(endpoint, {
-        caregiver_profile_id: currentProfile?.caregiver_profile?.id,
-        score: currentProfile?.score,
-      });
+          : `/caregiver-discovery/like-family`;
+      return customAxios.patch(endpoint, data);
     },
     onSuccess: (data: any) => {
       moveToNextProfile();
     },
     onError: (error: any) => {
-      if (error['response'].data?.message === 'Caregiver already liked') {
+      if (
+        error['response'].data?.message == 'Caregiver already liked' ||
+        error['response'].data?.message == 'Family already liked'
+      ) {
         return moveToNextProfile();
       }
       setCurrentIndex(Math.max(0, currentIndex - 1));
+      console.log(
+        'error["response"].data?.message',
+        error['response'].data?.message
+      );
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
@@ -230,7 +234,7 @@ export default function DiscoverScreen() {
     },
   });
 
-  const submitReject = useAuthMutation({
+  const submitReject: any = useAuthMutation({
     mutationFn: (data: any) => {
       const endpoint =
         currentUser?.data?.role === 'FAMILY'
@@ -315,7 +319,7 @@ export default function DiscoverScreen() {
           currentUser?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.pronouns || ''
             : '',
-        rating: parseFloat(currentProfile?.score || '0'),
+        rating: currentProfile?.score || '0',
         experience: [
           currentUser?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.years_of_experience || ''
@@ -387,19 +391,13 @@ export default function DiscoverScreen() {
       }
     : null;
 
-  const profileDataCaregiver = {
-    image: '', // No image path provided in the data
+  const profileDataCaregiver: any = {
+    image: currentProfile?.family_profile?.pictures, // No image path provided in the data
     name: currentProfile?.family_profile?.name || '', // "Smith Family"
     description: currentProfile?.family_profile?.description?.description || '', // "Mom & Dad"
-    children:
-      currentProfile?.family_profile?.children
-        .map(
-          (child) =>
-            `${child.count} ${child.age_group}${child.count > 1 ? 's' : ''}`
-        )
-        .join(', ') || '', // "1 Teenager, 1 Pre Schooler"
+    children: currentProfile?.family_profile?.children, // "1 Teenager, 1 Pre Schooler"
     location: `📍 ${currentProfile?.family_profile?.zipcode}`, // "📍 12345"
-    rating: parseFloat(currentProfile?.score || '0'), // 5.0
+    rating: currentProfile?.score || '0', // 5.0
     experience: [
       currentProfile?.family_profile?.household_info.rules.join('-') || '', // "1-5 years"
       ...(currentProfile?.family_profile?.household_info.diets || []), // ["Nanny", "Babysitter"]
@@ -408,7 +406,8 @@ export default function DiscoverScreen() {
       currentProfile?.family_profile?.household_info.rules.join(', ') || '',
     ], // ["Full Time"]
     hourlyRate:
-      currentProfile?.family_profile?.extra_info.payment_info.type === 'Hourly'
+      currentProfile?.family_profile?.extra_info?.payment_info?.type ===
+      'Hourly'
         ? `$${currentProfile?.family_profile?.extra_info.payment_info.hourly_min} - $${currentProfile?.family_profile?.extra_info.payment_info.hourly_max}`
         : `$${currentProfile?.family_profile?.extra_info.payment_info.salary}/year`, // "$20 - $45"
     languages: [
@@ -429,16 +428,29 @@ export default function DiscoverScreen() {
     personality:
       currentProfile?.family_profile?.caregiver_preference.personalities || [], // ["Bubbly", "Patient"]
     disabilities: currentProfile?.family_profile?.behavioural_differences || [], // ["Dyslexia", "ADHD", "Schizophrenia", "Misophonia"]
+    pets: currentProfile?.family_profile?.pets,
+    diets: currentProfile?.family_profile?.household_info?.diets,
+    rules: currentProfile?.family_profile?.household_info?.rules,
+    caregiver_preference: currentProfile?.family_profile?.caregiver_preference,
+    extra_info: currentProfile?.family_profile?.extra_info,
+    allergies: currentProfile?.family_profile?.allergies,
+    // education: currentProfile?.family_profile?.
   };
 
-  // Add debug logs
-  // console.log('Data received:', data?.data?.scored_caregivers);
-  // console.log('Current Index:', currentIndex);
-  // console.log('Current Profile:', currentProfile);
-  // console.log('Transformed Profile Data:', profileData);
+  console.log('profiledata', currentProfile?.family_profile?.pictures);
 
-  const handleLike = (index: number) => {
-    submitLike.mutate();
+  const handleLike = () => {
+    submitLike.mutate(
+      currentUser?.data?.role === 'FAMILY'
+        ? {
+            caregiver_profile_id: `${currentProfile?.caregiver_profile?.id}`,
+            score: `${currentProfile?.score}`,
+          }
+        : {
+            family_profile_id: `${currentProfile?.family_profile?.id}`,
+            score: `${currentProfile?.score}`,
+          }
+    );
   };
 
   const handleReject = (index: number) => {
@@ -461,13 +473,25 @@ export default function DiscoverScreen() {
                 <EmptyDiscovery role={userData?.role} />
               </View>
             ) : (
-              <Container
-                ref={containerRef}
-                profileData={currentUser?.data?.role === 'FAMILY' ? profileDataFamily : profileDataCaregiver}
-                data={currentProfile}
-                onLike={() => handleLike(currentIndex)}
-                onReject={() => handleReject(currentIndex)}
-              />
+              <>
+                {currentUser?.data?.role === 'FAMILY' ? (
+                  <Container
+                    ref={containerRef}
+                    profileData={profileDataFamily}
+                    data={currentProfile}
+                    onLike={() => handleLike(currentIndex)}
+                    onReject={() => handleReject(currentIndex)}
+                  />
+                ) : (
+                  <CaregiverContainer
+                    ref={containerRef}
+                    profileData={profileDataCaregiver}
+                    data={currentProfile}
+                    onLike={() => handleLike(currentIndex)}
+                    onReject={() => handleReject(currentIndex)}
+                  />
+                )}
+              </>
             )}
           </View>
           {currentProfile && (

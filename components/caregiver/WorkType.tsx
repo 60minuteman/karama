@@ -9,22 +9,16 @@ interface WorkTypeOption {
 }
 
 interface WorkTypeProps {
-  workType?: WorkTypeOption[];
-  workOptions?: WorkTypeOption[];
-  duration?: WorkTypeOption[];
-  requirements?: WorkTypeOption[];
+  workType?: any[];
+  workOptions?: any[];
+  duration?: any[];
+  requirements?: any[];
 }
 
 export const WorkType: React.FC<WorkTypeProps> = ({
-  workType = [
-    { label: 'Live Out', icon: '⏰' },
-  ],
-  workOptions = [
-    { label: 'Full Time', icon: '🕐' },
-  ],
-  duration = [
-    { label: 'Long Term', icon: '📋' },
-  ],
+  workType = [{ label: 'Live Out', icon: '⏰' }],
+  workOptions = [{ label: 'Full Time', icon: '🕐' }],
+  duration = [{ label: 'Long Term', icon: '📋' }],
   requirements = [
     { label: 'First Aid', icon: '🐱' },
     { label: 'Able To Drive', icon: '🚗' },
@@ -37,14 +31,29 @@ export const WorkType: React.FC<WorkTypeProps> = ({
     <View style={styles.section}>
       <ThemedText style={styles.sectionTitle}>{title}</ThemedText>
       <View style={styles.pillContainer}>
-        {options.map((option, index) => (
-          <Pill2
-            key={index}
-            label={option.label}
-            icon={option.icon}
-            style={styles.pill}
-          />
-        ))}
+        {options
+          ?.filter((option: any) => option && option !== 'Other')
+          .map((option: any, index) => {
+            let icon = '⏰'; // Default icon
+
+            // Set icon based on option
+            if (option === 'Live Out') icon = '⏰';
+            if (option === 'Full Time') icon = '🕐';
+            if (option === 'Long Term') icon = '📋';
+            if (option === 'First Aid') icon = '🚑';
+            if (option === 'CPR') icon = '💗';
+            if (option === 'Must have experience with special needs children')
+              icon = '👶';
+
+            return (
+              <Pill2
+                key={index}
+                label={option}
+                icon={icon}
+                style={styles.pill}
+              />
+            );
+          })}
       </View>
     </View>
   );
@@ -62,7 +71,7 @@ export const WorkType: React.FC<WorkTypeProps> = ({
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#FFFFFF',
   },
   section: {
     marginBottom: 24,
@@ -82,4 +91,4 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F4F4',
     marginBottom: 8,
   },
-}); 
+});

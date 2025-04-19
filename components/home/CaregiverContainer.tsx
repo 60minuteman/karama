@@ -1,18 +1,18 @@
-import { CaregiverProfileCard } from '@/components/caregiver/CaregiverProfileCard';
-import { ThemedText } from '@/components/ThemedText';
-import { We } from '@/components/caregiver/We';
-import { Obsession } from '@/components/caregiver/Obsession';
-import { Interests } from '@/components/caregiver/Interests';
-import { Idea } from '@/components/caregiver/Idea';
-import { Personality } from '@/components/caregiver/Personality';
-import { Diets } from '@/components/caregiver/Diets';
-import { CaregiverImage } from '@/components/caregiver/CaregiverImage';
-import { OneThing } from '@/components/caregiver/OneThing';
-import { LookingFor } from '@/components/caregiver/LookingFor';
-import { Schedule } from '@/components/caregiver/Schedule';
-import { WorkType } from '@/components/caregiver/WorkType';
-import { ChildCare } from '@/components/caregiver/ChildCare';
 import { Benefits } from '@/components/caregiver/Benefits';
+import { CaregiverImage } from '@/components/caregiver/CaregiverImage';
+import { CaregiverProfileCard } from '@/components/caregiver/CaregiverProfileCard';
+import { ChildCare } from '@/components/caregiver/ChildCare';
+import { Diets } from '@/components/caregiver/Diets';
+import { Idea } from '@/components/caregiver/Idea';
+import { Interests } from '@/components/caregiver/Interests';
+import { LookingFor } from '@/components/caregiver/LookingFor';
+import { Obsession } from '@/components/caregiver/Obsession';
+import { OneThing } from '@/components/caregiver/OneThing';
+import { Personality } from '@/components/caregiver/Personality';
+import { Schedule } from '@/components/caregiver/Schedule';
+import { We } from '@/components/caregiver/We';
+import { WorkType } from '@/components/caregiver/WorkType';
+import { ThemedText } from '@/components/ThemedText';
 import React, { forwardRef, useImperativeHandle } from 'react';
 import {
   Animated,
@@ -114,8 +114,6 @@ const CaregiverContainer = forwardRef<
     animateReject,
   }));
 
-  console.log('CaregiverContainer received:', { profileData, data });
-
   if (!profileData || !data) {
     return (
       <View style={[styles.container, { width: containerWidth }]}>
@@ -135,10 +133,14 @@ const CaregiverContainer = forwardRef<
   const profileCardProps = {
     familyName: profileData.name || 'Family',
     location: profileData.location || 'Location not provided',
-    salary: profileData.hourlyRate ? `${profileData.hourlyRate}/year` : '75,000/year',
-    familyType: 'Dads', // This could be made dynamic based on data
+    salary: profileData.hourlyRate
+      ? `${profileData.hourlyRate}/year`
+      : '75,000/year',
+    familyType: profileData?.description, // This could be made dynamic based on data
     rating: profileData.rating || 4.5,
-    image: profileData.image || 'https://images.unsplash.com/photo-1561488111-5d800fd7089f?q=80&w=2574&auto=format&fit=crop',
+    image:
+      profileData?.image[0]?.path ||
+      'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2920&auto=format&fit=crop',
   };
 
   return (
@@ -155,71 +157,148 @@ const CaregiverContainer = forwardRef<
       >
         <CaregiverProfileCard {...profileCardProps} />
       </Animated.View>
-      
-      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
-        <We />
+
+      <View
+        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
+      >
+        <We
+          children={profileData?.children}
+          pets={profileData?.pets}
+          languages={profileData?.languages}
+        />
       </View>
 
-      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+      {/* <View
+        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
+      >
         <Obsession />
+      </View> */}
+
+      <View
+        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
+      >
+        <Interests
+          interests={profileData?.interests}
+          images={profileData?.image}
+        />
       </View>
 
-      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
-        <Interests />
-      </View>
-
-      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+      {/* <View
+        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
+      >
         <Idea />
-      </View>
+      </View> */}
 
-      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
-        <Personality />
-      </View>
-
-      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
-        <Diets />
-      </View>
-
-      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
-        <CaregiverImage 
-          data="https://images.unsplash.com/photo-1587654780291-39c9404d746b?q=80&w=2940&auto=format&fit=crop"
+      <View
+        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
+      >
+        <Personality
+          personalityTraits={profileData?.personality}
+          experiences={profileData?.experience}
+          allergies={[
+            ...profileData?.allergies?.food_allergies,
+            profileData?.allergies?.other_food_allergies,
+            ...profileData?.allergies?.environmental_allergies,
+            profileData?.allergies?.other_environtal_allergies,
+            ...profileData?.allergies?.other_allergies,
+            profileData?.allergies?.other_other_allergies,
+          ]}
         />
       </View>
 
-      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+      <View
+        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
+      >
+        <Diets
+          diets={profileData?.diets}
+          householdRules={profileData?.rules}
+          images={profileData?.image}
+        />
+      </View>
+
+      {/* <View
+        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
+      >
+        <CaregiverImage data={profileData?.image[3]?.path} />
+      </View> */}
+
+      {/* <View
+        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
+      >
         <OneThing />
+      </View> */}
+
+      <View
+        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
+      >
+        <CaregiverImage data={profileData?.image[4]?.path} />
       </View>
 
-      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
-        <CaregiverImage 
-          data="https://images.unsplash.com/photo-1587654780291-39c9404d746b?q=80&w=2940&auto=format&fit=crop"
+      <View
+        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
+      >
+        <LookingFor
+          title='We are looking for ..'
+          jobType={profileData?.caregiver_preference?.caregiver_types}
+          startDate={
+            profileData?.caregiver_preference?.job_commitment?.start_date
+          }
+          hourlyRate={`$${profileData?.extra_info?.payment_info?.hourly_min} - $${profileData?.extra_info?.payment_info?.hourly_max}`}
+          education={
+            profileData?.caregiver_preference?.requirements?.certifications
+          }
+          otherEducation={
+            profileData?.caregiver_preference?.requirements?.other_certification
+          }
         />
       </View>
 
-      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
-        <LookingFor 
-          title="We are looking for .."
-          jobType={{ label: 'Nanny', icon: '👨‍⚕️' }}
-          startDate="06/26/2024"
-          hourlyRate={(profileData.hourlyRate as string) || '$20 - $35'}
-          education={{ label: 'Bachelors Degree', icon: '🎓' }}
-        />
-      </View>
-
-      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
+      {/* <View
+        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
+      >
         <Schedule />
+      </View> */}
+
+      <View
+        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
+      >
+        <WorkType
+          workType={[profileData?.caregiver_preference?.arrangement_type]}
+          workOptions={[profileData?.caregiver_preference?.availability]}
+          duration={[
+            profileData?.caregiver_preference?.job_commitment?.commitment,
+          ]}
+          requirements={[
+            ...profileData?.caregiver_preference?.requirements?.requirements,
+            profileData?.caregiver_preference?.requirements?.other_requirement,
+          ]}
+          // OtherRequirements={}
+        />
       </View>
 
-      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
-        <WorkType />
+      <View
+        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
+      >
+        <ChildCare
+          childcareResponsibilities={[
+            ...profileData?.caregiver_preference?.responsibilities
+              ?.childcare_responsibilities,
+            profileData?.caregiver_preference?.responsibilities
+              ?.other_childcare_responsibilities,
+          ]}
+          householdResponsibilities={[
+            ...profileData?.caregiver_preference?.responsibilities
+              ?.household_responsibilities,
+            profileData?.caregiver_preference?.responsibilities
+              ?.other_household_responsibilities,
+          ]}
+        />
       </View>
 
-      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
-        <ChildCare />
-      </View>
-
-      <View style={[styles.container, { width: containerWidth, marginTop: 16 }]}>
-        <Benefits />
+      <View
+        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
+      >
+        <Benefits benefits={profileData?.extra_info?.benefits?.benefits} />
       </View>
     </ScrollView>
   );

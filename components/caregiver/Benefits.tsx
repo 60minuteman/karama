@@ -9,7 +9,7 @@ interface BenefitItem {
 }
 
 interface BenefitsProps {
-  benefits?: BenefitItem[];
+  benefits?: any[];
   youShouldKnowTitle?: string;
   youShouldKnowText?: string;
 }
@@ -30,21 +30,38 @@ export const Benefits: React.FC<BenefitsProps> = ({
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>Benefits</ThemedText>
         <View style={styles.pillContainer}>
-          {benefits.map((benefit, index) => (
-            <Pill2
-              key={index}
-              label={benefit.label}
-              icon={benefit.icon}
-              style={styles.pill}
-            />
-          ))}
+          {benefits.map((benefit, index) => {
+            let icon = '💸'; // Default icon from sample data
+
+            // Match icons from sample data
+            if (benefit === 'Yearly Bonus' || benefit === 'Yearly Raise')
+              icon = '💸';
+            if (benefit === 'Maternity Leave') icon = '🤰';
+            if (benefit === 'Health Insurance') icon = '🏥';
+            if (benefit === 'Mileage Reimbursement') icon = '🚗';
+            if (benefit === 'Monthly Metro Card') icon = '🚇';
+            if (benefit === 'Retirment Account') icon = '😲';
+
+            return (
+              <Pill2
+                key={index}
+                label={benefit}
+                icon={icon}
+                style={styles.pill}
+              />
+            );
+          })}
         </View>
       </View>
 
-      <View style={styles.youShouldKnowSection}>
-        <ThemedText style={styles.youShouldKnowTitle}>{youShouldKnowTitle}</ThemedText>
-        <ThemedText style={styles.youShouldKnowText}>{youShouldKnowText}</ThemedText>
-      </View>
+      {/* <View style={styles.youShouldKnowSection}>
+        <ThemedText style={styles.youShouldKnowTitle}>
+          {youShouldKnowTitle}
+        </ThemedText>
+        <ThemedText style={styles.youShouldKnowText}>
+          {youShouldKnowText}
+        </ThemedText>
+      </View> */}
     </View>
   );
 };
@@ -90,4 +107,4 @@ const styles = StyleSheet.create({
     color: '#333333',
     lineHeight: 26,
   },
-}); 
+});
