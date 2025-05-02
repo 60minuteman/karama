@@ -41,7 +41,7 @@ export default function IntermissionScreen() {
     router.push('/(auth)/screens/onboarding/family/gender');
   };
 
-  const submit = useAuthMutation({
+  const submit: any = useAuthMutation({
     mutationFn: async (data: any) => {
       const token = await AsyncStorage.getItem('userToken');
       if (!token) {
@@ -50,8 +50,8 @@ export default function IntermissionScreen() {
 
       return customAxios.post('/family-profile/create-profile', data, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
     },
     onSuccess: async (data: any) => {
@@ -59,7 +59,7 @@ export default function IntermissionScreen() {
     },
     onError: (error: any) => {
       console.error('Profile creation error:', error?.response?.data);
-      
+
       if (error?.response?.status === 401) {
         Toast.show({
           type: 'error',
