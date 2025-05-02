@@ -62,8 +62,6 @@ export const Personality: React.FC<PersonalityProps> = ({
     </View>
   );
 
-  console.log('allergies======', allergies);
-
   return (
     <View style={styles.container}>
       {renderSection(personalityTitle, personalityTraits)}
