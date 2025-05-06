@@ -78,6 +78,8 @@ export default function PetScreen() {
   const togglePet = (pet: PetType) => {
     if (pet === 'None') {
       setFamilyPets(['None']);
+      setOnboardingScreen('/(auth)/screens/onboarding/family/interest');
+      router.push('/(auth)/screens/onboarding/family/interest');
     } else {
       const newPets = family_pets.includes('None')
         ? [pet]

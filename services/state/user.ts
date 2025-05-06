@@ -487,6 +487,7 @@ interface UserState {
   showCaregiverRequiredBenefit: boolean | undefined;
   caregiverFirstPosition: CaregiverPositionHistory;
   caregiverSecondPosition: CaregiverPositionHistory;
+  caregiverThirdPosition: CaregiverPositionHistory;
   caregiverPromptCategory: string | undefined;
   caregiverFirstPrompt: string | undefined;
   caregiverFirstPromptAnswer: string | undefined;
@@ -603,6 +604,7 @@ interface UserState {
   setShowCaregiverRequiredBenefits: (type: boolean | undefined) => void;
   setCaregiverFirstPosition: (type: CaregiverPositionHistory) => void;
   setCaregiverSecondPosition: (type: CaregiverPositionHistory) => void;
+  setCaregiverThirdPosition: (type: CaregiverPositionHistory) => void;
   setCaregiverPromptCategory: (type: string | undefined) => void;
   setCaregiverFirstPrompt: (type: string | undefined) => void;
   setCaregiverFirstPromptAnswer: (type: string | undefined) => void;
@@ -899,6 +901,15 @@ export const useUserStore = create<UserState>()(
         startDate: '',
         endDate: '',
       },
+      caregiverThirdPosition: {
+        positionNumber: null,
+        position: '',
+        ageGroup: '',
+        familyName: '',
+        employmentType: '',
+        startDate: '',
+        endDate: '',
+      },
       caregiverPromptCategory: '',
       caregiverFirstPrompt: '',
       caregiverFirstPromptAnswer: '',
@@ -1086,6 +1097,8 @@ export const useUserStore = create<UserState>()(
         set({ caregiverFirstPosition: first }),
       setCaregiverSecondPosition: (second) =>
         set({ caregiverSecondPosition: second }),
+      setCaregiverThirdPosition: (third) =>
+        set({ caregiverThirdPosition: third }),
       setCaregiverPromptCategory: (category) =>
         set({ caregiverPromptCategory: category }),
       setCaregiverFirstPrompt: (prompt) =>

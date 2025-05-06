@@ -23,8 +23,8 @@ const handleNext =()=>{
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/pets')
     router.push('/(auth)/screens/onboarding/caregiver/pets');
   } else {
-    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/next-screen')
-    router.push('/(auth)/screens/onboarding/caregiver/next-screen');
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/interest')
+    router.push('/(auth)/screens/onboarding/caregiver/interest');
   }
 }
   return (

@@ -35,7 +35,6 @@ const PETS = [
   { label: 'Dinosaur' as const, emoji: '🦕' },
   { label: 'Baby Elephant' as const, emoji: '🐘' },
   { label: 'Unicorn' as const, emoji: '🦄' },
-  { label: 'None' as const, emoji: '⛔' },
   { label: 'Other' as const, emoji: '🐾' },
 ];
 
@@ -49,10 +48,10 @@ export default function Page() {
   };
 
   const togglePet = (pet: PetType) => {
-    if (pet === 'None') {
-      setCaregiverPetExperience(['None']);
-      return;
-    }
+    // if (pet === 'None') {
+    //   setCaregiverPetExperience(['None']);
+    //   return;
+    // }
     const prev = caregiverPetExperience ?? [];
     const filtered = prev.filter(p => p !== 'None');
     if (prev.includes(pet)) {
