@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "com.karama.karama",
       "buildNumber": "1.2.0",
@@ -56,7 +54,8 @@
           "splashScreenBackground": "#F15858",
           "splashScreenAnimation": "fade"
         }
-      ]
+      ],
+      "expo-web-browser"
     ],
     "extra": {
       "eas": {
@@ -70,9 +69,6 @@
       "url": "https://u.expo.dev/439c483b-7ef1-4a7b-b7ca-eaa6937c6ed3",
       "checkAutomatically": "ON_LOAD"
     },
-    "owner": "60minute",
-    "experiments": {
-      "newArchEnabled": true
-    }
+    "owner": "60minute"
   }
 }
