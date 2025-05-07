@@ -86,7 +86,21 @@ otherReligion
 
   const toggleSelection = (category: Category, label: string) => {
     const currentSelections = { ...family_selections } as FamilySelections;
-
+    if (category === 'Diet' && currentSelections.diets?.includes('🥑 Other')) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
+      router.push('/(auth)/screens/onboarding/family/otherDiet?category=diet');
+      return;
+    }
+    if (category === 'Rules' && currentSelections.rules?.includes('🎯 Other')) {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
+      router.push('/(auth)/screens/onboarding/family/otherDiet?category=rules');
+      return;
+    }
+    if (category === 'Religion' && currentSelections.religion === '🙏 Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
+      router.push('/(auth)/screens/onboarding/family/otherDiet?category=religion');
+      return;
+    }
    
     // Initialize arrays if they don't exist
     if (!currentSelections.diets) currentSelections.diets = [];
@@ -124,15 +138,8 @@ otherReligion
   };
 
   const handleNext = () => {
-    const selections = family_selections as FamilySelections;
-    if (otherDiet !== '' || otherRule !== '' || otherReligion !== '' ||
-       selections.diets?.includes('Other') || selections.rules?.includes('Other') || selections.religion === 'Other') {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
-      router.push(`/(auth)/screens/onboarding/family/otherDiet?category=${selections.religion === 'Other' ? 'religion' : selections.rules?.includes('Other') ? 'rules' : 'diet'}`);
-    } else {
       setOnboardingScreen('/(auth)/screens/onboarding/family/philosophy');
       router.push('/(auth)/screens/onboarding/family/philosophy');
-    }
   };
 
   return (

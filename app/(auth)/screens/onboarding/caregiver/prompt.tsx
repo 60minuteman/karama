@@ -84,6 +84,17 @@ export default function Prompt() {
   // Now TypeScript knows this is safe
   const currentPrompts = prompts[caregiverPromptCategory || 'get_to_know'];
 
+  const handleAdd = (item: any) => {
+    if (caregiverFirstPrompt) {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/promptAnswer');
+      router.push({
+        pathname: '/(auth)/screens/onboarding/caregiver/promptAnswer',
+        params: { prompt: caregiverFirstPrompt }
+      });
+    }
+  };
+
+
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" />
@@ -121,7 +132,7 @@ export default function Prompt() {
                 <Pill
                   label={prompt}
                   selected={caregiverFirstPrompt === prompt}
-                  onPress={() => setCaregiverFirstPrompt(prompt)}
+                  onPress={() => {setCaregiverFirstPrompt(prompt) ; handleAdd(prompt)}}
                 />
               </View>
             ))}

@@ -78,7 +78,7 @@ export default function PetScreen() {
   }, []);
 
   const togglePet = (pet: PetType) => {
-    if (pet === 'Other') {
+    if (pet === '🐾 Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherPet');
       router.push('/(auth)/screens/onboarding/family/otherPet');
       return;

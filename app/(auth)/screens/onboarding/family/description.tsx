@@ -34,14 +34,20 @@ export default function FamilyDescriptionScreen() {
   ];
 
   const handleNext = () => {
-    if (family_description?.type !== 'Other') {
+    if (family_description?.type) {
       setOnboardingScreen('/(auth)/screens/onboarding/family/number');
       router.push('/(auth)/screens/onboarding/family/number');
-    } else {
+    } 
+  };
+
+  const handleAdd = (item: any) => {
+    if (item === '💝 Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherFamilyDescriptionScreen');
       router.push('/(auth)/screens/onboarding/family/otherFamilyDescriptionScreen');
+      return
     }
-  };
+    setFamilyDescription({ type: item });
+  }
 
   return (
     <ThemedView style={styles.container}>
@@ -62,7 +68,7 @@ export default function FamilyDescriptionScreen() {
               icon={item.type.split(' ')[0]}
               label={item.type.split(' ').slice(1).join(' ')}
               selected={family_description?.type === item.type}
-              onPress={() => setFamilyDescription({ type: item.type })}
+              onPress={() => handleAdd(item.type)}
             />
           ))}
         </View>

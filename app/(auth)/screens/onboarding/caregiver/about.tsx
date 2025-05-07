@@ -107,7 +107,7 @@ export default function AboutScreen() {
     setCaregiverPersonality(selectedPersonality);
   };
   const toggleRulesSelection = (item: string) => {
-    if (item === 'Other') {
+    if (item === '❓ Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet')
       router.push('/(auth)/screens/onboarding/family/otherDiet?category=rules')
       return;
@@ -119,7 +119,7 @@ export default function AboutScreen() {
     setCaregiverRules(selectedRules);
   };
   const toggleDietSelection = (item: string) => {
-    if (item === 'Other') {
+    if (item === '❓ Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet')
       router.push('/(auth)/screens/onboarding/family/otherDiet?category=diet')
       return;
@@ -131,7 +131,7 @@ export default function AboutScreen() {
     setCaregiverDiet(selectedDiet);
   };
   const toggleReligionSelection = (item: string) => {
-    if (item === 'Other') {
+    if (item === '❓ Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet')
       router.push('/(auth)/screens/onboarding/family/otherDiet?category=religion')
       return;

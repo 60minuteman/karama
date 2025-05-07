@@ -174,7 +174,7 @@ export default function CommitmentScreen() {
               />
             </View>
 
-            {family_commitment.selected_commitment === 'Short Term' ? (
+            {family_commitment.selected_commitment === '⌛ Short Term' ? (
             <View style={styles.dateContainer}>
               <View style={styles.dateColumn}>
                 <Text style={styles.dateLabel}>Start Date</Text>

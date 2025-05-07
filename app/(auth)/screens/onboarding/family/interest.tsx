@@ -107,7 +107,7 @@ export default function InterestScreen() {
     const { label, category } = interest;
   
     // Check if "Other" is selected
-    if (label === 'Other') {
+    if (label === '🔬 Other' || label === '🎨 Other' || label === '🎯 Other' || label === '🎵 Other') {
       // Redirect to the custom interest input screen
       router.push(`/(auth)/screens/onboarding/family/custom-interest?category=${category}`);
       return;

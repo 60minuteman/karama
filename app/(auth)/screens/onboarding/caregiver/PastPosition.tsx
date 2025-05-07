@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useFonts } from 'expo-font';
+// import { useFonts } from 'expo-font';
 // import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
 import { useUserStore } from '@/services/state/user';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useFonts } from 'expo-font';
-import { LinearGradient } from 'expo-linear-gradient';
+// import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -21,6 +21,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Colors } from '@/constants/Colors';
 
 const positionTypes = [
   { id: 'night_nurse' as const, label: '👩‍⚕️ Night Nurse' },

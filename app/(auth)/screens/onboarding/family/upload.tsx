@@ -10,7 +10,7 @@ import { useUserStore } from '@/services/state/user';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 export default function Page() {
@@ -84,6 +84,7 @@ export default function Page() {
   };
 
   return (
+      <ScrollView>
     <ThemedView style={styles.container}>
       <Header variant='back' />
 
@@ -100,7 +101,7 @@ export default function Page() {
           will help the{'\n'}caregiver understand your family more!
         </ThemedText>
 
-        <ThemedText style={styles.sectionTitle}>Select Photos</ThemedText>
+      <ThemedText style={styles.sectionTitle}>Select Photos</ThemedText>
 
         <View style={styles.photoGrid}>
           {[...Array(6)].map((_, index) => (
@@ -132,9 +133,9 @@ export default function Page() {
         <View style={styles.addPhotoContainer}>
           <Button label='Add photo' onPress={pickImage} variant='compact' />
         </View>
-      </View>
+        </View>
 
-      <View style={styles.bottomNav}>
+        <View style={styles.bottomNav}>
         <View style={styles.buttonContainer}>
           <Button
             label='Next'
@@ -144,8 +145,9 @@ export default function Page() {
             loading={uploadMutation.isPending}
           />
         </View>
-      </View>
+        </View>
     </ThemedView>
+      </ScrollView>
   );
 }
 
