@@ -1,63 +1,67 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, TextInput } from 'react-native';
-import { useEffect, useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
+import { Colors } from '@/constants/Colors';
 import { useOtherStore } from '@/services/state/other';
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 
 export default function OtherFamilyPetScreen() {
   const router = useRouter();
   const [pet, setPet] = useState('');
-  const {addOtherPet} = useOtherStore()
-   
+  const { addOtherPet } = useOtherStore();
+
   useEffect(() => {
     setPet('');
-  }, [])
-  
+  }, []);
 
   const handleAdd = () => {
     if (pet.trim()) {
       // Handle adding the philosophy
-      addOtherPet(pet.trim())
-    router.back();
+      addOtherPet(pet.trim());
+      router.back();
     }
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
 
-      <View style={styles.content}>
-        <View style={styles.spacerTop} />
-        
-        <ThemedText style={styles.title}>
-        Add other pets
-        </ThemedText>
+      <KeyboardAvoidingView style={styles.container} behavior='padding' enabled>
+        <View style={styles.content}>
+          <View style={styles.spacerTop} />
 
-        <View style={styles.inputContainer}>
-          <View style={styles.inputCursor} />
-          <TextInput
-            style={styles.input}
-            placeholder="Type here"
-            placeholderTextColor="#999"
-            value={pet}
-            onChangeText={setPet}
-            autoFocus
-          />
+          <ThemedText style={styles.title}>Add other pets</ThemedText>
+
+          <View style={styles.inputContainer}>
+            <View style={styles.inputCursor} />
+            <TextInput
+              style={styles.input}
+              placeholder='Type here'
+              placeholderTextColor='#999'
+              value={pet}
+              onChangeText={setPet}
+              autoFocus
+            />
+          </View>
+
+          <View style={styles.buttonContainer}>
+            <Button
+              label='Add'
+              onPress={handleAdd}
+              variant='compact'
+              disabled={!pet.trim()}
+            />
+          </View>
         </View>
-
-        <View style={styles.buttonContainer}>
-          <Button
-            label="Add"
-            onPress={handleAdd}
-            variant="compact"
-            disabled={!pet.trim()}
-          />
-        </View>
-      </View>
+      </KeyboardAvoidingView>
     </ThemedView>
   );
 }
@@ -105,5 +109,5 @@ const styles = StyleSheet.create({
     bottom: 50,
     left: 20,
     right: 20,
-  }
+  },
 });
