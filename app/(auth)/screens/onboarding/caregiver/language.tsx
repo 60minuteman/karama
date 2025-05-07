@@ -30,6 +30,11 @@ export default function LanguageScreen() {
   ];
 
   const toggleLanguageSelection = (label: Language) => {
+    if (label === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherLanguage')
+      router.push('/(auth)/screens/onboarding/family/otherLanguage')
+      return;
+    }
     const prev = caregiverLanguages ?? [];
     const updatedLanguages = prev.includes(label)
       ? prev.filter((item) => item !== label)

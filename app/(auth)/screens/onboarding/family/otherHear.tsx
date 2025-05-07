@@ -9,21 +9,20 @@ import { Button } from '@/components/ui/Button';
 import { useOtherStore } from '@/services/state/other';
 
 
-export default function OtherPhiloScreen() {
+export default function OtherHearScreen() {
   const router = useRouter();
-  const [philosophy, setPhilosophy] = useState('');
+  const [hear, setHear] = useState('');
+   const {addOtherHear} = useOtherStore()
 
-  const {addOtherPhilosophy } = useOtherStore()
+   useEffect(() => {
+    setHear('');
+    } , [])
 
-  useEffect(() => {
-    setPhilosophy('');
-  }, [])
-  
-  
+ 
+
   const handleAdd = () => {
-    if (philosophy.trim()) {
-      // Handle adding the philosophy
-      addOtherPhilosophy(philosophy.trim())
+    if (hear.trim()) {
+        addOtherHear(hear.trim())
       router.back();
     }
   };
@@ -36,7 +35,7 @@ export default function OtherPhiloScreen() {
         <View style={styles.spacerTop} />
         
         <ThemedText style={styles.title}>
-          Add other philosophies
+          Add other place you hear about us
         </ThemedText>
 
         <View style={styles.inputContainer}>
@@ -45,8 +44,8 @@ export default function OtherPhiloScreen() {
             style={styles.input}
             placeholder="Type here"
             placeholderTextColor="#999"
-            value={philosophy}
-            onChangeText={setPhilosophy}
+            value={hear}
+            onChangeText={setHear}
             autoFocus
           />
         </View>
@@ -56,7 +55,7 @@ export default function OtherPhiloScreen() {
             label="Add"
             onPress={handleAdd}
             variant="compact"
-            disabled={!philosophy.trim()}
+            disabled={!hear.trim()}
           />
         </View>
       </View>

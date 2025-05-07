@@ -51,8 +51,12 @@ export default function Prompt() {
     setCaregiverPromptCategory,
     caregiverFirstPrompt,
     setCaregiverFirstPrompt,
-    setOnboardingScreen
+    setOnboardingScreen,
+    setCaregiverFirstPromptAnswer
   } = useUserStore();
+   useEffect(() => {
+      setCaregiverFirstPromptAnswer('');
+    }, [])
 
   // Initialize with default category if not set
   useEffect(() => {

@@ -53,8 +53,9 @@ export default function Page() {
   };
 
   const togglePet = (pet: PetType) => {
-    if (pet === 'None') {
-      setCaregiverPetExperience(['None']);
+    if (pet === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherPet')
+      router.push('/(auth)/screens/onboarding/family/otherPet')
       return;
     }
     const prev = caregiverPetExperience ?? [];

@@ -24,14 +24,14 @@ export default function CGLanguageScreen() {
 
   const handleNext = () => {
     if (caregiver_language_required) {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/requirements');
-      router.push('/(auth)/screens/onboarding/family/requirements');
+      setOnboardingScreen('/(auth)/screens/onboarding/family/education');
+      router.push('/(auth)/screens/onboarding/family/education');
     }
   };
 
   const handleSkip = () => {
-    setOnboardingScreen('/(auth)/screens/onboarding/family/requirements');
-    router.push('/(auth)/screens/onboarding/family/requirements');
+    setOnboardingScreen('/(auth)/screens/onboarding/family/education');
+    router.push('/(auth)/screens/onboarding/family/education');
   };
 
   return (

@@ -9,11 +9,22 @@ import { Header } from '@/components/ui/Header';
 import { TextInput } from 'react-native';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useUserStore } from '@/services/state/user';
 
 export default function OtherAllergy() {
   const router = useRouter();
   const { type } = useLocalSearchParams<{ type: 'food' | 'environmental' | 'other' }>();
   const [allergy, setAllergy] = useState('');
+   const {
+      family_allergies,
+      setFamilyAllergies,
+    } = useUserStore();
+
+      const [localAllergies, setLocalAllergies] = useState({
+        food: Array.from(family_allergies.food),
+        environmental: Array.from(family_allergies.environmental),
+        other: Array.from(family_allergies.other),
+      });
 
   const getTitleText = () => {
     switch (type) {
@@ -26,9 +37,24 @@ export default function OtherAllergy() {
     }
   };
 
+  const handleAllergyToggle = (
+    id: string,
+    category: 'food' | 'environmental' | 'other'
+  ) => {
+    const newSelected = [...localAllergies[category]];
+   
+      newSelected.push(id);
+
+    setFamilyAllergies({
+      ...localAllergies,
+      [category]: newSelected,
+    });
+  };
+
   const handleAdd = () => {
     if (allergy.trim()) {
       // Handle adding the custom allergy
+      handleAllergyToggle(allergy.trim(), type as 'food' | 'environmental' | 'other');
       router.back();
     }
   };
@@ -102,7 +128,7 @@ const styles = StyleSheet.create({
   inputCursor: {
     width: 2,
     height: 24,
-    backgroundColor: Colors.light.orange,
+    backgroundColor: Colors.light.primary,
     marginRight: 4,
   },
   input: {

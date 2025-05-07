@@ -35,10 +35,18 @@ export default function TraitScreen() {
   ];
 
   const handleTraitSelect = (trait: string) => {
-    const newTraits = selected_traits.includes(trait)
-      ? selected_traits.filter((t) => t !== trait)
-      : [...selected_traits, trait];
-
+    const isSelected = selected_traits.includes(trait);
+  
+    let newTraits;
+  
+    if (isSelected) {
+      newTraits = selected_traits.filter((t) => t !== trait);
+    } else {
+      // Only add if the current selection is less than 3
+      if (selected_traits.length >= 3) return; 
+      newTraits = [...selected_traits, trait];
+    }
+  
     setCaregiverTraits({ selected_traits: newTraits });
   };
 

@@ -33,6 +33,11 @@ export default function PhiloScreen() {
   // const [selectedPhilosophies, setSelectedPhilosophies] = useState<string[]>([]);
 
   const togglePhilosophy = (philosophy: CaregiverPhilosophies) => {
+    if (philosophy === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherPhilo');
+      router.push('/(auth)/screens/onboarding/family/otherPhilo');
+      return;
+    }
     const prev = caregiverPhilosophyExperience ?? [];
     const selectedPhilosophies = prev.includes(philosophy)
       ? prev.filter((item) => item !== philosophy)

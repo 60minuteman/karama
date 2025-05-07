@@ -29,7 +29,8 @@ type FamilyType =
   | 'Moms'
   | 'Dads'
   | 'Guardian'
-  | 'Other';
+  | 'Other'
+  |  any
 
 type Condition =
   | 'Dyslexia'
@@ -179,7 +180,8 @@ export type CaregiverPhilosophies =
   | 'Sudbury'
   | 'Reggio Emillia'
   | 'Gentle Parenting'
-  | 'Permissive Parenting';
+  | 'Permissive Parenting'
+  | 'Other'
 
 export type CaregiverPositions =
   | 'Full Time'
@@ -213,7 +215,7 @@ export interface CaregiverDaySchedule {
 
 export interface CaregiverPositionHistory {
   position: string;
-  positionNumber: 'first' | 'second' | null;
+  positionNumber: 'first' | 'second' |  'Third' |null;
   ageGroup: string;
   familyName: string;
   employmentType: string;
@@ -487,6 +489,7 @@ interface UserState {
   showCaregiverRequiredBenefit: boolean | undefined;
   caregiverFirstPosition: CaregiverPositionHistory;
   caregiverSecondPosition: CaregiverPositionHistory;
+  caregiverThirdPosition: CaregiverPositionHistory;
   caregiverPromptCategory: string | undefined;
   caregiverFirstPrompt: string | undefined;
   caregiverFirstPromptAnswer: string | undefined;
@@ -603,6 +606,7 @@ interface UserState {
   setShowCaregiverRequiredBenefits: (type: boolean | undefined) => void;
   setCaregiverFirstPosition: (type: CaregiverPositionHistory) => void;
   setCaregiverSecondPosition: (type: CaregiverPositionHistory) => void;
+  setCaregiverThirdPosition: (type: CaregiverPositionHistory) => void;
   setCaregiverPromptCategory: (type: string | undefined) => void;
   setCaregiverFirstPrompt: (type: string | undefined) => void;
   setCaregiverFirstPromptAnswer: (type: string | undefined) => void;
@@ -899,6 +903,15 @@ export const useUserStore = create<UserState>()(
         startDate: '',
         endDate: '',
       },
+      caregiverThirdPosition: {
+        positionNumber: null,
+        position: '',
+        ageGroup: '',
+        familyName: '',
+        employmentType: '',
+        startDate: '',
+        endDate: '',
+      },
       caregiverPromptCategory: '',
       caregiverFirstPrompt: '',
       caregiverFirstPromptAnswer: '',
@@ -1086,6 +1099,8 @@ export const useUserStore = create<UserState>()(
         set({ caregiverFirstPosition: first }),
       setCaregiverSecondPosition: (second) =>
         set({ caregiverSecondPosition: second }),
+      setCaregiverThirdPosition: (third) =>
+        set({ caregiverThirdPosition: third }),
       setCaregiverPromptCategory: (category) =>
         set({ caregiverPromptCategory: category }),
       setCaregiverFirstPrompt: (prompt) =>

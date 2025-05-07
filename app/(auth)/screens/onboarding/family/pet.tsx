@@ -78,8 +78,15 @@ export default function PetScreen() {
   }, []);
 
   const togglePet = (pet: PetType) => {
-    if (pet === '⛔ None') {
-      setFamilyPets(['⛔ None']);
+    if (pet === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherPet');
+      router.push('/(auth)/screens/onboarding/family/otherPet');
+      return;
+    }
+    if (pet === 'None') {
+      setFamilyPets(['None']);
+      setOnboardingScreen('/(auth)/screens/onboarding/family/interest');
+      router.push('/(auth)/screens/onboarding/family/interest');
     } else {
       const newPets = family_pets.includes('⛔ None')
         ? [pet]

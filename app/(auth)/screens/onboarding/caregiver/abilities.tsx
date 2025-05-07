@@ -46,6 +46,11 @@ export default function Page() {
   // const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const toggleAbilitiesSelection = (label: CaregiverAbilities) => {
+    if (label === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/otherAbilities')
+      router.push('/(auth)/screens/onboarding/caregiver/otherAbilities')
+      return;
+    }
     const prev = caregiverAbilities ?? [];
     const updatedAbilities = prev.includes(label)
       ? prev.filter((item) => item !== label)
@@ -53,6 +58,11 @@ export default function Page() {
     setCaregiverAbilities(updatedAbilities);
   };
   const toggleCertificationSelection = (label: CaregiverCertification) => {
+    if (label === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/otherCertification')
+      router.push('/(auth)/screens/onboarding/caregiver/otherCertification')
+      return;
+    }
     const prev = caregiverCertifications ?? [];
     const updatedCertification = prev.includes(label)
       ? prev.filter((item) => item !== label)

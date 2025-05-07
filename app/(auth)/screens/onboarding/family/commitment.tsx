@@ -174,6 +174,7 @@ export default function CommitmentScreen() {
               />
             </View>
 
+            {family_commitment.selected_commitment === 'Short Term' ? (
             <View style={styles.dateContainer}>
               <View style={styles.dateColumn}>
                 <Text style={styles.dateLabel}>Start Date</Text>
@@ -199,6 +200,20 @@ export default function CommitmentScreen() {
                 </Pressable>
               </View>
             </View>
+            ) : (
+              <View style={styles.dateColumn}>
+              <Text style={styles.dateLabel}>Start Date</Text>
+              <Pressable
+                style={styles.dateInput}
+                onPress={() => setShowStartDatePicker(true)}
+              >
+                <Text style={styles.dateInputText}>
+                  {formatDate(family_commitment.start_date)}
+                </Text>
+              </Pressable>
+            </View>
+            )
+          }
 
             {renderDatePicker(true)}
             {renderDatePicker(false)}

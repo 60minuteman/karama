@@ -1,29 +1,26 @@
 import { useRouter } from 'expo-router';
 import { StyleSheet, View, TextInput } from 'react-native';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { Header } from '@/components/ui/Header';
 import { Button } from '@/components/ui/Button';
+import { useUserStore } from '@/services/state/user';
 import { useOtherStore } from '@/services/state/other';
 
 
-export default function OtherPhiloScreen() {
+export default function OtherChildResponsibilitiesScreen() {
   const router = useRouter();
-  const [philosophy, setPhilosophy] = useState('');
+  const [childResponsibilities, setChildResponsibilities] = useState('');
+   const {
+    addOtherChildResponsibilities
+   } = useOtherStore()
 
-  const {addOtherPhilosophy } = useOtherStore()
-
-  useEffect(() => {
-    setPhilosophy('');
-  }, [])
-  
-  
   const handleAdd = () => {
-    if (philosophy.trim()) {
-      // Handle adding the philosophy
-      addOtherPhilosophy(philosophy.trim())
+    if (childResponsibilities.trim()) {
+      // Handle adding the Certification
+        addOtherChildResponsibilities(childResponsibilities.trim())
       router.back();
     }
   };
@@ -36,7 +33,7 @@ export default function OtherPhiloScreen() {
         <View style={styles.spacerTop} />
         
         <ThemedText style={styles.title}>
-          Add other philosophies
+          Add other childcare responsibilities
         </ThemedText>
 
         <View style={styles.inputContainer}>
@@ -45,8 +42,8 @@ export default function OtherPhiloScreen() {
             style={styles.input}
             placeholder="Type here"
             placeholderTextColor="#999"
-            value={philosophy}
-            onChangeText={setPhilosophy}
+            value={childResponsibilities}
+            onChangeText={setChildResponsibilities}
             autoFocus
           />
         </View>
@@ -56,7 +53,7 @@ export default function OtherPhiloScreen() {
             label="Add"
             onPress={handleAdd}
             variant="compact"
-            disabled={!philosophy.trim()}
+            disabled={!childResponsibilities.trim()}
           />
         </View>
       </View>
