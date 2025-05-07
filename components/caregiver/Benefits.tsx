@@ -46,7 +46,7 @@ export const Benefits: React.FC<BenefitsProps> = ({
               <Pill2
                 key={index}
                 label={benefit}
-                icon={icon}
+                // icon={icon}
                 style={styles.pill}
               />
             );

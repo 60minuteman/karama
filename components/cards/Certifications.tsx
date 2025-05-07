@@ -39,7 +39,7 @@ export const Certifications = ({
           {certifications.map((item: any, index: any) => (
             <Pill2
               key={index}
-              icon={item.icon}
+              // icon={item.icon}
               label={item}
               style={styles.pill}
             />

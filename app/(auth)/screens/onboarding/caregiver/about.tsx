@@ -1,21 +1,20 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, ScrollView, Switch } from 'react-native';
-import { useState } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 type Category = 'Personality' | 'Rules' | 'Diet' | 'Religion';
 
 interface CategoryData {
   label: string;
-  icon: string;
   category: Category;
 }
 
@@ -37,8 +36,7 @@ export default function AboutScreen() {
     caregiverRules,
     setCaregiverRules,
     setOnboardingScreen,
-
-  } = useUserStore()
+  } = useUserStore();
   // const [selectedItems, setSelectedItems] = useState<string[]>([]);
   // const [visibilitySettings, setVisibilitySettings] = useState({
   //   personality: false,
@@ -48,85 +46,85 @@ export default function AboutScreen() {
 
   const categories: Record<Category, CategoryData[]> = {
     Personality: [
-      { label: 'Bubbly', icon: '✨', category: 'Personality' },
-      { label: 'Animated', icon: '🤗', category: 'Personality' },
-      { label: 'Chill', icon: '🕯️', category: 'Personality' },
-      { label: 'Patient', icon: '😌', category: 'Personality' },
-      { label: 'Wacky', icon: '🤪', category: 'Personality' },
-      { label: 'Extroverted', icon: '😎', category: 'Personality' },
-      { label: 'Disciplined', icon: '📝', category: 'Personality' },
-      { label: 'Introverted', icon: '🤔', category: 'Personality' },
-      { label: 'Thoughtful', icon: '🤗', category: 'Personality' },
-      { label: 'Adventurous', icon: '🚀', category: 'Personality' },
-      { label: 'Whimsical', icon: '🌈', category: 'Personality' },
-      { label: 'Nurturing', icon: '🫂', category: 'Personality' },
-      { label: 'Cool', icon: '😎', category: 'Personality' },
-      { label: 'Organized', icon: '👥', category: 'Personality' },
+      { label: '✨ Bubbly', category: 'Personality' },
+      { label: '🤗 Animated', category: 'Personality' },
+      { label: '🕯️ Chill', category: 'Personality' },
+      { label: '😌 Patient', category: 'Personality' },
+      { label: '🤪 Wacky', category: 'Personality' },
+      { label: '😎 Extroverted', category: 'Personality' },
+      { label: '📝 Disciplined', category: 'Personality' },
+      { label: '🤔 Introverted', category: 'Personality' },
+      { label: '🤗 Thoughtful', category: 'Personality' },
+      { label: '🚀 Adventurous', category: 'Personality' },
+      { label: '🌈 Whimsical', category: 'Personality' },
+      { label: '🫂 Nurturing', category: 'Personality' },
+      { label: '😎 Cool', category: 'Personality' },
+      { label: '👥 Organized', category: 'Personality' },
     ],
     Rules: [
-      { label: 'No Screens', icon: '📱', category: 'Rules' },
-      { label: 'No Vaping', icon: '💨', category: 'Rules' },
-      { label: 'Be Kind', icon: '🤗', category: 'Rules' },
-      { label: 'No Hitting', icon: '👊', category: 'Rules' },
-      { label: 'No Nuts', icon: '🥜', category: 'Rules' },
-      { label: 'No Swearing', icon: '🤬', category: 'Rules' },
-      { label: 'No Long Nails', icon: '💅', category: 'Rules' },
-      { label: 'No Bullying', icon: '🚫', category: 'Rules' },
-      { label: 'No Perfume', icon: '🌸', category: 'Rules' },
-      { label: 'No Smoking', icon: '🚭', category: 'Rules' },
-      { label: 'No Throwing Balls', icon: '🏈', category: 'Rules' },
-      { label: 'No Jumping On Furniture', icon: '🛋️', category: 'Rules' },
-      { label: 'Other', icon: '❓', category: 'Rules' },
+      { label: '📱 No Screens', category: 'Rules' },
+      { label: '💨 No Vaping', category: 'Rules' },
+      { label: '🤗 Be Kind', category: 'Rules' },
+      { label: '👊 No Hitting', category: 'Rules' },
+      { label: '🥜 No Nuts', category: 'Rules' },
+      { label: '🤬 No Swearing', category: 'Rules' },
+      { label: '💅 No Long Nails', category: 'Rules' },
+      { label: '🚫 No Bullying', category: 'Rules' },
+      { label: '🌸 No Perfume', category: 'Rules' },
+      { label: '🚭 No Smoking', category: 'Rules' },
+      { label: '🏈 No Throwing Balls', category: 'Rules' },
+      { label: '🛋️ No Jumping On Furniture', category: 'Rules' },
+      { label: '❓ Other', category: 'Rules' },
     ],
     Diet: [
-      { label: 'Vegan', icon: '🥬', category: 'Diet' },
-      { label: 'Vegetarian', icon: '🥗', category: 'Diet' },
-      { label: 'Halal', icon: '🌙', category: 'Diet' },
-      { label: 'Meat Eater', icon: '🍖', category: 'Diet' },
-      { label: 'Kosher', icon: '✡️', category: 'Diet' },
-      { label: 'Pescatarian', icon: '🐟', category: 'Diet' },
-      { label: 'Sugar Free', icon: '🚫', category: 'Diet' },
-      { label: 'None', icon: '❌', category: 'Diet' },
-      { label: 'Other', icon: '❓', category: 'Diet' },
+      { label: '🥬 Vegan', category: 'Diet' },
+      { label: '🥗 Vegetarian', category: 'Diet' },
+      { label: '🌙 Halal', category: 'Diet' },
+      { label: '🍖 Meat Eater', category: 'Diet' },
+      { label: '✡️ Kosher', category: 'Diet' },
+      { label: '🐟 Pescatarian', category: 'Diet' },
+      { label: '🚫 Sugar Free', category: 'Diet' },
+      { label: '❌ None', category: 'Diet' },
+      { label: '❓ Other', category: 'Diet' },
     ],
     Religion: [
-      { label: 'Islam', icon: '☪️', category: 'Religion' },
-      { label: 'Taoism', icon: '☯️', category: 'Religion' },
-      { label: 'Buddhism', icon: '☸️', category: 'Religion' },
-      { label: 'Judaism', icon: '✡️', category: 'Religion' },
-      { label: 'Hinduism', icon: '🕉️', category: 'Religion' },
-      { label: 'Christianity', icon: '✝️', category: 'Religion' },
-      { label: 'Atheism', icon: '🚫', category: 'Religion' },
-      { label: 'Other', icon: '❓', category: 'Religion' },
+      { label: '☪️ Islam', category: 'Religion' },
+      { label: '☯️ Taoism', category: 'Religion' },
+      { label: '☸️ Buddhism', category: 'Religion' },
+      { label: '✡️ Judaism', category: 'Religion' },
+      { label: '🕉️ Hinduism', category: 'Religion' },
+      { label: '✝️ Christianity', category: 'Religion' },
+      { label: '🚫 Atheism', category: 'Religion' },
+      { label: '❓ Other', category: 'Religion' },
     ],
   };
 
   const togglePersonalitySelection = (item: string) => {
     const prev = caregiverPersonality ?? [];
     const selectedPersonality = prev.includes(item)
-      ? prev.filter(i => i !== item)
-      : [...prev, item]
+      ? prev.filter((i) => i !== item)
+      : [...prev, item];
     setCaregiverPersonality(selectedPersonality);
   };
   const toggleRulesSelection = (item: string) => {
     const prev = caregiverRules ?? [];
     const selectedRules = prev.includes(item)
-      ? prev.filter(i => i !== item)
-      : [...prev, item]
+      ? prev.filter((i) => i !== item)
+      : [...prev, item];
     setCaregiverRules(selectedRules);
   };
   const toggleDietSelection = (item: string) => {
     const prev = caregiverDiet ?? [];
     const selectedDiet = prev.includes(item)
-      ? prev.filter(i => i !== item)
-      : [...prev, item]
+      ? prev.filter((i) => i !== item)
+      : [...prev, item];
     setCaregiverDiet(selectedDiet);
   };
   const toggleReligionSelection = (item: string) => {
     const prev = caregiverReligion ?? [];
     const selectedReligion = prev.includes(item)
-      ? prev.filter(i => i !== item)
-      : [...prev, item]
+      ? prev.filter((i) => i !== item)
+      : [...prev, item];
     setCaregiverReligion(selectedReligion);
   };
 
@@ -137,7 +135,7 @@ export default function AboutScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -151,7 +149,7 @@ export default function AboutScreen() {
           <LinearGradient
             colors={[Colors.light.background, 'rgba(255,255,255,0)']}
             style={styles.topGradient}
-            pointerEvents="none"
+            pointerEvents='none'
           />
           <ScrollView
             style={styles.scrollView}
@@ -160,61 +158,62 @@ export default function AboutScreen() {
           >
             {(Object.keys(categories) as Category[]).map((category) => (
               <View key={category} style={styles.categoryContainer}>
-                <ThemedText style={styles.categoryTitle}>
-                  {category}
-                </ThemedText>
+                <ThemedText style={styles.categoryTitle}>{category}</ThemedText>
                 <View style={styles.pillsContainer}>
                   {categories[category].map((item) => (
                     <Pill
                       key={item.label}
                       label={item.label}
-                      icon={item.icon}
                       selected={
-                        category === 'Personality' ?
-                          caregiverPersonality?.includes(item.label)
-                          : category === 'Rules' ?
-                            caregiverRules?.includes(item.label)
-                            : category === 'Diet' ?
-                              caregiverDiet?.includes(item.label)
-                              : caregiverReligion?.includes(item.label)
+                        category === 'Personality'
+                          ? caregiverPersonality?.includes(item.label)
+                          : category === 'Rules'
+                          ? caregiverRules?.includes(item.label)
+                          : category === 'Diet'
+                          ? caregiverDiet?.includes(item.label)
+                          : caregiverReligion?.includes(item.label)
                       }
                       onPress={() =>
-                        category === 'Personality' ?
-                          togglePersonalitySelection(item.label)
-                          : category === 'Rules' ?
-                            toggleRulesSelection(item.label)
-                            : category === 'Diet' ?
-                              toggleDietSelection(item.label)
-                              : toggleReligionSelection(item.label)
+                        category === 'Personality'
+                          ? togglePersonalitySelection(item.label)
+                          : category === 'Rules'
+                          ? toggleRulesSelection(item.label)
+                          : category === 'Diet'
+                          ? toggleDietSelection(item.label)
+                          : toggleReligionSelection(item.label)
                       }
                     />
                   ))}
                 </View>
                 {category !== 'Rules' && (
                   <View style={styles.switchContainer}>
-                    <ThemedText style={styles.switchLabel}>Show on profile</ThemedText>
+                    <ThemedText style={styles.switchLabel}>
+                      Show on profile
+                    </ThemedText>
                     <Switch
                       value={
-                        category === 'Personality' ?
-                          showCaregiverPersonality
-                          : category === 'Diet' ?
-                            showCaregiverDiet :
-                            showCaregiverReligion
+                        category === 'Personality'
+                          ? showCaregiverPersonality
+                          : category === 'Diet'
+                          ? showCaregiverDiet
+                          : showCaregiverReligion
                       }
                       onValueChange={(value) => {
-                        category === 'Personality' ?
-                          setShowCaregiverPersonality(value)
-                          : category === 'Diet' ?
-                            setShowCaregiverDiet(value) :
-                            setShowCaregiverReligion(value)
-                      }
-                      }
+                        category === 'Personality'
+                          ? setShowCaregiverPersonality(value)
+                          : category === 'Diet'
+                          ? setShowCaregiverDiet(value)
+                          : setShowCaregiverReligion(value);
+                      }}
                     />
                   </View>
                 )}
                 {category === 'Religion' && (
                   <ThemedText style={styles.disclaimer}>
-                    Your religion won't appear on your profile automatically - it's up to you whether to include it or not. We only ask so we can match you with families who are looking for caregivers who share the same faith.
+                    Your religion won't appear on your profile automatically -
+                    it's up to you whether to include it or not. We only ask so
+                    we can match you with families who are looking for
+                    caregivers who share the same faith.
                   </ThemedText>
                 )}
               </View>
@@ -224,18 +223,14 @@ export default function AboutScreen() {
           <LinearGradient
             colors={['rgba(255,255,255,0)', Colors.light.background]}
             style={styles.buttonGradient}
-            pointerEvents="none"
+            pointerEvents='none'
           />
           <View style={styles.buttonContainer}>
+            <Button label='Skip' onPress={handleNext} variant='skip' />
             <Button
-              label="Skip"
+              label='Next'
               onPress={handleNext}
-              variant="skip"
-            />
-            <Button
-              label="Next"
-              onPress={handleNext}
-              variant="compact"
+              variant='compact'
               disabled={
                 caregiverDiet?.length === 0 ||
                 caregiverPersonality?.length === 0 ||

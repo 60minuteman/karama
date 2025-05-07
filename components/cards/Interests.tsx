@@ -59,7 +59,7 @@ export const Interests = ({
           {interests?.map((interest, index) => (
             <Pill2
               key={index}
-              icon={interestIcons[interest] || '✨'}
+              // icon={interestIcons[interest] || '✨'}
               label={interest}
               style={styles.interestPill}
             />

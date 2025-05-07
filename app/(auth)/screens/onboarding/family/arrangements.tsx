@@ -11,17 +11,17 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
-type Arrangement = 'Live In' | 'Live Out' | 'Hybrid';
+type Arrangement = '💤 Live In' | '⏰ Live Out' | '🔗 Hybrid';
 
 export default function ArrangementsScreen() {
   const router = useRouter();
   const { family_arrangement, setFamilyArrangement, setOnboardingScreen } =
     useUserStore();
 
-  const arrangementOptions: Array<{ label: Arrangement; icon: string }> = [
-    { label: 'Live In', icon: '💤' },
-    { label: 'Live Out', icon: '⏰' },
-    { label: 'Hybrid', icon: '🔗' },
+  const arrangementOptions: Array<{ label: Arrangement }> = [
+    { label: '💤 Live In' },
+    { label: '⏰ Live Out' },
+    { label: '🔗 Hybrid' },
   ];
 
   const handleNext = () => {
@@ -54,7 +54,6 @@ export default function ArrangementsScreen() {
                 <Pill
                   key={option.label}
                   label={option.label}
-                  icon={option.icon}
                   selected={
                     family_arrangement.selected_arrangement === option.label
                   }

@@ -44,7 +44,7 @@ export const ProfileDetails = ({
               <Pill2
                 key={index}
                 label={exp}
-                icon={icons[exp as keyof typeof icons]}
+                // icon={icons[exp as keyof typeof icons]}
                 style={styles.pill}
               />
             );
@@ -64,7 +64,7 @@ export const ProfileDetails = ({
               <Pill2
                 key={index}
                 label={item}
-                icon={icons[item as keyof typeof icons]}
+                // icon={icons[item as keyof typeof icons]}
                 style={styles.pill}
               />
             );

@@ -56,7 +56,12 @@ export const ChildCare: React.FC<ChildCareProps> = ({
             if (item === 'Assist with bedtime routines') icon = '🌙';
 
             return (
-              <Pill2 key={index} label={item} icon={icon} style={styles.pill} />
+              <Pill2
+                key={index}
+                label={item}
+                //  icon={icon}
+                style={styles.pill}
+              />
             );
           })}
       </View>

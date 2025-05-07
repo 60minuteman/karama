@@ -70,7 +70,7 @@ export const Responsibilities = ({
           {childcareResp.map((item: any, index: number) => (
             <Pill2
               key={index}
-              icon={item.icon || '👶'}
+              // icon={item.icon || '👶'}
               label={item}
               style={styles.pill}
             />
@@ -86,7 +86,7 @@ export const Responsibilities = ({
           {householdResp.map((item: any, index: number) => (
             <Pill2
               key={index}
-              icon={item.icon || '🏠'}
+              // icon={item.icon || '🏠'}
               label={item}
               style={styles.pill}
             />

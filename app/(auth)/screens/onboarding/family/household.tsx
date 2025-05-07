@@ -41,40 +41,40 @@ export default function HouseholdScreen() {
 
   const categories = {
     Diet: [
-      { label: 'Vegan', icon: '🥬' },
-      { label: 'Vegetarian', icon: '🥗' },
-      { label: 'Halal', icon: '🍖' },
-      { label: 'Meat Eater', icon: '🍗' },
-      { label: 'Kosher', icon: '🥩' },
-      { label: 'Pescatarian', icon: '🐟' },
-      { label: 'Sugar Free', icon: '🍬' },
-      { label: 'None', icon: '⛔' },
-      { label: 'Other', icon: '🥑' },
+      { label: '🥬 Vegan' },
+      { label: '🥗 Vegetarian' },
+      { label: '🍖 Halal' },
+      { label: '🍗 Meat Eater' },
+      { label: '🥩 Kosher' },
+      { label: '🐟 Pescatarian' },
+      { label: '🍬 Sugar Free' },
+      { label: '⛔ None' },
+      { label: '🥑 Other' },
     ],
     Rules: [
-      { label: 'No Screens', icon: '📱' },
-      { label: 'No Vapping', icon: '💨' },
-      { label: 'Be Kind', icon: '😊' },
-      { label: 'No Hitting', icon: '👊' },
-      { label: 'No Nuts', icon: '🥜' },
-      { label: 'No Swearing', icon: '🤬' },
-      { label: 'No Long Nails', icon: '💅' },
-      { label: 'No Bullying', icon: '🐂' },
-      { label: 'No Perfume', icon: '🌸' },
-      { label: 'No Smoking', icon: '😤' },
-      { label: 'No Throwing Balls', icon: '🔴' },
-      { label: 'No Jumping On Furniture', icon: '🛋️' },
-      { label: 'Other', icon: '🎯' },
+      { label: '📱 No Screens' },
+      { label: '💨 No Vapping' },
+      { label: '😊 Be Kind' },
+      { label: '👊 No Hitting' },
+      { label: '🥜 No Nuts' },
+      { label: '🤬 No Swearing' },
+      { label: '💅 No Long Nails' },
+      { label: '🐂 No Bullying' },
+      { label: '🌸 No Perfume' },
+      { label: '😤 No Smoking' },
+      { label: '🔴 No Throwing Balls' },
+      { label: '🛋️ No Jumping On Furniture' },
+      { label: '🎯 Other' },
     ],
     Religion: [
-      { label: 'Islam', icon: '🕌' },
-      { label: 'Taoism', icon: '☯️' },
-      { label: 'Buddhism', icon: '🕉️' },
-      { label: 'Judaism', icon: '✡️' },
-      { label: 'Hinduism', icon: '🕉️' },
-      { label: 'Christianity', icon: '✝️' },
-      { label: 'Athesisim', icon: '🧬' },
-      { label: 'Other', icon: '🙏' },
+      { label: '🕌 Islam' },
+      { label: '☯️ Taoism' },
+      { label: '🕉️ Buddhism' },
+      { label: '✡️ Judaism' },
+      { label: '🕉️ Hinduism' },
+      { label: '✝️ Christianity' },
+      { label: '🧬 Athesisim' },
+      { label: '🙏 Other' },
     ],
   };
 
@@ -157,7 +157,6 @@ export default function HouseholdScreen() {
                     <Pill
                       key={item.label}
                       label={item.label}
-                      icon={item.icon}
                       selected={
                         category === 'Religion'
                           ? (family_selections as FamilySelections).religion ===

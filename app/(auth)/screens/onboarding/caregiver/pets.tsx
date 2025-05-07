@@ -1,50 +1,54 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { router } from 'expo-router';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
-import { useFonts } from 'expo-font';
-import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { PetType, useUserStore } from '@/services/state/user';
+import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
+import { useFonts } from 'expo-font';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 const PETS = [
-  { label: 'Cat' as const, emoji: '🐱' },
-  { label: 'Small Dog' as const, emoji: '🐶' },
-  { label: 'Pig' as const, emoji: '🐷' },
-  { label: 'Large Dog' as const, emoji: '🦮' },
-  { label: 'Cow' as const, emoji: '🐮' },
-  { label: 'Butterfly' as const, emoji: '🦋' },
-  { label: 'Turtle' as const, emoji: '🐢' },
-  { label: 'Snake' as const, emoji: '🐍' },
-  { label: 'Parrot' as const, emoji: '🦜' },
-  { label: 'Rabbit' as const, emoji: '🐰' },
-  { label: 'Sheep' as const, emoji: '🐑' },
-  { label: 'Duck' as const, emoji: '🦆' },
-  { label: 'Horse' as const, emoji: '🐎' },
-  { label: 'Frog' as const, emoji: '🐸' },
-  { label: 'Gecko' as const, emoji: '🦎' },
-  { label: 'Whale' as const, emoji: '🐋' },
-  { label: 'Chicken' as const, emoji: '🐔' },
-  { label: 'Hamster' as const, emoji: '🐹' },
-  { label: 'Dinosaur' as const, emoji: '🦕' },
-  { label: 'Baby Elephant' as const, emoji: '🐘' },
-  { label: 'Unicorn' as const, emoji: '🦄' },
-  { label: 'None' as const, emoji: '⛔' },
-  { label: 'Other' as const, emoji: '🐾' },
+  { label: '🐱 Cat' as const },
+  { label: '🐶 Small Dog' as const },
+  { label: '🐷 Pig' as const },
+  { label: '🦮 Large Dog' as const },
+  { label: '🐮 Cow' as const },
+  { label: '🦋 Butterfly' as const },
+  { label: '🐢 Turtle' as const },
+  { label: '🐍 Snake' as const },
+  { label: '🦜 Parrot' as const },
+  { label: '🐰 Rabbit' as const },
+  { label: '🐑 Sheep' as const },
+  { label: '🦆 Duck' as const },
+  { label: '🐎 Horse' as const },
+  { label: '🐸 Frog' as const },
+  { label: '🦎 Gecko' as const },
+  { label: '🐋 Whale' as const },
+  { label: '🐔 Chicken' as const },
+  { label: '🐹 Hamster' as const },
+  { label: '🦕 Dinosaur' as const },
+  { label: '🐘 Baby Elephant' as const },
+  { label: '🦄 Unicorn' as const },
+  { label: '⛔ None' as const },
+  { label: '🐾 Other' as const },
 ];
 
 export default function Page() {
-  const { caregiverPetExperience, setCaregiverPetExperience, setOnboardingScreen } = useUserStore()
+  const {
+    caregiverPetExperience,
+    setCaregiverPetExperience,
+    setOnboardingScreen,
+  } = useUserStore();
   // const [selectedPets, setSelectedPets] = useState<string[]>([]);
 
   const handleNext = () => {
-    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/interest')
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/interest');
     router.push('/(auth)/screens/onboarding/caregiver/interest');
   };
 
@@ -54,9 +58,9 @@ export default function Page() {
       return;
     }
     const prev = caregiverPetExperience ?? [];
-    const filtered = prev.filter(p => p !== 'None');
+    const filtered = prev.filter((p) => p !== 'None');
     if (prev.includes(pet)) {
-      setCaregiverPetExperience(filtered.filter(p => p !== pet));
+      setCaregiverPetExperience(filtered.filter((p) => p !== pet));
     } else {
       setCaregiverPetExperience([...filtered, pet]);
     }
@@ -64,7 +68,7 @@ export default function Page() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
 
       <View style={styles.headerContent}>
         <View style={styles.spacerTop} />
@@ -84,10 +88,15 @@ export default function Page() {
           {PETS.map((pet) => (
             <Pill
               key={pet.label}
-              label={`${pet.emoji} ${pet.label}`}
-              onPress={() => togglePet(pet.label)}
-              selected={caregiverPetExperience?.includes(pet.label)}
-              disabled={pet.label !== 'None' && caregiverPetExperience?.includes('None')}
+              label={pet.label}
+              onPress={() => togglePet(pet.label.split(' ')[1])}
+              selected={caregiverPetExperience?.includes(
+                pet.label.split(' ')[1]
+              )}
+              disabled={
+                pet.label.split(' ')[1] !== 'None' &&
+                caregiverPetExperience?.includes('None')
+              }
             />
           ))}
         </View>
@@ -98,18 +107,14 @@ export default function Page() {
         <LinearGradient
           colors={['rgba(255,255,255,0)', Colors.light.background]}
           style={styles.buttonGradient}
-          pointerEvents="none"
+          pointerEvents='none'
         />
         <View style={styles.bottomNav}>
+          <Button label='Skip' onPress={handleNext} variant='skip' />
           <Button
-            label="Skip"
+            label='Next'
             onPress={handleNext}
-            variant="skip"
-          />
-          <Button
-            label="Next"
-            onPress={handleNext}
-            variant="compact"
+            variant='compact'
             disabled={caregiverPetExperience?.length === 0}
           />
         </View>
@@ -175,5 +180,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-  }
+  },
 });

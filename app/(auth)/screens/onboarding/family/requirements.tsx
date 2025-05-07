@@ -12,22 +12,22 @@ import { useEffect, useRef, useState } from 'react';
 import { Animated, ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 type Requirement =
-  | 'Can Travel'
-  | 'Able To Drive'
-  | 'First Aid'
-  | 'Can Swim'
-  | 'COVID Vaccination'
-  | 'CPR'
-  | 'Other';
+  | '✈️ Can Travel'
+  | '🚗 Able To Drive'
+  | '🏥 First Aid'
+  | '🏊 Can Swim'
+  | '💉 COVID Vaccination'
+  | '🫀 CPR'
+  | '🎯 Other';
 
 type Certification =
-  | 'Sign Language'
-  | 'Administering Medication'
-  | 'Special Needs'
-  | 'Condition Specific'
-  | 'Feeding & Swallowing'
-  | 'Registered Behaviour Technician'
-  | 'Other';
+  | '🤟 Sign Language'
+  | '💊 Administering Medication'
+  | '🦽 Special Needs'
+  | '🏥 Condition Specific'
+  | '🍔 Feeding & Swallowing'
+  | '😇 Registered Behaviour Technician'
+  | '📄 Other';
 
 export default function RequirementsScreen() {
   const router = useRouter();
@@ -52,24 +52,24 @@ export default function RequirementsScreen() {
     }).start();
   }, []);
 
-  const requirements: Array<{ label: Requirement; icon: string }> = [
-    { label: 'Can Travel', icon: '✈️' },
-    { label: 'Able To Drive', icon: '🚗' },
-    { label: 'First Aid', icon: '🏥' },
-    { label: 'Can Swim', icon: '🏊' },
-    { label: 'COVID Vaccination', icon: '💉' },
-    { label: 'CPR', icon: '🫀' },
-    { label: 'Other', icon: '🎯' },
+  const requirements: Array<{ label: Requirement }> = [
+    { label: '✈️ Can Travel' },
+    { label: '🚗 Able To Drive' },
+    { label: '🏥 First Aid' },
+    { label: '🏊 Can Swim' },
+    { label: '💉 COVID Vaccination' },
+    { label: '🫀 CPR' },
+    { label: '🎯 Other' },
   ];
 
-  const certifications: Array<{ label: Certification; icon: string }> = [
-    { label: 'Sign Language', icon: '🤟' },
-    { label: 'Administering Medication', icon: '💊' },
-    { label: 'Special Needs', icon: '🦽' },
-    { label: 'Condition Specific', icon: '🏥' },
-    { label: 'Feeding & Swallowing', icon: '🍔' },
-    { label: 'Registered Behaviour Technician', icon: '😇' },
-    { label: 'Other', icon: '📄' },
+  const certifications: Array<{ label: Certification }> = [
+    { label: '🤟 Sign Language' },
+    { label: '💊 Administering Medication' },
+    { label: '🦽 Special Needs' },
+    { label: '🏥 Condition Specific' },
+    { label: '🍔 Feeding & Swallowing' },
+    { label: '😇 Registered Behaviour Technician' },
+    { label: '📄 Other' },
   ];
 
   const toggleRequirement = (req: Requirement) => {
@@ -123,7 +123,6 @@ export default function RequirementsScreen() {
                   <Pill
                     key={req.label}
                     label={req.label}
-                    icon={req.icon}
                     selected={selected_requirements.includes(req.label)}
                     onPress={() => toggleRequirement(req.label)}
                   />
@@ -155,7 +154,6 @@ export default function RequirementsScreen() {
                   <Pill
                     key={cert.label}
                     label={cert.label}
-                    icon={cert.icon}
                     selected={selected_certifications.includes(cert.label)}
                     onPress={() => toggleCertification(cert.label)}
                   />

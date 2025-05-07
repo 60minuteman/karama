@@ -59,7 +59,7 @@ export const Interests: React.FC<InterestsProps> = ({
             <Pill2
               key={index}
               label={interest}
-              icon={icon}
+              // icon={icon}
               style={styles.interestPill}
             />
           );

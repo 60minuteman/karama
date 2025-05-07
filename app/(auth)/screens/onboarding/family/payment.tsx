@@ -11,7 +11,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 
-type PaymentType = 'Hourly' | 'Salary Base';
+type PaymentType = '🤑 Hourly' | '💰 Salary Base';
 
 export default function PaymentScreen() {
   const router = useRouter();
@@ -20,9 +20,9 @@ export default function PaymentScreen() {
   const { selected_type, hourly_rate, salary_amount, has_interacted } =
     family_payment;
 
-  const paymentOptions: Array<{ label: PaymentType; icon: string }> = [
-    { label: 'Hourly', icon: '🤑' },
-    { label: 'Salary Base', icon: '💰' },
+  const paymentOptions: Array<{ label: PaymentType }> = [
+    { label: '🤑 Hourly' },
+    { label: '💰 Salary Base' },
   ];
 
   const handleNext = () => {
@@ -32,7 +32,7 @@ export default function PaymentScreen() {
       params: {
         type: selected_type,
         rate:
-          selected_type === 'Hourly'
+          selected_type === '🤑 Hourly'
             ? hourly_rate
             : parseInt(salary_amount.replace(/,/g, '')),
       },
@@ -57,7 +57,6 @@ export default function PaymentScreen() {
               <Pill
                 key={option.label}
                 label={option.label}
-                icon={option.icon}
                 selected={selected_type === option.label}
                 onPress={() =>
                   setFamilyPayment({ selected_type: option.label })
@@ -66,7 +65,7 @@ export default function PaymentScreen() {
             ))}
           </View>
 
-          {selected_type === 'Hourly' && (
+          {selected_type === '🤑 Hourly' && (
             <>
               <View style={styles.inputContainer}>
                 <View style={styles.sliderContainer}>
@@ -109,7 +108,7 @@ export default function PaymentScreen() {
             </>
           )}
 
-          {selected_type === 'Salary Base' && (
+          {selected_type === '💰 Salary Base' && (
             <View style={styles.inputContainer}>
               <View
                 style={[

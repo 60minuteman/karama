@@ -1,37 +1,41 @@
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
+import { router } from 'expo-router';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 const caregiverTypes = [
-  { label: 'Night Nurse', icon: '🌙' },
-  { label: 'Governess', icon: '👩' },
-  { label: 'Babysitter', icon: '🧁' },
-  { label: 'Nanny', icon: '👶' },
-  { label: 'Manny', icon: '👑' },
-  { label: 'Au Pair', icon: '🗽' },
-  { label: 'Caregiver/Housekeeper', icon: '🧽' },
-  { label: 'Caregiver/Personal Assistant', icon: '📅' },
-  { label: 'Caregiver/Household Manager', icon: '🗣' },
+  { label: '🌙 Night Nurse' },
+  { label: '👩🏻‍💼 Governess' },
+  { label: '🧁 Babysitter' },
+  { label: '👩🏽‍🍼 Nanny' },
+  { label: '👑 Manny' },
+  { label: '🧃 Au Pair' },
+  { label: '🧽 Caregiver/Housekeeper' },
+  { label: '📅 Caregiver/Personal Assistant' },
+  { label: '🧢 Caregiver/Household Manager' },
 ] as const;
 
 export default function Page() {
-  const { caregiverPositionType, setCaregiverPositionType, setOnboardingScreen } = useUserStore()
+  const {
+    caregiverPositionType,
+    setCaregiverPositionType,
+    setOnboardingScreen,
+  } = useUserStore();
   // const [selectedType, setSelectedType] = useState<string | null>(null);
   const handleNext = () => {
-    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/experience')
-    router.push('/(auth)/screens/onboarding/caregiver/experience')
-  }
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/experience');
+    router.push('/(auth)/screens/onboarding/caregiver/experience');
+  };
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+      <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -46,7 +50,6 @@ export default function Page() {
             <Pill
               key={index}
               label={type.label}
-              icon={type.icon}
               onPress={() => setCaregiverPositionType(type.label)}
               selected={caregiverPositionType === type.label}
               style={styles.option}
@@ -57,9 +60,9 @@ export default function Page() {
 
       <View style={styles.bottomNav}>
         <Button
-          label="Next"
+          label='Next'
           onPress={handleNext}
-          variant="compact"
+          variant='compact'
           style={styles.nextButton}
           disabled={!caregiverPositionType}
         />
@@ -106,5 +109,5 @@ const styles = StyleSheet.create({
   nextButton: {
     backgroundColor: '#F45B69',
     borderRadius: 100,
-  }
+  },
 });

@@ -18,15 +18,15 @@ export default function TypeScreen() {
   const { selected_type, is_dealbreaker } = caregiver_type;
 
   const caregiverTypes = [
-    { label: 'Night Nurse', icon: '🌙' },
-    { label: 'Governess', icon: '👩' },
-    { label: 'Babysitter', icon: '🧁' },
-    { label: 'Nanny', icon: '👶' },
-    { label: 'Manny', icon: '👑' },
-    { label: 'Au Pair', icon: '🗽' },
-    { label: 'Caregiver/Housekeeper', icon: '🥜' },
-    { label: 'Caregiver/Personal Assistant', icon: '📅' },
-    { label: 'Caregiver/Household Manager', icon: '🗣' },
+    { label: '🌙   Night Nurse' },
+    { label: '👩   Governess' },
+    { label: '🧁   Babysitter' },
+    { label: '👶   Nanny' },
+    { label: '👑   Manny' },
+    { label: '🗽   Au Pair' },
+    { label: '🥜   Caregiver/Housekeeper' },
+    { label: '📅   Caregiver/Personal Assistant' },
+    { label: '🗣   Caregiver/Household Manager' },
   ];
 
   const handleTypeSelect = (type: string) => {
@@ -74,13 +74,12 @@ export default function TypeScreen() {
                 <Pill
                   key={index}
                   label={type.label}
-                  icon={type.icon}
                   onPress={() => handleTypeSelect(type.label)}
                   selected={selected_type === type.label}
                   style={[
                     styles.typePill,
-                    (type.label === 'Caregiver/Housekeeper' ||
-                      type.label === 'Caregiver/Household Manager') &&
+                    (type.label === '🥜 Caregiver/Housekeeper' ||
+                      type.label === '🗣 Caregiver/Household Manager') &&
                       styles.highlightedPill,
                   ]}
                 />

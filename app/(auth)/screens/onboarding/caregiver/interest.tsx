@@ -1,18 +1,18 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { useEffect, useState } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 type Category = 'Creative' | 'Instruments' | 'Sports' | 'STEM';
-type Interest = { label: string; icon: string; category: Category };
+type Interest = { label: string; category: Category };
 
 export default function InterestScreen() {
   const router = useRouter();
@@ -25,93 +25,97 @@ export default function InterestScreen() {
     setCaregiverInstrumentsInterests,
     caregiverStemInterests,
     setCaregiverStemInterests,
-    setOnboardingScreen
+    setOnboardingScreen,
   } = useUserStore();
   // const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
 
   const interests: Record<Category, Interest[]> = {
     Creative: [
-      { label: 'Dance', icon: '💃', category: 'Creative' },
-      { label: 'DIY', icon: '⭐', category: 'Creative' },
-      { label: 'Painting', icon: '🎨', category: 'Creative' },
-      { label: 'Drama', icon: '🎭', category: 'Creative' },
-      { label: 'Gaming', icon: '🎮', category: 'Creative' },
-      { label: 'Baking', icon: '👨‍🍳', category: 'Creative' },
-      { label: 'Singing', icon: '🎤', category: 'Creative' },
-      { label: 'Pottery', icon: '🏺', category: 'Creative' },
-      { label: 'Reading', icon: '📚', category: 'Creative' },
-      { label: 'Arts & Crafts', icon: '🎨', category: 'Creative' },
-      { label: 'DJing', icon: '🎧', category: 'Creative' },
-      { label: 'Magic', icon: '✨', category: 'Creative' },
-      { label: 'Film Making', icon: '🎥', category: 'Creative' },
-      { label: 'Cooking', icon: '🔍', category: 'Creative' },
-      { label: 'Photography', icon: '📸', category: 'Creative' },
-      { label: 'Videography', icon: '📹', category: 'Creative' },
-      { label: 'Fashion Design', icon: '💎', category: 'Creative' },
-      { label: 'Other', icon: '🎨', category: 'Creative' },
+      { label: '💃 Dance', category: 'Creative' },
+      { label: '⭐ DIY', category: 'Creative' },
+      { label: '🎨 Painting', category: 'Creative' },
+      { label: '🎭 Drama', category: 'Creative' },
+      { label: '🎮 Gaming', category: 'Creative' },
+      { label: '👨‍🍳 Baking', category: 'Creative' },
+      { label: '🎤 Singing', category: 'Creative' },
+      { label: '🏺 Pottery', category: 'Creative' },
+      { label: '📚 Reading', category: 'Creative' },
+      { label: '🎨 Arts & Crafts', category: 'Creative' },
+      { label: '🎧 DJing', category: 'Creative' },
+      { label: '✨ Magic', category: 'Creative' },
+      { label: '🎥 Film Making', category: 'Creative' },
+      { label: '🔍 Cooking', category: 'Creative' },
+      { label: '📸 Photography', category: 'Creative' },
+      { label: '📹 Videography', category: 'Creative' },
+      { label: '💎 Fashion Design', category: 'Creative' },
+      { label: '🎨 Other', category: 'Creative' },
     ],
     Instruments: [
-      { label: 'Piano', icon: '🎹', category: 'Instruments' },
-      { label: 'Guitar', icon: '🎸', category: 'Instruments' },
-      { label: 'Accordion', icon: '🪗', category: 'Instruments' },
-      { label: 'Trumpet', icon: '🎺', category: 'Instruments' },
-      { label: 'Banjo', icon: '🪕', category: 'Instruments' },
-      { label: 'Drum', icon: '🥁', category: 'Instruments' },
-      { label: 'Maracas', icon: '🎵', category: 'Instruments' },
-      { label: 'Saxophone', icon: '🎷', category: 'Instruments' },
-      { label: 'Flute', icon: '🎼', category: 'Instruments' },
-      { label: 'Violin', icon: '🎻', category: 'Instruments' },
-      { label: 'Conga', icon: '🥁', category: 'Instruments' },
-      { label: 'Other', icon: '🎵', category: 'Instruments' },
+      { label: '🎹 Piano', category: 'Instruments' },
+      { label: '🎸 Guitar', category: 'Instruments' },
+      { label: '🪗 Accordion', category: 'Instruments' },
+      { label: '🎺 Trumpet', category: 'Instruments' },
+      { label: '🪕 Banjo', category: 'Instruments' },
+      { label: '🥁 Drum', category: 'Instruments' },
+      { label: '🎵 Maracas', category: 'Instruments' },
+      { label: '🎷 Saxophone', category: 'Instruments' },
+      { label: '🎼 Flute', category: 'Instruments' },
+      { label: '🎻 Violin', category: 'Instruments' },
+      { label: '🥁 Conga', category: 'Instruments' },
+      { label: '🎵 Other', category: 'Instruments' },
     ],
     Sports: [
-      { label: 'Ice skating', icon: '⛸️', category: 'Sports' },
-      { label: 'Skiing', icon: '⛷️', category: 'Sports' },
-      { label: 'Basketball', icon: '🏀', category: 'Sports' },
-      { label: 'Hockey', icon: '🏑', category: 'Sports' },
-      { label: 'Soccer', icon: '⚽', category: 'Sports' },
-      { label: 'Rowing', icon: '🚣', category: 'Sports' },
-      { label: 'Hiking', icon: '🥾', category: 'Sports' },
-      { label: 'Wrestling', icon: '🤼', category: 'Sports' },
-      { label: 'Football', icon: '🏈', category: 'Sports' },
-      { label: 'Surfing', icon: '🏄', category: 'Sports' },
-      { label: 'Chess', icon: '♟️', category: 'Sports' },
-      { label: 'Volleyball', icon: '🏐', category: 'Sports' },
-      { label: 'Tennis', icon: '🎾', category: 'Sports' },
-      { label: 'Baseball', icon: '⚾', category: 'Sports' },
-      { label: 'Karate', icon: '🥋', category: 'Sports' },
-      { label: 'Track', icon: '🏃', category: 'Sports' },
-      { label: 'Golf', icon: '⛳', category: 'Sports' },
-      { label: 'Rugby', icon: '🏉', category: 'Sports' },
-      { label: 'Polo', icon: '🏇', category: 'Sports' },
-      { label: 'Cycling', icon: '🚴', category: 'Sports' },
-      { label: 'Bowling', icon: '🎳', category: 'Sports' },
-      { label: 'Badminton', icon: '🏸', category: 'Sports' },
-      { label: 'Cricket', icon: '🏏', category: 'Sports' },
-      { label: 'Gymnastics', icon: '🤸', category: 'Sports' },
-      { label: 'Swimming', icon: '🏊', category: 'Sports' },
-      { label: 'Water Polo', icon: '🤽', category: 'Sports' },
-      { label: 'Roller skate', icon: '🛼', category: 'Sports' },
-      { label: 'Skateboarding', icon: '🛹', category: 'Sports' },
-      { label: 'Horseback Riding', icon: '🏇', category: 'Sports' },
-      { label: 'Other', icon: '🎯', category: 'Sports' },
+      { label: '⛸️ Ice skating', category: 'Sports' },
+      { label: '⛷️ Skiing', category: 'Sports' },
+      { label: '🏀 Basketball', category: 'Sports' },
+      { label: '🏑 Hockey', category: 'Sports' },
+      { label: '⚽ Soccer', category: 'Sports' },
+      { label: '🚣 Rowing', category: 'Sports' },
+      { label: '🥾 Hiking', category: 'Sports' },
+      { label: '🤼 Wrestling', category: 'Sports' },
+      { label: '🏈 Football', category: 'Sports' },
+      { label: '🏄 Surfing', category: 'Sports' },
+      { label: '♟️ Chess', category: 'Sports' },
+      { label: '🏐 Volleyball', category: 'Sports' },
+      { label: '🎾 Tennis', category: 'Sports' },
+      { label: '⚾ Baseball', category: 'Sports' },
+      { label: '🥋 Karate', category: 'Sports' },
+      { label: '🏃 Track', category: 'Sports' },
+      { label: '⛳ Golf', category: 'Sports' },
+      { label: '🏉 Rugby', category: 'Sports' },
+      { label: '🏇 Polo', category: 'Sports' },
+      { label: '🚴 Cycling', category: 'Sports' },
+      { label: '🎳 Bowling', category: 'Sports' },
+      { label: '🏸 Badminton', category: 'Sports' },
+      { label: '🏏 Cricket', category: 'Sports' },
+      { label: '🤸 Gymnastics', category: 'Sports' },
+      { label: '🏊 Swimming', category: 'Sports' },
+      { label: '🤽 Water Polo', category: 'Sports' },
+      { label: '🛼 Roller skate', category: 'Sports' },
+      { label: '🛹 Skateboarding', category: 'Sports' },
+      { label: '🏇 Horseback Riding', category: 'Sports' },
+      { label: '🎯 Other', category: 'Sports' },
     ],
     STEM: [
-      { label: 'Coding', icon: '💻', category: 'STEM' },
-      { label: 'Sciences', icon: '🧬', category: 'STEM' },
-      { label: 'Robotics', icon: '🤖', category: 'STEM' },
-      { label: 'Mathematics', icon: '📊', category: 'STEM' },
-      { label: 'Other', icon: '🔬', category: 'STEM' },
+      { label: '💻 Coding', category: 'STEM' },
+      { label: '🧬 Sciences', category: 'STEM' },
+      { label: '🤖 Robotics', category: 'STEM' },
+      { label: '📊 Mathematics', category: 'STEM' },
+      { label: '🔬 Other', category: 'STEM' },
     ],
   };
 
   useEffect(() => {
-    console.log(caregiverCreativeInterests)
-    console.log(caregiverInstrumentInterests)
-    console.log(caregiverSportInterest)
-    console.log(caregiverStemInterests)
-
-  }, [caregiverCreativeInterests, caregiverInstrumentInterests, caregiverStemInterests, caregiverSportInterest])
+    console.log(caregiverCreativeInterests);
+    console.log(caregiverInstrumentInterests);
+    console.log(caregiverSportInterest);
+    console.log(caregiverStemInterests);
+  }, [
+    caregiverCreativeInterests,
+    caregiverInstrumentInterests,
+    caregiverStemInterests,
+    caregiverSportInterest,
+  ]);
 
   const toggleCreativeInterest = (interest: string) => {
     const prev = caregiverCreativeInterests ?? [];
@@ -142,7 +146,6 @@ export default function InterestScreen() {
     setCaregiverStemInterests(selectedInterests);
   };
 
-
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/about');
     router.push('/(auth)/screens/onboarding/caregiver/about');
@@ -150,7 +153,7 @@ export default function InterestScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+      <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -164,7 +167,7 @@ export default function InterestScreen() {
           <LinearGradient
             colors={[Colors.light.background, 'rgba(255,255,255,0)']}
             style={styles.topGradient}
-            pointerEvents="none"
+            pointerEvents='none'
           />
           <ScrollView
             style={styles.scrollView}
@@ -179,24 +182,25 @@ export default function InterestScreen() {
                     <Pill
                       key={interest.label}
                       label={interest.label}
-                      icon={interest.icon}
                       selected={
                         category === 'Creative'
                           ? caregiverCreativeInterests?.includes(interest.label)
                           : category === 'Instruments'
-                            ? caregiverInstrumentInterests?.includes(interest.label)
-                            : category === 'Sports'
-                              ? caregiverSportInterest?.includes(interest.label)
-                              : caregiverStemInterests?.includes(interest.label)
+                          ? caregiverInstrumentInterests?.includes(
+                              interest.label
+                            )
+                          : category === 'Sports'
+                          ? caregiverSportInterest?.includes(interest.label)
+                          : caregiverStemInterests?.includes(interest.label)
                       }
                       onPress={() =>
                         category === 'Creative'
                           ? toggleCreativeInterest(interest.label)
                           : category === 'Instruments'
-                            ? toggleInstrumentInterest(interest.label)
-                            : category === 'Sports'
-                              ? toggleSportInterest(interest.label)
-                              : toggleStemInterest(interest.label)
+                          ? toggleInstrumentInterest(interest.label)
+                          : category === 'Sports'
+                          ? toggleSportInterest(interest.label)
+                          : toggleStemInterest(interest.label)
                       }
                     />
                   ))}
@@ -209,18 +213,14 @@ export default function InterestScreen() {
           <LinearGradient
             colors={['rgba(255,255,255,0)', Colors.light.background]}
             style={styles.buttonGradient}
-            pointerEvents="none"
+            pointerEvents='none'
           />
           <View style={styles.buttonContainer}>
+            <Button label='Skip' onPress={handleNext} variant='skip' />
             <Button
-              label="Skip"
+              label='Next'
               onPress={handleNext}
-              variant="skip"
-            />
-            <Button
-              label="Next"
-              onPress={handleNext}
-              variant="compact"
+              variant='compact'
               disabled={
                 caregiverCreativeInterests?.length === 0 &&
                 caregiverSportInterest?.length === 0 &&
