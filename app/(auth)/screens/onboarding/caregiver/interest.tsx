@@ -118,7 +118,7 @@ export default function InterestScreen() {
   ]);
 
   const toggleCreativeInterest = (interest: string) => {
-    if (interest === 'Other') {
+    if (interest === '🎨 Other') {
       // Redirect to the custom interest input screen
       router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Creative`);
       return;
@@ -130,7 +130,7 @@ export default function InterestScreen() {
     setCaregiverCreativeInterests(selectedInterests);
   };
   const toggleInstrumentInterest = (interest: string) => {
-    if (interest === 'Other') {
+    if (interest === '🎵 Other') {
       // Redirect to the custom interest input screen
       router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Instrument`);
       return;
@@ -142,7 +142,7 @@ export default function InterestScreen() {
     setCaregiverInstrumentsInterests(selectedInterests);
   };
   const toggleSportInterest = (interest: string) => {
-    if (interest === 'Other') {
+    if (interest === '🎯 Other') {
       // Redirect to the custom interest input screen
       router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Sport`);
       return;
@@ -154,7 +154,7 @@ export default function InterestScreen() {
     setCaregiverSportsInterests(selectedInterests);
   };
   const toggleStemInterest = (interest: string) => {
-    if (interest === 'Other') {
+    if (interest === '🔬 Other') {
       // Redirect to the custom interest input screen
       router.push(`/(auth)/screens/onboarding/family/custom-interest?category=stem`);
       return;

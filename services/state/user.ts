@@ -190,7 +190,7 @@ export type CaregiverPositions =
   | 'Night Out'
   | 'After school Pickup';
 
-export type CaregiverPreferredArrangement = 'Live In' | 'Live Out' | 'Hybrid';
+export type CaregiverPreferredArrangement = '💤 Live In' | '⏰ Live Out' | '🔗 Hybrid';
 export type CaregiverCommitment = 'Long Term' | 'Short Term';
 
 export type CaregiverDayOfWeek =
@@ -307,7 +307,7 @@ type Availability =
   | 'Night Out'
   | 'After school Pickup';
 
-type Commitment = 'Long Term' | 'Short Term';
+type Commitment = 'Long Term' | '⌛ Short Term';
 
 // Add these types after the existing type definitions
 type DayOfWeek = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';

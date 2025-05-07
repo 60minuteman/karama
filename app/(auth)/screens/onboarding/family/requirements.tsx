@@ -73,7 +73,7 @@ export default function RequirementsScreen() {
   ];
 
   const toggleRequirement = (req: Requirement) => {
-    if (req === 'Other') {
+    if (req === '🎯 Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherRequirement');
       router.push('/(auth)/screens/onboarding/family/otherRequirement');
       return;
@@ -87,7 +87,7 @@ export default function RequirementsScreen() {
   };
 
   const toggleCertification = (cert: Certification) => {
-    if (cert === 'Other') {
+    if (cert === '📄 Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherCertification');
       router.push('/(auth)/screens/onboarding/family/otherCertification');
       return;

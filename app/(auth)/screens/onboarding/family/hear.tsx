@@ -43,6 +43,15 @@ export default function HearScreen() {
     }
   };
 
+  const handleAdd = (item: any) => {
+    if (item === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherHear');
+      router.push('/(auth)/screens/onboarding/family/otherHear');
+      return
+    }
+    setFamilySelectedSource(item);
+  }
+
   return (
     <ThemedView style={styles.container}>
       <Header variant='back' />
@@ -61,7 +70,7 @@ export default function HearScreen() {
               key={source}
               label={source}
               selected={family_selected_source === source}
-              onPress={() => setFamilySelectedSource(source)}
+              onPress={() => handleAdd(source)}
             />
           ))}
         </View>

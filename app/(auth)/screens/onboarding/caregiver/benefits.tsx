@@ -40,6 +40,11 @@ export default function Benefits() {
     setOnboardingScreen,
   } = useUserStore();
   const toggleBenefit = (benefitId: string) => {
+    if (benefitId === 'other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/OtherBenefits');
+      router.push('/(auth)/screens/onboarding/caregiver/OtherBenefits');
+      return;
+    }
     const prev = caregiverRequiredBenefits ?? [];
 
     // Only allow valid benefits from benefitsOptions
@@ -58,14 +63,9 @@ export default function Benefits() {
   };
 
   const handleNext = () => {
-    console.log('Benefits being sent:', caregiverRequiredBenefits);
-    if (caregiverRequiredBenefits?.includes('other')) {
-      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/OtherBenefits');
-      router.push('/(auth)/screens/onboarding/caregiver/OtherBenefits');
-    } else {
+   
       setOnboardingScreen('/(auth)/screens/onboarding/caregiver/PastPosition');
       router.push('/(auth)/screens/onboarding/caregiver/PastPosition');
-    }
   };
 
   return (
