@@ -9,10 +9,11 @@ import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
 import { useMutation } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, TextInput, View, KeyboardAvoidingView, Platform } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { benefitsOptions } from './benefits';
+import { useOtherStore } from '@/services/state/other';
 
 export default function PromptAnswer() {
   const router = useRouter();
@@ -104,6 +105,26 @@ export default function PromptAnswer() {
     setCaregiverFirstPromptAnswer,
     setOnboardingScreen,
   } = useUserStore();
+
+
+
+  const {
+    otherRequirement,
+    otherCertifications, 
+    otherLanguage,
+    otherPet,
+    otherCreativeActivity,
+    otherSport,
+    otherStem,
+    otherInstument,
+    otherDiet,
+    otherRule,
+    otherReligion,
+    otherHouseholdResponsibilities,
+    otherChildResponsibilities,
+    caregiverThirdPosition
+  } = useOtherStore();
+
   const onboadingInfo = {
     name: caregiverName,
     date_of_birth: caregiverDob,
@@ -118,9 +139,11 @@ export default function PromptAnswer() {
     abilities_and_certifications: {
       abilities: caregiverAbilities,
       certifications: caregiverCertifications,
+      other_ability: otherRequirement || '',
+      other_certification: otherCertifications || '',
     },
     languages: caregiverLanguages,
-    other_languages: 'French',
+    other_languages: otherLanguage || '',
     ages_best_with: caregiverAgeExperience,
     children_capacity: caregiverChildrenCount,
     experience_with_disabilities: {
@@ -128,12 +151,17 @@ export default function PromptAnswer() {
     },
     experience_with_pets: {
       pets: caregiverPetExperience,
+      other: otherPet || '',
     },
     hobbies: {
       creative_interests: caregiverCreativeInterests,
       instrument_interests: caregiverInstrumentInterests,
       sport_interests: caregiverSportInterest,
       stem_interests: caregiverStemInterests,
+      other_creative_interests: otherCreativeActivity || '',
+      other_instrument_interests: otherInstument || '',
+      other_sport_interest: otherSport || '',
+      other_stem_interest: otherStem || '',
     },
     characteristics: {
       personalities: caregiverPersonality,
@@ -142,6 +170,9 @@ export default function PromptAnswer() {
       rules: caregiverRules,
       religion: caregiverReligion,
       show_religion_on_profile: showCaregiverReligion,
+      other_diets: otherDiet || '',
+      other_rules: otherRule || '',
+      other_religion: otherReligion || '',
     },
     childcare_philosophies: caregiverPhilosophyExperience,
     family_must_speak_same_language: caregiverLanguageMatch,
@@ -164,6 +195,8 @@ export default function PromptAnswer() {
     responsibilities: {
       childcare_responsibilities: caregiverChildcareResponsibilities,
       household_responsibilities: caregiverHouseholdResponsibilities,
+      other_childcare_responsibilities: otherChildResponsibilities || '',
+      other_household_responsibilities: otherHouseholdResponsibilities || '',
     },
     payment_info: {
       type: caregiverPaymentType,
@@ -195,6 +228,16 @@ export default function PromptAnswer() {
         availability: caregiverSecondPosition.employmentType,
         childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
         household_responsibilities: ['Property Management', 'Meal Prep'],
+      },
+      caregiverThirdPosition?.familyName && {
+        family_or_business_name: caregiverSecondPosition.familyName,
+        start_date: caregiverSecondPosition.startDate ? formatDate(caregiverSecondPosition.startDate) : undefined,
+        end_date: caregiverSecondPosition.endDate ? formatDate(caregiverSecondPosition.endDate) : undefined,
+        position_type: caregiverSecondPosition.position,
+        children_age_group: [caregiverSecondPosition.ageGroup],
+        availability: caregiverSecondPosition.employmentType,
+        childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
+        household_responsibilities: ['Property Management', 'Meal Prep'],
       }
     ].filter(Boolean).filter(position => 
       position.start_date && position.end_date
@@ -207,6 +250,11 @@ export default function PromptAnswer() {
       },
     ],
   };
+
+  useEffect(() => {
+    setCaregiverFirstPromptAnswer('');
+  }, [])
+  
   console.log(onboadingInfo, 'TO Create PROFIELEEE');
   const createProfile: any = useAuthMutation({
     mutationFn: (data: any) => {
@@ -259,14 +307,14 @@ export default function PromptAnswer() {
             />
           </View>
 
-          <View style={styles.addButtonContainer}>
+          {/* <View style={styles.addButtonContainer}>
             <Button
               label='Add Another Prompt'
               onPress={() => router.back()}
               variant='compact'
               style={styles.addButton}
             />
-          </View>
+          </View> */}
         </View>
 
         <View style={styles.bottomNav}>

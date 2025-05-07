@@ -72,6 +72,11 @@ export default function ResponsibilitiesScreen() {
     setOnboardingScreen
   } = useUserStore()
   const toggleChildcareResponsibility = (id: string) => {
+    if (id === 'other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherChildResponsibilities');
+      router.push('/(auth)/screens/onboarding/family/otherChildResponsibilities');
+      return;
+    }
     const prev = caregiverChildcareResponsibilities ?? [];
     const selectedResponsibilities = prev.includes(id)
       ? prev.filter((item) => item !== id)
@@ -79,6 +84,11 @@ export default function ResponsibilitiesScreen() {
     setCaregiverChildcareResponsibilities(selectedResponsibilities);
   };
   const toggleHouseholdResponsibility = (id: string) => {
+    if (id === 'other2') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherHouseholdResponsibilities');
+      router.push('/(auth)/screens/onboarding/family/otherHouseholdResponsibilities');
+      return;
+    }
     const prev = caregiverHouseholdResponsibilities ?? [];
     const selectedResponsibilities = prev.includes(id)
       ? prev.filter((item) => item !== id)

@@ -8,23 +8,21 @@ import { Header } from '@/components/ui/Header';
 import { Button } from '@/components/ui/Button';
 import { useOtherStore } from '@/services/state/other';
 
-
-export default function OtherPhiloScreen() {
+export default function OtherFamilyDesciptionScreen() {
   const router = useRouter();
-  const [philosophy, setPhilosophy] = useState('');
-
-  const {addOtherPhilosophy } = useOtherStore()
-
+  const [description, setDescription] = useState('');
+  const {addOtherFamilyDescription} = useOtherStore()
+   
   useEffect(() => {
-    setPhilosophy('');
+    setDescription('');
   }, [])
   
-  
+
   const handleAdd = () => {
-    if (philosophy.trim()) {
+    if (description.trim()) {
       // Handle adding the philosophy
-      addOtherPhilosophy(philosophy.trim())
-      router.back();
+        addOtherFamilyDescription(description.trim())
+    router.push('/(auth)/screens/onboarding/family/number');
     }
   };
 
@@ -36,7 +34,7 @@ export default function OtherPhiloScreen() {
         <View style={styles.spacerTop} />
         
         <ThemedText style={styles.title}>
-          Add other philosophies
+        Add other family description
         </ThemedText>
 
         <View style={styles.inputContainer}>
@@ -45,8 +43,8 @@ export default function OtherPhiloScreen() {
             style={styles.input}
             placeholder="Type here"
             placeholderTextColor="#999"
-            value={philosophy}
-            onChangeText={setPhilosophy}
+            value={description}
+            onChangeText={setDescription}
             autoFocus
           />
         </View>
@@ -56,7 +54,7 @@ export default function OtherPhiloScreen() {
             label="Add"
             onPress={handleAdd}
             variant="compact"
-            disabled={!philosophy.trim()}
+            disabled={!description.trim()}
           />
         </View>
       </View>

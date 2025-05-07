@@ -39,6 +39,11 @@ export default function LanguageScreen() {
     useUserStore();
 
   const toggleLanguage = (language: (typeof languages)[number]) => {
+    if (language === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherLanguage');
+      router.push('/(auth)/screens/onboarding/family/otherLanguage');
+      return;
+    }
     const newLanguages = family_languages.includes(language)
       ? family_languages.filter((l) => l !== language)
       : [...family_languages, language];

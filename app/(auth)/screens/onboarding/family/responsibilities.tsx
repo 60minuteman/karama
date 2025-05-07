@@ -7,6 +7,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import useAuthMutation from '@/hooks/useAuthMutation';
 import customAxios from '@/services/api/envConfig';
+import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -86,6 +87,16 @@ export default function ResponsibilitiesScreen() {
   } = useUserStore();
 
   const toggleResponsibility = (id: string) => {
+    if (id === 'other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherChildResponsibilities');
+      router.push('/(auth)/screens/onboarding/family/otherChildResponsibilities');
+      return;
+    } else if (id === 'other2') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherHouseholdResponsibilities');
+      router.push('/(auth)/screens/onboarding/family/otherHouseholdResponsibilities');
+      return;
+    }
+
     setFamilyResponsibilities(
       family_responsibilities.includes(id)
         ? family_responsibilities.filter((item) => item !== id)
@@ -122,6 +133,14 @@ export default function ResponsibilitiesScreen() {
     },
   });
 
+  const {
+    otherGender, 
+    otherRequirement,
+    otherCertifications,
+    otherHouseholdResponsibilities,
+    otherChildResponsibilities,
+  } = useOtherStore();
+
   const handleSubmit = () => {
     const childcareIds = childcareResponsibilities.map((r) => r.id);
     const householdIds = householdResponsibilities.map((r) => r.id);
@@ -141,6 +160,7 @@ export default function ResponsibilitiesScreen() {
             ? [family_gender_preference?.selected_gender]
             : [],
         // "other": "Prefer female caregivers",
+        other: otherGender,
         dealbreaker: family_gender_preference?.is_dealbreaker,
       },
       caregiver_types: caregiver_type?.selected_type
@@ -160,11 +180,13 @@ export default function ResponsibilitiesScreen() {
       show_education_level_on_profile: true,
       requirements: {
         requirements: caregiver_requirements?.selected_requirements || [],
+        other_requirement: otherRequirement,
         // other_requirement: caregiver_requirements?.other_requirement,
         requirements_are_dealbreaker:
           caregiver_requirements?.requirements_dealbreaker,
         certifications: caregiver_requirements?.selected_certifications || [],
         // other_certification: caregiver_requirements?.other_certification,
+        other_certification: otherCertifications,
         certificates_are_dealbreaker:
           caregiver_requirements?.certifications_dealbreaker,
       },
@@ -198,8 +220,10 @@ export default function ResponsibilitiesScreen() {
       responsibilities: {
         childcare_responsibilities: selectedChildcareResponsibilities,
         // other_childcare_responsibilities: '',
+        other_childcare_responsibilities: otherChildResponsibilities,
         household_responsibilities: selectedHouseholdResponsibilities,
         // other_household_responsibilities: '',
+        other_household_responsibilities: otherHouseholdResponsibilities,
       },
     });
   };

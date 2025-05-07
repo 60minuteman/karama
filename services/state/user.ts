@@ -29,7 +29,8 @@ type FamilyType =
   | 'Moms'
   | 'Dads'
   | 'Guardian'
-  | 'Other';
+  | 'Other'
+  |  any
 
 type Condition =
   | 'Dyslexia'
@@ -179,7 +180,8 @@ export type CaregiverPhilosophies =
   | 'Sudbury'
   | 'Reggio Emillia'
   | 'Gentle Parenting'
-  | 'Permissive Parenting';
+  | 'Permissive Parenting'
+  | 'Other'
 
 export type CaregiverPositions =
   | 'Full Time'
@@ -213,7 +215,7 @@ export interface CaregiverDaySchedule {
 
 export interface CaregiverPositionHistory {
   position: string;
-  positionNumber: 'first' | 'second' | null;
+  positionNumber: 'first' | 'second' |  'Third' |null;
   ageGroup: string;
   familyName: string;
   employmentType: string;

@@ -103,9 +103,16 @@ export default function InterestScreen() {
       useNativeDriver: true,
     }).start();
   }, []);
-
   const toggleInterest = (interest: Interest) => {
     const { label, category } = interest;
+  
+    // Check if "Other" is selected
+    if (label === 'Other') {
+      // Redirect to the custom interest input screen
+      router.push(`/(auth)/screens/onboarding/family/custom-interest?category=${category}`);
+      return;
+    }
+  
     // Get current interests array for this category
     let currentInterests: string[] = [];
     switch (category) {
@@ -122,7 +129,7 @@ export default function InterestScreen() {
         currentInterests = family_interests.stem_interests;
         break;
     }
-
+  
     // Toggle the interest in the appropriate category
     const updatedInterests = {
       ...family_interests,
@@ -151,9 +158,10 @@ export default function InterestScreen() {
             : [...currentInterests, label]
           : family_interests.stem_interests,
     };
-
+  
     setFamilyInterests(updatedInterests);
   };
+  
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/family/household');

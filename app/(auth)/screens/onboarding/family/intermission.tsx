@@ -6,6 +6,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import useAuthMutation from '@/hooks/useAuthMutation';
 import customAxios from '@/services/api/envConfig';
+import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -34,6 +35,19 @@ export default function IntermissionScreen() {
     family_allergies,
     setSteps,
   } = useUserStore();
+
+  const {
+    otherConditons,
+    otherPet, 
+    otherCreativeActivity,
+    otherSport,
+    otherStem,
+    otherInstument,
+    otherDiet,
+    otherRule,
+    otherReligion,
+    otherPhilosophy,
+  } = useOtherStore();
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/family/gender');
@@ -88,6 +102,7 @@ export default function IntermissionScreen() {
       children: family_age_groups,
       behavioural_difference: {
         differences: family_behaviour?.conditions || [],
+        other: otherConditons || ''
       },
       zipcode: family_zipcode,
       languages: {
@@ -95,6 +110,7 @@ export default function IntermissionScreen() {
       },
       pets: {
         pets: family_pets || [],
+        other: otherPet || '',
       },
       allergies: {
         food_allergies: family_allergies?.food,
@@ -106,6 +122,10 @@ export default function IntermissionScreen() {
         instrument_interests: family_interests?.instrument_interests,
         sport_interests: family_interests?.sport_interests,
         stem_interests: family_interests?.stem_interests,
+        other_creative_interest: otherCreativeActivity || '',
+        other_instrument_interest: otherInstument || '',
+        other_sport_interest: otherSport || '',
+        other_stem_interest: otherStem || '',
       },
       household_info: {
         diets: family_selections?.diets,
@@ -114,10 +134,14 @@ export default function IntermissionScreen() {
         show_rules_on_profile: family_show_rules,
         religion: family_selections?.religion,
         show_religion_on_profile: family_show_religion,
+        other_diets: otherDiet || '',
+        other_rules: otherRule || '',
+        other_religion: otherReligion || '',
       },
       philosophies: {
         philosophies: family_philosophies,
         show_on_profile: family_show_philosophy,
+        other: otherPhilosophy || '',
       },
       aquisition_source: family_selected_source,
     });

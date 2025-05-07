@@ -1,52 +1,70 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, TextInput } from 'react-native';
-import { useEffect, useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
+import React, { useEffect, useState } from 'react';
+import { View, TextInput, StyleSheet } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useUserStore } from '@/services/state/user';
 import { Colors } from '@/constants/Colors';
+import { ThemedView } from '@/components/ThemedView';
 import { Header } from '@/components/ui/Header';
+import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { useOtherStore } from '@/services/state/other';
 
 
-export default function OtherPhiloScreen() {
+export default function CustomInterestScreen() {
   const router = useRouter();
-  const [philosophy, setPhilosophy] = useState('');
+  const { category } = useLocalSearchParams();
+  const [newInterest, setNewInterest] = useState('');
 
-  const {addOtherPhilosophy } = useOtherStore()
+  const { 
+    addOtherSport,
+    addOtherCreativeActivity,
+    addOtherInstrument,
+    addOtherStem
+  } = useOtherStore()
 
   useEffect(() => {
-    setPhilosophy('');
+    setNewInterest('');
   }, [])
   
-  
-  const handleAdd = () => {
-    if (philosophy.trim()) {
-      // Handle adding the philosophy
-      addOtherPhilosophy(philosophy.trim())
-      router.back();
+
+  const handleAddInterest = () => {
+    if (!newInterest.trim()) return;
+    if (category === 'sport') {
+      addOtherSport(newInterest.trim());
     }
+    if (category === 'creative') {
+      addOtherCreativeActivity(newInterest.trim());
+    }
+    if (category === 'instrument') {
+      addOtherInstrument(newInterest.trim());
+    }
+    if (category === 'stem') {
+      addOtherStem(newInterest.trim());
+    }
+
+    
+    router.back();
   };
 
   return (
-    <ThemedView style={styles.container}>
+
+ <ThemedView style={styles.container}>
       <Header variant="back" />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         
         <ThemedText style={styles.title}>
-          Add other philosophies
+        Add other {`${category}`} activities
         </ThemedText>
 
         <View style={styles.inputContainer}>
           <View style={styles.inputCursor} />
           <TextInput
             style={styles.input}
-            placeholder="Type here"
-            placeholderTextColor="#999"
-            value={philosophy}
-            onChangeText={setPhilosophy}
+            placeholder={`Enter your custom ${category} interest`}
+            value={newInterest}
+            onChangeText={setNewInterest}
             autoFocus
           />
         </View>
@@ -54,9 +72,9 @@ export default function OtherPhiloScreen() {
         <View style={styles.buttonContainer}>
           <Button
             label="Add"
-            onPress={handleAdd}
+            onPress={handleAddInterest}
             variant="compact"
-            disabled={!philosophy.trim()}
+            disabled={!newInterest.trim()}
           />
         </View>
       </View>

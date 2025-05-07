@@ -1,6 +1,6 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { StyleSheet, View, TextInput, Keyboard } from 'react-native';
-import { useState, useEffect } from 'react';
+import { useRouter } from 'expo-router';
+import { StyleSheet, View, TextInput } from 'react-native';
+import { useEffect, useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
@@ -9,74 +9,23 @@ import { Button } from '@/components/ui/Button';
 import { useUserStore } from '@/services/state/user';
 import { useOtherStore } from '@/services/state/other';
 
-type Category = 'Diet' | 'Rules' | 'Religion';
 
-interface FamilySelections {
-  diets?: string[];
-  rules?: string[];
-  religion?: string;
-  other_diets?: string;
-  other_rules?: string;
-  other_religion?: string;
-  show_diet_on_profile?: boolean;
-  show_rules_on_profile?: boolean;
-  show_religion_on_profile?: boolean;
-}
-
-export default function OtherDietScreen() {
+export default function OtherRequirementScreen() {
   const router = useRouter();
-  const [diet, setDiet] = useState('');
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
-    const { category } = useLocalSearchParams();
+  const [requirement, setRequirement] = useState('');
 
-    const {
-      addOtherDiet,
-      addOtherRule,
-      addOtherReligion
-    } = useOtherStore()
-  
+  const {addOtherRequirement} = useOtherStore()
    
-
   useEffect(() => {
-    const keyboardWillShow = Keyboard.addListener('keyboardWillShow', (e) => {
-      setKeyboardHeight(e.endCoordinates.height);
-    });
-
-    const keyboardWillHide = Keyboard.addListener('keyboardWillHide', () => {
-      setKeyboardHeight(0);
-    });
-
-    return () => {
-      keyboardWillShow.remove();
-      keyboardWillHide.remove();
-    };
-  }, []);
-
-  useEffect(() => {
-    setDiet('');
+    setRequirement('');
   }, [])
   
 
-   
-
   const handleAdd = () => {
-    if (diet.trim()) {
-      if (category === 'Diet') {
-        // Handle adding the diet
-        addOtherDiet(diet.trim())
-      }
-      if (category === 'Rules') {
-
-        // Handle adding the rules
-        addOtherRule(diet.trim())
-      }
-      if (category === 'Religion') {
-        // Handle adding the religion
-        addOtherReligion(diet.trim())
-      }
-      // Handle adding the diet
+    if (requirement.trim()) {
+      // Handle adding the Requirement
+        addOtherRequirement(requirement.trim())
       router.back();
-
     }
   };
 
@@ -88,7 +37,7 @@ export default function OtherDietScreen() {
         <View style={styles.spacerTop} />
         
         <ThemedText style={styles.title}>
-          Add other {category}
+          Add other Requirement
         </ThemedText>
 
         <View style={styles.inputContainer}>
@@ -97,18 +46,18 @@ export default function OtherDietScreen() {
             style={styles.input}
             placeholder="Type here"
             placeholderTextColor="#999"
-            value={diet}
-            onChangeText={setDiet}
+            value={requirement}
+            onChangeText={setRequirement}
             autoFocus
           />
         </View>
 
-        <View style={[styles.buttonContainer, { bottom: keyboardHeight + 20 }]}>
+        <View style={styles.buttonContainer}>
           <Button
             label="Add"
             onPress={handleAdd}
             variant="compact"
-            disabled={!diet.trim()}
+            disabled={!requirement.trim()}
           />
         </View>
       </View>
@@ -146,17 +95,18 @@ const styles = StyleSheet.create({
     width: 2,
     height: 24,
     backgroundColor: Colors.light.primary,
-    marginRight: 4,
+    marginRight: 8,
   },
   input: {
     flex: 1,
     fontFamily: 'Poppins',
-    fontSize: 24,
+    fontSize: 16,
     color: Colors.light.text,
-    padding: 0,
   },
   buttonContainer: {
     position: 'absolute',
+    bottom: 50,
+    left: 20,
     right: 20,
-  },
+  }
 });

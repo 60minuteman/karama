@@ -34,9 +34,12 @@ export default function FamilyDescriptionScreen() {
   ];
 
   const handleNext = () => {
-    if (family_description?.type) {
+    if (family_description?.type !== 'Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/number');
       router.push('/(auth)/screens/onboarding/family/number');
+    } else {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherFamilyDescriptionScreen');
+      router.push('/(auth)/screens/onboarding/family/otherFamilyDescriptionScreen');
     }
   };
 

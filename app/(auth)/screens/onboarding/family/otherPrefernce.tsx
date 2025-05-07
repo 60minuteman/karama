@@ -6,24 +6,24 @@ import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { Header } from '@/components/ui/Header';
 import { Button } from '@/components/ui/Button';
+import { useUserStore } from '@/services/state/user';
 import { useOtherStore } from '@/services/state/other';
 
 
-export default function OtherPhiloScreen() {
+export default function OtherPrefernceScreen() {
   const router = useRouter();
-  const [philosophy, setPhilosophy] = useState('');
+  const [prefernce, setPrefernce] = useState('');
 
-  const {addOtherPhilosophy } = useOtherStore()
+  const {addOtherPrefernces} = useOtherStore()
+   useEffect(() => {
+    setPrefernce('');
+   }, [])
+   
 
-  useEffect(() => {
-    setPhilosophy('');
-  }, [])
-  
-  
   const handleAdd = () => {
-    if (philosophy.trim()) {
-      // Handle adding the philosophy
-      addOtherPhilosophy(philosophy.trim())
+    if (prefernce.trim()) {
+      // Handle adding the prefernce
+        addOtherPrefernces(prefernce.trim())
       router.back();
     }
   };
@@ -36,7 +36,7 @@ export default function OtherPhiloScreen() {
         <View style={styles.spacerTop} />
         
         <ThemedText style={styles.title}>
-          Add other philosophies
+          Add other prefernce
         </ThemedText>
 
         <View style={styles.inputContainer}>
@@ -45,8 +45,8 @@ export default function OtherPhiloScreen() {
             style={styles.input}
             placeholder="Type here"
             placeholderTextColor="#999"
-            value={philosophy}
-            onChangeText={setPhilosophy}
+            value={prefernce}
+            onChangeText={setPrefernce}
             autoFocus
           />
         </View>
@@ -56,7 +56,7 @@ export default function OtherPhiloScreen() {
             label="Add"
             onPress={handleAdd}
             variant="compact"
-            disabled={!philosophy.trim()}
+            disabled={!prefernce.trim()}
           />
         </View>
       </View>

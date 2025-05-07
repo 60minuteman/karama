@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 const CreatePassword = () => {
@@ -90,6 +90,11 @@ const CreatePassword = () => {
   };
 
   return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={{ flex: 1 }}
+    >
+       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
     <ThemedView style={styles.container}>
       <Header variant='back' />
 
@@ -108,12 +113,14 @@ const CreatePassword = () => {
         <Button
           label='Next'
           onPress={handleCreatePassword}
-          variant={password?.length >= 8 ? 'primary' : 'disabled'}
+          variant={password?.length >= 8 ? 'primary' : 'compact'}
           disabled={password.length < 8}
           loading={createPassword.isPending}
         />
       </View>
     </ThemedView>
+    </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

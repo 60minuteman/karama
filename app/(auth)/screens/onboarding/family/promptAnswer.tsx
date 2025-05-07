@@ -6,7 +6,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 
 export default function PromptAnswer() {
@@ -14,6 +14,11 @@ export default function PromptAnswer() {
   const { prompt } = useLocalSearchParams();
   const { family_prompt_answer, setFamilyPromptAnswer, setOnboardingScreen } =
     useUserStore();
+
+    useEffect(() => {
+      setFamilyPromptAnswer('');
+    }, [])
+    
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/family/moreInfo');
@@ -42,14 +47,14 @@ export default function PromptAnswer() {
           />
         </View>
 
-        <View style={styles.addButtonContainer}>
+        {/* <View style={styles.addButtonContainer}>
           <Button
             label='Add Another Prompt'
             onPress={() => router.back()}
             variant='compact'
             style={styles.addButton}
           />
-        </View>
+        </View> */}
       </View>
 
       <View style={styles.bottomNav}>

@@ -8,23 +8,21 @@ import { Header } from '@/components/ui/Header';
 import { Button } from '@/components/ui/Button';
 import { useOtherStore } from '@/services/state/other';
 
-
-export default function OtherPhiloScreen() {
+export default function OtherFamilyLanguageScreen() {
   const router = useRouter();
-  const [philosophy, setPhilosophy] = useState('');
-
-  const {addOtherPhilosophy } = useOtherStore()
-
+  const [language, setLanguage] = useState('');
+  const {addOtherLanguage} = useOtherStore()
+   
   useEffect(() => {
-    setPhilosophy('');
+    setLanguage('');
   }, [])
   
-  
+
   const handleAdd = () => {
-    if (philosophy.trim()) {
+    if (language.trim()) {
       // Handle adding the philosophy
-      addOtherPhilosophy(philosophy.trim())
-      router.back();
+      addOtherLanguage(language.trim())
+    router.back();
     }
   };
 
@@ -36,7 +34,7 @@ export default function OtherPhiloScreen() {
         <View style={styles.spacerTop} />
         
         <ThemedText style={styles.title}>
-          Add other philosophies
+        Add other languages
         </ThemedText>
 
         <View style={styles.inputContainer}>
@@ -45,8 +43,8 @@ export default function OtherPhiloScreen() {
             style={styles.input}
             placeholder="Type here"
             placeholderTextColor="#999"
-            value={philosophy}
-            onChangeText={setPhilosophy}
+            value={language}
+            onChangeText={setLanguage}
             autoFocus
           />
         </View>
@@ -56,7 +54,7 @@ export default function OtherPhiloScreen() {
             label="Add"
             onPress={handleAdd}
             variant="compact"
-            disabled={!philosophy.trim()}
+            disabled={!language.trim()}
           />
         </View>
       </View>

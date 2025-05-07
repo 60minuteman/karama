@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { useFonts } from 'expo-font';
-import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
+// import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
 import { PetType, useUserStore } from '@/services/state/user';
 
 const PETS = [
@@ -48,10 +48,11 @@ export default function Page() {
   };
 
   const togglePet = (pet: PetType) => {
-    // if (pet === 'None') {
-    //   setCaregiverPetExperience(['None']);
-    //   return;
-    // }
+    if (pet === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherPet')
+      router.push('/(auth)/screens/onboarding/family/otherPet')
+      return;
+    }
     const prev = caregiverPetExperience ?? [];
     const filtered = prev.filter(p => p !== 'None');
     if (prev.includes(pet)) {
@@ -86,7 +87,7 @@ export default function Page() {
               label={`${pet.emoji} ${pet.label}`}
               onPress={() => togglePet(pet.label)}
               selected={caregiverPetExperience?.includes(pet.label)}
-              disabled={pet.label !== 'None' && caregiverPetExperience?.includes('None')}
+              // disabled={pet.label !== 'None' && caregiverPetExperience?.includes('None')}
             />
           ))}
         </View>

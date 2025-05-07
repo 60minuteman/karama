@@ -73,6 +73,12 @@ export default function RequirementsScreen() {
   ];
 
   const toggleRequirement = (req: Requirement) => {
+    if (req === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherRequirement');
+      router.push('/(auth)/screens/onboarding/family/otherRequirement');
+      return;
+    }
+
     const newRequirements = selected_requirements.includes(req)
       ? selected_requirements.filter((r) => r !== req)
       : [...selected_requirements, req];
@@ -81,6 +87,11 @@ export default function RequirementsScreen() {
   };
 
   const toggleCertification = (cert: Certification) => {
+    if (cert === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherCertification');
+      router.push('/(auth)/screens/onboarding/family/otherCertification');
+      return;
+    }
     const newCertifications = selected_certifications.includes(cert)
       ? selected_certifications.filter((c) => c !== cert)
       : [...selected_certifications, cert];

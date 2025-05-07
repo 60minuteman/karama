@@ -114,6 +114,11 @@ export default function InterestScreen() {
   }, [caregiverCreativeInterests, caregiverInstrumentInterests, caregiverStemInterests, caregiverSportInterest])
 
   const toggleCreativeInterest = (interest: string) => {
+    if (interest === 'Other') {
+      // Redirect to the custom interest input screen
+      router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Creative`);
+      return;
+    }
     const prev = caregiverCreativeInterests ?? [];
     const selectedInterests = prev.includes(interest)
       ? prev.filter((item) => item !== interest)
@@ -121,6 +126,11 @@ export default function InterestScreen() {
     setCaregiverCreativeInterests(selectedInterests);
   };
   const toggleInstrumentInterest = (interest: string) => {
+    if (interest === 'Other') {
+      // Redirect to the custom interest input screen
+      router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Instrument`);
+      return;
+    }
     const prev = caregiverInstrumentInterests ?? [];
     const selectedInterests = prev.includes(interest)
       ? prev.filter((item) => item !== interest)
@@ -128,6 +138,11 @@ export default function InterestScreen() {
     setCaregiverInstrumentsInterests(selectedInterests);
   };
   const toggleSportInterest = (interest: string) => {
+    if (interest === 'Other') {
+      // Redirect to the custom interest input screen
+      router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Sport`);
+      return;
+    }
     const prev = caregiverSportInterest ?? [];
     const selectedInterests = prev.includes(interest)
       ? prev.filter((item) => item !== interest)
@@ -135,6 +150,11 @@ export default function InterestScreen() {
     setCaregiverSportsInterests(selectedInterests);
   };
   const toggleStemInterest = (interest: string) => {
+    if (interest === 'Other') {
+      // Redirect to the custom interest input screen
+      router.push(`/(auth)/screens/onboarding/family/custom-interest?category=stem`);
+      return;
+    }
     const prev = caregiverStemInterests ?? [];
     const selectedInterests = prev.includes(interest)
       ? prev.filter((item) => item !== interest)

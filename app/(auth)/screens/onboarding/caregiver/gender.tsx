@@ -34,6 +34,15 @@ export default function Page() {
   useEffect(()=>{
     console.log(caregiverGender)
   },[caregiverGender]);
+
+  const handleAdd = (option: string) => {
+    if (option === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/otherGender');
+      router.push('/(auth)/screens/onboarding/caregiver/otherGender')
+      return;
+    }
+    setCaregiverGender(option as any);
+  };
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
@@ -53,7 +62,7 @@ export default function Page() {
                 <Pill
                   key={option}
                   label={option}
-                  onPress={() => setCaregiverGender(option)}
+                  onPress={() => handleAdd(option)}
                   selected={caregiverGender === option}
                   variant={caregiverGender === option ? 'highlighted' : undefined}
                 />

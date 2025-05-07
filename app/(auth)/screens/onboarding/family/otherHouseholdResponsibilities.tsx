@@ -7,23 +7,23 @@ import { Colors } from '@/constants/Colors';
 import { Header } from '@/components/ui/Header';
 import { Button } from '@/components/ui/Button';
 import { useOtherStore } from '@/services/state/other';
+// import { useUserStore } from '@/services/state/user';
 
 
-export default function OtherPhiloScreen() {
+export default function OtherHouseholdResponsibilitiesScreen() {
   const router = useRouter();
-  const [philosophy, setPhilosophy] = useState('');
+  const [householdResponsibilities, setHouseholdResponsibilities] = useState('');
+   const {addOtherHouseholdResponsibilities}  = useOtherStore()
 
-  const {addOtherPhilosophy } = useOtherStore()
+   useEffect(() => {
+    setHouseholdResponsibilities('');
+   }, [])
+   
 
-  useEffect(() => {
-    setPhilosophy('');
-  }, [])
-  
-  
   const handleAdd = () => {
-    if (philosophy.trim()) {
-      // Handle adding the philosophy
-      addOtherPhilosophy(philosophy.trim())
+    if (householdResponsibilities.trim()) {
+      // Handle adding the Certification
+      addOtherHouseholdResponsibilities(householdResponsibilities.trim())
       router.back();
     }
   };
@@ -36,7 +36,7 @@ export default function OtherPhiloScreen() {
         <View style={styles.spacerTop} />
         
         <ThemedText style={styles.title}>
-          Add other philosophies
+          Add other household responsibilities
         </ThemedText>
 
         <View style={styles.inputContainer}>
@@ -45,8 +45,8 @@ export default function OtherPhiloScreen() {
             style={styles.input}
             placeholder="Type here"
             placeholderTextColor="#999"
-            value={philosophy}
-            onChangeText={setPhilosophy}
+            value={householdResponsibilities}
+            onChangeText={setHouseholdResponsibilities}
             autoFocus
           />
         </View>
@@ -56,7 +56,7 @@ export default function OtherPhiloScreen() {
             label="Add"
             onPress={handleAdd}
             variant="compact"
-            disabled={!philosophy.trim()}
+            disabled={!householdResponsibilities.trim()}
           />
         </View>
       </View>

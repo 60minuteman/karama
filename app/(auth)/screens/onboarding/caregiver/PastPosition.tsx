@@ -10,7 +10,7 @@ import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useFonts } from 'expo-font';
-import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
+// import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
 import { useUserStore } from '@/services/state/user';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -135,7 +135,7 @@ const PastPosition: React.FC = () => {
             Tell us about your{'\n'}past positions
           </ThemedText>
 
-          <View style={styles.positionPills}>
+          <ScrollView horizontal style={styles.positionPills}>
             <Pill
               label="First Position"
               selected={caregiverFirstPosition?.positionNumber === 'first' && selectedPositionNumber === 'first'}
@@ -162,17 +162,17 @@ const PastPosition: React.FC = () => {
             />
             <Pill
               label="Third Position"
-              selected={caregiverSecondPosition?.positionNumber === 'third' && selectedPositionNumber === 'third'}
+              selected={caregiverThirdPosition?.positionNumber === 'Third' && selectedPositionNumber === 'third'}
               onPress={() => {
                 setSelectedPositionNumber('third')
-                setCaregiverSecondPosition({
-                  ...caregiverSecondPosition,
-                  positionNumber: 'third',
+                setCaregiverThirdPosition({
+                  ...caregiverThirdPosition,
+                  positionNumber: 'Third',
                 })
               }
               }
             />
-          </View>
+          </ScrollView>
 
           <ScrollView
             style={styles.scrollView}
