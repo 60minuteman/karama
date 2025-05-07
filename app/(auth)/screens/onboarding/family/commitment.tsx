@@ -24,7 +24,7 @@ import {
   View,
 } from 'react-native';
 
-type Commitment = 'Long Term' | 'Short Term';
+type Commitment = '📋 Long Term' | '⌛ Short Term';
 
 export default function CommitmentScreen() {
   const { family_commitment, setFamilyCommitment, setOnboardingScreen } =
@@ -45,9 +45,9 @@ export default function CommitmentScreen() {
     }
   }, []);
 
-  const commitmentOptions: Array<{ label: Commitment; icon: string }> = [
-    { label: 'Long Term', icon: '📋' },
-    { label: 'Short Term', icon: '⌛' },
+  const commitmentOptions: Array<{ label: Commitment }> = [
+    { label: '📋 Long Term' },
+    { label: '⌛ Short Term' },
   ];
 
   const handleNext = () => {
@@ -149,7 +149,6 @@ export default function CommitmentScreen() {
                 <Pill
                   key={option.label}
                   label={option.label}
-                  icon={option.icon}
                   selected={
                     family_commitment.selected_commitment === option.label
                   }

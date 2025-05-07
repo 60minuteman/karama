@@ -15,9 +15,9 @@ interface PaymentMethodProps {
 }
 
 const PaymentOptions = [
-  { id: 'employee', label: 'Employee', icon: '💳' },
-  { id: 'contractor', label: 'Independent Contractor', icon: '📄' },
-  { id: 'no_preference', label: 'No Preference', icon: '💰' },
+  { id: 'employee', label: '💳 Employee' },
+  { id: 'contractor', label: '📄 Independent Contractor' },
+  { id: 'no_preference', label: '💰 No Preference' },
 ];
 
 const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
@@ -79,7 +79,6 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
               <View key={option.id} style={styles.pillWrapper}>
                 <Pill
                   label={option.label}
-                  icon={option.icon}
                   selected={selected_method === option.id}
                   onPress={() =>
                     setFamilyPaymentMethod({ selected_method: option.id })

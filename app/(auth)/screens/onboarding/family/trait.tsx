@@ -18,20 +18,20 @@ export default function TraitScreen() {
   const { selected_traits, is_dealbreaker } = caregiver_traits;
 
   const personalityTraits = [
-    { label: 'Bubbly', icon: '🫧' },
-    { label: 'Animated', icon: '🤹' },
-    { label: 'Chill', icon: '🧘' },
-    { label: 'Patient', icon: '😌' },
-    { label: 'Wacky', icon: '🤪' },
-    { label: 'Extroverted', icon: '🤩' },
-    { label: 'Disciplined', icon: '📏' },
-    { label: 'Introverted', icon: '😐' },
-    { label: 'Thoughtful', icon: '🤔' },
-    { label: 'Adventurous', icon: '🚀' },
-    { label: 'Whimsical', icon: '🧚' },
-    { label: 'Nurturing', icon: '🤗' },
-    { label: 'Cool', icon: '😎' },
-    { label: 'Organized', icon: '👨‍💼' },
+    { label: '🫧 Bubbly' },
+    { label: '🤹 Animated' },
+    { label: '🧘 Chill' },
+    { label: '😌 Patient' },
+    { label: '🤪 Wacky' },
+    { label: '🤩 Extroverted' },
+    { label: '📏 Disciplined' },
+    { label: '😐 Introverted' },
+    { label: '🤔 Thoughtful' },
+    { label: '🚀 Adventurous' },
+    { label: '🧚 Whimsical' },
+    { label: '🤗 Nurturing' },
+    { label: '😎 Cool' },
+    { label: '👨‍💼 Organized' },
   ];
 
   const handleTraitSelect = (trait: string) => {
@@ -86,7 +86,6 @@ export default function TraitScreen() {
                 <Pill
                   key={index}
                   label={trait.label}
-                  icon={trait.icon}
                   onPress={() => handleTraitSelect(trait.label)}
                   selected={selected_traits.includes(trait.label)}
                 />

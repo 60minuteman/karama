@@ -33,7 +33,11 @@ export const Work = ({
         <View style={styles.pillsContainer}>
           {animals.map((animal, index) => (
             <View key={index} style={styles.pillWrapper}>
-              <Pill2 icon={animal.icon} label={animal} style={styles.pill} />
+              <Pill2
+                //  icon={animal.icon}
+                label={animal}
+                style={styles.pill}
+              />
             </View>
           ))}
         </View>

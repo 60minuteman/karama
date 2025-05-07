@@ -26,12 +26,12 @@ export const We: React.FC<WeProps> = ({
             <Pill2
               key={index}
               label={child?.age_group}
-              icon={
-                child?.age_group == 'Pre Schooler' ||
-                child?.age_group == 'Infant'
-                  ? '👶'
-                  : '🏫'
-              }
+              // icon={
+              //   child?.age_group == 'Pre Schooler' ||
+              //   child?.age_group == 'Infant'
+              //     ? '👶'
+              //     : '🏫'
+              // }
               // style={styles.selectedPill}
             />
           ))}

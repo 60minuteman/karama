@@ -55,7 +55,12 @@ export const Personality: React.FC<PersonalityProps> = ({
             else if (item === 'Medications') icon = '💊';
 
             return (
-              <Pill2 key={index} label={item} icon={icon} style={styles.pill} />
+              <Pill2
+                key={index}
+                label={item}
+                //  icon={icon}
+                style={styles.pill}
+              />
             );
           })}
       </View>

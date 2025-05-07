@@ -57,7 +57,7 @@ export const Religion = ({
         <View style={styles.pillContainer}>
           {religion && (
             <Pill2
-              icon={religionIcons[religion] || religionIcons['Other']}
+              // icon={religionIcons[religion] || religionIcons['Other']}
               label={religion}
               style={styles.pill}
             />
@@ -71,7 +71,7 @@ export const Religion = ({
           {personality.map((trait, index) => (
             <Pill2
               key={index}
-              icon={personalityIcons[trait] || '✨'}
+              // icon={personalityIcons[trait] || '✨'}
               label={trait}
               style={styles.pill}
             />

@@ -49,7 +49,7 @@ export const WorkType: React.FC<WorkTypeProps> = ({
               <Pill2
                 key={index}
                 label={option}
-                icon={icon}
+                // icon={icon}
                 style={styles.pill}
               />
             );

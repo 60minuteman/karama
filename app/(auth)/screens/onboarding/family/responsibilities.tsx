@@ -18,52 +18,51 @@ import Toast from 'react-native-toast-message';
 interface Responsibility {
   id: string;
   label: string;
-  icon: string;
 }
 
 const childcareResponsibilities: Responsibility[] = [
-  { id: 'bathing', label: 'Bathing', icon: '🛁' },
-  { id: 'laundry', label: 'Laundry', icon: '🧺' },
-  { id: 'packingLunch', label: 'Packing Lunch', icon: '🥪' },
-  { id: 'driving', label: 'Driving', icon: '🚗' },
-  { id: 'cooking', label: 'Cooking', icon: '🍳' },
-  { id: 'playDates', label: 'Play Dates', icon: '🎮' },
-  { id: 'commuting', label: 'Commuting', icon: '🚌' },
-  { id: 'scheduling', label: 'Scheduling/ Planning', icon: '📅' },
-  { id: 'sleepScheduling', label: 'Sleep Scheduling', icon: '💤' },
-  { id: 'tutoring', label: 'Tutoring', icon: '📚' },
-  { id: 'homeworkHelp', label: 'Homework Help', icon: '📝' },
-  { id: 'roomOrg', label: 'Room organization', icon: '🏠' },
-  { id: 'foodPrep', label: 'Food prep', icon: '🥗' },
-  { id: 'diaperChange', label: 'Diaper Change', icon: '👶' },
-  { id: 'pottyTraining', label: 'Potty training', icon: '🚽' },
-  { id: 'organization', label: 'Organization', icon: '📋' },
-  { id: 'lightHouseKeeping', label: 'Light house keeping', icon: '🧹' },
-  { id: 'roomOrganization', label: 'Room Organization', icon: '🏠' },
-  { id: 'groceryShopping', label: 'Grocery Shopping', icon: '🛒' },
-  { id: 'childcareErrands', label: 'Childcare Errands', icon: '🏃' },
-  { id: 'feeding', label: 'Feeding', icon: '🍼' },
-  { id: 'pottyTraining2', label: 'Potty Training', icon: '🚽' },
-  { id: 'other', label: 'Other', icon: '➕' },
+  { id: 'bathing', label: '🛁 Bathing' },
+  { id: 'laundry', label: '🧺 Laundry' },
+  { id: 'packingLunch', label: '🥪 Packing Lunch' },
+  { id: 'driving', label: '🚗 Driving' },
+  { id: 'cooking', label: '🍳 Cooking' },
+  { id: 'playDates', label: '🎮 Play Dates' },
+  { id: 'commuting', label: '🚌 Commuting' },
+  { id: 'scheduling', label: '📅 Scheduling/ Planning' },
+  { id: 'sleepScheduling', label: '💤 Sleep Scheduling' },
+  { id: 'tutoring', label: '📚 Tutoring' },
+  { id: 'homeworkHelp', label: '📝 Homework Help' },
+  { id: 'roomOrg', label: '🏠 Room organization' },
+  { id: 'foodPrep', label: '🥗 Food prep' },
+  { id: 'diaperChange', label: '👶 Diaper Change' },
+  { id: 'pottyTraining', label: '🚽 Potty training' },
+  { id: 'organization', label: '📋 Organization' },
+  { id: 'lightHouseKeeping', label: '🧹 Light house keeping' },
+  { id: 'roomOrganization', label: '🏠 Room Organization' },
+  { id: 'groceryShopping', label: '🛒 Grocery Shopping' },
+  { id: 'childcareErrands', label: '🏃 Childcare Errands' },
+  { id: 'feeding', label: '🍼 Feeding' },
+  { id: 'pottyTraining2', label: '🚽 Potty Training' },
+  { id: 'other', label: '➕ Other' },
 ];
 
 const householdResponsibilities: Responsibility[] = [
-  { id: 'cooking2', label: 'Cooking', icon: '👩‍🍳' },
-  { id: 'laundry2', label: 'Laundry', icon: '👕' },
-  { id: 'mealPrep', label: 'Meal Prep', icon: '🥘' },
-  { id: 'ironing', label: 'Ironing', icon: '👔' },
-  { id: 'errands', label: 'Errands', icon: '🏃' },
-  { id: 'petCare', label: 'Pet Care', icon: '🐾' },
-  { id: 'eventPlanning', label: 'Event Planning', icon: '🎉' },
-  { id: 'trashRecycling', label: 'Trash & Recycling', icon: '🗑️' },
-  { id: 'lightHousekeeping2', label: 'Light Housekeeping', icon: '🧹' },
-  { id: 'deepHousekeeping', label: 'Deep Housekeeping', icon: '🧽' },
-  { id: 'managingProperties', label: 'Managing Properties', icon: '🏘️' },
-  { id: 'householdBudgeting', label: 'Household Budgeting', icon: '💰' },
-  { id: 'hiringStaff', label: 'Hiring & Supervising Staff', icon: '👥' },
-  { id: 'propertyManagement', label: 'Property Management', icon: '🏢' },
-  { id: 'dishwasher', label: 'Loading/Unloading Dishwasher', icon: '🍽️' },
-  { id: 'other2', label: 'Other', icon: '➕' },
+  { id: 'cooking2', label: '👩‍🍳 Cooking' },
+  { id: 'laundry2', label: '👕 Laundry' },
+  { id: 'mealPrep', label: '🥘 Meal Prep' },
+  { id: 'ironing', label: '👔 Ironing' },
+  { id: 'errands', label: '🏃 Errands' },
+  { id: 'petCare', label: '🐾 Pet Care' },
+  { id: 'eventPlanning', label: '🎉 Event Planning' },
+  { id: 'trashRecycling', label: '🗑️ Trash & Recycling' },
+  { id: 'lightHousekeeping2', label: '🧹 Light Housekeeping' },
+  { id: 'deepHousekeeping', label: '🧽 Deep Housekeeping' },
+  { id: 'managingProperties', label: '🏘️ Managing Properties' },
+  { id: 'householdBudgeting', label: '💰 Household Budgeting' },
+  { id: 'hiringStaff', label: '👥 Hiring & Supervising Staff' },
+  { id: 'propertyManagement', label: '🏢 Property Management' },
+  { id: 'dishwasher', label: '🍽️ Loading/Unloading Dishwasher' },
+  { id: 'other2', label: '➕ Other' },
 ];
 
 export default function ResponsibilitiesScreen() {
@@ -260,7 +259,6 @@ export default function ResponsibilitiesScreen() {
                 <Pill
                   key={item.id}
                   label={item.label}
-                  icon={item.icon}
                   selected={family_responsibilities.includes(item.id)}
                   onPress={() => toggleResponsibility(item.id)}
                 />
@@ -277,7 +275,6 @@ export default function ResponsibilitiesScreen() {
                 <Pill
                   key={item.id}
                   label={item.label}
-                  icon={item.icon}
                   selected={family_responsibilities.includes(item.id)}
                   onPress={() => toggleResponsibility(item.id)}
                 />

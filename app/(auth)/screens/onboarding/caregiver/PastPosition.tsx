@@ -1,10 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ScrollView, TextInput, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
@@ -13,35 +8,51 @@ import { useFonts } from 'expo-font';
 // import { Bogart_600SemiBold } from '@expo-google-fonts/bogart';
 import { useUserStore } from '@/services/state/user';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useFonts } from 'expo-font';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const positionTypes = [
-  { id: 'night_nurse' as const, label: 'Night Nurse', icon: '👩‍⚕️' },
-  { id: 'doula' as const, label: 'Doula/MFW', icon: '👶' },
-  { id: 'babysitter' as const, label: 'Babysitter', icon: '🎈' },
-  { id: 'nanny' as const, label: 'Nanny', icon: '👶' },
-  { id: 'manny' as const, label: 'Manny', icon: '👨' },
-  { id: 'au_pair' as const, label: 'Au Pair', icon: '✈️' },
-  { id: 'caregiver' as const, label: 'Caregiver/Housekeeper', icon: '🏠' },
-  { id: 'personal_assistant' as const, label: 'Caregiver/Personal Assistant', icon: '📋' },
-  { id: 'household_manager' as const, label: 'Caregiver/Household Manager', icon: '🏡' },
+  { id: 'night_nurse' as const, label: '👩‍⚕️ Night Nurse' },
+  { id: 'doula' as const, label: '👶 Doula/MFW' },
+  { id: 'babysitter' as const, label: '🎈 Babysitter' },
+  { id: 'nanny' as const, label: '👶 Nanny' },
+  { id: 'manny' as const, label: '👨 Manny' },
+  { id: 'au_pair' as const, label: '✈️ Au Pair' },
+  { id: 'caregiver' as const, label: '🏠 Caregiver/Housekeeper' },
+  {
+    id: 'personal_assistant' as const,
+    label: '📋 Caregiver/Personal Assistant',
+  },
+  { id: 'household_manager' as const, label: '🏡 Caregiver/Household Manager' },
 ];
 
 const childAgeGroups = [
-  { id: 'newborn' as const, label: 'Newborn', icon: '👶' },
-  { id: 'toddler' as const, label: 'Toddler', icon: '🚶' },
-  { id: 'teenager' as const, label: 'Teenager', icon: '🧑' },
-  { id: 'infant' as const, label: 'Infant', icon: '👶' },
-  { id: 'expecting' as const, label: 'Expecting', icon: '🤰' },
-  { id: 'pre_schooler' as const, label: 'Pre Schooler', icon: '🎨' },
-  { id: 'school_age' as const, label: 'School Age', icon: '📚' },
+  { id: 'newborn' as const, label: '👶 Newborn' },
+  { id: 'toddler' as const, label: '🚶 Toddler' },
+  { id: 'teenager' as const, label: '🧑 Teenager' },
+  { id: 'infant' as const, label: '👶 Infant' },
+  { id: 'expecting' as const, label: '🤰 Expecting' },
+  { id: 'pre_schooler' as const, label: '🎨 Pre Schooler' },
+  { id: 'school_age' as const, label: '📚 School Age' },
 ];
 
 const employmentTypes = [
-  { id: 'full_time' as const, label: 'Full Time', icon: '⏰' },
-  { id: 'part_time' as const, label: 'Part Time', icon: '🕐' },
-  { id: 'occasional' as const, label: 'Occasional', icon: '📅' },
-  { id: 'night_out' as const, label: 'Night Out', icon: '🌙' },
-  { id: 'after_school' as const, label: 'After School/Pickup', icon: '🚗' },
+  { id: 'full_time' as const, label: '⏰ Full Time' },
+  { id: 'part_time' as const, label: '🕐 Part Time' },
+  { id: 'occasional' as const, label: '📅 Occasional' },
+  { id: 'night_out' as const, label: '🌙 Night Out' },
+  { id: 'after_school' as const, label: '🚗 After School/Pickup' },
 ];
 
 const PastPosition: React.FC = () => {
@@ -55,15 +66,15 @@ const PastPosition: React.FC = () => {
   });
 
   const handleNext = () => {
-    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/prompt')
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/prompt');
     router.push('/(auth)/screens/onboarding/caregiver/prompt');
   };
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
       month: '2-digit',
-      day: '2-digit', 
-      year: 'numeric'
+      day: '2-digit',
+      year: 'numeric',
     });
   };
 
@@ -121,9 +132,9 @@ const PastPosition: React.FC = () => {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
+      <Header variant='back' style={{ fontFamily: 'Bogart-Bold' }} />
 
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoidView}
       >
@@ -137,28 +148,32 @@ const PastPosition: React.FC = () => {
 
           <ScrollView horizontal style={styles.positionPills}>
             <Pill
-              label="First Position"
-              selected={caregiverFirstPosition?.positionNumber === 'first' && selectedPositionNumber === 'first'}
+              label='First Position'
+              selected={
+                caregiverFirstPosition?.positionNumber === 'first' &&
+                selectedPositionNumber === 'first'
+              }
               onPress={() => {
-                setSelectedPositionNumber('first')
+                setSelectedPositionNumber('first');
                 setCaregiverFirstPosition({
                   ...caregiverFirstPosition,
                   positionNumber: 'first',
-                })
-              }
-              }
+                });
+              }}
             />
             <Pill
-              label="Second Position"
-              selected={caregiverSecondPosition?.positionNumber === 'second' && selectedPositionNumber === 'second'}
+              label='Second Position'
+              selected={
+                caregiverSecondPosition?.positionNumber === 'second' &&
+                selectedPositionNumber === 'second'
+              }
               onPress={() => {
-                setSelectedPositionNumber('second')
+                setSelectedPositionNumber('second');
                 setCaregiverSecondPosition({
                   ...caregiverSecondPosition,
                   positionNumber: 'second',
-                })
-              }
-              }
+                });
+              }}
             />
             <Pill
               label="Third Position"
@@ -180,7 +195,9 @@ const PastPosition: React.FC = () => {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.section}>
-              <ThemedText style={styles.sectionTitle}>Name of Family or Business</ThemedText>
+              <ThemedText style={styles.sectionTitle}>
+                Name of Family or Business
+              </ThemedText>
               <View style={styles.inputContainer}>
                 <View style={styles.inputCursor} />
                 <TextInput
@@ -213,11 +230,16 @@ const PastPosition: React.FC = () => {
             <View style={styles.dateContainer}>
               <View style={styles.dateInput}>
                 <ThemedText style={styles.dateLabel}>Start Date</ThemedText>
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => {
-                    setActiveDatePicker('start')
+                    setActiveDatePicker('start');
                   }}
-                  style={[styles.inputBorder, (caregiverFirstPosition?.startDate?.length > 0 || caregiverSecondPosition?.startDate?.length > 0) && styles.inputBorderActive]}
+                  style={[
+                    styles.inputBorder,
+                    (caregiverFirstPosition?.startDate?.length > 0 ||
+                      caregiverSecondPosition?.startDate?.length > 0) &&
+                      styles.inputBorderActive,
+                  ]}
                 >
                   <ThemedText style={styles.dateText}>
                     {selectedPositionNumber === 'first' ? 
@@ -230,11 +252,16 @@ const PastPosition: React.FC = () => {
               </View>
               <View style={styles.dateInput}>
                 <ThemedText style={styles.dateLabel}>End Date</ThemedText>
-                <TouchableOpacity 
+                <TouchableOpacity
                   onPress={() => {
-                    setActiveDatePicker('end')
+                    setActiveDatePicker('end');
                   }}
-                  style={[styles.inputBorder, (caregiverFirstPosition?.endDate?.length > 0 || caregiverSecondPosition?.endDate?.length > 0) && styles.inputBorderActive]}
+                  style={[
+                    styles.inputBorder,
+                    (caregiverFirstPosition?.endDate?.length > 0 ||
+                      caregiverSecondPosition?.endDate?.length > 0) &&
+                      styles.inputBorderActive,
+                  ]}
                 >
                   <ThemedText style={styles.dateText}>
                     {selectedPositionNumber === 'first' ? 
@@ -250,8 +277,8 @@ const PastPosition: React.FC = () => {
             {activeDatePicker === 'start' && (
               <DateTimePicker
                 value={new Date()}
-                mode="date"
-                display="spinner"
+                mode='date'
+                display='spinner'
                 onChange={handleStartDateChange}
               />
             )}
@@ -259,14 +286,16 @@ const PastPosition: React.FC = () => {
             {activeDatePicker === 'end' && (
               <DateTimePicker
                 value={new Date()}
-                mode="date"
-                display="spinner"
+                mode='date'
+                display='spinner'
                 onChange={handleEndDateChange}
               />
             )}
 
             <View style={styles.section}>
-              <ThemedText style={styles.sectionTitle}>What was your position</ThemedText>
+              <ThemedText style={styles.sectionTitle}>
+                What was your position
+              </ThemedText>
               <View style={styles.pillsContainer}>
                 {positionTypes.map((position) => (
                   <Pill
@@ -288,27 +317,31 @@ const PastPosition: React.FC = () => {
                           setCaregiverSecondPosition({
                             ...caregiverSecondPosition,
                             position: position.id,
-                          })
-                      }
-                    }
+                          });
+                    }}
                   />
                 ))}
               </View>
             </View>
 
             <View style={styles.section}>
-              <ThemedText style={styles.sectionTitle}>What age were the children</ThemedText>
+              <ThemedText style={styles.sectionTitle}>
+                What age were the children
+              </ThemedText>
               <View style={styles.pillsContainer}>
                 {childAgeGroups.map((age) => (
                   <Pill
                     key={age.id}
                     label={age.label}
-                    icon={age.icon}
-                    selected={selectedPositionNumber === 'first' ? caregiverFirstPosition?.ageGroup === age.id : caregiverSecondPosition?.ageGroup === age.id}
-                    onPress={
-                      () => {
-                        selectedPositionNumber === 'first' ?
-                          setCaregiverFirstPosition({
+                    // icon={age.icon}
+                    selected={
+                      selectedPositionNumber === 'first'
+                        ? caregiverFirstPosition?.ageGroup === age.id
+                        : caregiverSecondPosition?.ageGroup === age.id
+                    }
+                    onPress={() => {
+                      selectedPositionNumber === 'first'
+                        ? setCaregiverFirstPosition({
                             ...caregiverFirstPosition,
                             ageGroup: age.id,
                           }) :  selectedPositionNumber === 'third' ?
@@ -319,16 +352,17 @@ const PastPosition: React.FC = () => {
                           setCaregiverSecondPosition({
                             ...caregiverSecondPosition,
                             ageGroup: age.id,
-                          })
-                      }
-                    }
+                          });
+                    }}
                   />
                 ))}
               </View>
             </View>
 
             <View style={styles.section}>
-              <ThemedText style={styles.sectionTitle}>What type of position was it</ThemedText>
+              <ThemedText style={styles.sectionTitle}>
+                What type of position was it
+              </ThemedText>
               <View style={styles.pillsContainer}>
                 {employmentTypes.map((type) => (
                   <Pill
@@ -350,9 +384,8 @@ const PastPosition: React.FC = () => {
                           setCaregiverSecondPosition({
                             ...caregiverSecondPosition,
                             employmentType: type.id,
-                          })
-                      }
-                    }
+                          });
+                    }}
                   />
                 ))}
               </View>
@@ -365,12 +398,12 @@ const PastPosition: React.FC = () => {
           >
             <View style={styles.buttonContainer}>
               <Button
-                label="Skip"
+                label='Skip'
                 onPress={() => router.back()}
-                variant="skip"
+                variant='skip'
               />
               <Button
-                label="Next"
+                label='Next'
                 onPress={handleNext}
                 variant="compact"
                 disabled={!caregiverFirstPosition || !caregiverSecondPosition || !caregiverThirdPosition}

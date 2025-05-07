@@ -14,16 +14,13 @@ import { StyleSheet, Switch, View } from 'react-native';
 
 const pronounOptions = [
   {
-    label: 'She/Her',
-    emoji: '👱‍♀️',
+    label: '👱‍♀️ She/Her',
   },
   {
-    label: 'He/Him',
-    emoji: '👨🏽',
+    label: '👨🏽 He/Him',
   },
   {
-    label: 'They/Them',
-    emoji: '∞',
+    label: '∞ They/Them',
   },
 ];
 
@@ -62,7 +59,7 @@ export default function Page() {
           {pronounOptions.map((option) => (
             <Pill
               key={option.label}
-              label={`${option.emoji} ${option.label}`}
+              label={option.label}
               onPress={() => setCaregiverPronouns(option.label)}
               selected={caregiverPronouns === option.label}
             />

@@ -44,7 +44,12 @@ export const Diets: React.FC<DietsProps> = ({
           else if (item === 'Patient') icon = '🧘';
 
           return (
-            <Pill2 key={index} label={item} icon={icon} style={styles.pill} />
+            <Pill2
+              key={index}
+              label={item}
+              //  icon={icon}
+              style={styles.pill}
+            />
           );
         })}
       </View>
