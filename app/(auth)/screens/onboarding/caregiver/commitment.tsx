@@ -218,7 +218,7 @@ export default function CommitmentScreen() {
               What do you expect{'\n'}in terms of{'\n'}commitment?
             </ThemedText>
 
-            <View style={styles.optionsContainer}>
+            <View style={styles.optionsContainer} >
               {commitmentOptions.map((option) => (
                 <Pill
                   key={option.label}
@@ -360,6 +360,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     marginBottom: 32,
+    // justifyContent: 'space-between'
   },
   pill: {
     paddingVertical: 12,

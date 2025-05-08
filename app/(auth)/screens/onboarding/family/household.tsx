@@ -86,17 +86,17 @@ otherReligion
 
   const toggleSelection = (category: Category, label: string) => {
     const currentSelections = { ...family_selections } as FamilySelections;
-    if (category === 'Diet' && currentSelections.diets?.includes('🥑 Other')) {
+    if (category === 'Diet' && label === '🥑 Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
       router.push('/(auth)/screens/onboarding/family/otherDiet?category=diet');
       return;
     }
-    if (category === 'Rules' && currentSelections.rules?.includes('🎯 Other')) {
+    if (category === 'Rules' && label === '🎯 Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
       router.push('/(auth)/screens/onboarding/family/otherDiet?category=rules');
       return;
     }
-    if (category === 'Religion' && currentSelections.religion === '🙏 Other') {
+    if (category === 'Religion' && label === '🙏 Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
       router.push('/(auth)/screens/onboarding/family/otherDiet?category=religion');
       return;

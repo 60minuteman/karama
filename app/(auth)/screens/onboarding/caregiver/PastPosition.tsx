@@ -22,6 +22,7 @@ import {
   View,
 } from 'react-native';
 import { Colors } from '@/constants/Colors';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 
 const positionTypes = [
   { id: 'night_nurse' as const, label: '👩‍⚕️ Night Nurse' },
@@ -147,7 +148,8 @@ const PastPosition: React.FC = () => {
             Tell us about your{'\n'}past positions
           </ThemedText>
 
-          <ScrollView horizontal style={styles.positionPills}>
+         <View  style={styles.positionPills}>
+         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{  height: 50, gap: 8, paddingVertical: 5 }}>
             <Pill
               label='First Position'
               selected={
@@ -188,7 +190,8 @@ const PastPosition: React.FC = () => {
               }
               }
             />
-          </ScrollView>
+         </ScrollView>
+          </View>
 
           <ScrollView
             style={styles.scrollView}
@@ -463,7 +466,8 @@ const styles = StyleSheet.create({
   positionPills: {
     flexDirection: 'row',
     gap: 8,
-    marginBottom: 24,
+    // marginBottom: 24,
+    // borderWidth: 1,
   },
   dateContainer: {
     flexDirection: 'row',

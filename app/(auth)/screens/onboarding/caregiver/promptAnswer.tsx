@@ -104,6 +104,7 @@ export default function PromptAnswer() {
     showCaregiverRequiredBenefit,
     setCaregiverFirstPromptAnswer,
     setOnboardingScreen,
+    
   } = useUserStore();
 
 
@@ -158,10 +159,10 @@ export default function PromptAnswer() {
       instrument_interests: caregiverInstrumentInterests,
       sport_interests: caregiverSportInterest,
       stem_interests: caregiverStemInterests,
-      other_creative_interests: otherCreativeActivity || '',
-      other_instrument_interests: otherInstument || '',
-      other_sport_interest: otherSport || '',
-      other_stem_interest: otherStem || '',
+      // other_creative_interests: otherCreativeActivity || '',
+      // other_instrument_interests: otherInstument || '',
+      // other_sport_interest: otherSport || '',
+      // other_stem_interest: otherStem || '',
     },
     characteristics: {
       personalities: caregiverPersonality,
@@ -203,6 +204,7 @@ export default function PromptAnswer() {
       hourly_min: 1,
       hourly_max: caregiverHourlyRate,
       method: caregiverPaymentMethod,
+      // salary: caregiverSalaryAmount || 0,
       show_method_on_profile: showCaregiverPaymentMethod,
     },
     required_benefits: (caregiverRequiredBenefits || [])
@@ -293,7 +295,7 @@ export default function PromptAnswer() {
           <View style={styles.spacerTop} />
           <ProgressBar progress={0.9} />
 
-          <ThemedText style={styles.title}>{prompt}</ThemedText>
+          <ThemedText style={styles.title}>{caregiverFirstPrompt}</ThemedText>
 
           <View style={styles.inputContainer}>
             <TextInput

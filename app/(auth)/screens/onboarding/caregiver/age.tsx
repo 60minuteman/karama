@@ -61,7 +61,7 @@ export default function Page() {
                   label={age}
                   onPress={() => toggleAgesSelection(age)}
                   selected={caregiverAgeExperience?.includes(age)}
-                  disabled={caregiverAgeExperience?.length === 3}
+                  disabled={!caregiverAgeExperience?.includes(age) && caregiverAgeExperience?.length === 3}
                 />
               ))}
             </View>

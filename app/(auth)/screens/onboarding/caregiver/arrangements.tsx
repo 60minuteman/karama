@@ -63,13 +63,11 @@ export default function ArrangementsScreen() {
                   key={option.label}
                   label={option.label}
                   selected={
-                    caregiverPreferredArrangement === option.label.split(' ')[1]
+                    caregiverPreferredArrangement === option.label
                   }
                   onPress={() =>
                     setCaregiverPreferredArrangement(
-                      option.label.split(
-                        ' '
-                      )[1] as CaregiverPreferredArrangement
+                      option.label as CaregiverPreferredArrangement
                     )
                   }
                 />

@@ -63,7 +63,6 @@ export default function Benefits() {
   };
 
   const handleNext = () => {
-   
       setOnboardingScreen('/(auth)/screens/onboarding/caregiver/PastPosition');
       router.push('/(auth)/screens/onboarding/caregiver/PastPosition');
   };

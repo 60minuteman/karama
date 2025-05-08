@@ -85,13 +85,9 @@ export default function Prompt() {
   const currentPrompts = prompts[caregiverPromptCategory || 'get_to_know'];
 
   const handleAdd = (item: any) => {
-    if (caregiverFirstPrompt) {
-      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/promptAnswer');
-      router.push({
-        pathname: '/(auth)/screens/onboarding/caregiver/promptAnswer',
-        params: { prompt: caregiverFirstPrompt }
-      });
-    }
+    setCaregiverFirstPrompt(item) ;
+        setOnboardingScreen('/(auth)/screens/onboarding/caregiver/promptAnswer');
+        router.push('/(auth)/screens/onboarding/caregiver/promptAnswer');
   };
 
 
@@ -132,7 +128,7 @@ export default function Prompt() {
                 <Pill
                   label={prompt}
                   selected={caregiverFirstPrompt === prompt}
-                  onPress={() => {setCaregiverFirstPrompt(prompt) ; handleAdd(prompt)}}
+                  onPress={() =>  handleAdd(prompt)}
                 />
               </View>
             ))}

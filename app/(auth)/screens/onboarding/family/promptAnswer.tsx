@@ -12,7 +12,7 @@ import { StyleSheet, TextInput, View } from 'react-native';
 export default function PromptAnswer() {
   const router = useRouter();
   const { prompt } = useLocalSearchParams();
-  const { family_prompt_answer, setFamilyPromptAnswer, setOnboardingScreen } =
+  const { family_prompt_answer,family_prompt, setFamilyPromptAnswer, setOnboardingScreen } =
     useUserStore();
 
     useEffect(() => {
@@ -33,7 +33,7 @@ export default function PromptAnswer() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
 
-        <ThemedText style={styles.title}>{prompt}</ThemedText>
+        <ThemedText style={styles.title}>{family_prompt}</ThemedText>
 
         <View style={styles.inputContainer}>
           <TextInput

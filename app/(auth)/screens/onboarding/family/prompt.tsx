@@ -63,13 +63,9 @@ export default function Prompt() {
   };
 
   const handleAdd = (item: any) => {
-    if (family_prompt) {
+    setFamilyPrompt(item)
       setOnboardingScreen('/(auth)/screens/onboarding/family/promptAnswer');
-      router.push({
-        pathname: '/(auth)/screens/onboarding/family/promptAnswer',
-        params: { prompt: family_prompt },
-      });
-    }
+      router.push('/(auth)/screens/onboarding/family/promptAnswer');
   }
 
   return (
@@ -107,9 +103,7 @@ export default function Prompt() {
                 <Pill
                   label={prompt}
                   selected={family_prompt === prompt}
-                  onPress={() => {
-                  setFamilyPrompt(prompt);
-                    handleAdd(prompt)}}
+                  onPress={() => handleAdd(prompt)}
                 />
               </View>
             ))}
