@@ -48,6 +48,7 @@ export default function PhoneNumberScreen() {
       const userData = response?.data?.data?.user;
       setToken(token);
       setUser(userData);
+      router.replace('/(tabs)/discover');
     },
     onError: (error: any) => {
       console.error('Sign in error:', error?.response?.data);
