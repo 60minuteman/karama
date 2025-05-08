@@ -126,6 +126,21 @@ export default function PromptAnswer() {
     caregiverThirdPosition
   } = useOtherStore();
 
+  const payment_info =
+  caregiverPaymentType === "Salary Base"
+    ? {
+        type: caregiverPaymentType,
+        salary: caregiverSalaryAmount || '',
+        show_method_on_profile: showCaregiverPaymentMethod,
+      }
+    : {
+        type: caregiverPaymentType,
+        hourly_min: 1,
+        hourly_max: caregiverHourlyRate,
+        method: caregiverPaymentMethod,
+        show_method_on_profile: showCaregiverPaymentMethod,
+      };
+
   const onboadingInfo = {
     name: caregiverName,
     date_of_birth: caregiverDob,
@@ -159,10 +174,10 @@ export default function PromptAnswer() {
       instrument_interests: caregiverInstrumentInterests,
       sport_interests: caregiverSportInterest,
       stem_interests: caregiverStemInterests,
-      // other_creative_interests: otherCreativeActivity || '',
-      // other_instrument_interests: otherInstument || '',
-      // other_sport_interest: otherSport || '',
-      // other_stem_interest: otherStem || '',
+      other_creative_interest: otherCreativeActivity || '',
+      other_instrument_interest: otherInstument || '',
+      other_sport_interest: otherSport || '',
+      other_stem_interest: otherStem || '',
     },
     characteristics: {
       personalities: caregiverPersonality,
@@ -199,14 +214,7 @@ export default function PromptAnswer() {
       other_childcare_responsibilities: otherChildResponsibilities || '',
       other_household_responsibilities: otherHouseholdResponsibilities || '',
     },
-    payment_info: {
-      type: caregiverPaymentType,
-      hourly_min: 1,
-      hourly_max: caregiverHourlyRate,
-      method: caregiverPaymentMethod,
-      // salary: caregiverSalaryAmount || 0,
-      show_method_on_profile: showCaregiverPaymentMethod,
-    },
+    payment_info,
     required_benefits: (caregiverRequiredBenefits || [])
         .filter(benefit => benefit && benefitsOptions?.find(opt => opt.id === benefit))
         .slice(0, 10),
