@@ -53,7 +53,7 @@ export default function BridgeScreen() {
                   : styles.unselectedText,
               ]}
             >
-              👨‍👩‍👧 Family
+              🏡 Family
             </ThemedText>
           </TouchableOpacity>
 
@@ -74,7 +74,7 @@ export default function BridgeScreen() {
                   : styles.unselectedText,
               ]}
             >
-              💝 Caregiver
+              💖 Caregiver
             </ThemedText>
           </TouchableOpacity>
         </View>

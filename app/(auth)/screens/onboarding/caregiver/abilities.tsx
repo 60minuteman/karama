@@ -18,21 +18,21 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 const abilities = [
   { label: '✈️ Can Travel' as const },
   { label: '🚗 Able To Drive' as const },
-  { label: '🏥 First Aid' as const },
+  { label: '⛑️ First Aid' as const },
   { label: '🏊 Can Swim' as const },
   { label: '💉 COVID Vaccination' as const },
-  { label: '🫀 CPR' as const },
-  { label: '🎪 Other' as const },
+  { label: '👐 CPR' as const },
+  { label: '🏕️ Other' as const },
 ];
 
 const certifications = [
   { label: '🤟 Sign Language' as const },
   { label: '💊 Administering Medication' as const },
   { label: '👨‍🦽 Special Needs' as const },
-  { label: '🧹 Condition Specific' as const },
+  { label: '🦼 Condition Specific' as const },
   { label: '🍔 Feeding & Swallowing' as const },
   { label: '😇 Registered Behaviour Technician' as const },
-  { label: '📄 Other' as const },
+  { label: '📃 Other' as const },
 ];
 
 export default function Page() {
@@ -160,9 +160,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 44,
-    fontFamily: 'Bogart-Bold', // Changed to 'Bogart-Bold' for the header text
+    fontFamily: 'Bogart-Semibold', // Changed to 'Bogart-Bold' for the header text
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     marginTop: 20,
   },

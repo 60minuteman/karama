@@ -110,7 +110,7 @@ export default function ServiceDaysScreen() {
         )}
 
         <View style={styles.titleContainer}>
-          <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
+          <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
             What days and{'\n'}hours would you{'\n'}need a caregiver?
           </ThemedText>
         </View>
@@ -134,12 +134,14 @@ export default function ServiceDaysScreen() {
                     style={[
                       styles.dayPill,
                       day.isActive && styles.activeDayPill,
+                      !day.isActive && styles.inactiveDayPill
                     ]}
                   >
                     <ThemedText
                       style={[
                         styles.dayText,
                         day.isActive && styles.activeDayText,
+                        !day.isActive && styles.inactiveDayText
                       ]}
                     >
                       {day.day}
@@ -152,10 +154,18 @@ export default function ServiceDaysScreen() {
                     activeField?.day === day.day &&
                       activeField?.field === 'begin' &&
                       styles.activeTimePill,
+                    day.isActive && styles.filledTimePill,
+                    !day.isActive && styles.inactiveTimePill
                   ]}
                   onPress={() => handleTimePress(day.day, true)}
                 >
-                  <ThemedText style={styles.timeText}>
+                  <ThemedText 
+                    style={[
+                      styles.timeText, 
+                      day.isActive && styles.filledTimeText,
+                      !day.isActive && styles.inactiveTimeText
+                    ]}
+                  >
                     {day.timeSlot?.begin || '00:00'}
                   </ThemedText>
                 </Pressable>
@@ -165,10 +175,18 @@ export default function ServiceDaysScreen() {
                     activeField?.day === day.day &&
                       activeField?.field === 'end' &&
                       styles.activeTimePill,
+                    day.isActive && styles.filledTimePill,
+                    !day.isActive && styles.inactiveTimePill
                   ]}
                   onPress={() => handleTimePress(day.day, false)}
                 >
-                  <ThemedText style={styles.timeText}>
+                  <ThemedText 
+                    style={[
+                      styles.timeText, 
+                      day.isActive && styles.filledTimeText,
+                      !day.isActive && styles.inactiveTimeText
+                    ]}
+                  >
                     {day.timeSlot?.end || '00:00'}
                   </ThemedText>
                 </Pressable>
@@ -252,6 +270,9 @@ const styles = StyleSheet.create({
   activeDayPill: {
     backgroundColor: Colors.light.primary,
   },
+  inactiveDayPill: {
+    backgroundColor: '#EEEEEE',
+  },
   dayText: {
     fontSize: 14,
     color: '#002140',
@@ -259,6 +280,9 @@ const styles = StyleSheet.create({
   },
   activeDayText: {
     color: '#FFFFFF',
+  },
+  inactiveDayText: {
+    color: '#999999',
   },
   timePill: {
     flex: 1,
@@ -273,9 +297,21 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#FF9500',
   },
+  filledTimePill: {
+    backgroundColor: Colors.light.primary,
+  },
+  inactiveTimePill: {
+    backgroundColor: '#EEEEEE',
+  },
   timeText: {
     fontSize: 14,
     color: '#666666',
+  },
+  filledTimeText: {
+    color: '#FFFFFF',
+  },
+  inactiveTimeText: {
+    color: '#999999',
   },
   buttonContainer: {
     position: 'absolute',

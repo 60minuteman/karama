@@ -41,7 +41,6 @@ export default function Page() {
     },
     onError: (error: any) => {
       console.error('Error uploading images:', error);
-      // alert('Failed to upload images. Please try again.');
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
@@ -105,7 +104,11 @@ export default function Page() {
 
         <View style={styles.photoGrid}>
           {[...Array(6)].map((_, index) => (
-            <View key={index} style={styles.photoPlaceholder}>
+            <TouchableOpacity 
+              key={index} 
+              style={styles.photoPlaceholder}
+              onPress={pickImage}
+            >
               {index < family_images.length ? (
                 <>
                   <Image
@@ -122,7 +125,7 @@ export default function Page() {
               ) : (
                 <View style={styles.photoPlaceholderInner} />
               )}
-            </View>
+            </TouchableOpacity>
           ))}
         </View>
 

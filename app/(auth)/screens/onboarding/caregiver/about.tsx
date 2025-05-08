@@ -46,56 +46,56 @@ export default function AboutScreen() {
 
   const categories: Record<Category, CategoryData[]> = {
     Personality: [
-      { label: '✨ Bubbly', category: 'Personality' },
-      { label: '🤗 Animated', category: 'Personality' },
-      { label: '🕯️ Chill', category: 'Personality' },
+      { label: '🫧 Bubbly', category: 'Personality' },
+      { label: '🦹‍♂️ Animated', category: 'Personality' },
+      { label: '🧘‍♀️ Chill', category: 'Personality' },
       { label: '😌 Patient', category: 'Personality' },
       { label: '🤪 Wacky', category: 'Personality' },
-      { label: '😎 Extroverted', category: 'Personality' },
-      { label: '📝 Disciplined', category: 'Personality' },
-      { label: '🤔 Introverted', category: 'Personality' },
-      { label: '🤗 Thoughtful', category: 'Personality' },
+      { label: '🤩 Extroverted', category: 'Personality' },
+      { label: '📏 Disciplined', category: 'Personality' },
+      { label: '😬 Introverted', category: 'Personality' },
+      { label: '🥰 Thoughtful', category: 'Personality' },
       { label: '🚀 Adventurous', category: 'Personality' },
-      { label: '🌈 Whimsical', category: 'Personality' },
-      { label: '🫂 Nurturing', category: 'Personality' },
+      { label: '🧚 Whimsical', category: 'Personality' },
+      { label: '🤗 Nurturing', category: 'Personality' },
       { label: '😎 Cool', category: 'Personality' },
-      { label: '👥 Organized', category: 'Personality' },
+      { label: '👨🏽‍💻 Organized', category: 'Personality' },
     ],
     Rules: [
-      { label: '📱 No Screens', category: 'Rules' },
-      { label: '💨 No Vaping', category: 'Rules' },
-      { label: '🤗 Be Kind', category: 'Rules' },
-      { label: '👊 No Hitting', category: 'Rules' },
+      { label: '📵 No Screens', category: 'Rules' },
+      { label: '💨 No Vapping', category: 'Rules' },
+      { label: '😊 Be Kind', category: 'Rules' },
+      { label: '👋🏽 No Hitting', category: 'Rules' },
       { label: '🥜 No Nuts', category: 'Rules' },
       { label: '🤬 No Swearing', category: 'Rules' },
       { label: '💅 No Long Nails', category: 'Rules' },
-      { label: '🚫 No Bullying', category: 'Rules' },
+      { label: '🐂 No Bullying', category: 'Rules' },
       { label: '🌸 No Perfume', category: 'Rules' },
       { label: '🚭 No Smoking', category: 'Rules' },
-      { label: '🏈 No Throwing Balls', category: 'Rules' },
+      { label: '☄️ No Throwing Balls', category: 'Rules' },
       { label: '🛋️ No Jumping On Furniture', category: 'Rules' },
-      { label: '❓ Other', category: 'Rules' },
+      { label: '🎈 Other', category: 'Rules' },
     ],
     Diet: [
       { label: '🥬 Vegan', category: 'Diet' },
       { label: '🥗 Vegetarian', category: 'Diet' },
-      { label: '🌙 Halal', category: 'Diet' },
-      { label: '🍖 Meat Eater', category: 'Diet' },
-      { label: '✡️ Kosher', category: 'Diet' },
+      { label: '🥩 Halal', category: 'Diet' },
+      { label: '🍗 Meat Eater', category: 'Diet' },
+      { label: '🧆 Kosher', category: 'Diet' },
       { label: '🐟 Pescatarian', category: 'Diet' },
-      { label: '🚫 Sugar Free', category: 'Diet' },
-      { label: '❌ None', category: 'Diet' },
-      { label: '❓ Other', category: 'Diet' },
+      { label: '🍉 Sugar Free', category: 'Diet' },
+      { label: '🚫 None', category: 'Diet' },
+      { label: '🥑 Other', category: 'Diet' },
     ],
     Religion: [
-      { label: '☪️ Islam', category: 'Religion' },
+      { label: '🕌 Islam', category: 'Religion' },
       { label: '☯️ Taoism', category: 'Religion' },
       { label: '☸️ Buddhism', category: 'Religion' },
-      { label: '✡️ Judaism', category: 'Religion' },
-      { label: '🕉️ Hinduism', category: 'Religion' },
-      { label: '✝️ Christianity', category: 'Religion' },
-      { label: '🚫 Atheism', category: 'Religion' },
-      { label: '❓ Other', category: 'Religion' },
+      { label: '🕍 Judaism', category: 'Religion' },
+      { label: '🪷 Hinduism', category: 'Religion' },
+      { label: '⛪️ Christianity', category: 'Religion' },
+      { label: '⚛️ Athesisim', category: 'Religion' },
+      { label: '📿 Other', category: 'Religion' },
     ],
   };
 
@@ -107,7 +107,7 @@ export default function AboutScreen() {
     setCaregiverPersonality(selectedPersonality);
   };
   const toggleRulesSelection = (item: string) => {
-    if (item === '❓ Other') {
+    if (item === '🎈 Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet')
       router.push('/(auth)/screens/onboarding/family/otherDiet?category=rules')
       return;
@@ -119,7 +119,7 @@ export default function AboutScreen() {
     setCaregiverRules(selectedRules);
   };
   const toggleDietSelection = (item: string) => {
-    if (item === '❓ Other') {
+    if (item === '🥑 Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet')
       router.push('/(auth)/screens/onboarding/family/otherDiet?category=diet')
       return;
@@ -131,7 +131,7 @@ export default function AboutScreen() {
     setCaregiverDiet(selectedDiet);
   };
   const toggleReligionSelection = (item: string) => {
-    if (item === '❓ Other') {
+    if (item === '📿 Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet')
       router.push('/(auth)/screens/onboarding/family/otherDiet?category=religion')
       return;
@@ -295,10 +295,10 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   title: {
-    fontFamily: 'Bogart-Bold',
+    fontFamily: 'Bogart-Semibold',
     fontSize: 32,
     lineHeight: 40,
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     fontWeight: '500',
     marginTop: 20,

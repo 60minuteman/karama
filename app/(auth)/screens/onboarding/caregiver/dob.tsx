@@ -50,7 +50,7 @@ export default function Page() {
           <View style={styles.spacerTop} />
           <ProgressBar progress={0.2} />
 
-          <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
+          <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
             What is your date of{'\n'}birth?
           </ThemedText>
 

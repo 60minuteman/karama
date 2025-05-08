@@ -19,19 +19,19 @@ export default function TraitScreen() {
 
   const personalityTraits = [
     { label: '🫧 Bubbly' },
-    { label: '🤹 Animated' },
-    { label: '🧘 Chill' },
+    { label: '🦹‍♂️ Animated' },
+    { label: '🧘‍♀️ Chill' },
     { label: '😌 Patient' },
     { label: '🤪 Wacky' },
     { label: '🤩 Extroverted' },
     { label: '📏 Disciplined' },
-    { label: '😐 Introverted' },
-    { label: '🤔 Thoughtful' },
+    { label: '😬 Introverted' },
+    { label: '🥰 Thoughtful' },
     { label: '🚀 Adventurous' },
     { label: '🧚 Whimsical' },
     { label: '🤗 Nurturing' },
     { label: '😎 Cool' },
-    { label: '👨‍💼 Organized' },
+    { label: '👨🏽‍💻 Organized' },
   ];
 
   const handleTraitSelect = (trait: string) => {

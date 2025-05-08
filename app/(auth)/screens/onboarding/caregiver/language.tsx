@@ -119,10 +119,10 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   title: {
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontSize: 32,
     lineHeight: 40,
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     fontWeight: '500',
     marginTop: 20,

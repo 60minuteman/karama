@@ -23,6 +23,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 type Commitment = '📋 Long Term' | '⌛ Short Term';
 
@@ -177,43 +178,45 @@ export default function CommitmentScreen() {
             {family_commitment.selected_commitment === '⌛ Short Term' ? (
             <View style={styles.dateContainer}>
               <View style={styles.dateColumn}>
-                <Text style={styles.dateLabel}>Start Date</Text>
-                <Pressable
-                  style={styles.dateInput}
+                <ThemedText style={styles.dateLabel}>Start Date</ThemedText>
+                <TouchableOpacity 
+                  style={styles.dateInputContainer}
                   onPress={() => setShowStartDatePicker(true)}
                 >
                   <Text style={styles.dateInputText}>
                     {formatDate(family_commitment.start_date)}
                   </Text>
-                </Pressable>
+                  <Ionicons name="calendar-outline" size={20} color="#666666" />
+                </TouchableOpacity>
               </View>
 
               <View style={styles.dateColumn}>
-                <Text style={styles.dateLabel}>End Date</Text>
-                <Pressable
-                  style={styles.dateInput}
+                <ThemedText style={styles.dateLabel}>End Date</ThemedText>
+                <TouchableOpacity 
+                  style={styles.dateInputContainer}
                   onPress={() => setShowEndDatePicker(true)}
                 >
                   <Text style={styles.dateInputText}>
                     {formatDate(family_commitment.end_date)}
                   </Text>
-                </Pressable>
+                  <Ionicons name="calendar-outline" size={20} color="#666666" />
+                </TouchableOpacity>
               </View>
             </View>
             ) : (
               <View style={styles.dateColumn}>
-              <Text style={styles.dateLabel}>Start Date</Text>
-              <Pressable
-                style={styles.dateInput}
-                onPress={() => setShowStartDatePicker(true)}
-              >
-                <Text style={styles.dateInputText}>
-                  {formatDate(family_commitment.start_date)}
-                </Text>
-              </Pressable>
-            </View>
-            )
-          }
+                <ThemedText style={styles.dateLabel}>Start Date</ThemedText>
+                <TouchableOpacity 
+                  style={styles.dateInputContainer}
+                  onPress={() => setShowStartDatePicker(true)}
+                >
+                  <Text style={styles.dateInputText}>
+                    {formatDate(family_commitment.start_date)}
+                  </Text>
+                  <Ionicons name="calendar-outline" size={20} color="#666666" />
+                </TouchableOpacity>
+              </View>
+            )}
 
             {renderDatePicker(true)}
             {renderDatePicker(false)}
@@ -290,11 +293,16 @@ const styles = StyleSheet.create({
     color: '#666666',
     marginBottom: 8,
   },
-  dateInput: {
+  dateInputContainer: {
+    height: 38,
     backgroundColor: '#F5F5F5',
     borderRadius: 12,
-    padding: 16,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
   },
   dateInputText: {
     fontSize: 16,

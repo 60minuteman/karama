@@ -27,7 +27,7 @@ export default function EducationScreen() {
 
   const educationOptions: Array<{ label: Education; icon?: string }> = [
     { label: 'High School', icon: '🎓' },
-    { label: 'In College', icon: '📚' },
+    { label: 'In College', icon: '📓' },
     { label: 'Undergraduate Degree', icon: '🎓' },
     { label: 'In Grad School', icon: '📘' },
     { label: 'Graduate Degree', icon: '🎓' },

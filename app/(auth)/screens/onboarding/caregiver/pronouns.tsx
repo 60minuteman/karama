@@ -20,7 +20,7 @@ const pronounOptions = [
     label: '👨🏽 He/Him',
   },
   {
-    label: '∞ They/Them',
+    label: '♾️ They/Them',
   },
 ];
 
@@ -51,7 +51,7 @@ export default function Page() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
 
-        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
           What are your{'\n'}pronouns?
         </ThemedText>
 
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     lineHeight: 44,
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     marginTop: 20,
   },

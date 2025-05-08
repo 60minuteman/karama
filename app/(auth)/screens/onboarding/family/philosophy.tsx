@@ -47,7 +47,7 @@ export default function PhilosophyScreen() {
     { type: 'Baby Led-Weaning', icon: '🌈' },
     { type: 'Authoritarian Parenting', icon: '🌈' },
     { type: 'Other', icon: '🌈' },
-    { type: 'None', icon: '⛔' },
+    { type: 'None', icon: '🚫' },
   ];
 
   const togglePhilosophy = (philo: Philosophy) => {

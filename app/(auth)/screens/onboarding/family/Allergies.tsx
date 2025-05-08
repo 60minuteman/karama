@@ -20,7 +20,7 @@ const foodAllergies = [
   { id: 'shellfish', label: '🦐 Shellfish' },
   { id: 'soy', label: '🫘 Soy' },
   { id: 'wheat', label: '🌾 Wheat' },
-  { id: 'other_food', label: '🍽️ Other' },
+  { id: 'other_food', label: '🍪 Other' },
 ];
 
 const environmentalAllergies = [
@@ -35,9 +35,9 @@ const environmentalAllergies = [
 const otherAllergies = [
   { id: 'latex', label: '🧤 Latex' },
   { id: 'perfume', label: '🌹 Perfume' },
-  { id: 'cleaning_chemicals', label: '💧 Cleaning Chemicals' },
-  { id: 'metal', label: '⚙️ Metal' },
-  { id: 'other', label: '➕ Other' },
+  { id: 'cleaning_chemicals', label: '💦 Cleaning Chemicals' },
+  { id: 'metal', label: '🌑 Metal' },
+  { id: 'other', label: '🪨 Other' },
 ];
 
 export default function Allergies() {

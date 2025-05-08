@@ -24,9 +24,9 @@ export default function FamilyNumberScreen() {
     { age_group: '👶 Newborn', count: 0 },
     { age_group: '🍼 Infant', count: 0 },
     { age_group: '🧸 Toddler', count: 0 },
-    { age_group: '✏️ Pre Schooler', count: 0 },
+    { age_group: '🖍️ Pre Schooler', count: 0 },
     { age_group: '🛴 School Age', count: 0 },
-    { age_group: '👑 Teenager', count: 0 },
+    { age_group: '🧋 Teenager', count: 0 },
   ]);
 
   useEffect(() => {

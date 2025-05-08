@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     height: 120,
   },
   title: {
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,

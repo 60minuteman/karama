@@ -12,7 +12,7 @@ import { StyleSheet, Switch, View } from 'react-native';
 
 const educationOptions = [
   { label: '🎓 High School' as const },
-  { label: '📚 In College' as const },
+  { label: '📓 In College' as const },
   { label: '🎓 Undergraduate Degree' as const },
   { label: '📘 In Grad School' as const },
   { label: '🎓 Graduate Degree' as const },
@@ -101,9 +101,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 44,
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     marginTop: 20,
   },
