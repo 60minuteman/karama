@@ -31,24 +31,24 @@ export default function InterestScreen() {
 
   const interests: Record<Category, Interest[]> = {
     Creative: [
-      { label: '💃 Dance', category: 'Creative' },
-      { label: '⭐ DIY', category: 'Creative' },
+      { label: '🩰 Dance', category: 'Creative' },
+      { label: '🪅 DIY', category: 'Creative' },
       { label: '🎨 Painting', category: 'Creative' },
       { label: '🎭 Drama', category: 'Creative' },
       { label: '🎮 Gaming', category: 'Creative' },
-      { label: '👨‍🍳 Baking', category: 'Creative' },
+      { label: '🍰 Baking', category: 'Creative' },
       { label: '🎤 Singing', category: 'Creative' },
       { label: '🏺 Pottery', category: 'Creative' },
       { label: '📚 Reading', category: 'Creative' },
-      { label: '🎨 Arts & Crafts', category: 'Creative' },
-      { label: '🎧 DJing', category: 'Creative' },
-      { label: '✨ Magic', category: 'Creative' },
-      { label: '🎥 Film Making', category: 'Creative' },
-      { label: '🔍 Cooking', category: 'Creative' },
+      { label: '🧶 Arts & Crafts', category: 'Creative' },
+      { label: '📀 DJing', category: 'Creative' },
+      { label: '🪄 Magic', category: 'Creative' },
+      { label: '🎬 Film Making', category: 'Creative' },
+      { label: '🍳 Cooking', category: 'Creative' },
       { label: '📸 Photography', category: 'Creative' },
-      { label: '📹 Videography', category: 'Creative' },
-      { label: '💎 Fashion Design', category: 'Creative' },
-      { label: '🎨 Other', category: 'Creative' },
+      { label: '🎥 Videography', category: 'Creative' },
+      { label: '👗 Fashion Design', category: 'Creative' },
+      { label: '👨‍🎨 Other', category: 'Creative' },
     ],
     Instruments: [
       { label: '🎹 Piano', category: 'Instruments' },
@@ -57,12 +57,12 @@ export default function InterestScreen() {
       { label: '🎺 Trumpet', category: 'Instruments' },
       { label: '🪕 Banjo', category: 'Instruments' },
       { label: '🥁 Drum', category: 'Instruments' },
-      { label: '🎵 Maracas', category: 'Instruments' },
+      { label: '🪇 Maracas', category: 'Instruments' },
       { label: '🎷 Saxophone', category: 'Instruments' },
-      { label: '🎼 Flute', category: 'Instruments' },
+      { label: '🪈 Flute', category: 'Instruments' },
       { label: '🎻 Violin', category: 'Instruments' },
-      { label: '🥁 Conga', category: 'Instruments' },
-      { label: '🎵 Other', category: 'Instruments' },
+      { label: '🪘 Conga', category: 'Instruments' },
+      { label: '🎼 Other', category: 'Instruments' },
     ],
     Sports: [
       { label: '⛸️ Ice skating', category: 'Sports' },
@@ -71,36 +71,36 @@ export default function InterestScreen() {
       { label: '🏑 Hockey', category: 'Sports' },
       { label: '⚽ Soccer', category: 'Sports' },
       { label: '🚣 Rowing', category: 'Sports' },
-      { label: '🥾 Hiking', category: 'Sports' },
       { label: '🤼 Wrestling', category: 'Sports' },
       { label: '🏈 Football', category: 'Sports' },
-      { label: '🏄 Surfing', category: 'Sports' },
+      { label: '🏄🏻‍♀️ Surfing', category: 'Sports' },
       { label: '♟️ Chess', category: 'Sports' },
       { label: '🏐 Volleyball', category: 'Sports' },
       { label: '🎾 Tennis', category: 'Sports' },
       { label: '⚾ Baseball', category: 'Sports' },
       { label: '🥋 Karate', category: 'Sports' },
-      { label: '🏃 Track', category: 'Sports' },
+      { label: '🏃🏽‍♀️ Track', category: 'Sports' },
       { label: '⛳ Golf', category: 'Sports' },
       { label: '🏉 Rugby', category: 'Sports' },
-      { label: '🏇 Polo', category: 'Sports' },
-      { label: '🚴 Cycling', category: 'Sports' },
+      { label: '🐴 Polo', category: 'Sports' },
+      { label: '🚴‍♀️ Cycling', category: 'Sports' },
       { label: '🎳 Bowling', category: 'Sports' },
       { label: '🏸 Badminton', category: 'Sports' },
       { label: '🏏 Cricket', category: 'Sports' },
-      { label: '🤸 Gymnastics', category: 'Sports' },
-      { label: '🏊 Swimming', category: 'Sports' },
-      { label: '🤽 Water Polo', category: 'Sports' },
-      { label: '🛼 Roller skate', category: 'Sports' },
+      { label: '🤸‍♂️ Gymnastics', category: 'Sports' },
+      { label: '🏊🏻‍♀️ Swimming', category: 'Sports' },
+      { label: '🤽‍♂️ Water Polo', category: 'Sports' },
+      { label: '🥾 Hiking', category: 'Sports' },
+      { label: '🛼 Roller Skating', category: 'Sports' },
       { label: '🛹 Skateboarding', category: 'Sports' },
       { label: '🏇 Horseback Riding', category: 'Sports' },
-      { label: '🎯 Other', category: 'Sports' },
+      { label: '🏅 Other', category: 'Sports' },
     ],
     STEM: [
       { label: '💻 Coding', category: 'STEM' },
       { label: '🧬 Sciences', category: 'STEM' },
       { label: '🤖 Robotics', category: 'STEM' },
-      { label: '📊 Mathematics', category: 'STEM' },
+      { label: '🧮 Mathematics', category: 'STEM' },
       { label: '🔬 Other', category: 'STEM' },
     ],
   };
@@ -118,7 +118,7 @@ export default function InterestScreen() {
   ]);
 
   const toggleCreativeInterest = (interest: string) => {
-    if (interest === '🎨 Other') {
+    if (interest === '👨‍🎨 Other') {
       // Redirect to the custom interest input screen
       router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Creative`);
       return;
@@ -130,7 +130,7 @@ export default function InterestScreen() {
     setCaregiverCreativeInterests(selectedInterests);
   };
   const toggleInstrumentInterest = (interest: string) => {
-    if (interest === '🎵 Other') {
+    if (interest === '🎼 Other') {
       // Redirect to the custom interest input screen
       router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Instrument`);
       return;
@@ -142,7 +142,7 @@ export default function InterestScreen() {
     setCaregiverInstrumentsInterests(selectedInterests);
   };
   const toggleSportInterest = (interest: string) => {
-    if (interest === '🎯 Other') {
+    if (interest === '🏅 Other') {
       // Redirect to the custom interest input screen
       router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Sport`);
       return;
@@ -289,10 +289,10 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   title: {
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontSize: 32,
     lineHeight: 40,
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     fontWeight: '500',
     marginTop: 20,

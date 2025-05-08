@@ -11,7 +11,6 @@ import {
   getUserIdByEmail,
   sendMessage,
 } from '@/services/chat';
-import { auth } from '@/services/firebase';
 import { useUserStore } from '@/services/state/user';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -43,6 +42,8 @@ export default function MessageScreen() {
   const firebaseUser = useUserStore((state) => state.firebaseCurrentUser);
   const { token, user } = useUserStore();
   const socket: any = getSocket();
+
+  console.log('messages', messages);
 
   useEffect(() => {
     const fetchOtherUserData = async () => {
@@ -107,6 +108,18 @@ export default function MessageScreen() {
     setMessage('');
   };
 
+  // const handleClearMessages: any = () => {
+  //   socket.emit('clearAllMessages', {
+  //     conversationId: id,
+  //   });
+  // };
+
+  // const handleBlockUser: any = () => {
+  //   socket.emit('blockUser', {
+  //     recipientId: recipientId
+  //   });
+  // };
+
   useEffect(() => {
     socket.emit('getChatHistory', {
       conversationId: id,
@@ -142,6 +155,18 @@ export default function MessageScreen() {
       });
     });
   }, [socket]);
+
+  // useEffect(() => {
+  //   socket.on('allMessagesCleared', (data: any) => {
+  //     setMessages([]);
+  //   });
+  // }, [socket]);
+
+  // useEffect(() => {
+  //   socket.on('userBlocked', (data: any) => {
+  //     // setMessages([]);
+  //   });
+  // }, [socket]);
 
   // console.log('messages=====+++++++', messages);
 
@@ -181,53 +206,43 @@ export default function MessageScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={0}
+    >
       <MessageHeader
         name={name}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onBack={handleBack}
+        handleClearMessages={handleClearMessages}
       />
 
       {activeTab === 'chat' ? (
-        <FlatList<Message>
-          style={styles.messagesList}
-          data={messages}
-          renderItem={renderMessage}
-          keyExtractor={(item: Message) => item.id}
-          inverted={true}
-          contentContainerStyle={[
-            styles.messagesContent,
-            { paddingBottom: 100 },
-          ]}
-        />
-      ) : (
-        <View style={{ height: '80%' }}>
-          <Container profileData={profileData} />
-        </View>
-      )}
-
-      {activeTab === 'chat' && (
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-          }}
-        >
-          <View style={[styles.inputContainer]}>
+        <View style={styles.chatContainer}>
+          <FlatList<Message>
+            style={styles.messagesList}
+            data={messages}
+            renderItem={renderMessage}
+            keyExtractor={(item: Message) => item.id}
+            inverted={true}
+            contentContainerStyle={styles.messagesContent}
+          />
+          <View style={styles.inputContainer}>
             <MessageInput
               value={message}
               onChangeText={setMessage}
               onSend={handleSendMessage}
             />
           </View>
-        </KeyboardAvoidingView>
+        </View>
+      ) : (
+        <View style={{ height: '80%' }}>
+          <Container profileData={profileData} />
+        </View>
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -239,7 +254,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: '#FFFFFF',
   },
-  keyboardAvoidingView: {
+  chatContainer: {
     flex: 1,
   },
   messagesList: {
@@ -247,7 +262,7 @@ const styles = StyleSheet.create({
   },
   messagesContent: {
     padding: 16,
-    paddingTop: 120,
+    paddingTop: 16,
   },
   inputContainer: {
     backgroundColor: '#FFFFFF',

@@ -13,8 +13,8 @@ import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 type Availability =
   | '⏰ Full Time'
   | '⌛ Part Time'
-  | '📅 Occasionally'
-  | '🌙 Night Out'
+  | '🗓️ Occasionally'
+  | '🍹 Night Out'
   | '🎒 After school Pickup';
 
 export default function AvailabilityScreen() {
@@ -26,8 +26,8 @@ export default function AvailabilityScreen() {
   const availabilityOptions: Array<{ label: Availability }> = [
     { label: '⏰ Full Time' },
     { label: '⌛ Part Time' },
-    { label: '📅 Occasionally' },
-    { label: '🌙 Night Out' },
+    { label: '🗓️ Occasionally' },
+    { label: '🍹 Night Out' },
     { label: '🎒 After school Pickup' },
   ];
 

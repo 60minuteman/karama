@@ -15,6 +15,8 @@ type ConversationItemProps = {
   onPress: () => void;
   otherUser: any;
   conversation: any;
+  handleDeleteConversation: any;
+  key: any;
 };
 
 export function ConversationItem({
@@ -25,6 +27,8 @@ export function ConversationItem({
   onPress,
   otherUser,
   conversation,
+  handleDeleteConversation,
+  key,
 }: ConversationItemProps) {
   const [otherUserData, setOtherUserData] = useState<any>(null);
   const { token, user } = useUserStore();
@@ -41,7 +45,10 @@ export function ConversationItem({
   const renderRightActions = () => {
     return (
       <View style={styles.rightActions}>
-        <TouchableOpacity style={[styles.action, styles.removeAction]}>
+        <TouchableOpacity
+          // onPress={() => handleDeleteConversation(key)}
+          style={[styles.action, styles.removeAction]}
+        >
           <Ionicons name='close' size={24} color='#fff' />
           <Text style={styles.actionText}>Remove</Text>
         </TouchableOpacity>

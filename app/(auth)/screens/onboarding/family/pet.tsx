@@ -12,11 +12,11 @@ import { useEffect, useRef } from 'react';
 import { Animated, ScrollView, StyleSheet, View } from 'react-native';
 
 type PetType =
-  | '⛔ None'
+  | '🚫 None'
   | '😺 Cat'
-  | '🐕 Small Dog'
-  | '🐷 Pig'
-  | '🐕 Large Dog'
+  | '🐶 Small Dog'
+  | '🐽 Pig'
+  | '🐩 Large Dog'
   | '🐮 Cow'
   | '🦋 Butterfly'
   | '🐢 Turtle'
@@ -36,30 +36,30 @@ type PetType =
   | '🦄 Unicorn'
   | '🐾 Other';
 
-const pets = [
-  { type: '⛔ None' as const },
-  { type: '😺 Cat' as const },
-  { type: '🐕 Small Dog' as const },
-  { type: '🐷 Pig' as const },
-  { type: '🐕 Large Dog' as const },
-  { type: '🐮 Cow' as const },
-  { type: '🦋 Butterfly' as const },
-  { type: '🐢 Turtle' as const },
-  { type: '🐍 Snake' as const },
-  { type: '🦜 Parrot' as const },
-  { type: '🐰 Rabbit' as const },
-  { type: '🐑 Sheep' as const },
-  { type: '🦆 Duck' as const },
-  { type: '🐎 Horse' as const },
-  { type: '🐸 Frog' as const },
-  { type: '🦎 Gecko' as const },
-  { type: '🐳 Whale' as const },
-  { type: '🐔 Chicken' as const },
-  { type: '🐹 Hamster' as const },
-  { type: '🦕 Dinosaur' as const },
-  { type: '🐘 Baby Elephant' as const },
-  { type: '🦄 Unicorn' as const },
-  { type: '🐾 Other' as const },
+const pets: { type: PetType }[] = [
+  { type: '🚫 None' },
+  { type: '😺 Cat' },
+  { type: '🐶 Small Dog' },
+  { type: '🐽 Pig' },
+  { type: '🐩 Large Dog' },
+  { type: '🐮 Cow' },
+  { type: '🦋 Butterfly' },
+  { type: '🐢 Turtle' },
+  { type: '🐍 Snake' },
+  { type: '🦜 Parrot' },
+  { type: '🐰 Rabbit' },
+  { type: '🐑 Sheep' },
+  { type: '🦆 Duck' },
+  { type: '🐎 Horse' },
+  { type: '🐸 Frog' },
+  { type: '🦎 Gecko' },
+  { type: '🐳 Whale' },
+  { type: '🐔 Chicken' },
+  { type: '🐹 Hamster' },
+  { type: '🦕 Dinosaur' },
+  { type: '🐘 Baby Elephant' },
+  { type: '🦄 Unicorn' },
+  { type: '🐾 Other' },
 ];
 
 export default function PetScreen() {
@@ -83,12 +83,12 @@ export default function PetScreen() {
       router.push('/(auth)/screens/onboarding/family/otherPet');
       return;
     }
-    if (pet === 'None') {
-      setFamilyPets(['None']);
+    if (pet === '🚫 None') {
+      setFamilyPets([pet]);
       setOnboardingScreen('/(auth)/screens/onboarding/family/interest');
       router.push('/(auth)/screens/onboarding/family/interest');
     } else {
-      const newPets = family_pets.includes('⛔ None')
+      const newPets = family_pets.includes('🚫 None')
         ? [pet]
         : family_pets.includes(pet)
         ? family_pets.filter((p) => p !== pet)

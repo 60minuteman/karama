@@ -408,8 +408,8 @@ export default function DiscoverScreen() {
     hourlyRate:
       currentProfile?.family_profile?.extra_info?.payment_info?.type ===
       'Hourly'
-        ? `$${currentProfile?.family_profile?.extra_info.payment_info.hourly_min} - $${currentProfile?.family_profile?.extra_info.payment_info.hourly_max}`
-        : `$${currentProfile?.family_profile?.extra_info.payment_info.salary}/year`, // "$20 - $45"
+        ? `$${currentProfile?.family_profile?.extra_info?.payment_info.hourly_min} - $${currentProfile?.family_profile?.extra_info.payment_info.hourly_max}`
+        : `$${currentProfile?.family_profile?.extra_info?.payment_info.salary}/year`, // "$20 - $45"
     languages: [
       ...(currentProfile?.family_profile?.languages || []), // ["English", "Spanish"]
       currentProfile?.family_profile?.other_languages || '',

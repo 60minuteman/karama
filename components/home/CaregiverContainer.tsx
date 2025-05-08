@@ -143,6 +143,8 @@ const CaregiverContainer = forwardRef<
       'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2920&auto=format&fit=crop',
   };
 
+  console.log('profiledata', profileData);
+
   return (
     <ScrollView>
       <Animated.View
@@ -168,12 +170,6 @@ const CaregiverContainer = forwardRef<
         />
       </View>
 
-      {/* <View
-        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
-      >
-        <Obsession />
-      </View> */}
-
       <View
         style={[styles.container, { width: containerWidth, marginTop: 16 }]}
       >
@@ -182,12 +178,6 @@ const CaregiverContainer = forwardRef<
           images={profileData?.image}
         />
       </View>
-
-      {/* <View
-        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
-      >
-        <Idea />
-      </View> */}
 
       <View
         style={[styles.container, { width: containerWidth, marginTop: 16 }]}
@@ -216,18 +206,6 @@ const CaregiverContainer = forwardRef<
         />
       </View>
 
-      {/* <View
-        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
-      >
-        <CaregiverImage data={profileData?.image[3]?.path} />
-      </View> */}
-
-      {/* <View
-        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
-      >
-        <OneThing />
-      </View> */}
-
       <View
         style={[styles.container, { width: containerWidth, marginTop: 16 }]}
       >
@@ -252,12 +230,6 @@ const CaregiverContainer = forwardRef<
           }
         />
       </View>
-
-      {/* <View
-        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
-      >
-        <Schedule />
-      </View> */}
 
       <View
         style={[styles.container, { width: containerWidth, marginTop: 16 }]}

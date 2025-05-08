@@ -13,8 +13,8 @@ import { StyleSheet, View } from 'react-native';
 const POSITIONS = [
   { label: '⏰ Full Time' as const },
   { label: '⌛ Part Time' as const },
-  { label: '📅 Occasionally' as const },
-  { label: '🍸 Night Out' as const },
+  { label: '🗓️ Occasionally' as const },
+  { label: '🍹 Night Out' as const },
   { label: '🎒 After school Pickup' as const },
 ];
 
@@ -93,10 +93,10 @@ const styles = StyleSheet.create({
     height: 120,
   },
   title: {
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontSize: 32,
     lineHeight: 44,
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     fontWeight: '600',
     marginTop: 20,

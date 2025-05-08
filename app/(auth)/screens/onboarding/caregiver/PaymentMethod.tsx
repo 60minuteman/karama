@@ -15,13 +15,13 @@ interface PaymentMethodProps {
 }
 
 const PaymentOptions = [
-  { id: 'employee' as const, label: '💳 Employee', icon: '💳' },
+  { id: 'employee' as const, label: '🪪 Employee', icon: '🪪' },
   {
     id: 'contractor' as const,
-    label: ' 📄 Independent Contractor',
-    icon: '📄',
+    label: ' 🧾 Independent Contractor',
+    icon: '🧾',
   },
-  { id: 'no_preference' as const, label: '💰 No Preference', icon: '💰' },
+  { id: 'no_preference' as const, label: '💵 No Preference', icon: '💵' },
 ];
 
 const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
@@ -121,9 +121,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 16,
     marginTop: 20,
   },

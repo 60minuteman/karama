@@ -14,23 +14,14 @@ interface BenefitsProps {
   youShouldKnowText?: string;
 }
 
-export const Benefits: React.FC<BenefitsProps> = ({
-  benefits = [
-    { label: 'Yearly Raise', icon: '💸' },
-    { label: 'Maternity Leave', icon: '🤰' },
-    { label: 'Health Insurance', icon: '🏥' },
-    { label: 'Retirment Account', icon: '😲' },
-    { label: 'Monthly Metro Card', icon: '🚇' },
-  ],
-  youShouldKnowTitle = 'You Should Know',
-  youShouldKnowText = 'We are very outdoorsy and having a caregiver that shares the same love would be a huge plus!',
-}) => {
+export const Benefits: React.FC<BenefitsProps> = ({ benefits }) => {
+  console.log('benefit', benefits);
   return (
     <View style={styles.container}>
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>Benefits</ThemedText>
         <View style={styles.pillContainer}>
-          {benefits.map((benefit, index) => {
+          {benefits?.map((benefit, index) => {
             let icon = '💸'; // Default icon from sample data
 
             // Match icons from sample data

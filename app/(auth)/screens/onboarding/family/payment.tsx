@@ -8,8 +8,8 @@ import { Slider } from '@/components/ui/Slider';
 import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { useState, useEffect } from 'react';
+import { StyleSheet, TextInput, View, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 
 type PaymentType = '🤑 Hourly' | '💰 Salary Base';
 
@@ -19,6 +19,27 @@ export default function PaymentScreen() {
     useUserStore();
   const { selected_type, hourly_rate, salary_amount, has_interacted } =
     family_payment;
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   const paymentOptions: Array<{ label: PaymentType }> = [
     { label: '🤑 Hourly' },
@@ -43,7 +64,11 @@ export default function PaymentScreen() {
     <ThemedView style={styles.container}>
       <Header variant='back' />
 
-      <View style={styles.content}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.content}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 10}
+      >
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.95} />
 
@@ -133,7 +158,10 @@ export default function PaymentScreen() {
           )}
         </View>
 
-        <View style={styles.buttonContainer}>
+        <View style={[
+          styles.buttonContainer,
+          isKeyboardVisible ? { marginBottom: 10 } : { marginBottom: 50 }
+        ]}>
           <Button
             label='Next'
             onPress={handleNext}
@@ -141,7 +169,7 @@ export default function PaymentScreen() {
             disabled={!selected_type}
           />
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </ThemedView>
   );
 }
@@ -200,10 +228,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   buttonContainer: {
-    position: 'absolute',
-    bottom: 50,
-    right: 20,
-    left: 20,
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },

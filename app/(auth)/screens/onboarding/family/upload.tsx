@@ -10,7 +10,13 @@ import { useUserStore } from '@/services/state/user';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import React from 'react';
-import { Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Toast from 'react-native-toast-message';
 
 export default function Page() {
@@ -35,13 +41,13 @@ export default function Page() {
         },
       });
     },
-    onSuccess: () => {
+    onSuccess: (data: any) => {
       setSteps('upload');
+      console.log('data', data);
       router.push('/(auth)/screens/onboarding/family/success');
     },
     onError: (error: any) => {
       console.error('Error uploading images:', error);
-      // alert('Failed to upload images. Please try again.');
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
@@ -84,70 +90,74 @@ export default function Page() {
   };
 
   return (
-      <ScrollView>
-    <ThemedView style={styles.container}>
-      <Header variant='back' />
+    <ScrollView>
+      <ThemedView style={styles.container}>
+        <Header variant='back' />
 
-      <View style={styles.content}>
-        <View style={styles.spacerTop} />
-        <ProgressBar progress={0.2} />
+        <View style={styles.content}>
+          <View style={styles.spacerTop} />
+          <ProgressBar progress={0.2} />
 
-        <ThemedText style={styles.title}>
-          Great, Now let's tie it all with some fun{'\n'}family photos!
-        </ThemedText>
+          <ThemedText style={styles.title}>
+            Great, Now let's tie it all with some fun{'\n'}family photos!
+          </ThemedText>
 
-        <ThemedText style={styles.subtitle}>
-          Share pictures of your family, pets, toys{'\n'}and so much more. This
-          will help the{'\n'}caregiver understand your family more!
-        </ThemedText>
+          <ThemedText style={styles.subtitle}>
+            Share pictures of your family, pets, toys{'\n'}and so much more.
+            This will help the{'\n'}caregiver understand your family more!
+          </ThemedText>
 
-      <ThemedText style={styles.sectionTitle}>Select Photos</ThemedText>
+          <ThemedText style={styles.sectionTitle}>Select Photos</ThemedText>
 
-        <View style={styles.photoGrid}>
-          {[...Array(6)].map((_, index) => (
-            <View key={index} style={styles.photoPlaceholder}>
-              {index < family_images.length ? (
-                <>
-                  <Image
-                    source={{ uri: family_images[index] }}
-                    style={styles.photoImage}
-                  />
-                  <TouchableOpacity
-                    style={styles.removeButton}
-                    onPress={() => removeImage(index)}
-                  >
-                    <ThemedText style={styles.removeButtonText}>✕</ThemedText>
-                  </TouchableOpacity>
-                </>
-              ) : (
-                <View style={styles.photoPlaceholderInner} />
-              )}
-            </View>
-          ))}
-        </View>
+          <View style={styles.photoGrid}>
+            {[...Array(6)].map((_, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.photoPlaceholder}
+                onPress={pickImage}
+              >
+                {index < family_images.length ? (
+                  <>
+                    <Image
+                      source={{ uri: family_images[index] }}
+                      style={styles.photoImage}
+                    />
+                    <TouchableOpacity
+                      style={styles.removeButton}
+                      onPress={() => removeImage(index)}
+                    >
+                      <ThemedText style={styles.removeButtonText}>✕</ThemedText>
+                    </TouchableOpacity>
+                  </>
+                ) : (
+                  <View style={styles.photoPlaceholderInner} />
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
 
-        <ThemedText style={styles.dragHint}>
-          Tap to edit, drag to Rearrange
-        </ThemedText>
+          <ThemedText style={styles.dragHint}>
+            Tap to edit, drag to Rearrange
+          </ThemedText>
 
-        <View style={styles.addPhotoContainer}>
-          <Button label='Add photo' onPress={pickImage} variant='compact' />
-        </View>
+          <View style={styles.addPhotoContainer}>
+            <Button label='Add photo' onPress={pickImage} variant='compact' />
+          </View>
         </View>
 
         <View style={styles.bottomNav}>
-        <View style={styles.buttonContainer}>
-          <Button
-            label='Next'
-            onPress={() => uploadMutation.mutate()}
-            variant='compact'
-            disabled={family_images.length < 4 || uploadMutation.isPending}
-            loading={uploadMutation.isPending}
-          />
+          <View style={styles.buttonContainer}>
+            <Button
+              label='Next'
+              onPress={() => uploadMutation.mutate()}
+              variant='compact'
+              disabled={family_images.length < 4 || uploadMutation.isPending}
+              loading={uploadMutation.isPending}
+            />
+          </View>
         </View>
-        </View>
-    </ThemedView>
-      </ScrollView>
+      </ThemedView>
+    </ScrollView>
   );
 }
 

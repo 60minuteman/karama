@@ -16,8 +16,8 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 const PETS = [
   { label: '🐱 Cat' as const },
   { label: '🐶 Small Dog' as const },
-  { label: '🐷 Pig' as const },
-  { label: '🦮 Large Dog' as const },
+  { label: '🐽 Pig' as const },
+  { label: '🐩 Large Dog' as const },
   { label: '🐮 Cow' as const },
   { label: '🦋 Butterfly' as const },
   { label: '🐢 Turtle' as const },
@@ -29,12 +29,13 @@ const PETS = [
   { label: '🐎 Horse' as const },
   { label: '🐸 Frog' as const },
   { label: '🦎 Gecko' as const },
-  { label: '🐋 Whale' as const },
+  { label: '🐳 Whale' as const },
   { label: '🐔 Chicken' as const },
   { label: '🐹 Hamster' as const },
   { label: '🦕 Dinosaur' as const },
   { label: '🐘 Baby Elephant' as const },
   { label: '🦄 Unicorn' as const },
+  { label: '🚫 None' as const },
   { label: '🐾 Other' as const },
 ];
 
@@ -143,9 +144,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 44,
-    fontFamily: 'Bogart-Bold', // Changed to use Bogart-Bold font
+    fontFamily: 'Bogart-Semibold', // Changed to use Bogart-Bold font
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     marginTop: 20,
   },

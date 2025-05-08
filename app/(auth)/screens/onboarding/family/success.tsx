@@ -5,12 +5,16 @@ import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
+import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 
 export default function Page() {
-  const { clearUser, selectedType } = useUserStore();
+  const { clearUser, selectedType, user, token } = useUserStore();
+  const queryClient = useQueryClient();
+
+  console.log('user', user, token);
 
   return (
     <ThemedView style={styles.container}>
@@ -43,7 +47,9 @@ export default function Page() {
             label='Finish'
             onPress={() => {
               clearUser();
-              router.replace('/(tabs)/discover');
+              queryClient.clear();
+              router.push('/(tabs)/discover');
+              router.reload();
             }}
             variant='compact'
           />

@@ -87,10 +87,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    color: '#002140',
-    marginBottom: 40,
+    color: Colors.light.text,
+    marginBottom: 24,
     marginTop: 20,
   },
   inputContainer: {

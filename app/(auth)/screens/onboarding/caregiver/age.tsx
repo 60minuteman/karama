@@ -13,7 +13,7 @@ import { StyleSheet, View } from 'react-native';
 
 const ageGroups = [
   ['👶 Newborn', '🍼 Infant'],
-  ['🧸 Toddler', '✏️ Pre Schooler'],
+  ['🧸 Toddler', '🖍️ Pre Schooler'],
   ['🛴 School Age', '🌈 Teenager'],
 ] as const;
 
@@ -48,7 +48,7 @@ export default function Page() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
 
-        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
           What ages do you{'\n'}have the most{'\n'}experience working{'\n'}with?
         </ThemedText>
 
@@ -61,7 +61,10 @@ export default function Page() {
                   label={age}
                   onPress={() => toggleAgesSelection(age)}
                   selected={caregiverAgeExperience?.includes(age)}
-                  disabled={!caregiverAgeExperience?.includes(age) && caregiverAgeExperience?.length === 3}
+                  disabled={
+                    !caregiverAgeExperience?.includes(age) &&
+                    (caregiverAgeExperience?.length ?? 0) >= 3
+                  }
                 />
               ))}
             </View>
@@ -75,7 +78,7 @@ export default function Page() {
             label='Next'
             onPress={handleNext}
             variant='compact'
-            disabled={!caregiverAgeExperience}
+            disabled={!caregiverAgeExperience?.length}
           />
         </View>
       </View>
@@ -99,7 +102,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     lineHeight: 44,
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     marginTop: 20,
   },

@@ -26,10 +26,16 @@ export default function Matches() {
   const { token, user } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
   const [filteredMatches, setFilteredMatches] = useState<any>([]);
+  const socket: any = getSocket();
 
   console.log('user_id from user object:', conversations);
   console.log('user_id from user completeMatches:', completeMatches?.data);
-  const socket = getSocket();
+
+  const handleDeleteConversation: any = (id: any) => {
+    socket.emit('deleteConversation', {
+      conversationId: id,
+    });
+  };
 
   useEffect(() => {
     if (socket) {
@@ -62,6 +68,12 @@ export default function Matches() {
     }
   }, [completeMatches?.data?.matches, conversations]);
 
+  // useEffect(() => {
+  //   socket.on('conversationDeleted', (data: any) => {
+
+  //   });
+  // }, [socket]);
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -73,12 +85,12 @@ export default function Matches() {
             {filteredMatches?.length < 1 && conversations?.length < 1 ? (
               <EmptyMatches />
             ) : (
-          <>
-            <SearchBar
+              <>
+                <SearchBar
                   // value={searchQuery}
                   // onChangeText={setSearchQuery}
-              onSearch={() => {}}
-            />
+                  onSearch={() => {}}
+                />
                 {/* <SearchBar />
                 <View style={styles.matchesScroll}>
                   {completeMatches?.data?.matches?.map(
@@ -89,58 +101,59 @@ export default function Matches() {
                 </View> */}
 
                 {filteredMatches?.length > 0 && (
-            <View style={styles.section}>
-                <ThemedText style={styles.sectionTitle}>Matches</ThemedText>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.matchesScroll}
-              >
+                  <View style={styles.section}>
+                    <ThemedText style={styles.sectionTitle}>Matches</ThemedText>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.matchesScroll}
+                    >
                       {filteredMatches?.map((match: any, index: any) => (
                         <MatchCircle key={index} match={match} />
-                ))}
-              </ScrollView>
-            </View>
+                      ))}
+                    </ScrollView>
+                  </View>
                 )}
 
                 {conversations?.length > 0 && (
-            <View style={styles.section}>
-              <View style={styles.conversationsHeader}>
-                <ThemedText style={styles.sectionTitle}>
-                  Conversations
-                </ThemedText>
-                <ThemedText style={styles.filterText}>All</ThemedText>
-              </View>
+                  <View style={styles.section}>
+                    <View style={styles.conversationsHeader}>
+                      <ThemedText style={styles.sectionTitle}>
+                        Conversations
+                      </ThemedText>
+                      <ThemedText style={styles.filterText}>All</ThemedText>
+                    </View>
 
-              <ScrollView>
+                    <ScrollView>
                       {conversations.map((conversation: any) => (
                         <ConversationItem
                           key={conversation.id}
+                          handleDeleteConversation={handleDeleteConversation}
                           imageUrl={conversation?.recipient?.image}
                           name={conversation?.recipient?.name}
                           otherUser={conversation?.recipient?.name}
                           lastMessage={conversation?.last_message?.text}
                           time={
                             conversation?.last_message?.timestamp
-                    ? new Date(
+                              ? new Date(
                                   conversation?.last_message?.timestamp
-                      ).toLocaleTimeString('en-US', {
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        hour12: true,
-                      })
+                                ).toLocaleTimeString('en-US', {
+                                  hour: 'numeric',
+                                  minute: 'numeric',
+                                  hour12: true,
+                                })
                               : ''
                           }
                           conversation={conversation}
-                      onPress={() =>
+                          onPress={() =>
                             router.push(
                               `/messages/${conversation.id}?name=${conversation?.recipient?.name}&recipientId=${conversation?.recipient?.id}&senderId=${conversation?.creator?.id}`
                             )
-                      }
-                    />
+                          }
+                        />
                       ))}
-              </ScrollView>
-            </View>
+                    </ScrollView>
+                  </View>
                 )}
               </>
             )}

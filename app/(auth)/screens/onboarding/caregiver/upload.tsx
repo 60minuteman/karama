@@ -172,12 +172,12 @@ const styles = StyleSheet.create({
     height: 120,
   },
   title: {
-    fontSize: 36,
-    lineHeight: 44,
+    fontSize: 32,
+    lineHeight: 42,
     fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    color: '#002140',
-    marginBottom: 16,
+    color: Colors.light.text,
+    marginBottom: 24,
     marginTop: 20,
   },
   subtitle: {

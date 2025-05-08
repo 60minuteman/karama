@@ -15,9 +15,9 @@ interface PaymentMethodProps {
 }
 
 const PaymentOptions = [
-  { id: 'employee', label: '💳 Employee' },
-  { id: 'contractor', label: '📄 Independent Contractor' },
-  { id: 'no_preference', label: '💰 No Preference' },
+  { id: 'employee', label: '🪪 Employee' },
+  { id: 'contractor', label: '🧾 Independent Contractor' },
+  { id: 'no_preference', label: '💵 No Preference' },
 ];
 
 const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {

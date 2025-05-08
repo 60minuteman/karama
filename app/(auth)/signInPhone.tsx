@@ -7,7 +7,7 @@ import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useReducer, useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
@@ -38,6 +38,7 @@ export default function PhoneNumberScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const { setToken, setUser } = useUserStore();
   const { signIn: authSignIn } = useAuth();
+  const queryClient = useQueryClient();
 
   const signIn = useMutation({
     mutationFn: (data: any) => {
@@ -48,7 +49,9 @@ export default function PhoneNumberScreen() {
       const userData = response?.data?.data?.user;
       setToken(token);
       setUser(userData);
+      queryClient.clear();
       router.replace('/(tabs)/discover');
+      router.reload();
     },
     onError: (error: any) => {
       console.error('Sign in error:', error?.response?.data);

@@ -19,14 +19,14 @@ export default function TypeScreen() {
 
   const caregiverTypes = [
     { label: '🌙   Night Nurse' },
-    { label: '👩   Governess' },
+    { label: '👩🏽‍💼   Governess' },
     { label: '🧁   Babysitter' },
-    { label: '👶   Nanny' },
-    { label: '👑   Manny' },
-    { label: '🗽   Au Pair' },
-    { label: '🥜   Caregiver/Housekeeper' },
-    { label: '📅   Caregiver/Personal Assistant' },
-    { label: '🗣   Caregiver/Household Manager' },
+    { label: '👩🏾‍🍼   Nanny' },
+    { label: '🙎🏼‍♂️   Manny' },
+    { label: '🧃   Au Pair' },
+    { label: '🧽   Caregiver/Housekeeper' },
+    { label: '🗓️   Caregiver/Personal Assistant' },
+    { label: '🧢   Caregiver/Household Manager' },
   ];
 
   const handleTypeSelect = (type: string) => {

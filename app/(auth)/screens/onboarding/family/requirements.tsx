@@ -14,17 +14,17 @@ import { Animated, ScrollView, StyleSheet, Switch, View } from 'react-native';
 type Requirement =
   | '✈️ Can Travel'
   | '🚗 Able To Drive'
-  | '🏥 First Aid'
+  | '⛑️ First Aid'
   | '🏊 Can Swim'
   | '💉 COVID Vaccination'
-  | '🫀 CPR'
-  | '🎯 Other';
+  | '👐 CPR'
+  | '🏕️ Other';
 
 type Certification =
   | '🤟 Sign Language'
   | '💊 Administering Medication'
   | '🦽 Special Needs'
-  | '🏥 Condition Specific'
+  | '🦼 Condition Specific'
   | '🍔 Feeding & Swallowing'
   | '😇 Registered Behaviour Technician'
   | '📄 Other';
@@ -55,25 +55,25 @@ export default function RequirementsScreen() {
   const requirements: Array<{ label: Requirement }> = [
     { label: '✈️ Can Travel' },
     { label: '🚗 Able To Drive' },
-    { label: '🏥 First Aid' },
+    { label: '⛑️ First Aid' },
     { label: '🏊 Can Swim' },
     { label: '💉 COVID Vaccination' },
-    { label: '🫀 CPR' },
-    { label: '🎯 Other' },
+    { label: '👐 CPR' },
+    { label: '🏕️ Other' },
   ];
 
   const certifications: Array<{ label: Certification }> = [
     { label: '🤟 Sign Language' },
     { label: '💊 Administering Medication' },
     { label: '🦽 Special Needs' },
-    { label: '🏥 Condition Specific' },
+    { label: '🦼 Condition Specific' },
     { label: '🍔 Feeding & Swallowing' },
     { label: '😇 Registered Behaviour Technician' },
     { label: '📄 Other' },
   ];
 
   const toggleRequirement = (req: Requirement) => {
-    if (req === '🎯 Other') {
+    if (req === '🏕️ Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherRequirement');
       router.push('/(auth)/screens/onboarding/family/otherRequirement');
       return;

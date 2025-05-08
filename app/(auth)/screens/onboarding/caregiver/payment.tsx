@@ -1,16 +1,15 @@
-import { StyleSheet, View } from 'react-native';
-import { useRouter } from 'expo-router';
-import React, { useState, useEffect } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
-import { TextInput } from 'react-native';
-import Slider from '@react-native-community/slider';
 import { useUserStore } from '@/services/state/user';
+import Slider from '@react-native-community/slider';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 type PaymentType = 'Hourly' | 'Salary Base';
@@ -25,7 +24,7 @@ export default function PaymentScreen() {
     setCaregiverSalaryAmount,
     setOnboardingScreen,
     caregiverPaymentType,
-    setCaregiverPaymentType
+    setCaregiverPaymentType,
   } = useUserStore();
 
   // Initialize hourly rate if not set
@@ -46,10 +45,11 @@ export default function PaymentScreen() {
       pathname: '/(auth)/screens/onboarding/caregiver/PaymentMethod',
       params: {
         type: caregiverPaymentType,
-        rate: caregiverPaymentType === 'Hourly' 
-          ? caregiverHourlyRate || 0
-          : parseInt(caregiverSalaryAmount?.replace(/,/g, '') || '0')
-      }
+        rate:
+          caregiverPaymentType === 'Hourly'
+            ? caregiverHourlyRate || 0
+            : parseInt(caregiverSalaryAmount?.replace(/,/g, '') || '0'),
+      },
     });
   };
 
@@ -66,19 +66,25 @@ export default function PaymentScreen() {
     }
   };
 
+  console.log(
+    'caregiver salary',
+    typeof Number(caregiverSalaryAmount),
+    caregiverHourlyRate
+  );
+
   const handleSalaryChange = (text: string) => {
     // Only allow numbers and commas
     const cleanText = text.replace(/[^0-9,]/g, '');
     // Format with commas
     const formattedText = cleanText.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    setCaregiverSalaryAmount(formattedText);
+    setCaregiverSalaryAmount(Number(formattedText));
   };
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemedView style={styles.container}>
-        <Header variant="back" />
-        
+        <Header variant='back' />
+
         <View style={styles.content}>
           <View style={styles.spacerTop} />
           <ProgressBar progress={0.95} />
@@ -102,29 +108,39 @@ export default function PaymentScreen() {
 
             {caregiverPaymentType === 'Hourly' && (
               <View style={styles.inputContainer}>
-                <View style={[styles.sliderContainer, { backgroundColor: '#FAFAFA' }]}>
+                <View
+                  style={[
+                    styles.sliderContainer,
+                    { backgroundColor: '#FAFAFA' },
+                  ]}
+                >
                   <View style={styles.sliderWrapper}>
                     <Slider
-                      style={{width: '100%', height: 40}}
+                      style={{ width: '100%', height: 40 }}
                       minimumValue={15}
                       maximumValue={45}
                       value={caregiverHourlyRate || 20}
                       step={1}
                       onValueChange={handleSliderChange}
                       minimumTrackTintColor={Colors.light.primary}
-                      maximumTrackTintColor="#E5E5E5"
+                      maximumTrackTintColor='#E5E5E5'
                       thumbTintColor={Colors.light.primary}
                     />
                   </View>
                 </View>
-                <View style={[styles.inputBorder, (caregiverHourlyRate || 0) > 0 && styles.inputBorderActive]}>
+                <View
+                  style={[
+                    styles.inputBorder,
+                    (caregiverHourlyRate || 0) > 0 && styles.inputBorderActive,
+                  ]}
+                >
                   <TextInput
                     style={styles.input}
-                    placeholder="$20-$30/hr"
-                    placeholderTextColor="#999"
+                    placeholder='$20-$30/hr'
+                    placeholderTextColor='#999'
                     value={caregiverHourlyRate?.toString() || ''}
                     onChangeText={handleTextInputChange}
-                    keyboardType="numeric"
+                    keyboardType='numeric'
                     maxLength={2}
                   />
                 </View>
@@ -133,14 +149,20 @@ export default function PaymentScreen() {
 
             {caregiverPaymentType === 'Salary Base' && (
               <View style={styles.inputContainer}>
-                <View style={[styles.inputBorder, (caregiverSalaryAmount?.length || 0) > 0 && styles.inputBorderActive]}>
+                <View
+                  style={[
+                    styles.inputBorder,
+                    (caregiverSalaryAmount?.length || 0) > 0 &&
+                      styles.inputBorderActive,
+                  ]}
+                >
                   <TextInput
                     style={styles.input}
-                    placeholder="50,000"
-                    placeholderTextColor="#999"
+                    placeholder='50,000'
+                    placeholderTextColor='#999'
                     value={caregiverSalaryAmount || ''}
                     onChangeText={handleSalaryChange}
-                    keyboardType="numeric"
+                    keyboardType='numeric'
                     autoFocus
                     maxLength={7}
                   />
@@ -151,12 +173,15 @@ export default function PaymentScreen() {
 
           <View style={styles.buttonContainer}>
             <Button
-              label="Next"
+              label='Next'
               onPress={handleNext}
-              variant="compact"
-              disabled={!caregiverPaymentType || 
+              variant='compact'
+              disabled={
+                !caregiverPaymentType ||
                 (caregiverPaymentType === 'Hourly' && !caregiverHourlyRate) ||
-                (caregiverPaymentType === 'Salary Base' && !caregiverSalaryAmount)}
+                (caregiverPaymentType === 'Salary Base' &&
+                  !caregiverSalaryAmount)
+              }
             />
           </View>
         </View>
@@ -183,9 +208,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     marginTop: 20,
   },
@@ -226,9 +251,9 @@ const styles = StyleSheet.create({
     right: 20,
     left: 20,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   button: {
-    alignSelf: 'flex-end'
-  }
+    alignSelf: 'flex-end',
+  },
 });

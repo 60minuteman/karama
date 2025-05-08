@@ -6,19 +6,25 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import useAuthMutation from '@/hooks/useAuthMutation';
 import customAxios from '@/services/api/envConfig';
+import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { useMutation } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, TextInput, View, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 import Toast from 'react-native-toast-message';
 import { benefitsOptions } from './benefits';
-import { useOtherStore } from '@/services/state/other';
 
 export default function PromptAnswer() {
   const router = useRouter();
   const { prompt } = useLocalSearchParams();
-  
+
   const getDefaultStartDate = () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -27,7 +33,7 @@ export default function PromptAnswer() {
 
   const formatDate = (date: string | Date | undefined | null) => {
     if (!date) return undefined;
-    
+
     let dateObj: Date;
     if (typeof date === 'string') {
       const [month, day, year] = date.split('/');
@@ -104,14 +110,11 @@ export default function PromptAnswer() {
     showCaregiverRequiredBenefit,
     setCaregiverFirstPromptAnswer,
     setOnboardingScreen,
-    
   } = useUserStore();
-
-
 
   const {
     otherRequirement,
-    otherCertifications, 
+    otherCertifications,
     otherLanguage,
     otherPet,
     otherCreativeActivity,
@@ -123,23 +126,29 @@ export default function PromptAnswer() {
     otherReligion,
     otherHouseholdResponsibilities,
     otherChildResponsibilities,
-    caregiverThirdPosition
+    caregiverThirdPosition,
   } = useOtherStore();
 
+  console.log(
+    'carePosition',
+    caregiverFirstPosition,
+    caregiverFirstPosition.startDate
+  );
+
   const payment_info =
-  caregiverPaymentType === "Salary Base"
-    ? {
-        type: caregiverPaymentType,
-        salary: caregiverSalaryAmount || '',
-        show_method_on_profile: showCaregiverPaymentMethod,
-      }
-    : {
-        type: caregiverPaymentType,
-        hourly_min: 1,
-        hourly_max: caregiverHourlyRate,
-        method: caregiverPaymentMethod,
-        show_method_on_profile: showCaregiverPaymentMethod,
-      };
+    caregiverPaymentType === 'Salary Base'
+      ? {
+          type: caregiverPaymentType,
+          salary: caregiverSalaryAmount || '',
+          show_method_on_profile: showCaregiverPaymentMethod,
+        }
+      : {
+          type: caregiverPaymentType,
+          hourly_min: 1,
+          hourly_max: caregiverHourlyRate,
+          method: caregiverPaymentMethod,
+          show_method_on_profile: showCaregiverPaymentMethod,
+        };
 
   const onboadingInfo = {
     name: caregiverName,
@@ -196,10 +205,11 @@ export default function PromptAnswer() {
     arrangement_type: caregiverPreferredArrangement,
     job_commitment: {
       commitment: caregiverCommitmentType,
-      start_date: formatDate(caregiverCommitmentStartDate) || getDefaultStartDate(),
+      start_date:
+        formatDate(caregiverCommitmentStartDate) || getDefaultStartDate(),
       ...(caregiverCommitmentType === 'Short Term' && {
-        end_date: formatDate(caregiverCommitmentEndDate)
-      })
+        end_date: formatDate(caregiverCommitmentEndDate),
+      }),
     },
     service_days: caregiverSchedule?.map((schedule) => {
       return {
@@ -216,13 +226,20 @@ export default function PromptAnswer() {
     },
     payment_info,
     required_benefits: (caregiverRequiredBenefits || [])
-        .filter(benefit => benefit && benefitsOptions?.find(opt => opt.id === benefit))
-        .slice(0, 10),
+      .filter(
+        (benefit) =>
+          benefit && benefitsOptions?.find((opt) => opt.id === benefit)
+      )
+      .slice(0, 10),
     past_positions: [
       caregiverFirstPosition && {
         family_or_business_name: caregiverFirstPosition.familyName,
-        start_date: caregiverFirstPosition.startDate ? formatDate(caregiverFirstPosition.startDate) : undefined,
-        end_date: caregiverFirstPosition.endDate ? formatDate(caregiverFirstPosition.endDate) : undefined,
+        start_date: caregiverFirstPosition.startDate
+          ? formatDate(caregiverFirstPosition.startDate)
+          : undefined,
+        end_date: caregiverFirstPosition.endDate
+          ? formatDate(caregiverFirstPosition.endDate)
+          : undefined,
         position_type: caregiverFirstPosition.position,
         children_age_group: [caregiverFirstPosition.ageGroup],
         availability: caregiverFirstPosition.employmentType,
@@ -231,8 +248,12 @@ export default function PromptAnswer() {
       },
       caregiverSecondPosition?.familyName && {
         family_or_business_name: caregiverSecondPosition.familyName,
-        start_date: caregiverSecondPosition.startDate ? formatDate(caregiverSecondPosition.startDate) : undefined,
-        end_date: caregiverSecondPosition.endDate ? formatDate(caregiverSecondPosition.endDate) : undefined,
+        start_date: caregiverSecondPosition.startDate
+          ? formatDate(caregiverSecondPosition.startDate)
+          : undefined,
+        end_date: caregiverSecondPosition.endDate
+          ? formatDate(caregiverSecondPosition.endDate)
+          : undefined,
         position_type: caregiverSecondPosition.position,
         children_age_group: [caregiverSecondPosition.ageGroup],
         availability: caregiverSecondPosition.employmentType,
@@ -241,17 +262,21 @@ export default function PromptAnswer() {
       },
       caregiverThirdPosition?.familyName && {
         family_or_business_name: caregiverSecondPosition.familyName,
-        start_date: caregiverSecondPosition.startDate ? formatDate(caregiverSecondPosition.startDate) : undefined,
-        end_date: caregiverSecondPosition.endDate ? formatDate(caregiverSecondPosition.endDate) : undefined,
+        start_date: caregiverSecondPosition.startDate
+          ? formatDate(caregiverSecondPosition.startDate)
+          : undefined,
+        end_date: caregiverSecondPosition.endDate
+          ? formatDate(caregiverSecondPosition.endDate)
+          : undefined,
         position_type: caregiverSecondPosition.position,
         children_age_group: [caregiverSecondPosition.ageGroup],
         availability: caregiverSecondPosition.employmentType,
         childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
         household_responsibilities: ['Property Management', 'Meal Prep'],
-      }
-    ].filter(Boolean).filter(position => 
-      position.start_date && position.end_date
-    ),
+      },
+    ]
+      .filter(Boolean)
+      .filter((position) => position.start_date && position.end_date),
     prompts: [
       {
         category: caregiverPromptCategory,
@@ -263,8 +288,8 @@ export default function PromptAnswer() {
 
   useEffect(() => {
     setCaregiverFirstPromptAnswer('');
-  }, [])
-  
+  }, []);
+
   console.log(onboadingInfo, 'TO Create PROFIELEEE');
   const createProfile: any = useAuthMutation({
     mutationFn: (data: any) => {
@@ -277,6 +302,12 @@ export default function PromptAnswer() {
     onError: (error: any) => {
       console.log('COULD NOR CREATEEE');
       console.log('error', error['response'].data);
+      if (
+        error['response'].data?.message ==
+        'This stage of onboarding is complete'
+      ) {
+        return handleNext();
+      }
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
@@ -292,7 +323,7 @@ export default function PromptAnswer() {
     createProfile.mutate(onboadingInfo);
   };
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
@@ -355,9 +386,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 24,
     marginTop: 20,
   },

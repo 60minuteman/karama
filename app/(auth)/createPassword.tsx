@@ -11,13 +11,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Toast from 'react-native-toast-message';
 
 const CreatePassword = () => {
   const [password, setPassword] = useState<string>('');
   const { phoneNumber, isChecked } = useLocalSearchParams();
-  const { setToken, setUser } = useUserStore();
+  const { setToken, setUser, setOnboardingScreen } = useUserStore();
 
   const createPassword = useMutation({
     mutationFn: async (data: any) => {
@@ -36,8 +43,9 @@ const CreatePassword = () => {
           ] = `Bearer ${newToken}`;
 
           // Update user store with token and user data
+          setOnboardingScreen('/(auth)/bridge');
           setToken(newToken);
-          // setUser(userData);
+          setUser(userData);
 
           // Navigate to bridge screen
           router.replace('/(auth)/bridge');
@@ -94,32 +102,34 @@ const CreatePassword = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
     >
-       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-    <ThemedView style={styles.container}>
-      <Header variant='back' />
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <ThemedView style={styles.container}>
+          <Header variant='back' />
 
-      <View style={styles.content}>
-        <View style={styles.spacer} />
-        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
-          Create Password
-        </ThemedText>
+          <View style={styles.content}>
+            <View style={styles.spacer} />
+            <ThemedText
+              style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}
+            >
+              Create Password
+            </ThemedText>
 
-        <PasswordInput
-          password={password}
-          onChangePassword={setPassword}
-          autoFocus
-        />
+            <PasswordInput
+              password={password}
+              onChangePassword={setPassword}
+              autoFocus
+            />
 
-        <Button
-          label='Next'
-          onPress={handleCreatePassword}
-          variant={password?.length >= 8 ? 'primary' : 'compact'}
-          disabled={password.length < 8}
-          loading={createPassword.isPending}
-        />
-      </View>
-    </ThemedView>
-    </ScrollView>
+            <Button
+              label='Next'
+              onPress={handleCreatePassword}
+              variant={password?.length >= 8 ? 'primary' : 'compact'}
+              disabled={password.length < 8}
+              loading={createPassword.isPending}
+            />
+          </View>
+        </ThemedView>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };

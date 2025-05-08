@@ -15,8 +15,8 @@ type FamilyType =
   | '👩🏻‍🤝‍👨🏾 Mom & Dad'
   | '👩🏻‍🤝‍👩🏽 Moms'
   | '👨🏽‍🤝‍👨🏾 Dads'
-  | '🦹 Guardian'
-  | '💝 Other';
+  | '👩🏽‍🎤 Guardian'
+  | '💖 Other';
 
 export default function FamilyDescriptionScreen() {
   const router = useRouter();
@@ -29,8 +29,8 @@ export default function FamilyDescriptionScreen() {
     { type: '🧍🏽 Dad' },
     { type: '👩🏻‍🤝‍👩🏽 Moms' },
     { type: '👨🏽‍🤝‍👨🏾 Dads' },
-    { type: '🦹 Guardian' },
-    { type: '💝 Other' },
+    { type: '👩🏽‍🎤 Guardian' },
+    { type: '💖 Other' },
   ];
 
   const handleNext = () => {
@@ -41,13 +41,17 @@ export default function FamilyDescriptionScreen() {
   };
 
   const handleAdd = (item: any) => {
-    if (item === '💝 Other') {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherFamilyDescriptionScreen');
-      router.push('/(auth)/screens/onboarding/family/otherFamilyDescriptionScreen');
-      return
+    if (item === '💖 Other') {
+      setOnboardingScreen(
+        '/(auth)/screens/onboarding/family/otherFamilyDescriptionScreen',
+      );
+      router.push(
+        '/(auth)/screens/onboarding/family/otherFamilyDescriptionScreen',
+      );
+      return;
     }
     setFamilyDescription({ type: item });
-  }
+  };
 
   return (
     <ThemedView style={styles.container}>

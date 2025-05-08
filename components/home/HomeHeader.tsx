@@ -14,6 +14,8 @@ export const HomeHeader = () => {
 
   const router = useRouter();
 
+  console.log('currentUser', currentUser?.data?.family_profile?.pictures);
+
   const profilePicture =
     currentUser?.data?.role === 'FAMILY'
       ? currentUser?.data?.family_profile?.pictures?.find(
@@ -22,6 +24,8 @@ export const HomeHeader = () => {
       : currentUser?.data?.caregiver_profile?.pictures?.find(
           (pic) => pic?.type === 'PROFILE_PICTURE'
         )?.path;
+
+  console.log('profilePicture', profilePicture);
 
   const imageSource = profilePicture
     ? { uri: profilePicture }
