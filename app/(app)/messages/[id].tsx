@@ -216,7 +216,7 @@ export default function MessageScreen() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onBack={handleBack}
-        handleClearMessages={handleClearMessages}
+        // handleClearMessages={handleClearMessages}
       />
 
       {activeTab === 'chat' ? (
