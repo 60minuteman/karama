@@ -51,10 +51,10 @@ export default function PhoneNumberScreen() {
       setUser(userData);
       queryClient.clear();
       router.replace('/(tabs)/discover');
-      router.reload();
+      return;
     },
     onError: (error: any) => {
-      console.error('Sign in error:', error?.response?.data);
+      // console.error('Sign in error:', error?.response?.data);
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
