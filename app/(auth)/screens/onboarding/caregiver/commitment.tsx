@@ -1,26 +1,38 @@
-import { StyleSheet, View, ScrollView, Pressable, Platform, Modal, TouchableOpacity, Text } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
-import { LinearGradient } from 'expo-linear-gradient';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { CaregiverCommitment, useUserStore } from '@/services/state/user';
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import {
+  Modal,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
-
+const SHORT_TERM = 'Short Term' as const;
+const LONG_TERM = 'Long Term' as const;
 
 export default function CommitmentScreen() {
   const router = useRouter();
-  // const [selected, setSelected] = useState<CaregiverCommitment | null>(null);
-  // const [startDate, setStartDate] = useState(new Date());
-  // const [endDate, setEndDate] = useState(new Date());
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  
   const {
     caregiverCommitmentType,
     setCaregiverCommitmentType,
@@ -28,32 +40,34 @@ export default function CommitmentScreen() {
     setCaregiverCommitmentStartDate,
     caregiverCommitmentEndDate,
     setCaregiverCommitmentEndDate,
+    isDealBreaker,
+    setIsDealBreaker,
     setOnboardingScreen,
-  } = useUserStore()
+  } = useUserStore();
+
   // Initialize default dates if they don't exist
   useEffect(() => {
     if (!caregiverCommitmentStartDate) {
-      const defaultStartDate = new Date();
-      defaultStartDate.setDate(defaultStartDate.getDate() + 1); // Start tomorrow by default
-      setCaregiverCommitmentStartDate(defaultStartDate);
+      setCaregiverCommitmentStartDate(new Date());
     }
-    if (!caregiverCommitmentEndDate && caregiverCommitmentType === 'Short Term') {
+    if (!caregiverCommitmentEndDate) {
       const defaultEndDate = new Date();
-      defaultEndDate.setMonth(defaultEndDate.getMonth() + 1); // End in 1 month by default
+      defaultEndDate.setMonth(defaultEndDate.getMonth() + 1); // Set default end date to 1 month from now
       setCaregiverCommitmentEndDate(defaultEndDate);
     }
   }, []);
 
-  const commitmentOptions: Array<{ label: CaregiverCommitment; icon: string }> = [
-    { label: 'Long Term', icon: '📋' },
-    { label: 'Short Term', icon: '⌛' },
+  const commitmentOptions = [
+    { label: SHORT_TERM, displayLabel: '⌛ Short Term' },
+    { label: LONG_TERM, displayLabel: '📋 Long Term' }
   ];
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/servicedays');
     router.push('/(auth)/screens/onboarding/caregiver/servicedays');
   };
-  const formatDate = (date: Date | undefined) => {
+
+  const formatDate = (date: Date | undefined | null) => {
     if (!date) return 'MM/DD/YYYY';
     const dateObj = new Date(date);
     if (isNaN(dateObj.getTime())) return 'MM/DD/YYYY';
@@ -64,6 +78,7 @@ export default function CommitmentScreen() {
 
     return `${month}/${day}/${year}`;
   };
+
   const onStartDateChange = (event: any, selectedDate?: Date) => {
     setShowStartDatePicker(false);
     if (selectedDate && event.type !== 'dismissed') {
@@ -71,10 +86,10 @@ export default function CommitmentScreen() {
 
       // If end date is before start date, update end date
       if (
-       caregiverCommitmentEndDate &&
+        caregiverCommitmentEndDate &&
         selectedDate > caregiverCommitmentEndDate
       ) {
-        setCaregiverCommitmentEndDate(selectedDate );
+        setCaregiverCommitmentEndDate(selectedDate);
       }
     }
   };
@@ -82,17 +97,17 @@ export default function CommitmentScreen() {
   const onEndDateChange = (event: any, selectedDate?: Date) => {
     setShowEndDatePicker(false);
     if (selectedDate && event.type !== 'dismissed') {
-      setCaregiverCommitmentEndDate(selectedDate );
+      setCaregiverCommitmentEndDate(selectedDate);
     }
   };
 
   const renderDatePicker = (isStartDate: boolean) => {
     const showPicker = isStartDate ? showStartDatePicker : showEndDatePicker;
     const currentDate = isStartDate
-      ?caregiverCommitmentStartDate || new Date()
+      ? caregiverCommitmentStartDate || new Date()
       : caregiverCommitmentEndDate || new Date();
     const onDateChange = isStartDate ? onStartDateChange : onEndDateChange;
-    const minimumDate = isStartDate ? new Date() :caregiverCommitmentStartDate;
+    const minimumDate = isStartDate ? new Date() : caregiverCommitmentStartDate;
 
     if (!showPicker) return null;
 
@@ -106,90 +121,10 @@ export default function CommitmentScreen() {
       />
     );
   };
-  const handleStartDateConfirm = () => {
-    if (Platform.OS === 'ios') {
-      setShowStartDatePicker(false);
-    }
-  };
-
-  const handleEndDateConfirm = () => {
-    if (Platform.OS === 'ios') {
-      setShowEndDatePicker(false);
-    }
-  };
-
-  const handleStartDateCancel = () => {
-    setShowStartDatePicker(false);
-  };
-
-  const handleEndDateCancel = () => {
-    setShowEndDatePicker(false);
-  };
-
-  // const renderDatePicker = (isStartDate: boolean) => {
-  //   const showPicker = isStartDate ? showStartDatePicker : showEndDatePicker;
-  //   const currentDate = isStartDate ? caregiverCommitmentStartDate : caregiverCommitmentEndDate;
-  //   const handleCancel = isStartDate ? handleStartDateCancel : handleEndDateCancel;
-  //   const handleConfirm = isStartDate ? handleStartDateConfirm : handleEndDateConfirm;
-  //   const onDateChange = isStartDate ? onStartDateChange : onEndDateChange;
-  //   const minimumDate = isStartDate ? new Date() : caregiverCommitmentStartDate;
-
-  //   if (Platform.OS === 'ios') {
-  //     return (
-  //       <Modal
-  //         animationType="slide"
-  //         transparent={true}
-  //         visible={showPicker}
-  //         onRequestClose={handleCancel}
-  //       >
-  //         <TouchableOpacity
-  //           style={styles.modalContainer}
-  //           activeOpacity={1}
-  //           onPress={handleCancel}
-  //         >
-  //           <View style={styles.modalContent}>
-  //             <View style={styles.modalHeader}>
-  //               <TouchableOpacity onPress={handleCancel}>
-  //                 <Text style={styles.modalButton}>Cancel</Text>
-  //               </TouchableOpacity>
-  //               <TouchableOpacity onPress={handleConfirm}>
-  //                 <Text style={styles.modalButton}>Done</Text>
-  //               </TouchableOpacity>
-  //             </View>
-  //             <DateTimePicker
-  //               testID="dateTimePicker"
-  //               value={currentDate}
-  //               mode="date"
-  //               display="spinner"
-  //               onChange={onDateChange}
-  //               minimumDate={minimumDate}
-  //               textColor="#000000"
-  //             />
-  //           </View>
-  //         </TouchableOpacity>
-  //       </Modal>
-  //     );
-  //   }
-
-  //   if (showPicker) {
-  //     return (
-  //       <DateTimePicker
-  //         testID="dateTimePicker"
-  //         value={currentDate}
-  //         mode="date"
-  //         display="default"
-  //         onChange={onDateChange}
-  //         minimumDate={minimumDate}
-  //       />
-  //     );
-  //   }
-
-  //   return null;
-  // };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+      <Header variant='back' />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -205,71 +140,74 @@ export default function CommitmentScreen() {
               What do you expect{'\n'}in terms of{'\n'}commitment?
             </ThemedText>
 
-            <View style={styles.optionsContainer}>
+            <View style={styles.optionsContainer} >
               {commitmentOptions.map((option) => (
                 <Pill
                   key={option.label}
-                  label={option.label}
-                  icon={option.icon}
+                  label={option.displayLabel}
                   selected={caregiverCommitmentType === option.label}
                   onPress={() => setCaregiverCommitmentType(option.label)}
-                  style={[
-                    styles.pill,
-                    caregiverCommitmentType === option.label && { backgroundColor: Colors.light.primary }
-                  ]}
-                  textStyle={[
-                    caregiverCommitmentType === option.label && { color: '#FFFFFF' }
-                  ]}
                 />
               ))}
             </View>
 
-            {caregiverCommitmentType === 'Long Term' && (
-              <View style={styles.centerContainer}>
-                <ThemedText style={styles.startDateLabel}>Start Date</ThemedText>
-                <Pressable
-                  style={[styles.dateButton, styles.shortDateButton]}
-                  onPress={() => setShowStartDatePicker(true)}
-                >
-                  <ThemedText style={styles.dateButtonText}>
-                    {caregiverCommitmentStartDate && formatDate(caregiverCommitmentStartDate)}
-                  </ThemedText>
-                </Pressable>
+            <View style={styles.dealbreaker}>
+              <ThemedText style={styles.dealbreakerText}>
+                Dealbreaker
+              </ThemedText>
+              <Switch
+                value={isDealBreaker || false}
+                onValueChange={(value) => setIsDealBreaker(value)}
+                trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
+                thumbColor='#FFFFFF'
+              />
+            </View>
 
-                {renderDatePicker(true)}
-              </View>
-            )}
-
-            {caregiverCommitmentType === 'Short Term' && (
-              <View style={styles.dateRow}>
+            {caregiverCommitmentType === SHORT_TERM ? (
+              <View style={styles.dateContainer}>
                 <View style={styles.dateColumn}>
-                  <ThemedText style={styles.startDateLabel}>Start Date</ThemedText>
-                  <Pressable
-                    style={styles.dateButton}
+                  <ThemedText style={styles.dateLabel}>Start Date</ThemedText>
+                  <TouchableOpacity 
+                    style={styles.dateInputContainer}
                     onPress={() => setShowStartDatePicker(true)}
                   >
-                    <ThemedText style={styles.dateButtonText}>
-                      {caregiverCommitmentStartDate && formatDate(caregiverCommitmentStartDate)}
-                    </ThemedText>
-                  </Pressable>
+                    <Text style={styles.dateInputText}>
+                      {formatDate(caregiverCommitmentStartDate)}
+                    </Text>
+                    <Ionicons name="calendar-outline" size={20} color="#666666" />
+                  </TouchableOpacity>
                 </View>
 
                 <View style={styles.dateColumn}>
-                  <ThemedText style={styles.startDateLabel}>End Date</ThemedText>
-                  <Pressable
-                    style={styles.dateButton}
+                  <ThemedText style={styles.dateLabel}>End Date</ThemedText>
+                  <TouchableOpacity 
+                    style={styles.dateInputContainer}
                     onPress={() => setShowEndDatePicker(true)}
                   >
-                    <ThemedText style={styles.dateButtonText}>
-                      {caregiverCommitmentEndDate && formatDate(caregiverCommitmentEndDate)}
-                    </ThemedText>
-                  </Pressable>
+                    <Text style={styles.dateInputText}>
+                      {formatDate(caregiverCommitmentEndDate)}
+                    </Text>
+                    <Ionicons name="calendar-outline" size={20} color="#666666" />
+                  </TouchableOpacity>
                 </View>
-
-                {renderDatePicker(true)}
-                {renderDatePicker(false)}
+              </View>
+            ) : (
+              <View style={styles.dateColumn}>
+                <ThemedText style={styles.dateLabel}>Start Date</ThemedText>
+                <TouchableOpacity 
+                  style={styles.dateInputContainer}
+                  onPress={() => setShowStartDatePicker(true)}
+                >
+                  <Text style={styles.dateInputText}>
+                    {formatDate(caregiverCommitmentStartDate)}
+                  </Text>
+                  <Ionicons name="calendar-outline" size={20} color="#666666" />
+                </TouchableOpacity>
               </View>
             )}
+
+            {renderDatePicker(true)}
+            {renderDatePicker(false)}
           </View>
         </ScrollView>
 
@@ -277,18 +215,12 @@ export default function CommitmentScreen() {
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
-          <View style={styles.buttonContainer}>
-            <Button
-              label="Next"
-              onPress={handleNext}
-              variant="compact"
-              disabled={
-                !caregiverCommitmentType ||
-                (caregiverCommitmentType === 'Long Term' && !caregiverCommitmentStartDate) ||
-                (caregiverCommitmentType === 'Short Term' && (!caregiverCommitmentStartDate || !caregiverCommitmentEndDate))
-              }
-            />
-          </View>
+          <Button
+            label='Next'
+            onPress={handleNext}
+            variant='compact'
+            disabled={!caregiverCommitmentType}
+          />
         </LinearGradient>
       </View>
     </ThemedView>
@@ -321,67 +253,45 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Bogart',
-    fontWeight: '600',
-    marginBottom: 40,
+    fontFamily: 'Bogart-Semibold',
     color: '#002140',
     marginTop: 20,
+    marginBottom: 40,
   },
   optionsContainer: {
     flexDirection: 'row',
     gap: 12,
     marginBottom: 32,
+    // justifyContent: 'space-between'
   },
-  pill: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 25,
-    backgroundColor: '#F5F5F5',
-  },
-  startDateLabel: {
-    fontSize: 16,
-    color: '#999999',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  dateButton: {
-    backgroundColor: '#F5F5F5',
-    padding: 16,
-    borderRadius: 25,
-    alignItems: 'center',
-  },
-  shortDateButton: {
-    width: '60%',
-  },
-  centerContainer: {
-    alignItems: 'center',
-  },
-  dateButtonText: {
-    color: '#666666',
-    fontSize: 16,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingBottom: 20,
-  },
-  modalHeader: {
+  dateContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
+    gap: 16,
+    marginTop: 24,
   },
-  modalButton: {
-    color: Colors.light.primary,
+  dateColumn: {
+    flex: 1,
+  },
+  dateLabel: {
     fontSize: 16,
-    fontWeight: '600',
+    color: '#666666',
+    marginBottom: 8,
+  },
+  dateInputContainer: {
+    height: 38,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderWidth: 1,
+    borderColor: '#E8E8E8',
+  },
+  dateInputText: {
+    fontSize: 16,
+    color: '#666666',
   },
   buttonGradient: {
     position: 'absolute',
@@ -392,17 +302,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     justifyContent: 'center',
   },
-  buttonContainer: {
-    marginBottom: 50,
-    width: '100%',
+  dealbreaker: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 16,
+    marginBottom: 24,
+    paddingHorizontal: 4,
   },
-  dateRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  dateColumn: {
-    flex: 1,
+  dealbreakerText: {
+    fontSize: 16,
+    color: '#666666',
   },
 });

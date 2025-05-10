@@ -12,7 +12,47 @@ import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
+import { io, Socket } from 'socket.io-client';
 import AuthProvider, { useAuth } from './store/auth';
+
+let socketInstance: Socket | null = null;
+
+export const getSocket = () => {
+  const { user, token } = useUserStore.getState();
+
+  // If no user or token, ensure socket is disconnected
+  if (!user?.user_id || !token) {
+    if (socketInstance) {
+      socketInstance.disconnect();
+      socketInstance = null;
+    }
+    return null;
+  }
+
+  // If socket exists but user/token changed, disconnect and create new
+  if (socketInstance) {
+    const currentUserId = socketInstance.io.opts.query?.userId;
+    const currentToken = socketInstance.io.opts.query?.token;
+
+    if (currentUserId !== `${user.user_id}` || currentToken !== token) {
+      socketInstance.disconnect();
+      socketInstance = null;
+    }
+  }
+
+  // Create new socket if needed
+  if (!socketInstance) {
+    socketInstance = io('https://starfish-app-7pbch.ondigitalocean.app/chat', {
+      transports: ['websocket'],
+      query: {
+        userId: `${user.user_id}`,
+        token: `${token}`,
+      },
+    });
+  }
+
+  return socketInstance;
+};
 
 // Keep splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -21,6 +61,8 @@ SplashScreen.setOptions({
   duration: 1000,
   fade: true,
 });
+
+// console.log('useUserStore.getState().token', useUserStore.getState().token);
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -79,20 +121,18 @@ function RootLayoutNav() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ThemeProvider>
           <QueryClientProvider client={queryClient}>
-            <AuthProvider>
-              <FontProvider>
-                <View
-                  style={{ flex: 1, backgroundColor: Colors.light.background }}
-                >
-                  <Slot />
-                  <StatusBar
-                    style='dark'
-                    backgroundColor={Colors.light.background}
-                  />
-                </View>
-                <Toast config={toastConfig} position='top' />
-              </FontProvider>
-            </AuthProvider>
+            <FontProvider>
+              <View
+                style={{ flex: 1, backgroundColor: Colors.light.background }}
+              >
+                <Slot />
+                <StatusBar
+                  style='dark'
+                  backgroundColor={Colors.light.background}
+                />
+              </View>
+              <Toast config={toastConfig} position='top' />
+            </FontProvider>
           </QueryClientProvider>
         </ThemeProvider>
       </GestureHandlerRootView>

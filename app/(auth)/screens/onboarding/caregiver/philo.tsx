@@ -33,6 +33,11 @@ export default function PhiloScreen() {
   // const [selectedPhilosophies, setSelectedPhilosophies] = useState<string[]>([]);
 
   const togglePhilosophy = (philosophy: CaregiverPhilosophies) => {
+    if (philosophy === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherPhilo');
+      router.push('/(auth)/screens/onboarding/family/otherPhilo');
+      return;
+    }
     const prev = caregiverPhilosophyExperience ?? [];
     const selectedPhilosophies = prev.includes(philosophy)
       ? prev.filter((item) => item !== philosophy)
@@ -155,10 +160,10 @@ const styles = StyleSheet.create({
     height: 120,
   },
   title: {
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontSize: 32,
     lineHeight: 44,
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     fontWeight: '600',
     marginTop: 20,

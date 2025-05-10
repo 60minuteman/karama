@@ -82,9 +82,6 @@ export default function AppLayout() {
           screenOptions={{
             headerShown: false,
             contentStyle: {
-              paddingBottom: insets.bottom,
-              paddingLeft: insets.left,
-              paddingRight: insets.right,
               backgroundColor: '#F6F6F6',
             },
             animation: Platform.OS === 'ios' ? 'default' : 'fade',

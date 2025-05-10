@@ -1,16 +1,11 @@
 import { ThemedText } from '@/components/ThemedText';
-import { getOrCreateChatRoom, getUserIdByEmail } from '@/services/chat';
+import { router } from 'expo-router';
 import React from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 export const EmptyMatches = () => {
-  const handleCreateRoom = async () => {
-    try {
-      // Placeholder for future chat implementation
-      console.log('Chat functionality coming soon');
-    } catch (error) {
-      console.error('Error creating room:', error);
-    }
+  const handleNavigateToDiscover = () => {
+    router.push('/(tabs)/discover');
   };
 
   return (
@@ -24,7 +19,7 @@ export const EmptyMatches = () => {
         <ThemedText style={styles.description}>
           Your matches will appear here
         </ThemedText>
-        <TouchableOpacity style={styles.button} onPress={handleCreateRoom}>
+        <TouchableOpacity style={styles.button} onPress={handleNavigateToDiscover}>
           <ThemedText style={styles.buttonText}>Start Matching</ThemedText>
         </TouchableOpacity>
       </View>

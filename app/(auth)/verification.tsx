@@ -1,9 +1,11 @@
+import { useAuth } from '@/app/store/auth';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Header } from '@/components/ui/Header';
 import { Colors } from '@/constants/Colors';
 import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation } from '@tanstack/react-query';
 import { router, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
@@ -15,8 +17,6 @@ import {
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useAuth } from '@/app/store/auth';
 
 export default function OTPInputScreen() {
   const router = useRouter();
@@ -26,8 +26,12 @@ export default function OTPInputScreen() {
   const inputRef = useRef<TextInput>(null);
   const { phoneNumber, isChecked } = useLocalSearchParams();
   const [user, setUser] = useState<any>(null);
-  const { setUser: setUserStore, setOnboardingScreen, setToken } = useUserStore();
-  const { signIn: authSignIn } = useAuth();
+  const {
+    setUser: setUserStore,
+    setOnboardingScreen,
+    setToken,
+  } = useUserStore();
+  const { signIn } = useAuth();
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -48,10 +52,10 @@ export default function OTPInputScreen() {
       return customAxios.post(`/auth/phone/start-verification`, data);
     },
     onSuccess: async (data: any) => {
-      console.log('OTP resent successfully');
+      // console.log('OTP resent successfully');
     },
     onError: (error: any) => {
-      console.log('error', error['response'].data);
+      // console.log('error', error['response'].data);
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
@@ -75,38 +79,40 @@ export default function OTPInputScreen() {
 
   const verify = useMutation({
     mutationFn: (data: any) => {
-      return customAxios.post(`/auth/phone/confirm-otp`, data);
+      return customAxios.post(`/auth/phone/confirm-otp`, {
+        phone_number: `+1${phoneNumber}`,
+        code: data.code,
+      });
     },
     onSuccess: async (response: any) => {
       try {
-        console.log('Full verification response:', JSON.stringify(response?.data, null, 2));
-        
-        if (response?.data?.success) {
-          // Store phone number in user store
-          setUserStore({ phone_number: `+1${phoneNumber}` });
-          
-          // Navigate to createPassword screen with params
+        // console.log('Verification response:', response?.data);
+
+        if (response?.data?.token) {
+          // Existing user - sign in and go to discover
+          await signIn({ token: response.data.token });
+        } else if (response?.data?.success) {
+          // New user - go to password creation first
           router.push({
             pathname: '/(auth)/createPassword',
             params: {
-              isChecked: isChecked ? '1' : '0',
-              phoneNumber: phoneNumber,
+              phoneNumber,
+              isChecked,
             },
           });
         } else {
-          throw new Error('Verification failed');
+          throw new Error('Invalid response from server');
         }
       } catch (error) {
         console.error('Error in verification:', error);
         Toast.show({
           type: 'error',
           text1: 'Error in verification',
-          text2: error instanceof Error ? error.message : 'Unknown error occurred',
+          text2: 'Please try again',
         });
       }
     },
     onError: (error: any) => {
-      console.error('Verification error:', error?.response?.data);
       Toast.show({
         type: 'error',
         text1: 'Verification failed',
@@ -123,7 +129,6 @@ export default function OTPInputScreen() {
     // When 6 digits are entered, verify the code
     if (cleaned.length === 6) {
       verify.mutate({
-        phone_number: `+1${phoneNumber}`,
         code: cleaned,
       });
     }

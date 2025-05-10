@@ -20,20 +20,18 @@ export default function CGLanguageScreen() {
     setOnboardingScreen,
   } = useUserStore();
 
-  console.log('caregiver_language_required', caregiver_language_required);
-
   const options: Option[] = ['Yes, required', 'Not required'];
 
   const handleNext = () => {
     if (caregiver_language_required) {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/requirements');
-      router.push('/(auth)/screens/onboarding/family/requirements');
+      setOnboardingScreen('/(auth)/screens/onboarding/family/education');
+      router.push('/(auth)/screens/onboarding/family/education');
     }
   };
 
   const handleSkip = () => {
-    setOnboardingScreen('/(auth)/screens/onboarding/family/requirements');
-    router.push('/(auth)/screens/onboarding/family/requirements');
+    setOnboardingScreen('/(auth)/screens/onboarding/family/education');
+    router.push('/(auth)/screens/onboarding/family/education');
   };
 
   return (

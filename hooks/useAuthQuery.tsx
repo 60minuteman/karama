@@ -11,8 +11,6 @@ const useAuthQuery = (...options: any) => {
   // const { setUser, token, clear } = useAuth();
   const { token } = useUserStore();
 
-  console.log('token', token);
-
   if (token) {
     if (
       query?.error?.response?.status === 401 ||
@@ -22,8 +20,6 @@ const useAuthQuery = (...options: any) => {
       // Insert custom access-token refresh logic here. For now, we are
       // just refreshing the page here, so as to redirect them to the
       // login page since their token is now expired.
-      console.log('useAuthQuery', query?.error?.response?.data?.message);
-
       // (async () => {
       //   try {
       //     await clear();

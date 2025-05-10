@@ -1,0 +1,101 @@
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { ThemedText } from '../ThemedText';
+import { Pill2 } from '../ui/Pill2';
+
+interface BenefitItem {
+  label: string;
+  icon: string;
+}
+
+interface BenefitsProps {
+  benefits?: any[];
+  youShouldKnowTitle?: string;
+  youShouldKnowText?: string;
+}
+
+export const Benefits: React.FC<BenefitsProps> = ({ benefits }) => {
+  console.log('benefit', benefits);
+  return (
+    <View style={styles.container}>
+      <View style={styles.section}>
+        <ThemedText style={styles.sectionTitle}>Benefits</ThemedText>
+        <View style={styles.pillContainer}>
+          {benefits?.map((benefit, index) => {
+            let icon = '💸'; // Default icon from sample data
+
+            // Match icons from sample data
+            if (benefit === 'Yearly Bonus' || benefit === 'Yearly Raise')
+              icon = '💸';
+            if (benefit === 'Maternity Leave') icon = '🤰';
+            if (benefit === 'Health Insurance') icon = '🏥';
+            if (benefit === 'Mileage Reimbursement') icon = '🚗';
+            if (benefit === 'Monthly Metro Card') icon = '🚇';
+            if (benefit === 'Retirment Account') icon = '😲';
+
+            return (
+              <Pill2
+                key={index}
+                label={benefit}
+                // icon={icon}
+                style={styles.pill}
+              />
+            );
+          })}
+        </View>
+      </View>
+
+      {/* <View style={styles.youShouldKnowSection}>
+        <ThemedText style={styles.youShouldKnowTitle}>
+          {youShouldKnowTitle}
+        </ThemedText>
+        <ThemedText style={styles.youShouldKnowText}>
+          {youShouldKnowText}
+        </ThemedText>
+      </View> */}
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    backgroundColor: '#FFFFFF',
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontFamily: 'Bogart-Regular',
+    lineHeight: 32,
+    color: '#666666',
+    marginBottom: 12,
+  },
+  pillContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  pill: {
+    marginBottom: 8,
+  },
+  youShouldKnowSection: {
+    backgroundColor: '#F9F9F9',
+    padding: 20,
+    borderRadius: 16,
+    marginTop: 8,
+  },
+  youShouldKnowTitle: {
+    fontSize: 16,
+    fontFamily: 'Bogart-Regular',
+    color: '#EB4430',
+    marginBottom: 8,
+  },
+  youShouldKnowText: {
+    fontSize: 16,
+    fontFamily: 'Bogart-Regular',
+    color: '#333333',
+    lineHeight: 26,
+  },
+});

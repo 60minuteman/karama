@@ -5,6 +5,7 @@ import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { useRouter } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
@@ -28,13 +29,28 @@ export default function HearScreen() {
     setFamilySelectedSource,
     setOnboardingScreen,
   } = useUserStore();
+  const {
+    otherHear
+  } = useOtherStore()
 
   const handleNext = () => {
-    if (family_selected_source) {
+    if (otherHear !== '' && family_selected_source === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherHear');
+      router.push('/(auth)/screens/onboarding/family/otherHear');
+    }else {
       setOnboardingScreen('/(auth)/screens/onboarding/family/zipCode');
       router.push('/(auth)/screens/onboarding/family/zipCode');
     }
   };
+
+  const handleAdd = (item: any) => {
+    if (item === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherHear');
+      router.push('/(auth)/screens/onboarding/family/otherHear');
+      return
+    }
+    setFamilySelectedSource(item);
+  }
 
   return (
     <ThemedView style={styles.container}>
@@ -54,7 +70,7 @@ export default function HearScreen() {
               key={source}
               label={source}
               selected={family_selected_source === source}
-              onPress={() => setFamilySelectedSource(source)}
+              onPress={() => handleAdd(source)}
             />
           ))}
         </View>

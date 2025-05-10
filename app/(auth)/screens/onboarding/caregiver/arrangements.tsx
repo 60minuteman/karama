@@ -1,16 +1,18 @@
-import { StyleSheet, View, ScrollView, Switch } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import {
+  CaregiverPreferredArrangement,
+  useUserStore,
+} from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
-import { CaregiverPreferredArrangement, useUserStore } from '@/services/state/user';
-
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 export default function ArrangementsScreen() {
   const router = useRouter();
@@ -21,13 +23,13 @@ export default function ArrangementsScreen() {
     setCaregiverPreferredArrangement,
     isDealBreaker,
     setIsDealBreaker,
-    setOnboardingScreen
-  }=useUserStore()
+    setOnboardingScreen,
+  } = useUserStore();
 
-  const arrangementOptions: Array<{ label: CaregiverPreferredArrangement; icon: string }> = [
-    { label: 'Live In', icon: '💤' },
-    { label: 'Live Out', icon: '⏰' },
-    { label: 'Hybrid', icon: '🔗' },
+  const arrangementOptions: Array<{ label: string }> = [
+    { label: '💤 Live In' },
+    { label: '⏰ Live Out' },
+    { label: '🔗 Hybrid' },
   ];
 
   const handleNext = () => {
@@ -39,7 +41,7 @@ export default function ArrangementsScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
+      <Header variant='back' style={{ fontFamily: 'Bogart-Bold' }} />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -60,20 +62,27 @@ export default function ArrangementsScreen() {
                 <Pill
                   key={option.label}
                   label={option.label}
-                  icon={option.icon}
-                  selected={caregiverPreferredArrangement === option.label}
-                  onPress={() => setCaregiverPreferredArrangement(option.label)}
+                  selected={
+                    caregiverPreferredArrangement === option.label
+                  }
+                  onPress={() =>
+                    setCaregiverPreferredArrangement(
+                      option.label as CaregiverPreferredArrangement
+                    )
+                  }
                 />
               ))}
             </View>
 
             <View style={styles.dealbreaker}>
-              <ThemedText style={styles.dealbreakerText}>Dealbreaker</ThemedText>
+              <ThemedText style={styles.dealbreakerText}>
+                Dealbreaker
+              </ThemedText>
               <Switch
                 value={isDealBreaker}
                 onValueChange={setIsDealBreaker}
                 trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
-                thumbColor="#FFFFFF"
+                thumbColor='#FFFFFF'
               />
             </View>
           </View>
@@ -85,9 +94,9 @@ export default function ArrangementsScreen() {
         >
           <View style={styles.buttonContainer}>
             <Button
-              label="Next"
+              label='Next'
               onPress={handleNext}
-              variant="compact"
+              variant='compact'
               disabled={!caregiverPreferredArrangement}
             />
           </View>
@@ -123,7 +132,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
     marginBottom: 40,
     color: Colors.light.text,
@@ -159,5 +168,5 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-  }
+  },
 });

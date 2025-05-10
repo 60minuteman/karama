@@ -1,29 +1,33 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { CaregiverPositions, useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 const POSITIONS = [
-  { label: 'Full Time' as const, icon: '⏰' },
-  { label: 'Part Time' as const, icon: '⌛' },
-  { label: 'Occasionally' as const, icon: '📅' },
-  { label: 'Night Out' as const, icon: '🍸' },
-  { label: 'After school Pickup' as const, icon: '🎒' },
+  { label: '⏰ Full Time' as const },
+  { label: '⌛ Part Time' as const },
+  { label: '🗓️ Occasionally' as const },
+  { label: '🍹 Night Out' as const },
+  { label: '🎒 After school Pickup' as const },
 ];
 
 export default function PositionScreen() {
   const router = useRouter();
   // const [selectedPositions, setSelectedPositions] = useState<string[]>([]);
-  const {caregiverPreferredPositions,setCaregiverPreferredPositions,setOnboardingScreen}=useUserStore()
+  const {
+    caregiverPreferredPositions,
+    setCaregiverPreferredPositions,
+    setOnboardingScreen,
+  } = useUserStore();
   const togglePosition = (position: CaregiverPositions) => {
-    const prev = caregiverPreferredPositions?? [];
+    const prev = caregiverPreferredPositions ?? [];
     const selectedPositions = prev.includes(position)
       ? prev.filter((item) => item !== position)
       : [...prev, position];
@@ -37,12 +41,12 @@ export default function PositionScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-      
+      <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
-        
+
         <ThemedText style={styles.title}>
           What positions are{'\n'}you open to{'\n'}considering?
         </ThemedText>
@@ -52,9 +56,12 @@ export default function PositionScreen() {
             <View key={position.label} style={styles.pillWrapper}>
               <Pill
                 label={position.label}
-                icon={position.icon}
-                selected={caregiverPreferredPositions?.includes(position.label)}
-                onPress={() => togglePosition(position.label)}
+                selected={caregiverPreferredPositions?.includes(
+                  position.label.split(' ').slice(1).join(' ')
+                )}
+                onPress={() =>
+                  togglePosition(position.label.split(' ').slice(1).join(' '))
+                }
               />
             </View>
           ))}
@@ -62,9 +69,9 @@ export default function PositionScreen() {
 
         <View style={styles.bottomContainer}>
           <Button
-            label="Next"
+            label='Next'
             onPress={handleNext}
-            variant="compact"
+            variant='compact'
             disabled={caregiverPreferredPositions?.length === 0}
           />
         </View>
@@ -86,10 +93,10 @@ const styles = StyleSheet.create({
     height: 120,
   },
   title: {
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontSize: 32,
     lineHeight: 44,
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     fontWeight: '600',
     marginTop: 20,
@@ -107,4 +114,4 @@ const styles = StyleSheet.create({
     bottom: 50,
     right: 20,
   },
-}); 
+});

@@ -41,8 +41,6 @@ export default function Prompt() {
     setFamilyPromptCategory,
   } = useUserStore();
 
-  console.log('family_prompt', family_prompt);
-
   const handleNext = () => {
     if (family_prompt) {
       setOnboardingScreen('/(auth)/screens/onboarding/family/promptAnswer');
@@ -63,6 +61,12 @@ export default function Prompt() {
       router.push('/(auth)/screens/onboarding/family/prompt3');
     }
   };
+
+  const handleAdd = (item: any) => {
+    setFamilyPrompt(item)
+      setOnboardingScreen('/(auth)/screens/onboarding/family/promptAnswer');
+      router.push('/(auth)/screens/onboarding/family/promptAnswer');
+  }
 
   return (
     <ThemedView style={styles.container}>
@@ -99,7 +103,7 @@ export default function Prompt() {
                 <Pill
                   label={prompt}
                   selected={family_prompt === prompt}
-                  onPress={() => setFamilyPrompt(prompt)}
+                  onPress={() => handleAdd(prompt)}
                 />
               </View>
             ))}

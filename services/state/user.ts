@@ -29,7 +29,8 @@ type FamilyType =
   | 'Moms'
   | 'Dads'
   | 'Guardian'
-  | 'Other';
+  | 'Other'
+  |  any
 
 type Condition =
   | 'Dyslexia'
@@ -179,7 +180,8 @@ export type CaregiverPhilosophies =
   | 'Sudbury'
   | 'Reggio Emillia'
   | 'Gentle Parenting'
-  | 'Permissive Parenting';
+  | 'Permissive Parenting'
+  | 'Other'
 
 export type CaregiverPositions =
   | 'Full Time'
@@ -188,7 +190,7 @@ export type CaregiverPositions =
   | 'Night Out'
   | 'After school Pickup';
 
-export type CaregiverPreferredArrangement = 'Live In' | 'Live Out' | 'Hybrid';
+export type CaregiverPreferredArrangement = '💤 Live In' | '⏰ Live Out' | '🔗 Hybrid';
 export type CaregiverCommitment = 'Long Term' | 'Short Term';
 
 export type CaregiverDayOfWeek =
@@ -213,7 +215,7 @@ export interface CaregiverDaySchedule {
 
 export interface CaregiverPositionHistory {
   position: string;
-  positionNumber: 'first' | 'second' | null;
+  positionNumber: 'first' | 'second' |  'Third' |null;
   ageGroup: string;
   familyName: string;
   employmentType: string;
@@ -305,7 +307,7 @@ type Availability =
   | 'Night Out'
   | 'After school Pickup';
 
-type Commitment = 'Long Term' | 'Short Term';
+type Commitment = 'Long Term' | '⌛ Short Term';
 
 // Add these types after the existing type definitions
 type DayOfWeek = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
@@ -487,6 +489,7 @@ interface UserState {
   showCaregiverRequiredBenefit: boolean | undefined;
   caregiverFirstPosition: CaregiverPositionHistory;
   caregiverSecondPosition: CaregiverPositionHistory;
+  caregiverThirdPosition: CaregiverPositionHistory;
   caregiverPromptCategory: string | undefined;
   caregiverFirstPrompt: string | undefined;
   caregiverFirstPromptAnswer: string | undefined;
@@ -603,6 +606,7 @@ interface UserState {
   setShowCaregiverRequiredBenefits: (type: boolean | undefined) => void;
   setCaregiverFirstPosition: (type: CaregiverPositionHistory) => void;
   setCaregiverSecondPosition: (type: CaregiverPositionHistory) => void;
+  setCaregiverThirdPosition: (type: CaregiverPositionHistory) => void;
   setCaregiverPromptCategory: (type: string | undefined) => void;
   setCaregiverFirstPrompt: (type: string | undefined) => void;
   setCaregiverFirstPromptAnswer: (type: string | undefined) => void;
@@ -899,6 +903,15 @@ export const useUserStore = create<UserState>()(
         startDate: '',
         endDate: '',
       },
+      caregiverThirdPosition: {
+        positionNumber: null,
+        position: '',
+        ageGroup: '',
+        familyName: '',
+        employmentType: '',
+        startDate: '',
+        endDate: '',
+      },
       caregiverPromptCategory: '',
       caregiverFirstPrompt: '',
       caregiverFirstPromptAnswer: '',
@@ -1010,7 +1023,8 @@ export const useUserStore = create<UserState>()(
         set({ caregiverExperienceDuration: experience }),
       setCaregiverEducation: (education) =>
         set({ caregiverEducation: education }),
-      setCaregiverShowEducation: (show) => set({ caregiverShowEducation: show }),
+      setCaregiverShowEducation: (show) =>
+        set({ caregiverShowEducation: show }),
       setCaregiverAbilities: (abilities) =>
         set({ caregiverAbilities: abilities }),
       setCaregiverCertification: (certification) =>
@@ -1085,6 +1099,8 @@ export const useUserStore = create<UserState>()(
         set({ caregiverFirstPosition: first }),
       setCaregiverSecondPosition: (second) =>
         set({ caregiverSecondPosition: second }),
+      setCaregiverThirdPosition: (third) =>
+        set({ caregiverThirdPosition: third }),
       setCaregiverPromptCategory: (category) =>
         set({ caregiverPromptCategory: category }),
       setCaregiverFirstPrompt: (prompt) =>
@@ -1385,167 +1401,22 @@ export const useUserStore = create<UserState>()(
           // Clear AsyncStorage
           await AsyncStorage.removeItem('token');
           await AsyncStorage.removeItem('user-storage');
-          
           // Reset all state
           set({
             user: null,
             token: null,
-            isLoading: false,
-            error: null,
-            hydrated: false,
-            subscribed_to_promotions: false,
-            selectedType: null,
-            familyName: null,
-            family_description: null,
-            family_age_groups: defaultAgeGroups,
-            family_behaviour: {
-              has_condition: null,
-              conditions: [],
-            },
-            onboarding_screen: null,
-            family_selected_source: null,
-            family_zipcode: '',
-            family_keyboard_height: 0,
-            family_languages: [],
-            family_pets: [],
-            family_interests: {
-              creative_interests: [],
-              instrument_interests: [],
-              sport_interests: [],
-              stem_interests: [],
-            },
-            family_household_selections: {
-              Diet: [],
-              Rules: [],
-              Religion: [],
-            },
-            family_household_visibility: {
-              Diet: false,
-              Rules: false,
-              Religion: false,
-            },
-            family_selections: {},
-            family_show_diet: false,
-            family_show_rules: false,
-            family_show_religion: false,
-            family_philosophies: [],
-            family_show_philosophy: false,
-            family_gender_preference: {
-              has_preference: null,
-              selected_gender: null,
-              is_dealbreaker: false,
-            },
-            caregiver_type: {
-              selected_type: null,
-              is_dealbreaker: false,
-            },
-            caregiver_traits: {
-              selected_traits: [],
-              is_dealbreaker: false,
-            },
-            caregiver_age: {
-              has_preference: null,
-              selected_age_range: null,
-              is_dealbreaker: false,
-            },
-            caregiver_experience: {
-              selected_experience: null,
-              is_dealbreaker: false,
-            },
-            caregiver_language_required: null,
-            caregiver_requirements: {
-              selected_requirements: [],
-              selected_certifications: [],
-              requirements_dealbreaker: false,
-              certifications_dealbreaker: false,
-            },
-            family_availability: {
-              selected_availability: null,
-              is_dealbreaker: false,
-            },
-            family_arrangement: {
-              selected_arrangement: null,
-              is_dealbreaker: false,
-            },
-            family_commitment: {
-              selected_commitment: null,
-              start_date: new Date(),
-              end_date: new Date(),
-            },
-            family_schedule: [
-              {
-                day: 'Mon',
-                timeSlot: { begin: '00:00', end: '00:00' },
-                isActive: false,
-              },
-              {
-                day: 'Tue',
-                timeSlot: { begin: '00:00', end: '00:00' },
-                isActive: false,
-              },
-              {
-                day: 'Wed',
-                timeSlot: { begin: '00:00', end: '00:00' },
-                isActive: false,
-              },
-              {
-                day: 'Thu',
-                timeSlot: { begin: '00:00', end: '00:00' },
-                isActive: false,
-              },
-              {
-                day: 'Fri',
-                timeSlot: { begin: '00:00', end: '00:00' },
-                isActive: false,
-              },
-              {
-                day: 'Sat',
-                timeSlot: { begin: '00:00', end: '00:00' },
-                isActive: false,
-              },
-              {
-                day: 'Sun',
-                timeSlot: { begin: '00:00', end: '00:00' },
-                isActive: false,
-              },
-            ],
-            family_responsibilities: [],
-            family_payment: {
-              selected_type: null,
-              hourly_rate: 15,
-              salary_amount: '50,000',
-              has_interacted: false,
-            },
-            family_payment_method: {
-              selected_method: '',
-              show_on_profile: false,
-            },
-            family_benefits: {
-              selected_benefits: [],
-              show_on_profile: false,
-            },
-            family_prompt: '',
-            family_prompt_answer: '',
-            family_more_info: '',
-            family_has_allergies: null,
-            family_allergies: {
-              food: [],
-              environmental: [],
-              other: [],
-            },
-            family_prompt_category: 'get_to_know',
-            family_images: [],
           });
         } catch (error) {
           console.error('Error during logout:', error);
         }
       },
 
-      resetOnboarding: () => set({ 
-        onboarding_screen: null, 
-        steps: null,
-        selectedType: null 
-      }),
+      resetOnboarding: () =>
+        set({
+          onboarding_screen: null,
+          steps: '',
+          selectedType: null,
+        }),
     }),
     {
       name: 'user-storage',

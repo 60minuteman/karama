@@ -14,8 +14,6 @@ export default function OnboardingScreen() {
   const { user, onboarding_screen, steps, selectedType } = useUserStore();
   const { completeOnboarding } = useOnboarding();
 
-  console.log('user', user);
-
   const handleGetStarted = async () => {
     await completeOnboarding();
     // Always go to phone number screen first
@@ -86,7 +84,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Made the overlay darker by increasing opacity from 0.4 to 0.6
+    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Overlay control
   },
   content: {
     flex: 1,
@@ -99,7 +97,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   logo: {
-    width: 178,
+    width: 209,
     height: 36,
     marginBottom: 24,
   },

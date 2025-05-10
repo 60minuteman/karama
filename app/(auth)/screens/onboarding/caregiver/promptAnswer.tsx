@@ -6,19 +6,34 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import useAuthMutation from '@/hooks/useAuthMutation';
 import customAxios from '@/services/api/envConfig';
+import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { useMutation } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 import Toast from 'react-native-toast-message';
+import { benefitsOptions } from './benefits';
 
 export default function PromptAnswer() {
   const router = useRouter();
   const { prompt } = useLocalSearchParams();
+
+  const getDefaultStartDate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return formatDate(tomorrow) || '01/01/2025';
+  };
+
   const formatDate = (date: string | Date | undefined | null) => {
     if (!date) return undefined;
-    
+
     let dateObj: Date;
     if (typeof date === 'string') {
       const [month, day, year] = date.split('/');
@@ -35,6 +50,7 @@ export default function PromptAnswer() {
 
     return `${month}/${day}/${year}`;
   };
+
   const {
     caregiverAbilities,
     caregiverAgeExperience,
@@ -95,6 +111,45 @@ export default function PromptAnswer() {
     setCaregiverFirstPromptAnswer,
     setOnboardingScreen,
   } = useUserStore();
+
+  const {
+    otherRequirement,
+    otherCertifications,
+    otherLanguage,
+    otherPet,
+    otherCreativeActivity,
+    otherSport,
+    otherStem,
+    otherInstument,
+    otherDiet,
+    otherRule,
+    otherReligion,
+    otherHouseholdResponsibilities,
+    otherChildResponsibilities,
+    caregiverThirdPosition,
+  } = useOtherStore();
+
+  console.log(
+    'carePosition',
+    caregiverFirstPosition,
+    caregiverFirstPosition.startDate
+  );
+
+  const payment_info =
+    caregiverPaymentType === 'Salary Base'
+      ? {
+          type: caregiverPaymentType,
+          salary: caregiverSalaryAmount || '',
+          show_method_on_profile: showCaregiverPaymentMethod,
+        }
+      : {
+          type: caregiverPaymentType,
+          hourly_min: 1,
+          hourly_max: caregiverHourlyRate,
+          method: caregiverPaymentMethod,
+          show_method_on_profile: showCaregiverPaymentMethod,
+        };
+
   const onboadingInfo = {
     name: caregiverName,
     date_of_birth: caregiverDob,
@@ -109,9 +164,11 @@ export default function PromptAnswer() {
     abilities_and_certifications: {
       abilities: caregiverAbilities,
       certifications: caregiverCertifications,
+      other_ability: otherRequirement || '',
+      other_certification: otherCertifications || '',
     },
     languages: caregiverLanguages,
-    other_languages: 'French',
+    other_languages: otherLanguage || '',
     ages_best_with: caregiverAgeExperience,
     children_capacity: caregiverChildrenCount,
     experience_with_disabilities: {
@@ -119,12 +176,17 @@ export default function PromptAnswer() {
     },
     experience_with_pets: {
       pets: caregiverPetExperience,
+      other: otherPet || '',
     },
     hobbies: {
       creative_interests: caregiverCreativeInterests,
       instrument_interests: caregiverInstrumentInterests,
       sport_interests: caregiverSportInterest,
       stem_interests: caregiverStemInterests,
+      other_creative_interest: otherCreativeActivity || '',
+      other_instrument_interest: otherInstument || '',
+      other_sport_interest: otherSport || '',
+      other_stem_interest: otherStem || '',
     },
     characteristics: {
       personalities: caregiverPersonality,
@@ -133,6 +195,9 @@ export default function PromptAnswer() {
       rules: caregiverRules,
       religion: caregiverReligion,
       show_religion_on_profile: showCaregiverReligion,
+      other_diets: otherDiet || '',
+      other_rules: otherRule || '',
+      other_religion: otherReligion || '',
     },
     childcare_philosophies: caregiverPhilosophyExperience,
     family_must_speak_same_language: caregiverLanguageMatch,
@@ -140,10 +205,11 @@ export default function PromptAnswer() {
     arrangement_type: caregiverPreferredArrangement,
     job_commitment: {
       commitment: caregiverCommitmentType,
-      start_date: caregiverCommitmentStartDate ? formatDate(caregiverCommitmentStartDate) : getDefaultStartDate(),
+      start_date:
+        formatDate(caregiverCommitmentStartDate) || getDefaultStartDate(),
       ...(caregiverCommitmentType === 'Short Term' && {
-        end_date: caregiverCommitmentEndDate ? formatDate(caregiverCommitmentEndDate) : undefined
-      })
+        end_date: formatDate(caregiverCommitmentEndDate),
+      }),
     },
     service_days: caregiverSchedule?.map((schedule) => {
       return {
@@ -155,20 +221,25 @@ export default function PromptAnswer() {
     responsibilities: {
       childcare_responsibilities: caregiverChildcareResponsibilities,
       household_responsibilities: caregiverHouseholdResponsibilities,
+      other_childcare_responsibilities: otherChildResponsibilities || '',
+      other_household_responsibilities: otherHouseholdResponsibilities || '',
     },
-    payment_info: {
-      type: caregiverPaymentType,
-      hourly_min: 1,
-      hourly_max: caregiverHourlyRate,
-      method: caregiverPaymentMethod,
-      show_method_on_profile: showCaregiverPaymentMethod,
-    },
-    required_benefits: caregiverRequiredBenefits,
+    payment_info,
+    required_benefits: (caregiverRequiredBenefits || [])
+      .filter(
+        (benefit) =>
+          benefit && benefitsOptions?.find((opt) => opt.id === benefit)
+      )
+      .slice(0, 10),
     past_positions: [
       caregiverFirstPosition && {
         family_or_business_name: caregiverFirstPosition.familyName,
-        start_date: caregiverFirstPosition.startDate ? formatDate(caregiverFirstPosition.startDate) : undefined,
-        end_date: caregiverFirstPosition.endDate ? formatDate(caregiverFirstPosition.endDate) : undefined,
+        start_date: caregiverFirstPosition.startDate
+          ? formatDate(caregiverFirstPosition.startDate)
+          : undefined,
+        end_date: caregiverFirstPosition.endDate
+          ? formatDate(caregiverFirstPosition.endDate)
+          : undefined,
         position_type: caregiverFirstPosition.position,
         children_age_group: [caregiverFirstPosition.ageGroup],
         availability: caregiverFirstPosition.employmentType,
@@ -177,17 +248,35 @@ export default function PromptAnswer() {
       },
       caregiverSecondPosition?.familyName && {
         family_or_business_name: caregiverSecondPosition.familyName,
-        start_date: caregiverSecondPosition.startDate ? formatDate(caregiverSecondPosition.startDate) : undefined,
-        end_date: caregiverSecondPosition.endDate ? formatDate(caregiverSecondPosition.endDate) : undefined,
+        start_date: caregiverSecondPosition.startDate
+          ? formatDate(caregiverSecondPosition.startDate)
+          : undefined,
+        end_date: caregiverSecondPosition.endDate
+          ? formatDate(caregiverSecondPosition.endDate)
+          : undefined,
         position_type: caregiverSecondPosition.position,
         children_age_group: [caregiverSecondPosition.ageGroup],
         availability: caregiverSecondPosition.employmentType,
         childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
         household_responsibilities: ['Property Management', 'Meal Prep'],
-      }
-    ].filter(Boolean).filter(position => 
-      position.start_date && position.end_date
-    ),
+      },
+      caregiverThirdPosition?.familyName && {
+        family_or_business_name: caregiverSecondPosition.familyName,
+        start_date: caregiverSecondPosition.startDate
+          ? formatDate(caregiverSecondPosition.startDate)
+          : undefined,
+        end_date: caregiverSecondPosition.endDate
+          ? formatDate(caregiverSecondPosition.endDate)
+          : undefined,
+        position_type: caregiverSecondPosition.position,
+        children_age_group: [caregiverSecondPosition.ageGroup],
+        availability: caregiverSecondPosition.employmentType,
+        childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
+        household_responsibilities: ['Property Management', 'Meal Prep'],
+      },
+    ]
+      .filter(Boolean)
+      .filter((position) => position.start_date && position.end_date),
     prompts: [
       {
         category: caregiverPromptCategory,
@@ -196,6 +285,11 @@ export default function PromptAnswer() {
       },
     ],
   };
+
+  useEffect(() => {
+    setCaregiverFirstPromptAnswer('');
+  }, []);
+
   console.log(onboadingInfo, 'TO Create PROFIELEEE');
   const createProfile: any = useAuthMutation({
     mutationFn: (data: any) => {
@@ -208,6 +302,12 @@ export default function PromptAnswer() {
     onError: (error: any) => {
       console.log('COULD NOR CREATEEE');
       console.log('error', error['response'].data);
+      if (
+        error['response'].data?.message ==
+        'This stage of onboarding is complete'
+      ) {
+        return handleNext();
+      }
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
@@ -222,52 +322,52 @@ export default function PromptAnswer() {
   const handleSubmit = async () => {
     createProfile.mutate(onboadingInfo);
   };
-  const getDefaultStartDate = () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return formatDate(tomorrow) || '01/01/2025';
-  };
   return (
-    <ThemedView style={styles.container}>
-      <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <ThemedView style={styles.container}>
+        <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
 
-      <View style={styles.content}>
-        <View style={styles.spacerTop} />
-        <ProgressBar progress={0.9} />
+        <View style={styles.content}>
+          <View style={styles.spacerTop} />
+          <ProgressBar progress={0.9} />
 
-        <ThemedText style={styles.title}>{prompt}</ThemedText>
+          <ThemedText style={styles.title}>{caregiverFirstPrompt}</ThemedText>
 
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            multiline
-            placeholder='Type prompt answer here...'
-            placeholderTextColor='#A8A3A5'
-            value={caregiverFirstPromptAnswer}
-            onChangeText={setCaregiverFirstPromptAnswer}
-            textAlignVertical='top'
-          />
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={styles.input}
+              multiline
+              placeholder='Type prompt answer here...'
+              placeholderTextColor='#A8A3A5'
+              value={caregiverFirstPromptAnswer}
+              onChangeText={setCaregiverFirstPromptAnswer}
+              textAlignVertical='top'
+            />
+          </View>
+
+          {/* <View style={styles.addButtonContainer}>
+            <Button
+              label='Add Another Prompt'
+              onPress={() => router.back()}
+              variant='compact'
+              style={styles.addButton}
+            />
+          </View> */}
         </View>
 
-        <View style={styles.addButtonContainer}>
+        <View style={styles.bottomNav}>
           <Button
-            label='Add Another Prompt'
-            onPress={() => router.back()}
+            label='Next'
+            onPress={handleSubmit}
             variant='compact'
-            style={styles.addButton}
+            loading={createProfile.isPending}
           />
         </View>
-      </View>
-
-      <View style={styles.bottomNav}>
-        <Button
-          label='Next'
-          onPress={handleSubmit}
-          variant='compact'
-          loading={createProfile.isPending}
-        />
-      </View>
-    </ThemedView>
+      </ThemedView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -286,9 +386,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 24,
     marginTop: 20,
   },

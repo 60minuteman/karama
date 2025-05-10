@@ -11,22 +11,20 @@ import React from 'react';
 import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 const BenefitOptions = [
-  { id: 'health_insurance', label: 'Health Insurance', icon: '🏥' },
-  { id: 'paid_time_off', label: 'Paid Time Off', icon: '🌴' },
-  { id: 'sick_leave', label: 'Sick Leave', icon: '🤒' },
-  { id: 'dental_insurance', label: 'Dental Insurance', icon: '🦷' },
-  { id: 'vision_insurance', label: 'Vision Insurance', icon: '👁️' },
-  { id: 'retirement_plan', label: 'Retirement Plan', icon: '💰' },
-  { id: 'life_insurance', label: 'Life Insurance', icon: '🌟' },
-  { id: 'disability_insurance', label: 'Disability Insurance', icon: '♿' },
+  { id: 'health_insurance', label: '🏥 Health Insurance' },
+  { id: 'paid_time_off', label: '🌴 Paid Time Off' },
+  { id: 'sick_leave', label: '🤒 Sick Leave' },
+  { id: 'dental_insurance', label: '🦷 Dental Insurance' },
+  { id: 'vision_insurance', label: '👁️ Vision Insurance' },
+  { id: 'retirement_plan', label: '💰 Retirement Plan' },
+  { id: 'life_insurance', label: '🌟 Life Insurance' },
+  { id: 'disability_insurance', label: '♿ Disability Insurance' },
 ];
 
 export default function BenefitsScreen() {
   const router = useRouter();
   const { family_benefits, setFamilyBenefits, setOnboardingScreen } =
     useUserStore();
-
-  console.log('family_benefits', family_benefits);
 
   const { selected_benefits, show_on_profile } = family_benefits;
 
@@ -62,7 +60,6 @@ export default function BenefitsScreen() {
               <View key={benefit.id} style={styles.pillWrapper}>
                 <Pill
                   label={benefit.label}
-                  icon={benefit.icon}
                   selected={selected_benefits?.includes(benefit.id)}
                   onPress={() => toggleBenefit(benefit.id)}
                 />

@@ -17,30 +17,36 @@ export default function TraitScreen() {
     useUserStore();
   const { selected_traits, is_dealbreaker } = caregiver_traits;
 
-  console.log('caregiver_traits', caregiver_traits);
-
   const personalityTraits = [
-    { label: 'Bubbly', icon: '🫧' },
-    { label: 'Animated', icon: '🤹' },
-    { label: 'Chill', icon: '🧘' },
-    { label: 'Patient', icon: '😌' },
-    { label: 'Wacky', icon: '🤪' },
-    { label: 'Extroverted', icon: '🤩' },
-    { label: 'Disciplined', icon: '📏' },
-    { label: 'Introverted', icon: '😐' },
-    { label: 'Thoughtful', icon: '🤔' },
-    { label: 'Adventurous', icon: '🚀' },
-    { label: 'Whimsical', icon: '🧚' },
-    { label: 'Nurturing', icon: '🤗' },
-    { label: 'Cool', icon: '😎' },
-    { label: 'Organized', icon: '👨‍💼' },
+    { label: '🫧 Bubbly' },
+    { label: '🦹‍♂️ Animated' },
+    { label: '🧘‍♀️ Chill' },
+    { label: '😌 Patient' },
+    { label: '🤪 Wacky' },
+    { label: '🤩 Extroverted' },
+    { label: '📏 Disciplined' },
+    { label: '😬 Introverted' },
+    { label: '🥰 Thoughtful' },
+    { label: '🚀 Adventurous' },
+    { label: '🧚 Whimsical' },
+    { label: '🤗 Nurturing' },
+    { label: '😎 Cool' },
+    { label: '👨🏽‍💻 Organized' },
   ];
 
   const handleTraitSelect = (trait: string) => {
-    const newTraits = selected_traits.includes(trait)
-      ? selected_traits.filter((t) => t !== trait)
-      : [...selected_traits, trait];
-
+    const isSelected = selected_traits.includes(trait);
+  
+    let newTraits;
+  
+    if (isSelected) {
+      newTraits = selected_traits.filter((t) => t !== trait);
+    } else {
+      // Only add if the current selection is less than 3
+      if (selected_traits.length >= 3) return; 
+      newTraits = [...selected_traits, trait];
+    }
+  
     setCaregiverTraits({ selected_traits: newTraits });
   };
 
@@ -80,7 +86,6 @@ export default function TraitScreen() {
                 <Pill
                   key={index}
                   label={trait.label}
-                  icon={trait.icon}
                   onPress={() => handleTraitSelect(trait.label)}
                   selected={selected_traits.includes(trait.label)}
                 />

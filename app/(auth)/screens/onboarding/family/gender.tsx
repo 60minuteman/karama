@@ -5,6 +5,7 @@ import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -18,6 +19,9 @@ export default function GenderScreen() {
     setFamilyGenderPreference,
     setOnboardingScreen,
   } = useUserStore();
+  const {
+    otherGender
+  } = useOtherStore()
   const [showGenderOptions, setShowGenderOptions] = useState(false);
 
   const genderOptions = [
@@ -33,8 +37,6 @@ export default function GenderScreen() {
     'Other',
   ];
 
-  console.log('family_gender_preference', family_gender_preference);
-
   const handleResponse = (response: 'yes' | 'no') => {
     setFamilyGenderPreference({ has_preference: response });
     if (response === 'yes') {
@@ -46,6 +48,11 @@ export default function GenderScreen() {
   };
 
   const handleGenderSelect = (gender: string) => {
+    if (gender === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherGender');
+      router.push('/(auth)/screens/onboarding/family/otherGender');
+      return;
+    }
     setFamilyGenderPreference({ selected_gender: gender });
     setOnboardingScreen('/(auth)/screens/onboarding/family/type');
     router.push('/(auth)/screens/onboarding/family/type');

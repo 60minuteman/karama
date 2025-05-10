@@ -1,117 +1,130 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView, Switch } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
-import { LinearGradient } from 'expo-linear-gradient';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
-const benefitsOptions = [
-  { id: 'yearly_bonus' as const, label: 'Yearly Bonus', icon: '💰' },
-  { id: 'paid_time_off' as const, label: 'Paid Time Off', icon: '🏖' },
-  { id: 'yearly_raise' as const, label: 'Yearly Raise', icon: '💸' },
-  { id: 'overtime_pay' as const, label: 'Overtime Pay', icon: '💲' },
-  { id: 'maternity_leave' as const, label: 'Maternity Leave', icon: '👶' },
-  { id: 'health_insurance' as const, label: 'Health Insurance', icon: '🏥' },
-  { id: 'retirement_account' as const, label: 'Retirement Account', icon: '🤑' },
-  { id: 'metro_card' as const, label: 'Monthly Metro Card', icon: '🚇' },
-  { id: 'mileage' as const, label: 'Mileage Reimbursement', icon: '🚗' },
-  { id: 'extra_child_pay' as const, label: 'Extra Pay For Additional Children', icon: '👶' },
-  { id: 'other' as const, label: 'Other', icon: '✨' },
+export const benefitsOptions = [
+  { id: 'yearly_bonus' as const, label: '💰 Yearly Bonus' },
+  { id: 'paid_time_off' as const, label: '🏖 Paid Time Off' },
+  { id: 'yearly_raise' as const, label: '💸 Yearly Raise' },
+  { id: 'overtime_pay' as const, label: '💲 Overtime Pay' },
+  { id: 'maternity_leave' as const, label: '👶 Maternity Leave' },
+  { id: 'health_insurance' as const, label: '🏥 Health Insurance' },
+  { id: 'retirement_account' as const, label: '🤑 Retirement Account' },
+  { id: 'metro_card' as const, label: '🚇 Monthly Metro Card' },
+  { id: 'mileage' as const, label: '🚗 Mileage Reimbursement' },
+  {
+    id: 'extra_child_pay' as const,
+    label: '👶 Extra Pay For Additional Children',
+  },
+  { id: 'other' as const, label: '✨ Other' },
 ];
 
 export default function Benefits() {
   const router = useRouter();
   // const [selectedBenefits, setSelectedBenefits] = useState<string[]>([]);
   // const [showOnProfile, setShowOnProfile] = useState(false);
-  const { caregiverRequiredBenefits, setCaregiverRequiredBenefits,
-    showCaregiverRequiredBenefit, setShowCaregiverRequiredBenefits, setOnboardingScreen } = useUserStore();
+  const {
+    caregiverRequiredBenefits,
+    setCaregiverRequiredBenefits,
+    showCaregiverRequiredBenefit,
+    setShowCaregiverRequiredBenefits,
+    setOnboardingScreen,
+  } = useUserStore();
   const toggleBenefit = (benefitId: string) => {
+    if (benefitId === 'other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/OtherBenefits');
+      router.push('/(auth)/screens/onboarding/caregiver/OtherBenefits');
+      return;
+    }
     const prev = caregiverRequiredBenefits ?? [];
+
+    // Only allow valid benefits from benefitsOptions
+    if (!benefitsOptions.find((opt) => opt.id === benefitId)) {
+      return;
+    }
+
+    // Remove if exists, add if doesn't exist and under 10 items
     const updatedBenefits = prev.includes(benefitId)
-      ? prev.filter(id => id !== benefitId)
-      : [...prev, benefitId]
-    setCaregiverRequiredBenefits(updatedBenefits); 
-    
-};
+      ? prev.filter((id) => id !== benefitId)
+      : prev.length < 10
+      ? [...prev, benefitId]
+      : prev;
 
-const handleNext = () => {
-  if (caregiverRequiredBenefits?.includes('other')) {
-    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/OtherBenefits');
-    router.push('/(auth)/screens/onboarding/caregiver/OtherBenefits');
-  } else {
-    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/PastPosition');
-    router.push('/(auth)/screens/onboarding/caregiver/PastPosition');
-  }
-};
+    setCaregiverRequiredBenefits(updatedBenefits);
+  };
 
-return (
-  <ThemedView style={styles.container}>
-    <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+  const handleNext = () => {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/PastPosition');
+      router.push('/(auth)/screens/onboarding/caregiver/PastPosition');
+  };
 
-    <View style={styles.content}>
-      <View style={styles.spacerTop} />
-      <ProgressBar progress={0.85} />
+  return (
+    <ThemedView style={styles.container}>
+      <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
 
-      <ThemedText style={styles.title}>
-        What benefits do{'\n'}you require?
-      </ThemedText>
+      <View style={styles.content}>
+        <View style={styles.spacerTop} />
+        <ProgressBar progress={0.85} />
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.benefitsContainer}>
-          {benefitsOptions.map((benefit) => (
-            <View key={benefit.id} style={styles.pillWrapper}>
-              <Pill
-                label={benefit.label}
-                icon={benefit.icon}
-                selected={caregiverRequiredBenefits?.includes(benefit.id)}
-                onPress={() => toggleBenefit(benefit.id)}
-              />
-            </View>
-          ))}
-        </View>
+        <ThemedText style={styles.title}>
+          What benefits do{'\n'}you require?
+        </ThemedText>
 
-        <View style={styles.toggleContainer}>
-          <ThemedText style={styles.toggleText}>Show on profile</ThemedText>
-          <Switch
-            value={showCaregiverRequiredBenefit}
-            onValueChange={setShowCaregiverRequiredBenefits}
-            trackColor={{ false: '#E5E5E5', true: Colors.light.primary }}
-            thumbColor={showCaregiverRequiredBenefit ? '#FFFFFF' : '#FFFFFF'}
-          />
-        </View>
-      </ScrollView>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.benefitsContainer}>
+            {benefitsOptions.map((benefit) => (
+              <View key={benefit.id} style={styles.pillWrapper}>
+                <Pill
+                  label={benefit.label}
+                  // icon={benefit.icon}
+                  selected={caregiverRequiredBenefits?.includes(benefit.id)}
+                  onPress={() => toggleBenefit(benefit.id)}
+                />
+              </View>
+            ))}
+          </View>
 
-      <LinearGradient
-        colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
-        style={styles.buttonGradient}
-      >
-        <View style={styles.buttonContainer}>
-          <Button
-            label="Skip"
-            onPress={() => router.back()}
-            variant="skip"
-          />
-          <Button
-            label="Next"
-            onPress={handleNext}
-            variant="compact"
-            disabled={caregiverRequiredBenefits?.length === 0}
-          />
-        </View>
-      </LinearGradient>
-    </View>
-  </ThemedView>
-);
+          <View style={styles.toggleContainer}>
+            <ThemedText style={styles.toggleText}>Show on profile</ThemedText>
+            <Switch
+              value={showCaregiverRequiredBenefit}
+              onValueChange={setShowCaregiverRequiredBenefits}
+              trackColor={{ false: '#E5E5E5', true: Colors.light.primary }}
+              thumbColor={showCaregiverRequiredBenefit ? '#FFFFFF' : '#FFFFFF'}
+            />
+          </View>
+        </ScrollView>
+
+        <LinearGradient
+          colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
+          style={styles.buttonGradient}
+        >
+          <View style={styles.buttonContainer}>
+            <Button label='Skip' onPress={() => router.back()} variant='skip' />
+            <Button
+              label='Next'
+              onPress={handleNext}
+              variant='compact'
+              disabled={caregiverRequiredBenefits?.length === 0}
+            />
+          </View>
+        </LinearGradient>
+      </View>
+    </ThemedView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -135,9 +148,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 20,
     marginTop: 20,
   },
@@ -171,5 +184,5 @@ const styles = StyleSheet.create({
     right: 0,
     height: 100,
     paddingHorizontal: 20,
-  }
+  },
 });

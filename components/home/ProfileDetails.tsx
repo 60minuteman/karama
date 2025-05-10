@@ -44,7 +44,7 @@ export const ProfileDetails = ({
               <Pill2
                 key={index}
                 label={exp}
-                icon={icons[exp as keyof typeof icons]}
+                // icon={icons[exp as keyof typeof icons]}
                 style={styles.pill}
               />
             );
@@ -54,7 +54,7 @@ export const ProfileDetails = ({
 
       <Section title="I'm Looking For">
         <View style={styles.pillsContainer}>
-          {lookingFor.map((item, index) => {
+          {lookingFor?.map((item, index) => {
             const icons = {
               'Full Time': '⏰',
               'Long Term': '📋',
@@ -64,7 +64,7 @@ export const ProfileDetails = ({
               <Pill2
                 key={index}
                 label={item}
-                icon={icons[item as keyof typeof icons]}
+                // icon={icons[item as keyof typeof icons]}
                 style={styles.pill}
               />
             );

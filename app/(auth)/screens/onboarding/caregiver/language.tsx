@@ -30,6 +30,11 @@ export default function LanguageScreen() {
   ];
 
   const toggleLanguageSelection = (label: Language) => {
+    if (label === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherLanguage')
+      router.push('/(auth)/screens/onboarding/family/otherLanguage')
+      return;
+    }
     const prev = caregiverLanguages ?? [];
     const updatedLanguages = prev.includes(label)
       ? prev.filter((item) => item !== label)
@@ -114,10 +119,10 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   title: {
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontSize: 32,
     lineHeight: 40,
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     fontWeight: '500',
     marginTop: 20,

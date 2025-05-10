@@ -51,8 +51,12 @@ export default function Prompt() {
     setCaregiverPromptCategory,
     caregiverFirstPrompt,
     setCaregiverFirstPrompt,
-    setOnboardingScreen
+    setOnboardingScreen,
+    setCaregiverFirstPromptAnswer
   } = useUserStore();
+   useEffect(() => {
+      setCaregiverFirstPromptAnswer('');
+    }, [])
 
   // Initialize with default category if not set
   useEffect(() => {
@@ -79,6 +83,13 @@ export default function Prompt() {
 
   // Now TypeScript knows this is safe
   const currentPrompts = prompts[caregiverPromptCategory || 'get_to_know'];
+
+  const handleAdd = (item: any) => {
+    setCaregiverFirstPrompt(item) ;
+        setOnboardingScreen('/(auth)/screens/onboarding/caregiver/promptAnswer');
+        router.push('/(auth)/screens/onboarding/caregiver/promptAnswer');
+  };
+
 
   return (
     <ThemedView style={styles.container}>
@@ -117,7 +128,7 @@ export default function Prompt() {
                 <Pill
                   label={prompt}
                   selected={caregiverFirstPrompt === prompt}
-                  onPress={() => setCaregiverFirstPrompt(prompt)}
+                  onPress={() =>  handleAdd(prompt)}
                 />
               </View>
             ))}
@@ -163,9 +174,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 42,
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 24,
     marginTop: 20,
   },

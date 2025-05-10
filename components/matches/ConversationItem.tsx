@@ -1,9 +1,11 @@
 import { ThemedText } from '@/components/ThemedText';
 import { getUserById, getUserDataById } from '@/services/chat';
+import { useUserStore } from '@/services/state/user';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
+import { io } from 'socket.io-client';
 
 type ConversationItemProps = {
   imageUrl: string;
@@ -12,6 +14,9 @@ type ConversationItemProps = {
   time: string;
   onPress: () => void;
   otherUser: any;
+  conversation: any;
+  handleDeleteConversation: any;
+  key: any;
 };
 
 export function ConversationItem({
@@ -21,14 +26,17 @@ export function ConversationItem({
   time,
   onPress,
   otherUser,
+  conversation,
+  handleDeleteConversation,
+  key,
 }: ConversationItemProps) {
   const [otherUserData, setOtherUserData] = useState<any>(null);
+  const { token, user } = useUserStore();
+  const [chatHistory, setChatHistory] = useState<any>([]);
 
   useEffect(() => {
-    console.log('otherUser', otherUser);
     const fetchOtherUserData = async () => {
       const userData = await getUserDataById(otherUser);
-      console.log('userData', userData);
       setOtherUserData(userData);
     };
     fetchOtherUserData();
@@ -37,7 +45,10 @@ export function ConversationItem({
   const renderRightActions = () => {
     return (
       <View style={styles.rightActions}>
-        <TouchableOpacity style={[styles.action, styles.removeAction]}>
+        <TouchableOpacity
+          // onPress={() => handleDeleteConversation(key)}
+          style={[styles.action, styles.removeAction]}
+        >
           <Ionicons name='close' size={24} color='#fff' />
           <Text style={styles.actionText}>Remove</Text>
         </TouchableOpacity>
@@ -72,7 +83,7 @@ export function ConversationItem({
             <View style={styles.content}>
               <View style={styles.header}>
                 <ThemedText style={styles.name}>
-                  {otherUserData?.name}
+                  {conversation?.recipient?.name}
                 </ThemedText>
                 <ThemedText style={styles.time}>{time}</ThemedText>
               </View>

@@ -42,18 +42,22 @@ export const fetchMatchingCaregivers = async (cursor = '', role: any) => {
   return data;
 };
 
-export const useMatchingCaregivers = (cursor: string, endpoint: string, options?: any) => {
+export const useMatchingCaregivers = (
+  cursor: string,
+  endpoint: string,
+  options?: any
+) => {
   return useQuery({
     queryKey: ['matchingCaregivers', cursor],
     queryFn: async () => {
       const response = await customAxios.get(endpoint, {
-        params: { 
+        params: {
           cursor,
-          page_size: 10 // Request 10 profiles at a time
+          page_size: 10, // Request 10 profiles at a time
         },
         headers: {
-          ...options?.headers
-        }
+          ...options?.headers,
+        },
       });
       return response.data;
     },
@@ -145,17 +149,46 @@ export const useCurrentUser = () => {
   });
 };
 
-export const fetchProfile= async (role: any) => {
-  const endpoint =
-    role == 'FAMILY'
-      ? '/family-profile/'
-      : '/caregiver-profile/';
+export const fetchUserDevices = async () => {
+  const { data } = await customAxios.get('/notifications/devices/user');
+  return data;
+};
 
-  const { data } = await customAxios.get(endpoint)
+export const useUserDevices = () => {
+  const { token } = useUserStore();
+  return useAuthQuery({
+    queryKey: ['user-devices'],
+    queryFn: fetchUserDevices,
+    retry: 3,
+    enabled: !!token,
+  });
+};
+
+export const fetchUserDevice = async (id: any) => {
+  console.log('id', id);
+  const { data } = await customAxios.get(`/notifications/devices/item/${id}`);
+  return data;
+};
+
+export const useUserDevice = (id: any) => {
+  const { token } = useUserStore();
+  return useAuthQuery({
+    queryKey: ['user-device', id],
+    queryFn: () => fetchUserDevice(id),
+    retry: 3,
+    enabled: !!token && !!id,
+  });
+};
+
+export const fetchProfile = async (role: any) => {
+  const endpoint =
+    role == 'FAMILY' ? '/family-profile/' : '/caregiver-profile/';
+
+  const { data } = await customAxios.get(endpoint);
   return data?.data;
 };
 
-export const useProfile = ( role: any) => {
+export const useProfile = (role: any) => {
   const { token } = useUserStore();
   return useAuthQuery({
     queryKey: ['user-profile'],
@@ -181,6 +214,27 @@ export const useCompletedMatches = (role: string) => {
   return useAuthQuery({
     queryKey: ['completed-matches', role],
     queryFn: () => fetchCompletedMatches(role),
+    retry: 3,
+    enabled: !!token && !!role,
+  });
+};
+
+export const fetchCompleteMatches = async (role: string) => {
+  const endpoint =
+    role === 'FAMILY'
+      ? '/family-matches/completed-matches'
+      : '/caregiver-matches/completed-matches';
+
+  const { data } = await customAxios.get(endpoint);
+  return data;
+};
+
+export const useCompleteMatches = (role: string) => {
+  const { token } = useUserStore();
+
+  return useAuthQuery({
+    queryKey: ['complete-matches', role],
+    queryFn: () => fetchCompleteMatches(role),
     retry: 3,
     enabled: !!token && !!role,
   });

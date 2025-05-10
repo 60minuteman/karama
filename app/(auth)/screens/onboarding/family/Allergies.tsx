@@ -12,32 +12,32 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Animated, ScrollView, StyleSheet, View } from 'react-native';
 
 const foodAllergies = [
-  { id: 'milk', label: 'Milk', icon: '🥛' },
-  { id: 'eggs', label: 'Eggs', icon: '🥚' },
-  { id: 'peanuts', label: 'Peanuts', icon: '🥜' },
-  { id: 'treenut', label: 'Treenut', icon: '🌳' },
-  { id: 'fish', label: 'Fish', icon: '🐟' },
-  { id: 'shellfish', label: 'Shellfish', icon: '🦐' },
-  { id: 'soy', label: 'Soy', icon: '🫘' },
-  { id: 'wheat', label: 'Wheat', icon: '🌾' },
-  { id: 'other_food', label: 'Other', icon: '🍽️' },
+  { id: 'milk', label: '🥛 Milk' },
+  { id: 'eggs', label: '🥚 Eggs' },
+  { id: 'peanuts', label: '🥜 Peanuts' },
+  { id: 'treenut', label: '🌳 Treenut' },
+  { id: 'fish', label: '🐟 Fish' },
+  { id: 'shellfish', label: '🦐 Shellfish' },
+  { id: 'soy', label: '🫘 Soy' },
+  { id: 'wheat', label: '🌾 Wheat' },
+  { id: 'other_food', label: '🍪 Other' },
 ];
 
 const environmentalAllergies = [
-  { id: 'pollen', label: 'Pollen', icon: '🌸' },
-  { id: 'dust_mites', label: 'Dust mites', icon: '💨' },
-  { id: 'mold', label: 'Mold', icon: '🍄' },
-  { id: 'animal_dander', label: 'Animal Dander', icon: '🐕' },
-  { id: 'insect_sting', label: 'Insect sting', icon: '🐝' },
-  { id: 'other_environmental', label: 'Other', icon: '🌲' },
+  { id: 'pollen', label: '🌸 Pollen' },
+  { id: 'dust_mites', label: '💨 Dust mites' },
+  { id: 'mold', label: '🍄 Mold' },
+  { id: 'animal_dander', label: '🐕 Animal Dander' },
+  { id: 'insect_sting', label: '🐝 Insect sting' },
+  { id: 'other_environmental', label: '🌲 Other' },
 ];
 
 const otherAllergies = [
-  { id: 'latex', label: 'Latex', icon: '🧤' },
-  { id: 'perfume', label: 'Perfume', icon: '🌹' },
-  { id: 'cleaning_chemicals', label: 'Cleaning Chemicals', icon: '💧' },
-  { id: 'metal', label: 'Metal', icon: '⚙️' },
-  { id: 'other', label: 'Other', icon: '➕' },
+  { id: 'latex', label: '🧤 Latex' },
+  { id: 'perfume', label: '🌹 Perfume' },
+  { id: 'cleaning_chemicals', label: '💦 Cleaning Chemicals' },
+  { id: 'metal', label: '🌑 Metal' },
+  { id: 'other', label: '🪨 Other' },
 ];
 
 export default function Allergies() {
@@ -215,7 +215,6 @@ export default function Allergies() {
                   <Pill
                     key={allergy.id}
                     label={allergy.label}
-                    icon={allergy.icon}
                     selected={localAllergies.food.includes(allergy.id)}
                     onPress={() =>
                       allergy.id === 'other_food'
@@ -236,7 +235,6 @@ export default function Allergies() {
                   <Pill
                     key={allergy.id}
                     label={allergy.label}
-                    icon={allergy.icon}
                     selected={localAllergies.environmental.includes(allergy.id)}
                     onPress={() =>
                       allergy.id === 'other_environmental'
@@ -257,7 +255,6 @@ export default function Allergies() {
                   <Pill
                     key={allergy.id}
                     label={allergy.label}
-                    icon={allergy.icon}
                     selected={localAllergies.other.includes(allergy.id)}
                     onPress={() =>
                       allergy.id === 'other'

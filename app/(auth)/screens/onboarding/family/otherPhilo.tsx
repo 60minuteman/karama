@@ -1,19 +1,29 @@
 import { useRouter } from 'expo-router';
 import { StyleSheet, View, TextInput } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { Header } from '@/components/ui/Header';
 import { Button } from '@/components/ui/Button';
+import { useOtherStore } from '@/services/state/other';
+
 
 export default function OtherPhiloScreen() {
   const router = useRouter();
   const [philosophy, setPhilosophy] = useState('');
 
+  const {addOtherPhilosophy } = useOtherStore()
+
+  useEffect(() => {
+    setPhilosophy('');
+  }, [])
+  
+  
   const handleAdd = () => {
     if (philosophy.trim()) {
       // Handle adding the philosophy
+      addOtherPhilosophy(philosophy.trim())
       router.back();
     }
   };

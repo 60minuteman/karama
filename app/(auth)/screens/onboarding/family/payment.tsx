@@ -8,10 +8,10 @@ import { Slider } from '@/components/ui/Slider';
 import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { useState, useEffect } from 'react';
+import { StyleSheet, TextInput, View, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
 
-type PaymentType = 'Hourly' | 'Salary Base';
+type PaymentType = '🤑 Hourly' | '💰 Salary Base';
 
 export default function PaymentScreen() {
   const router = useRouter();
@@ -19,12 +19,31 @@ export default function PaymentScreen() {
     useUserStore();
   const { selected_type, hourly_rate, salary_amount, has_interacted } =
     family_payment;
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
-  console.log('family_payment', family_payment);
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false);
+      }
+    );
 
-  const paymentOptions: Array<{ label: PaymentType; icon: string }> = [
-    { label: 'Hourly', icon: '🤑' },
-    { label: 'Salary Base', icon: '💰' },
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
+  const paymentOptions: Array<{ label: PaymentType }> = [
+    { label: '🤑 Hourly' },
+    { label: '💰 Salary Base' },
   ];
 
   const handleNext = () => {
@@ -34,7 +53,7 @@ export default function PaymentScreen() {
       params: {
         type: selected_type,
         rate:
-          selected_type === 'Hourly'
+          selected_type === '🤑 Hourly'
             ? hourly_rate
             : parseInt(salary_amount.replace(/,/g, '')),
       },
@@ -45,7 +64,11 @@ export default function PaymentScreen() {
     <ThemedView style={styles.container}>
       <Header variant='back' />
 
-      <View style={styles.content}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.content}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 10}
+      >
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.95} />
 
@@ -59,7 +82,6 @@ export default function PaymentScreen() {
               <Pill
                 key={option.label}
                 label={option.label}
-                icon={option.icon}
                 selected={selected_type === option.label}
                 onPress={() =>
                   setFamilyPayment({ selected_type: option.label })
@@ -68,7 +90,7 @@ export default function PaymentScreen() {
             ))}
           </View>
 
-          {selected_type === 'Hourly' && (
+          {selected_type === '🤑 Hourly' && (
             <>
               <View style={styles.inputContainer}>
                 <View style={styles.sliderContainer}>
@@ -111,7 +133,7 @@ export default function PaymentScreen() {
             </>
           )}
 
-          {selected_type === 'Salary Base' && (
+          {selected_type === '💰 Salary Base' && (
             <View style={styles.inputContainer}>
               <View
                 style={[
@@ -136,7 +158,10 @@ export default function PaymentScreen() {
           )}
         </View>
 
-        <View style={styles.buttonContainer}>
+        <View style={[
+          styles.buttonContainer,
+          isKeyboardVisible ? { marginBottom: 10 } : { marginBottom: 50 }
+        ]}>
           <Button
             label='Next'
             onPress={handleNext}
@@ -144,7 +169,7 @@ export default function PaymentScreen() {
             disabled={!selected_type}
           />
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </ThemedView>
   );
 }
@@ -203,10 +228,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   buttonContainer: {
-    position: 'absolute',
-    bottom: 50,
-    right: 20,
-    left: 20,
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },

@@ -9,6 +9,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
 import { Colors } from '@/constants/Colors';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useOtherStore } from '@/services/state/other';
 
 type Education = 
   | 'High School'
@@ -22,10 +23,11 @@ export default function EducationScreen() {
   const router = useRouter();
   const [selected, setSelected] = useState<Education | null>(null);
   const [showOnProfile, setShowOnProfile] = useState(false);
+  const { setFamilyEducation, familyEducation } = useOtherStore();
 
   const educationOptions: Array<{ label: Education; icon?: string }> = [
     { label: 'High School', icon: '🎓' },
-    { label: 'In College', icon: '📚' },
+    { label: 'In College', icon: '📓' },
     { label: 'Undergraduate Degree', icon: '🎓' },
     { label: 'In Grad School', icon: '📘' },
     { label: 'Graduate Degree', icon: '🎓' },
@@ -33,6 +35,7 @@ export default function EducationScreen() {
   ];
 
   const handleNext = () => {
+    if (familyEducation === '') return
     router.push('/(auth)/screens/onboarding/family/requirements');
   };
 
@@ -65,7 +68,7 @@ export default function EducationScreen() {
                     label={option.label}
                     icon={option.icon}
                     selected={selected === option.label}
-                    onPress={() => setSelected(option.label)}
+                    onPress={() => {setFamilyEducation(option.label); setSelected(option.label)}}
                   />
                 </View>
               ))}

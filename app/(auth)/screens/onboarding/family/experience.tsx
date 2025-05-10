@@ -17,8 +17,6 @@ export default function ExperienceScreen() {
     useUserStore();
   const { selected_experience, is_dealbreaker } = caregiver_experience;
 
-  console.log('caregiver_experience', caregiver_experience);
-
   const experienceOptions = [
     '1-11 months',
     '1-5 years',

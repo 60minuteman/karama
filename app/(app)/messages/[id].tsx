@@ -1,3 +1,4 @@
+import { getSocket } from '@/app/_layout';
 import { Container } from '@/components/home/Container';
 import MessageScreenSkeleton from '@/components/matches/MessageSkeleton';
 import { ChatBubble } from '@/components/messages/ChatBubble';
@@ -10,7 +11,6 @@ import {
   getUserIdByEmail,
   sendMessage,
 } from '@/services/chat';
-import { auth } from '@/services/firebase';
 import { useUserStore } from '@/services/state/user';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -21,6 +21,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import { io } from 'socket.io-client';
 
 interface Message {
   id: string;
@@ -30,9 +31,8 @@ interface Message {
 }
 
 export default function MessageScreen() {
-  const { name, otherUserId } = useLocalSearchParams();
+  const { name, recipientId, senderId } = useLocalSearchParams();
   const { id } = useLocalSearchParams();
-  console.log('name', name, 'id', id);
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState<'chat' | 'profile'>('chat');
   const [otherUserData, setOtherUserData] = useState<any>(null);
@@ -40,6 +40,10 @@ export default function MessageScreen() {
   const [currentUserId, setCurrentUserId] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const firebaseUser = useUserStore((state) => state.firebaseCurrentUser);
+  const { token, user } = useUserStore();
+  const socket: any = getSocket();
+
+  console.log('messages', messages);
 
   useEffect(() => {
     const fetchOtherUserData = async () => {
@@ -54,7 +58,6 @@ export default function MessageScreen() {
         if (userId) {
           setCurrentUserId(userId);
         }
-        console.log('userData', userData);
         setOtherUserData(userData);
       } finally {
         setIsLoading(false);
@@ -62,8 +65,6 @@ export default function MessageScreen() {
     };
     fetchOtherUserData();
   }, []);
-
-  console.log('messages', messages);
 
   useEffect(() => {
     const unsubscribe = getChatMessages(id as string, setMessages);
@@ -95,48 +96,82 @@ export default function MessageScreen() {
     disabilities: ['Dyslexia', 'ADHD'],
   };
 
-  const handleSend = async () => {
-    try {
-      const currentUser = firebaseUser;
-      if (!currentUser?.email) {
-        throw new Error('No user email found');
-      }
-      const userId = await getUserIdByEmail(currentUser.email);
-      if (!userId) {
-        throw new Error('No user ID found');
-      }
-      const userData = await getUserDataById(userId);
-      console.log(
-        'userData',
-        // userData,
-        id,
-        currentUserId,
-        userData?.name,
-        message.trim()
-      );
-      // setCurrentUserId(userId);
-      await sendMessage(
-        id as string,
-        currentUserId,
-        userData?.name,
-        'https://example.com/avatar.jpg',
-        message.trim()
-      );
-      setMessage('');
-      console.log('message sent');
-    } catch (error) {
-      console.error('Error sending message:', error);
-      // Handle error appropriately, e.g. show error message to user
-    }
-  };
-
   const handleBack = () => {
     router.back();
   };
 
+  const handleSendMessage: any = () => {
+    socket.emit('sendMessage', {
+      conversationId: id,
+      text: message,
+    });
+    setMessage('');
+  };
+
+  // const handleClearMessages: any = () => {
+  //   socket.emit('clearAllMessages', {
+  //     conversationId: id,
+  //   });
+  // };
+
+  // const handleBlockUser: any = () => {
+  //   socket.emit('blockUser', {
+  //     recipientId: recipientId
+  //   });
+  // };
+
+  useEffect(() => {
+    socket.emit('getChatHistory', {
+      conversationId: id,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('chatHistory', (data: any) => {
+        setMessages(data?.messages);
+        setIsLoading(false);
+      });
+
+      socket.on('newMessage conversationUpdated', (data: any) => {
+        // console.log('newMessage=++++++++++++', data?.sender?.user_id);
+        // setMessages(data);
+      });
+
+      socket.on('exception', (data: any) => {
+        // console.log('exception', data);
+      });
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    socket.on('newMessage', (data: any) => {
+      setMessages((prevMessages) => {
+        const messageExists = prevMessages.some((msg) => msg.id === data.id);
+        if (!messageExists) {
+          return [data, ...prevMessages];
+        }
+        return prevMessages;
+      });
+    });
+  }, [socket]);
+
+  // useEffect(() => {
+  //   socket.on('allMessagesCleared', (data: any) => {
+  //     setMessages([]);
+  //   });
+  // }, [socket]);
+
+  // useEffect(() => {
+  //   socket.on('userBlocked', (data: any) => {
+  //     // setMessages([]);
+  //   });
+  // }, [socket]);
+
+  // console.log('messages=====+++++++', messages);
+
   const renderMessage = ({ item }: { item: Message }) => {
-    console.log('currentUserId sender', item?.senderId === currentUserId);
-    console.log('item', item);
+    // console.log('item++++++++++++', item?.sender?.id || item?.sender?.user_id);
     if (item.senderId === 'system') {
       return (
         <View style={styles.systemContainer}>
@@ -147,8 +182,21 @@ export default function MessageScreen() {
     return (
       <ChatBubble
         message={item.text}
-        timestamp={item?.createdAt?.seconds}
-        variant={item?.senderId === currentUserId ? 'sent' : 'received'}
+        timestamp={
+          item?.created_at
+            ? new Date(item.created_at).toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+              })
+            : ''
+        }
+        variant={
+          item?.sender?.user_id === user?.user_id ||
+          item?.sender?.id === user?.user_id
+            ? 'sent'
+            : 'received'
+        }
       />
     );
   };
@@ -158,53 +206,43 @@ export default function MessageScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={0}
+    >
       <MessageHeader
-        name={otherUserData?.name}
+        name={name}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onBack={handleBack}
+        // handleClearMessages={handleClearMessages}
       />
 
       {activeTab === 'chat' ? (
-        <FlatList<Message>
-          style={styles.messagesList}
-          data={messages}
-          renderItem={renderMessage}
-          keyExtractor={(item: Message) => item.id}
-          inverted={false}
-          contentContainerStyle={[
-            styles.messagesContent,
-            { paddingBottom: 100 },
-          ]}
-        />
+        <View style={styles.chatContainer}>
+          <FlatList<Message>
+            style={styles.messagesList}
+            data={messages}
+            renderItem={renderMessage}
+            keyExtractor={(item: Message) => item.id}
+            inverted={true}
+            contentContainerStyle={styles.messagesContent}
+          />
+          <View style={styles.inputContainer}>
+            <MessageInput
+              value={message}
+              onChangeText={setMessage}
+              onSend={handleSendMessage}
+            />
+          </View>
+        </View>
       ) : (
         <View style={{ height: '80%' }}>
           <Container profileData={profileData} />
         </View>
       )}
-
-      {activeTab === 'chat' && (
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'position' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-          }}
-        >
-          <View style={[styles.inputContainer]}>
-            <MessageInput
-              value={message}
-              onChangeText={setMessage}
-              onSend={handleSend}
-            />
-          </View>
-        </KeyboardAvoidingView>
-      )}
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -216,7 +254,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: '#FFFFFF',
   },
-  keyboardAvoidingView: {
+  chatContainer: {
     flex: 1,
   },
   messagesList: {
@@ -224,7 +262,7 @@ const styles = StyleSheet.create({
   },
   messagesContent: {
     padding: 16,
-    paddingBottom: 120,
+    paddingTop: 16,
   },
   inputContainer: {
     backgroundColor: '#FFFFFF',

@@ -12,38 +12,33 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 const ageGroups = [
-  ['Newborn', 'Infant'],
-  ['Toddler', 'Pre Schooler'],
-  ['School Age', 'Teenager'],
+  ['👶 Newborn', '🍼 Infant'],
+  ['🧸 Toddler', '🖍️ Pre Schooler'],
+  ['🛴 School Age', '🌈 Teenager'],
 ] as const;
 
-const ageIcons = {
-  Newborn: '👶',
-  Infant: '🍼',
-  Toddler: '🧸',
-  'Pre Schooler': '✏️',
-  'School Age': '🛴',
-  Teenager: '🌈',
-};
-
 export default function Page() {
-  const {caregiverAgeExperience,setCaregiverAgeExperience,setOnboardingScreen}=useUserStore()
+  const {
+    caregiverAgeExperience,
+    setCaregiverAgeExperience,
+    setOnboardingScreen,
+  } = useUserStore();
   // const [selectedAge, setSelectedAge] = useState<string | null>(null);
   const [fontsLoaded] = useFonts({
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
   });
-   const toggleAgesSelection = (label: string) => {
-      const prev = caregiverAgeExperience?? [];
-      const updatedAges = prev.includes(label)
-        ? prev.filter((item) => item !== label) 
-        : [...prev, label];
-      setCaregiverAgeExperience(updatedAges); 
-    };
-  const handleNext = ()=>{
-    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/number')
-    router.push('/(auth)/screens/onboarding/caregiver/number')
-  }
-  console.log(caregiverAgeExperience)
+  const toggleAgesSelection = (label: string) => {
+    const prev = caregiverAgeExperience ?? [];
+    const updatedAges = prev.includes(label)
+      ? prev.filter((item) => item !== label)
+      : [...prev, label];
+    setCaregiverAgeExperience(updatedAges);
+  };
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/number');
+    router.push('/(auth)/screens/onboarding/caregiver/number');
+  };
+  console.log(caregiverAgeExperience);
 
   return (
     <ThemedView style={styles.container}>
@@ -53,7 +48,7 @@ export default function Page() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
 
-        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
           What ages do you{'\n'}have the most{'\n'}experience working{'\n'}with?
         </ThemedText>
 
@@ -64,10 +59,12 @@ export default function Page() {
                 <Pill
                   key={age}
                   label={age}
-                  icon={ageIcons[age as keyof typeof ageIcons]}
                   onPress={() => toggleAgesSelection(age)}
                   selected={caregiverAgeExperience?.includes(age)}
-                  disabled ={caregiverAgeExperience?.length === 3} 
+                  disabled={
+                    !caregiverAgeExperience?.includes(age) &&
+                    (caregiverAgeExperience?.length ?? 0) >= 3
+                  }
                 />
               ))}
             </View>
@@ -81,7 +78,7 @@ export default function Page() {
             label='Next'
             onPress={handleNext}
             variant='compact'
-            disabled={!caregiverAgeExperience}
+            disabled={!caregiverAgeExperience?.length}
           />
         </View>
       </View>
@@ -105,7 +102,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     lineHeight: 44,
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     marginTop: 20,
   },

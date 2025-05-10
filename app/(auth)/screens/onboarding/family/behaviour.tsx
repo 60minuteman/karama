@@ -5,10 +5,10 @@ import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 type Condition =
@@ -28,6 +28,9 @@ export default function FamilyBehaviourScreen() {
   const router = useRouter();
   const { family_behaviour, setFamilyBehaviour, setOnboardingScreen } =
     useUserStore();
+    const {
+      otherConditons
+    } = useOtherStore()
 
   const conditions: Condition[] = [
     'Dyslexia',
@@ -50,7 +53,16 @@ export default function FamilyBehaviourScreen() {
     });
   };
 
+  // console.log(otherConditons, 'otherConditons') ;
+  
+
   const handleConditionToggle = (condition: Condition) => {
+    if (condition === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherCondition');
+      router.push('/(auth)/screens/onboarding/family/otherCondition');
+      return;
+    }
+
     const newConditions = family_behaviour.conditions.includes(condition)
       ? family_behaviour.conditions.filter((c) => c !== condition)
       : [...family_behaviour.conditions, condition];
@@ -62,7 +74,7 @@ export default function FamilyBehaviourScreen() {
     if (
       family_behaviour.has_condition === 'No' ||
       (family_behaviour.has_condition === 'Yes' &&
-        family_behaviour.conditions.length > 0)
+        family_behaviour.conditions.length > 0 || otherConditons !== '')
     ) {
       setOnboardingScreen('/(auth)/screens/onboarding/family/hear');
       router.push('/(auth)/screens/onboarding/family/hear');
@@ -72,7 +84,7 @@ export default function FamilyBehaviourScreen() {
   const isNextDisabled =
     !family_behaviour.has_condition ||
     (family_behaviour.has_condition === 'Yes' &&
-      family_behaviour.conditions.length === 0);
+      family_behaviour.conditions.length === 0 && otherConditons === '');
 
   return (
     <ThemedView style={styles.container}>

@@ -12,60 +12,62 @@ import { useEffect, useRef } from 'react';
 import { Animated, ScrollView, StyleSheet, View } from 'react-native';
 
 type PetType =
-  | 'None'
-  | 'Cat'
-  | 'Small Dog'
-  | 'Pig'
-  | 'Large Dog'
-  | 'Cow'
-  | 'Butterfly'
-  | 'Turtle'
-  | 'Snake'
-  | 'Parrot'
-  | 'Rabbit'
-  | 'Sheep'
-  | 'Duck'
-  | 'Horse'
-  | 'Frog'
-  | 'Gecko'
-  | 'Whale'
-  | 'Chicken'
-  | 'Hamster'
-  | 'Dinosaur'
-  | 'Baby Elephant'
-  | 'Unicorn'
-  | 'Other';
+  | '🚫 None'
+  | '😺 Cat'
+  | '🐶 Small Dog'
+  | '🐽 Pig'
+  | '🐩 Large Dog'
+  | '🐮 Cow'
+  | '🦋 Butterfly'
+  | '🐢 Turtle'
+  | '🐍 Snake'
+  | '🦜 Parrot'
+  | '🐰 Rabbit'
+  | '🐑 Sheep'
+  | '🦆 Duck'
+  | '🐎 Horse'
+  | '🐸 Frog'
+  | '🦎 Gecko'
+  | '🐳 Whale'
+  | '🐔 Chicken'
+  | '🐹 Hamster'
+  | '🦕 Dinosaur'
+  | '🐘 Baby Elephant'
+  | '🦄 Unicorn'
+  | '🐾 Other';
 
-const pets = [
-  { type: 'None' as const, icon: '⛔' },
-  { type: 'Cat' as const, icon: '😺' },
-  { type: 'Small Dog' as const, icon: '🐕' },
-  { type: 'Pig' as const, icon: '🐷' },
-  { type: 'Large Dog' as const, icon: '🐕' },
-  { type: 'Cow' as const, icon: '🐮' },
-  { type: 'Butterfly' as const, icon: '🦋' },
-  { type: 'Turtle' as const, icon: '🐢' },
-  { type: 'Snake' as const, icon: '🐍' },
-  { type: 'Parrot' as const, icon: '🦜' },
-  { type: 'Rabbit' as const, icon: '🐰' },
-  { type: 'Sheep' as const, icon: '🐑' },
-  { type: 'Duck' as const, icon: '🦆' },
-  { type: 'Horse' as const, icon: '🐎' },
-  { type: 'Frog' as const, icon: '🐸' },
-  { type: 'Gecko' as const, icon: '🦎' },
-  { type: 'Whale' as const, icon: '🐳' },
-  { type: 'Chicken' as const, icon: '🐔' },
-  { type: 'Hamster' as const, icon: '🐹' },
-  { type: 'Dinosaur' as const, icon: '🦕' },
-  { type: 'Baby Elephant' as const, icon: '🐘' },
-  { type: 'Unicorn' as const, icon: '🦄' },
-  { type: 'Other' as const, icon: '🐾' },
+const pets: { type: PetType }[] = [
+  { type: '🚫 None' },
+  { type: '😺 Cat' },
+  { type: '🐶 Small Dog' },
+  { type: '🐽 Pig' },
+  { type: '🐩 Large Dog' },
+  { type: '🐮 Cow' },
+  { type: '🦋 Butterfly' },
+  { type: '🐢 Turtle' },
+  { type: '🐍 Snake' },
+  { type: '🦜 Parrot' },
+  { type: '🐰 Rabbit' },
+  { type: '🐑 Sheep' },
+  { type: '🦆 Duck' },
+  { type: '🐎 Horse' },
+  { type: '🐸 Frog' },
+  { type: '🦎 Gecko' },
+  { type: '🐳 Whale' },
+  { type: '🐔 Chicken' },
+  { type: '🐹 Hamster' },
+  { type: '🦕 Dinosaur' },
+  { type: '🐘 Baby Elephant' },
+  { type: '🦄 Unicorn' },
+  { type: '🐾 Other' },
 ];
 
 export default function PetScreen() {
   const router = useRouter();
   const { family_pets, setFamilyPets, setOnboardingScreen } = useUserStore();
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  console.log('family_pets', family_pets);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -76,10 +78,17 @@ export default function PetScreen() {
   }, []);
 
   const togglePet = (pet: PetType) => {
-    if (pet === 'None') {
-      setFamilyPets(['None']);
+    if (pet === '🐾 Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherPet');
+      router.push('/(auth)/screens/onboarding/family/otherPet');
+      return;
+    }
+    if (pet === '🚫 None') {
+      setFamilyPets([pet]);
+      setOnboardingScreen('/(auth)/screens/onboarding/family/interest');
+      router.push('/(auth)/screens/onboarding/family/interest');
     } else {
-      const newPets = family_pets.includes('None')
+      const newPets = family_pets.includes('🚫 None')
         ? [pet]
         : family_pets.includes(pet)
         ? family_pets.filter((p) => p !== pet)
@@ -120,11 +129,11 @@ export default function PetScreen() {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.pillsContainer}>
-              {pets.map(({ type, icon }) => (
+              {pets.map(({ type }) => (
                 <Pill
                   key={type}
-                  label={type}
-                  icon={icon}
+                  label={type.split(' ').slice(1).join(' ')}
+                  icon={type.split(' ')[0]}
                   selected={family_pets.includes(type)}
                   onPress={() => togglePet(type)}
                 />

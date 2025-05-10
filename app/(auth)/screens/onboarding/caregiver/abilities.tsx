@@ -1,34 +1,38 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { router } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import {
+  CaregiverAbilities,
+  CaregiverCertification,
+  useUserStore,
+} from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
-import { CaregiverAbilities, CaregiverCertification, useUserStore } from '@/services/state/user';
+import { router } from 'expo-router';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 const abilities = [
-  { label: 'Can Travel' as const, icon: '✈️' },
-  { label: 'Able To Drive' as const, icon: '🚗' },
-  { label: 'First Aid' as const, icon: '🏥' },
-  { label: 'Can Swim' as const, icon: '🏊' },
-  { label: 'COVID Vaccination' as const, icon: '💉' },
-  { label: 'CPR' as const, icon: '🫀' },
-  { label: 'Other' as const, icon: '🎪' },
+  { label: '✈️ Can Travel' as const },
+  { label: '🚗 Able To Drive' as const },
+  { label: '⛑️ First Aid' as const },
+  { label: '🏊 Can Swim' as const },
+  { label: '💉 COVID Vaccination' as const },
+  { label: '👐 CPR' as const },
+  { label: '🏕️ Other' as const },
 ];
 
 const certifications = [
-  { label: 'Sign Language' as const, icon: '🤟' },
-  { label: 'Administering Medication' as const, icon: '💊' },
-  { label: 'Special Needs' as const, icon: '👨‍🦽' },
-  { label: 'Condition Specific' as const, icon: '🧹' },
-  { label: 'Feeding & Swallowing' as const, icon: '🍔' },
-  { label: 'Registered Behaviour Technician' as const, icon: '😇' },
-  { label: 'Other' as const, icon: '📄' },
+  { label: '🤟 Sign Language' as const },
+  { label: '💊 Administering Medication' as const },
+  { label: '👨‍🦽 Special Needs' as const },
+  { label: '🦼 Condition Specific' as const },
+  { label: '🍔 Feeding & Swallowing' as const },
+  { label: '😇 Registered Behaviour Technician' as const },
+  { label: '📃 Other' as const },
 ];
 
 export default function Page() {
@@ -37,31 +41,41 @@ export default function Page() {
     setCaregiverAbilities,
     caregiverCertifications,
     setCaregiverCertification,
-    setOnboardingScreen
-  } = useUserStore()
+    setOnboardingScreen,
+  } = useUserStore();
   // const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const toggleAbilitiesSelection = (label: CaregiverAbilities) => {
+    if (label === '🎪 Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/otherAbilities')
+      router.push('/(auth)/screens/onboarding/caregiver/otherAbilities')
+      return;
+    }
     const prev = caregiverAbilities ?? [];
     const updatedAbilities = prev.includes(label)
-      ? prev.filter((item) => item !== label) 
+      ? prev.filter((item) => item !== label)
       : [...prev, label];
-    setCaregiverAbilities(updatedAbilities); 
+    setCaregiverAbilities(updatedAbilities);
   };
   const toggleCertificationSelection = (label: CaregiverCertification) => {
+    if (label === '📄 Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/otherCertification')
+      router.push('/(auth)/screens/onboarding/caregiver/otherCertification')
+      return;
+    }
     const prev = caregiverCertifications ?? [];
     const updatedCertification = prev.includes(label)
       ? prev.filter((item) => item !== label)
       : [...prev, label];
     setCaregiverCertification(updatedCertification);
   };
-  const handleNext = ()=>{
-     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/language')
-        router.push('/(auth)/screens/onboarding/caregiver/language')
-  }
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/language');
+    router.push('/(auth)/screens/onboarding/caregiver/language');
+  };
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -82,7 +96,6 @@ export default function Page() {
               <Pill
                 key={option.label}
                 label={option.label}
-                icon={option.icon}
                 onPress={() => toggleAbilitiesSelection(option.label)}
                 selected={caregiverAbilities?.includes(option.label)}
               />
@@ -95,7 +108,6 @@ export default function Page() {
               <Pill
                 key={option.label}
                 label={option.label}
-                icon={option.icon}
                 onPress={() => toggleCertificationSelection(option.label)}
                 selected={caregiverCertifications?.includes(option.label)}
               />
@@ -107,21 +119,17 @@ export default function Page() {
 
       <View style={styles.gradientContainer}>
         <LinearGradient
-          colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.9)', 'rgba(255,255,255,1)']}
+          colors={[
+            'rgba(255,255,255,0)',
+            'rgba(255,255,255,0.9)',
+            'rgba(255,255,255,1)',
+          ]}
           style={styles.buttonGradient}
-          pointerEvents="none"
+          pointerEvents='none'
         />
         <View style={styles.bottomNav}>
-          <Button
-            label="Skip"
-            onPress={handleNext}
-            variant="skip"
-          />
-          <Button
-            label="Next"
-            onPress={handleNext}
-            variant="compact"
-          />
+          <Button label='Skip' onPress={handleNext} variant='skip' />
+          <Button label='Next' onPress={handleNext} variant='compact' />
         </View>
       </View>
     </ThemedView>
@@ -152,9 +160,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 44,
-    fontFamily: 'Bogart-Bold', // Changed to 'Bogart-Bold' for the header text
+    fontFamily: 'Bogart-Semibold', // Changed to 'Bogart-Bold' for the header text
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     marginTop: 20,
   },
@@ -187,5 +195,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 20,
     paddingBottom: 40,
-  }
-}); 
+  },
+});

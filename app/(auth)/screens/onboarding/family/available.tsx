@@ -11,11 +11,11 @@ import { useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
 type Availability =
-  | 'Full Time'
-  | 'Part Time'
-  | 'Occasionally'
-  | 'Night Out'
-  | 'After school Pickup';
+  | '⏰ Full Time'
+  | '⌛ Part Time'
+  | '🗓️ Occasionally'
+  | '🍹 Night Out'
+  | '🎒 After school Pickup';
 
 export default function AvailabilityScreen() {
   const router = useRouter();
@@ -23,14 +23,12 @@ export default function AvailabilityScreen() {
     useUserStore();
   const { selected_availability, is_dealbreaker } = family_availability;
 
-  console.log('family_availability', family_availability);
-
-  const availabilityOptions: Array<{ label: Availability; icon: string }> = [
-    { label: 'Full Time', icon: '⏰' },
-    { label: 'Part Time', icon: '⌛' },
-    { label: 'Occasionally', icon: '📅' },
-    { label: 'Night Out', icon: '🌙' },
-    { label: 'After school Pickup', icon: '🎒' },
+  const availabilityOptions: Array<{ label: Availability }> = [
+    { label: '⏰ Full Time' },
+    { label: '⌛ Part Time' },
+    { label: '🗓️ Occasionally' },
+    { label: '🍹 Night Out' },
+    { label: '🎒 After school Pickup' },
   ];
 
   const handleNext = () => {
@@ -61,7 +59,6 @@ export default function AvailabilityScreen() {
                 <Pill
                   key={option.label}
                   label={option.label}
-                  icon={option.icon}
                   selected={selected_availability === option.label}
                   onPress={() =>
                     setFamilyAvailability({

@@ -34,6 +34,15 @@ export default function Page() {
   useEffect(()=>{
     console.log(caregiverGender)
   },[caregiverGender]);
+
+  const handleAdd = (option: string) => {
+    if (option === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/otherGender');
+      router.push('/(auth)/screens/onboarding/caregiver/otherGender')
+      return;
+    }
+    setCaregiverGender(option as any);
+  };
   return (
     <ThemedView style={styles.container}>
       <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
@@ -42,7 +51,7 @@ export default function Page() {
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
 
-        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
+        <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
           What best describes{'\n'}your gender?
         </ThemedText>
 
@@ -53,7 +62,7 @@ export default function Page() {
                 <Pill
                   key={option}
                   label={option}
-                  onPress={() => setCaregiverGender(option)}
+                  onPress={() => handleAdd(option)}
                   selected={caregiverGender === option}
                   variant={caregiverGender === option ? 'highlighted' : undefined}
                 />
@@ -95,9 +104,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 44,
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart',
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     marginTop: 20,
   },

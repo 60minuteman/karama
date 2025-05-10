@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { StyleSheet, View, TextInput, Keyboard } from 'react-native';
 import { useState, useEffect } from 'react';
 import { ThemedView } from '@/components/ThemedView';
@@ -6,11 +6,36 @@ import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
 import { Header } from '@/components/ui/Header';
 import { Button } from '@/components/ui/Button';
+import { useUserStore } from '@/services/state/user';
+import { useOtherStore } from '@/services/state/other';
+
+type Category = 'Diet' | 'Rules' | 'Religion';
+
+interface FamilySelections {
+  diets?: string[];
+  rules?: string[];
+  religion?: string;
+  other_diets?: string;
+  other_rules?: string;
+  other_religion?: string;
+  show_diet_on_profile?: boolean;
+  show_rules_on_profile?: boolean;
+  show_religion_on_profile?: boolean;
+}
 
 export default function OtherDietScreen() {
   const router = useRouter();
   const [diet, setDiet] = useState('');
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+    const { category } = useLocalSearchParams();
+
+    const {
+      addOtherDiet,
+      addOtherRule,
+      addOtherReligion
+    } = useOtherStore()
+  
+   
 
   useEffect(() => {
     const keyboardWillShow = Keyboard.addListener('keyboardWillShow', (e) => {
@@ -27,10 +52,31 @@ export default function OtherDietScreen() {
     };
   }, []);
 
+  useEffect(() => {
+    setDiet('');
+  }, [])
+  
+
+   
+
   const handleAdd = () => {
     if (diet.trim()) {
+      if (category === 'Diet') {
+        // Handle adding the diet
+        addOtherDiet(diet.trim())
+      }
+      if (category === 'Rules') {
+
+        // Handle adding the rules
+        addOtherRule(diet.trim())
+      }
+      if (category === 'Religion') {
+        // Handle adding the religion
+        addOtherReligion(diet.trim())
+      }
       // Handle adding the diet
-      router.push('/(auth)/screens/onboarding/family/philosophy');
+      router.back();
+
     }
   };
 
@@ -42,7 +88,7 @@ export default function OtherDietScreen() {
         <View style={styles.spacerTop} />
         
         <ThemedText style={styles.title}>
-          Add other diets
+          Add other {category}
         </ThemedText>
 
         <View style={styles.inputContainer}>
@@ -99,7 +145,7 @@ const styles = StyleSheet.create({
   inputCursor: {
     width: 2,
     height: 24,
-    backgroundColor: Colors.light.orange,
+    backgroundColor: Colors.light.primary,
     marginRight: 4,
   },
   input: {

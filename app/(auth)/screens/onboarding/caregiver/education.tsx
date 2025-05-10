@@ -1,37 +1,37 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Switch } from 'react-native';
-import { router } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
+import { router } from 'expo-router';
+import React, { useState } from 'react';
+import { StyleSheet, Switch, View } from 'react-native';
 
 const educationOptions = [
-  { label: 'High School' as const, icon: '🎓' },
-  { label: 'In College' as const, icon: '📚' },
-  { label: 'Undergraduate Degree' as const, icon: '🎓' },
-  { label: 'In Grad School' as const, icon: '📘' },
-  { label: 'Graduate Degree' as const, icon: '🎓' },
+  { label: '🎓 High School' as const },
+  { label: '📓 In College' as const },
+  { label: '🎓 Undergraduate Degree' as const },
+  { label: '📘 In Grad School' as const },
+  { label: '🎓 Graduate Degree' as const },
   { label: 'No Preference' as const },
 ];
 
 export default function Page() {
-  const { 
-    caregiverEducation, 
-    setCaregiverEducation, 
-    setOnboardingScreen, 
+  const {
+    caregiverEducation,
+    setCaregiverEducation,
+    setOnboardingScreen,
     caregiverShowEducation,
-    setCaregiverShowEducation 
+    setCaregiverShowEducation,
   } = useUserStore();
 
   const handleNext = () => {
-    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/abilities')
-    router.push('/(auth)/screens/onboarding/caregiver/abilities')
-  }
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/abilities');
+    router.push('/(auth)/screens/onboarding/caregiver/abilities');
+  };
 
   const handleToggle = (value: boolean) => {
     setCaregiverShowEducation(value);
@@ -39,7 +39,7 @@ export default function Page() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+      <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -54,7 +54,6 @@ export default function Page() {
             <Pill
               key={option.label}
               label={option.label}
-              icon={option.icon}
               onPress={() => setCaregiverEducation(option.label)}
               selected={caregiverEducation === option.label}
               style={styles.option}
@@ -69,16 +68,16 @@ export default function Page() {
             onValueChange={handleToggle}
             trackColor={{ false: '#E2E8F0', true: Colors.light.primary }}
             thumbColor={'#FFFFFF'}
-            ios_backgroundColor="#E2E8F0"
+            ios_backgroundColor='#E2E8F0'
           />
         </View>
       </View>
 
       <View style={styles.bottomNav}>
         <Button
-          label="Next"
+          label='Next'
           onPress={handleNext}
-          variant="compact"
+          variant='compact'
           style={styles.nextButton}
           disabled={!caregiverEducation}
         />
@@ -102,9 +101,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 44,
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     marginTop: 20,
   },
@@ -137,5 +136,5 @@ const styles = StyleSheet.create({
   nextButton: {
     backgroundColor: '#F45B69',
     borderRadius: 100,
-  }
-}); 
+  },
+});

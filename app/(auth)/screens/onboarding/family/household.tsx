@@ -5,6 +5,7 @@ import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -39,55 +40,68 @@ export default function HouseholdScreen() {
     setOnboardingScreen,
   } = useUserStore();
 
-  console.log(
-    'family_selections',
-    family_selections,
-    family_show_diet,
-    family_show_rules
-  );
-
   const categories = {
     Diet: [
-      { label: 'Vegan', icon: '🥬' },
-      { label: 'Vegetarian', icon: '🥗' },
-      { label: 'Halal', icon: '🍖' },
-      { label: 'Meat Eater', icon: '🍗' },
-      { label: 'Kosher', icon: '🥩' },
-      { label: 'Pescatarian', icon: '🐟' },
-      { label: 'Sugar Free', icon: '🍬' },
-      { label: 'None', icon: '⛔' },
-      { label: 'Other', icon: '🥑' },
+      { label: '🥬 Vegan' },
+      { label: '🥗 Vegetarian' },
+      { label: '🥩 Halal' },
+      { label: '🍗 Meat Eater' },
+      { label: '🧆 Kosher' },
+      { label: '🐟 Pescatarian' },
+      { label: '🍉 Sugar Free' },
+      { label: '🚫 None' },
+      { label: '🥑 Other' },
     ],
     Rules: [
-      { label: 'No Screens', icon: '📱' },
-      { label: 'No Vapping', icon: '💨' },
-      { label: 'Be Kind', icon: '😊' },
-      { label: 'No Hitting', icon: '👊' },
-      { label: 'No Nuts', icon: '🥜' },
-      { label: 'No Swearing', icon: '🤬' },
-      { label: 'No Long Nails', icon: '💅' },
-      { label: 'No Bullying', icon: '🐂' },
-      { label: 'No Perfume', icon: '🌸' },
-      { label: 'No Smoking', icon: '😤' },
-      { label: 'No Throwing Balls', icon: '🔴' },
-      { label: 'No Jumping On Furniture', icon: '🛋️' },
-      { label: 'Other', icon: '🎯' },
+      { label: '📵 No Screens' },
+      { label: '💨 No Vapping' },
+      { label: '😊 Be Kind' },
+      { label: '👋🏽 No Hitting' },
+      { label: '🥜 No Nuts' },
+      { label: '🤬 No Swearing' },
+      { label: '💅 No Long Nails' },
+      { label: '🐂 No Bullying' },
+      { label: '🌸 No Perfume' },
+      { label: '🚭 No Smoking' },
+      { label: '☄️ No Throwing Balls' },
+      { label: '🛋️ No Jumping On Furniture' },
+      { label: '🎈 Other' },
     ],
     Religion: [
-      { label: 'Islam', icon: '🕌' },
-      { label: 'Taoism', icon: '☯️' },
-      { label: 'Buddhism', icon: '🕉️' },
-      { label: 'Judaism', icon: '✡️' },
-      { label: 'Hinduism', icon: '🕉️' },
-      { label: 'Christianity', icon: '✝️' },
-      { label: 'Athesisim', icon: '🧬' },
-      { label: 'Other', icon: '🙏' },
+      { label: '🕌 Islam' },
+      { label: '☯️ Taoism' },
+      { label: '☸️ Buddhism' },
+      { label: '🕍 Judaism' },
+      { label: '🪷 Hinduism' },
+      { label: '⛪️ Christianity' },
+      { label: '⚛️ Athesisim' },
+      { label: '📿 Other' },
     ],
   };
+  const {
+    otherDiet,
+otherRule,
+otherReligion
+  } = useOtherStore()
 
   const toggleSelection = (category: Category, label: string) => {
     const currentSelections = { ...family_selections } as FamilySelections;
-
+    if (category === 'Diet' && label === '🥑 Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
+      router.push('/(auth)/screens/onboarding/family/otherDiet?category=diet');
+      return;
+    }
+    if (category === 'Rules' && label === '🎯 Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
+      router.push('/(auth)/screens/onboarding/family/otherDiet?category=rules');
+      return;
+    }
+    if (category === 'Religion' && label === '🙏 Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
+      router.push('/(auth)/screens/onboarding/family/otherDiet?category=religion');
+      return;
+    }
+   
     // Initialize arrays if they don't exist
     if (!currentSelections.diets) currentSelections.diets = [];
     if (!currentSelections.rules) currentSelections.rules = [];
@@ -124,14 +138,8 @@ export default function HouseholdScreen() {
   };
 
   const handleNext = () => {
-    const selections = family_selections as FamilySelections;
-    if (selections.diets?.includes('Other')) {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
-      router.push('/(auth)/screens/onboarding/family/otherDiet');
-    } else {
       setOnboardingScreen('/(auth)/screens/onboarding/family/philosophy');
       router.push('/(auth)/screens/onboarding/family/philosophy');
-    }
   };
 
   return (
@@ -164,7 +172,6 @@ export default function HouseholdScreen() {
                     <Pill
                       key={item.label}
                       label={item.label}
-                      icon={item.icon}
                       selected={
                         category === 'Religion'
                           ? (family_selections as FamilySelections).religion ===

@@ -2,17 +2,16 @@ import { useAuth } from '@/app/store/auth';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
-import { Header } from '@/components/ui/Header';
 import { Colors } from '@/constants/Colors';
 import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
 import { Ionicons } from '@expo/vector-icons';
-import { useMutation } from '@tanstack/react-query';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useReducer, useState } from 'react';
 import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const reducer = (state: any, action: any) => {
   switch (action.type) {
@@ -37,51 +36,25 @@ export default function PhoneNumberScreen() {
   const [isChecked, setIsChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { setUser, setToken } = useUserStore();
+  const { setToken, setUser } = useUserStore();
   const { signIn: authSignIn } = useAuth();
+  const queryClient = useQueryClient();
 
   const signIn = useMutation({
     mutationFn: (data: any) => {
       return customAxios.post(`/auth/phone/signin/complete`, data);
     },
     onSuccess: async (response: any) => {
-      try {
-        const token = response?.data?.data?.token;
-        const userData = response?.data?.data?.user;
-
-        if (token && userData) {
-          // Save token to AsyncStorage
-          await AsyncStorage.setItem('userToken', token);
-          await AsyncStorage.setItem('user', JSON.stringify(userData));
-          
-          // Set auth header for future requests
-          customAxios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-          
-          // Update user store
-          setToken(token);
-          setUser(userData);
-
-          // Call auth context sign in
-          await authSignIn(token);
-
-          // Small delay to ensure state is updated
-          setTimeout(() => {
-            router.replace('/(tabs)/discover');
-          }, 100);
-        } else {
-          throw new Error('Invalid response data');
-        }
-      } catch (error) {
-        console.error('Error in sign in:', error);
-        Toast.show({
-          type: 'error',
-          text1: 'Sign in failed',
-          text2: 'Please try again',
-        });
-      }
+      const token = response?.data?.data?.token;
+      const userData = response?.data?.data?.user;
+      setToken(token);
+      setUser(userData);
+      queryClient.clear();
+      router.replace('/(tabs)/discover');
+      return;
     },
     onError: (error: any) => {
-      console.error('Sign in error:', error?.response?.data);
+      // console.error('Sign in error:', error?.response?.data);
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
@@ -98,18 +71,41 @@ export default function PhoneNumberScreen() {
   const handleSignIn = async () => {
     if (phoneNumber.length === 10) {
       const formattedNumber = formatPhoneNumber(phoneNumber);
-      setIsLoading(true);
-      
-      try {
-        await signIn.mutateAsync({
-          phone_number: formattedNumber,
-          password: password,
-        });
-      } catch (error) {
-        console.error('Sign in mutation error:', error);
-      } finally {
-        setIsLoading(false);
-      }
+      signIn.mutate({
+        phone_number: formattedNumber,
+        password: password,
+      });
+
+      // try {
+      //   setIsLoading(true);
+      //   const response = await signIn.mutateAsync({
+      //     phone_number: formattedNumber,
+      //     password: password,
+      //   });
+
+      //   if (response?.data) {
+      //     const { token, user } = response.data;
+
+      //     // Ensure we have both token and user before proceeding
+      //     if (!token) {
+      //       throw new Error('No token received from server');
+      //     }
+
+      //     await authSignIn(token);
+
+      //     // Navigate to discover screen
+      //     router.replace('/(tabs)/discover');
+      //   }
+      // } catch (error) {
+      //   console.error('Error in sign in:', error);
+      //   Toast.show({
+      //     type: 'error',
+      //     text1: 'Sign in failed',
+      //     text2: 'Please check your credentials and try again',
+      //   });
+      // } finally {
+      //   setIsLoading(false);
+      // }
     }
   };
 
@@ -123,8 +119,6 @@ export default function PhoneNumberScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant='back' />
-
       <View style={styles.content}>
         <View style={styles.spacer} />
         <ThemedText style={styles.helloText}> 😇 Hello there</ThemedText>

@@ -36,7 +36,7 @@ useEffect(()=>{
           <View style={styles.spacer} />
           <ProgressBar progress={0.4} />
           
-          <ThemedText style={[styles.title, { fontFamily: 'Bogart-Bold' }]}>
+          <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
             What's your{'\n'}name?
           </ThemedText>
 
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     height: 120,
   },
   title: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Semibold',
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,

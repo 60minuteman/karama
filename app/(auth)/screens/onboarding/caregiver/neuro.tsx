@@ -43,6 +43,7 @@ export default function Page() {
   //   );
   // };
   const toggleConditionSelection = (label: CaregiverConditionExperience) => {
+  
     const prev = caregiverConditionExperience ?? [];
     const updatedConditions = prev.includes(label)
       ? prev.filter((item) => item !== label)
@@ -136,9 +137,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 44,
-    fontFamily: 'Bogart',
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    color: '#002140',
+    color: Colors.light.text,
     marginBottom: 40,
     marginTop: 20,
   },

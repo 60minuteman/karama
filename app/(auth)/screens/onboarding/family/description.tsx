@@ -10,34 +10,47 @@ import { useRouter } from 'expo-router';
 import { StyleSheet, Switch, View } from 'react-native';
 
 type FamilyType =
-  | 'Mom'
-  | 'Dad'
-  | 'Mom & Dad'
-  | 'Moms'
-  | 'Dads'
-  | 'Guardian'
-  | 'Other';
+  | '🧍🏻‍♀️ Mom'
+  | '🧍🏽 Dad'
+  | '👩🏻‍🤝‍👨🏾 Mom & Dad'
+  | '👩🏻‍🤝‍👩🏽 Moms'
+  | '👨🏽‍🤝‍👨🏾 Dads'
+  | '👩🏽‍🎤 Guardian'
+  | '💖 Other';
 
 export default function FamilyDescriptionScreen() {
   const router = useRouter();
   const { setFamilyDescription, family_description, setOnboardingScreen } =
     useUserStore();
 
-  const familyTypes: { type: FamilyType; icon: string }[] = [
-    { type: 'Mom', icon: '👩' },
-    { type: 'Mom & Dad', icon: '👨‍👩' },
-    { type: 'Dad', icon: '👨' },
-    { type: 'Moms', icon: '👩👩' },
-    { type: 'Dads', icon: '👨👨' },
-    { type: 'Guardian', icon: '🦹' },
-    { type: 'Other', icon: '💝' },
+  const familyTypes: { type: FamilyType }[] = [
+    { type: '🧍🏻‍♀️ Mom' },
+    { type: '👩🏻‍🤝‍👨🏾 Mom & Dad' },
+    { type: '🧍🏽 Dad' },
+    { type: '👩🏻‍🤝‍👩🏽 Moms' },
+    { type: '👨🏽‍🤝‍👨🏾 Dads' },
+    { type: '👩🏽‍🎤 Guardian' },
+    { type: '💖 Other' },
   ];
 
   const handleNext = () => {
     if (family_description?.type) {
       setOnboardingScreen('/(auth)/screens/onboarding/family/number');
       router.push('/(auth)/screens/onboarding/family/number');
+    } 
+  };
+
+  const handleAdd = (item: any) => {
+    if (item === '💖 Other') {
+      setOnboardingScreen(
+        '/(auth)/screens/onboarding/family/otherFamilyDescriptionScreen',
+      );
+      router.push(
+        '/(auth)/screens/onboarding/family/otherFamilyDescriptionScreen',
+      );
+      return;
     }
+    setFamilyDescription({ type: item });
   };
 
   return (
@@ -56,10 +69,10 @@ export default function FamilyDescriptionScreen() {
           {familyTypes.map((item) => (
             <Pill
               key={item.type}
-              icon={item.icon}
-              label={item.type}
+              icon={item.type.split(' ')[0]}
+              label={item.type.split(' ').slice(1).join(' ')}
               selected={family_description?.type === item.type}
-              onPress={() => setFamilyDescription({ type: item.type })}
+              onPress={() => handleAdd(item.type)}
             />
           ))}
         </View>
