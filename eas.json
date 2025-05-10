@@ -19,12 +19,13 @@
       "autoIncrement": true,
       "channel": "production",
       "env": {
-        "YARN_ENABLE_IMMUTABLE_INSTALLS": "false"
+        "YARN_ENABLE_IMMUTABLE_INSTALLS": "false",
+        "YARN_ENABLE_GLOBAL_CACHE": "false"
       },
       "cache": {
         "key": "yarn-production-{{ checksum('yarn.lock') }}"
       },
-      "prebuildCommand": "yarn install"
+      "prebuildCommand": "yarn config set enableImmutableInstalls false && yarn install"
     }
   },
   "submit": {
