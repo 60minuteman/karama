@@ -26,7 +26,7 @@
       "cache": {
         "key": "yarn-production-{{ checksum('yarn.lock') }}"
       },
-      "prebuildCommand": "yarn install --force"
+      "prebuildCommand": "npm install -g yarn@3.6.4 && yarn install"
     }
   },
   "submit": {
