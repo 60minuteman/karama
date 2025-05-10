@@ -26,7 +26,7 @@
       "cache": {
         "key": "yarn-production-{{ checksum('yarn.lock') }}"
       },
-      "prebuildCommand": "yarn install --ignore-engines"
+      "prebuildCommand": "yarn install --force"
     }
   },
   "submit": {
