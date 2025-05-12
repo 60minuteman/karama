@@ -1,3 +1,4 @@
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { toastConfig } from '@/components/Toast';
 import { Colors } from '@/constants/Colors';
 import { FontProvider } from '@/providers/FontProvider';
@@ -120,20 +121,22 @@ function RootLayoutNav() {
     <SafeAreaProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ThemeProvider>
-          <QueryClientProvider client={queryClient}>
-            <FontProvider>
-              <View
-                style={{ flex: 1, backgroundColor: Colors.light.background }}
-              >
-                <Slot />
-                <StatusBar
-                  style='dark'
-                  backgroundColor={Colors.light.background}
-                />
-              </View>
-              <Toast config={toastConfig} position='top' />
-            </FontProvider>
-          </QueryClientProvider>
+          <ErrorBoundary>
+            <QueryClientProvider client={queryClient}>
+              <FontProvider>
+                <View
+                  style={{ flex: 1, backgroundColor: Colors.light.background }}
+                >
+                  <Slot />
+                  <StatusBar
+                    style='dark'
+                    backgroundColor={Colors.light.background}
+                  />
+                </View>
+                <Toast config={toastConfig} position='top' />
+              </FontProvider>
+            </QueryClientProvider>
+          </ErrorBoundary>
         </ThemeProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>
