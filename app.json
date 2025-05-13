@@ -2,6 +2,7 @@
   "expo": {
     "name": "Karama",
     "slug": "karama",
+    "scheme": "karama",
     "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
