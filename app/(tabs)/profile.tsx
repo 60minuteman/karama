@@ -82,6 +82,9 @@ export default function Profile() {
     router.push(route);
   };
 
+  // console.log('Current user data:', currentUser);
+  
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>

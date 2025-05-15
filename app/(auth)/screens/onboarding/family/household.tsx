@@ -91,12 +91,12 @@ otherReligion
       router.push('/(auth)/screens/onboarding/family/otherDiet?category=diet');
       return;
     }
-    if (category === 'Rules' && label === '🎯 Other') {
+    if (category === 'Rules' && label === '🎈 Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
       router.push('/(auth)/screens/onboarding/family/otherDiet?category=rules');
       return;
     }
-    if (category === 'Religion' && label === '🙏 Other') {
+    if (category === 'Religion' && label === '📿 Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
       router.push('/(auth)/screens/onboarding/family/otherDiet?category=religion');
       return;

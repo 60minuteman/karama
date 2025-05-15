@@ -35,7 +35,6 @@ const PETS = [
   { label: '🦕 Dinosaur' as const },
   { label: '🐘 Baby Elephant' as const },
   { label: '🦄 Unicorn' as const },
-  { label: '🚫 None' as const },
   { label: '🐾 Other' as const },
 ];
 

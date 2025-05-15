@@ -9,6 +9,7 @@ interface WorkProps {
     icon: string;
     label: string;
   }>;
+  data: any
 }
 
 export const Work = ({
@@ -17,6 +18,7 @@ export const Work = ({
     { icon: '🐸', label: 'Frog' },
     { icon: '🐮', label: 'Cow' },
   ],
+  data
 }: WorkProps) => {
   let [fontsLoaded] = useFonts({
     'Bogart-Regular': require('../../assets/fonts/bogart/Bogart-Regular-trial.ttf'),
@@ -25,13 +27,15 @@ export const Work = ({
   if (!fontsLoaded) {
     return null;
   }
-
+  // console.log(data.disabilities, 'data.disabilities');
+  const animalsData = data?.experience_with_pets?.pets || [];
+  
   return (
     <View style={styles.container}>
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>I can work with</ThemedText>
         <View style={styles.pillsContainer}>
-          {animals.map((animal, index) => (
+          {animalsData.map((animal: any, index: any) => (
             <View key={index} style={styles.pillWrapper}>
               <Pill2
                 //  icon={animal.icon}
@@ -40,6 +44,16 @@ export const Work = ({
               />
             </View>
           ))}
+
+          {data?.experience_with_pets?.other && (
+            <View  style={styles.pillWrapper}>
+              <Pill2
+                //  icon={animal.icon}
+                label={data?.experience_with_pets?.other}
+                style={styles.pill}
+              />
+            </View>
+          )}
         </View>
       </View>
     </View>

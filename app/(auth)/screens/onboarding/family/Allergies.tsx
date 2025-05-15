@@ -172,7 +172,7 @@ export default function Allergies() {
               label='No'
               selected={false}
               onPress={() =>
-                router.push('/(auth)/screens/onboarding/family/interest')
+                router.push('/(auth)/screens/onboarding/family/intermission')
               }
             />
           </View>

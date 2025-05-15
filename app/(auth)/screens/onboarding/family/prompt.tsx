@@ -61,12 +61,17 @@ export default function Prompt() {
       router.push('/(auth)/screens/onboarding/family/prompt3');
     }
   };
+const handleAdd = (item: any) => {
+  // Set delay in milliseconds (e.g., 2 minutes = 2 * 60 * 1000)
+  const delay = 2 * 60 * 1000;
 
-  const handleAdd = (item: any) => {
-    setFamilyPrompt(item)
-      setOnboardingScreen('/(auth)/screens/onboarding/family/promptAnswer');
-      router.push('/(auth)/screens/onboarding/family/promptAnswer');
-  }
+  setTimeout(() => {
+    setFamilyPrompt(item);
+    setOnboardingScreen('/(auth)/screens/onboarding/family/promptAnswer');
+    router.push('/(auth)/screens/onboarding/family/promptAnswer');
+  }, delay);
+};
+
 
   return (
     <ThemedView style={styles.container}>

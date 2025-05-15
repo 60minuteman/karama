@@ -1,14 +1,11 @@
 import { ThemedText } from '@/components/ThemedText';
 import React, { useEffect } from 'react';
 import { Image, StyleSheet, View,  } from 'react-native';
-import { router } from 'expo-router';
-import { Button } from '../ui/Button';
+
 
 
 const EmptyDiscovery = ({ role }: { role: string }) => {
-   const handleNavigateToDiscover = () => {
-      router.push('itsAmatch');
-    };
+ 
   
   return (
     <View style={styles.container}>
@@ -24,10 +21,7 @@ const EmptyDiscovery = ({ role }: { role: string }) => {
           Your matches will appear here
         </ThemedText>
         
-        <Button
-          onPress={handleNavigateToDiscover}
-          label='Start Matching'
-        />
+       
         
       </View>
     </View>

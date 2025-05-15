@@ -204,11 +204,12 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
               ...(experienceWithDisabilities?.disabilities || []),
               ...(experienceWithPets?.pets || []),
             ].filter(Boolean)}
+            data={data}
           />
         </View>
         <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>
-          <Position positions={caregiverProfile?.past_positions || []} />
+          <Position positions={caregiverProfile?.past_positions || []} data={data} />
         </View>
         <View style={styles.bottomSpacer} />
       </>

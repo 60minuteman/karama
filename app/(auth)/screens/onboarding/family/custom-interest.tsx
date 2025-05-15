@@ -47,6 +47,8 @@ export default function CustomInterestScreen() {
 
     router.back();
   };
+  console.log(newInterest, 'newInterest');
+  
 
   return (
     <ThemedView style={styles.container}>

@@ -2,8 +2,15 @@ import { ThemedText } from '@/components/ThemedText';
 import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import { Button } from '@/components/ui/Button';
+
 
 export default function CommunityScreen() {
+  const handleNavigateToDiscover = () => {
+      router.push('itsAmatch');
+    };
+
   return (
     <LinearGradient
       colors={['#FF8A00', '#FF4B55']}
@@ -19,6 +26,11 @@ export default function CommunityScreen() {
         <ThemedText style={styles.description}>
         Get answers to your every question and give solutions to child related problems
         </ThemedText>
+   
+          <Button
+          onPress={handleNavigateToDiscover}
+          label='Start Matching'
+        />
       </View>
       <View style={styles.phoneContainer}>
         <Image

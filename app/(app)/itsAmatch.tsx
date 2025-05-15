@@ -20,7 +20,8 @@ const ItsAMatch = () => {
           <Image source={require('@/assets/images/downlogoicon.png')} style={styles.logoBottom} resizeMode='contain' />
         </View>
 
-        <Text style={styles.matchText}>It's a Match!</Text>
+      <View style={styles.btnCom}>
+          <Text style={styles.matchText}>It's a Match!</Text>
         <Text style={styles.subText}>The Clarks have 24 hours to reach out!</Text>
 
         <TouchableOpacity style={styles.messageButton}>
@@ -30,6 +31,7 @@ const ItsAMatch = () => {
         <TouchableOpacity style={styles.keepSearchingButton}>
           <Text style={styles.keepSearchingText}>Keep Searching</Text>
         </TouchableOpacity>
+      </View>
       </View>
     </SafeAreaView>
   );
@@ -43,6 +45,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF0F0',
     padding: 16,
   },
+  btnCom: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 16,
+    alignItems: 'center',
+    flex: 1,
+    width: '100%',
+  },
   header: {
     height: 44,
     justifyContent: 'flex-start',
@@ -51,7 +61,8 @@ const styles = StyleSheet.create({
   },
   photoWrapper: {
     alignItems: 'center',
-    marginVertical: 20,
+    // marginVertical: 50,
+    marginBottom: 100,
     position: 'relative',
   },
   photoContainer: {
@@ -63,33 +74,35 @@ const styles = StyleSheet.create({
     // elevation: 5,
   },
   photo: {
-    width: 300,
-    height: 400,
+    width: 450,
+    height: 450,
+    marginTop: -30,
+    marginLeft: -100,
     // borderRadius: 20,
   },
   logoTop: {
     position: 'absolute',
-    top: -10,
-    width: 200,
-    left: -38,
+    top: 10,
+    width: 170,
+    left: -40,
     height: 200,
   },
   logoBottom: {
     position: 'absolute',
-    bottom: -80,
+    bottom: -150,
     right: -38,
     width: 150,
     height: 150,
   },
   matchText: {
-    fontSize: 28,
+    fontSize: 40,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#261D2AE5',
     marginBottom: 8,
   },
   subText: {
     fontSize: 16,
-    color: '#666',
+    color: '#000',
     marginBottom: 32,
   },
   messageButton: {
@@ -98,6 +111,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 30,
     marginBottom: 12,
+    width: '100%'
   },
   messageButtonText: {
     color: 'white',
@@ -110,6 +124,8 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 32,
     borderRadius: 30,
+    width: '100%'
+
   },
   keepSearchingText: {
     color: '#FF6B6B',

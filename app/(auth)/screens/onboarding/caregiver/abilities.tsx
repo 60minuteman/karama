@@ -46,7 +46,7 @@ export default function Page() {
   // const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   const toggleAbilitiesSelection = (label: CaregiverAbilities) => {
-    if (label === '🎪 Other') {
+    if (label === '🏕️ Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/caregiver/otherAbilities')
       router.push('/(auth)/screens/onboarding/caregiver/otherAbilities')
       return;
@@ -58,7 +58,7 @@ export default function Page() {
     setCaregiverAbilities(updatedAbilities);
   };
   const toggleCertificationSelection = (label: CaregiverCertification) => {
-    if (label === '📄 Other') {
+    if (label === '📃 Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/caregiver/otherCertification')
       router.push('/(auth)/screens/onboarding/caregiver/otherCertification')
       return;

@@ -18,6 +18,8 @@ const PHILOSOPHIES = [
   { label: 'Reggio Emillia' as const, icon: '🌈' },
   { label: 'Gentle Parenting' as const, icon: '🌈' },
   { label: 'Permissive Parenting' as const, icon: '🌈' },
+  { label: 'Other' as const, icon: '🌈' },
+  { label: 'None' as const, icon: '🚫' },
 ];
 
 export default function PhiloScreen() {
@@ -38,11 +40,18 @@ export default function PhiloScreen() {
       router.push('/(auth)/screens/onboarding/family/otherPhilo');
       return;
     }
+
+    if (philosophy === 'None') {
+      setCaregiverPhilosophyExperience(['None']);
+       setOnboardingScreen('/(auth)/screens/onboarding/caregiver/speak');
+    router.push('/(auth)/screens/onboarding/caregiver/speak');
+    } else {
     const prev = caregiverPhilosophyExperience ?? [];
     const selectedPhilosophies = prev.includes(philosophy)
       ? prev.filter((item) => item !== philosophy)
       : [...prev, philosophy];
     setCaregiverPhilosophyExperience(selectedPhilosophies);
+    }
   };
 
   const handleNext = () => {

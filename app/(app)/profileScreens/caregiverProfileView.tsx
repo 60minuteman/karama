@@ -38,6 +38,7 @@ const CaregiverProfileView = () => {
       data: CaregiverProfile;
       isLoading: boolean;
     };
+console.log('Caregiver profile data:', caregiverProfile);
 
   // Add debug logs
   // console.log('Raw caregiver profile data:', caregiverProfile);

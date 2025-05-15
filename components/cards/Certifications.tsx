@@ -23,6 +23,11 @@ export const Certifications = ({
     return null;
   }
 
+  const abi = data?.abilities_and_certifications?.abilities || [];
+  const cert = data?.abilities_and_certifications?.certifications || [];
+  
+  const margeArray = [...abi, ...cert];
+  
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
@@ -36,7 +41,7 @@ export const Certifications = ({
           My Certifications/Requirements
         </ThemedText>
         <View style={styles.pillsContainer}>
-          {certifications.map((item: any, index: any) => (
+          {margeArray.map((item: any, index: any) => (
             <Pill2
               key={index}
               // icon={item.icon}

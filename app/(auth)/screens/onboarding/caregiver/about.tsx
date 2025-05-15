@@ -11,7 +11,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
-type Category = 'Personality' | 'Rules' | 'Diet' | 'Religion';
+type Category = 'Personality' | 'Diet' | 'Religion';
 
 interface CategoryData {
   label: string;
@@ -61,21 +61,21 @@ export default function AboutScreen() {
       { label: '😎 Cool', category: 'Personality' },
       { label: '👨🏽‍💻 Organized', category: 'Personality' },
     ],
-    Rules: [
-      { label: '📵 No Screens', category: 'Rules' },
-      { label: '💨 No Vapping', category: 'Rules' },
-      { label: '😊 Be Kind', category: 'Rules' },
-      { label: '👋🏽 No Hitting', category: 'Rules' },
-      { label: '🥜 No Nuts', category: 'Rules' },
-      { label: '🤬 No Swearing', category: 'Rules' },
-      { label: '💅 No Long Nails', category: 'Rules' },
-      { label: '🐂 No Bullying', category: 'Rules' },
-      { label: '🌸 No Perfume', category: 'Rules' },
-      { label: '🚭 No Smoking', category: 'Rules' },
-      { label: '☄️ No Throwing Balls', category: 'Rules' },
-      { label: '🛋️ No Jumping On Furniture', category: 'Rules' },
-      { label: '🎈 Other', category: 'Rules' },
-    ],
+    // Rules: [
+    //   { label: '📵 No Screens', category: 'Rules' },
+    //   { label: '💨 No Vapping', category: 'Rules' },
+    //   { label: '😊 Be Kind', category: 'Rules' },
+    //   { label: '👋🏽 No Hitting', category: 'Rules' },
+    //   { label: '🥜 No Nuts', category: 'Rules' },
+    //   { label: '🤬 No Swearing', category: 'Rules' },
+    //   { label: '💅 No Long Nails', category: 'Rules' },
+    //   { label: '🐂 No Bullying', category: 'Rules' },
+    //   { label: '🌸 No Perfume', category: 'Rules' },
+    //   { label: '🚭 No Smoking', category: 'Rules' },
+    //   { label: '☄️ No Throwing Balls', category: 'Rules' },
+    //   { label: '🛋️ No Jumping On Furniture', category: 'Rules' },
+    //   { label: '🎈 Other', category: 'Rules' },
+    // ],
     Diet: [
       { label: '🥬 Vegan', category: 'Diet' },
       { label: '🥗 Vegetarian', category: 'Diet' },
@@ -182,8 +182,6 @@ export default function AboutScreen() {
                       selected={
                         category === 'Personality'
                           ? caregiverPersonality?.includes(item.label)
-                          : category === 'Rules'
-                          ? caregiverRules?.includes(item.label)
                           : category === 'Diet'
                           ? caregiverDiet?.includes(item.label)
                           : caregiverReligion?.includes(item.label)
@@ -191,8 +189,6 @@ export default function AboutScreen() {
                       onPress={() =>
                         category === 'Personality'
                           ? togglePersonalitySelection(item.label)
-                          : category === 'Rules'
-                          ? toggleRulesSelection(item.label)
                           : category === 'Diet'
                           ? toggleDietSelection(item.label)
                           : toggleReligionSelection(item.label)
@@ -200,7 +196,7 @@ export default function AboutScreen() {
                     />
                   ))}
                 </View>
-                {category !== 'Rules' && (
+                {category !== 'Religion' && (
                   <View style={styles.switchContainer}>
                     <ThemedText style={styles.switchLabel}>
                       Show on profile

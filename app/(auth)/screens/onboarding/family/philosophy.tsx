@@ -51,8 +51,15 @@ export default function PhilosophyScreen() {
   ];
 
   const togglePhilosophy = (philo: Philosophy) => {
+    if (philo === 'Other') {
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherPhilo');
+      router.push('/(auth)/screens/onboarding/family/otherPhilo');
+      return;
+    }
     if (philo === 'None') {
       setFamilyPhilosophies(['None']);
+      setOnboardingScreen('/(auth)/screens/onboarding/family/Allergies');
+      router.push('/(auth)/screens/onboarding/family/Allergies');
     } else {
       const newPhilos = family_philosophies.includes('None')
         ? [philo]
@@ -64,13 +71,8 @@ export default function PhilosophyScreen() {
   };
 
   const handleNext = () => {
-    if (family_philosophies.includes('Other')) {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherPhilo');
-      router.push('/(auth)/screens/onboarding/family/otherPhilo');
-    } else {
       setOnboardingScreen('/(auth)/screens/onboarding/family/Allergies');
       router.push('/(auth)/screens/onboarding/family/Allergies');
-    }
   };
 
   const handleOther = () => {
