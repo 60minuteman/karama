@@ -16,6 +16,7 @@ type MessageHeaderProps = {
   activeTab: 'chat' | 'profile';
   onTabChange: (tab: 'chat' | 'profile') => void;
   handleClearMessages: any;
+  handleBlockUser: any;
 };
 
 export function MessageHeader({
@@ -23,6 +24,7 @@ export function MessageHeader({
   activeTab,
   onTabChange,
   handleClearMessages,
+  handleBlockUser,
 }: MessageHeaderProps) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -61,6 +63,7 @@ export function MessageHeader({
 
   const handleBlockConfirm = () => {
     // Handle block logic here
+    handleBlockUser();
     setShowBlockConfirm(false);
   };
 
