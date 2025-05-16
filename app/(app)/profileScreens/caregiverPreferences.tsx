@@ -6,11 +6,20 @@ import { ThemedText } from '@/components/ThemedText';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import InfoPill from '@/components/ui/InfoPill';
 import { useRouter } from 'expo-router';
+import { useCurrentUser, useProfile } from '@/services/api/api';
 
 const CaregiverPreferences = () => {
     const [payType, setPayType] = useState('Hourly');
     const [payRange, setPayRange] = useState([20, 30]);
     const router = useRouter();
+         const { data: currentUser, isLoading: isLoadingCurrentUser } =
+            useCurrentUser();
+        
+          const { data: caregiverProfile, isLoading: caregiverProfileLoading }: any =
+            useProfile(currentUser?.data?.role);
+            console.log(caregiverProfile?.caregiverProfile, 'caregiverProfile');
+            
+        const caregiverProfileData = caregiverProfile?.caregiverProfile;
 
     const handleBack = () => {
         router.push('/(tabs)/profile');
@@ -29,24 +38,24 @@ const CaregiverPreferences = () => {
                                 <ThemedText style={styles.heading}>Pay schedule</ThemedText>
                                 <View style={styles.payTypeContainer}>
                                     <TouchableOpacity
-                                        style={[styles.payTypeButton, payType === 'Hourly' && styles.selectedPayType]}
+                                        style={[styles.payTypeButton, caregiverProfileData?.payment_info?.type === 'Hourly' && styles.selectedPayType]}
                                         onPress={() => setPayType('Hourly')}
                                     >
                                         <Image
                                             source={require('@/assets/icons/hourly.png')}
                                             style={styles.payTypeIcon}
                                         />
-                                        <ThemedText style={[styles.payTypeText, payType === 'Hourly' && styles.selectedPayTypeText]}>Hourly</ThemedText>
+                                        <ThemedText style={[styles.payTypeText, caregiverProfileData?.payment_info?.type === 'Hourly' && styles.selectedPayTypeText]}>Hourly</ThemedText>
                                     </TouchableOpacity>
                                     <TouchableOpacity
-                                        style={[styles.payTypeButton, payType === 'Salary' && styles.selectedPayType]}
+                                        style={[styles.payTypeButton, caregiverProfileData?.payment_info?.type === 'Salary' && styles.selectedPayType]}
                                         onPress={() => setPayType('Salary')}
                                     >
                                         <Image
                                             source={require('@/assets/icons/salary.png')}
                                             style={styles.payTypeIcon}
                                         />
-                                        <ThemedText style={[styles.payTypeText, payType === 'Salary' && styles.selectedPayTypeText]}>Salary Base</ThemedText>
+                                        <ThemedText style={[styles.payTypeText, caregiverProfileData?.payment_info?.type === 'Salary' && styles.selectedPayTypeText]}>Salary Base</ThemedText>
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -55,7 +64,7 @@ const CaregiverPreferences = () => {
                             <View style={styles.subSection}>
                                 <ThemedText style={styles.heading}>Pay rate</ThemedText>
                                 <View style={styles.pillContainer}>
-                                    <InfoPill icon={'⌛'} label={`$${payRange[0]} - $${payRange[1]}`} />
+                                    <InfoPill icon={'⌛'} label={`$${caregiverProfileData?.payment_info?.hourly_min} - $${caregiverProfileData?.payment_info?.hourly_max}`} />
                                 </View>
                                 <View style={styles.sliderContainer}>
                                     <View style={styles.sliderLabels}>
@@ -68,7 +77,7 @@ const CaregiverPreferences = () => {
                                         <ThemedText>$45+</ThemedText>
                                     </View>
                                     <MultiSlider
-                                        values={[payRange[0], payRange[1]]}
+                                        values={[caregiverProfileData?.payment_info?.hourly_min, caregiverProfileData?.payment_info?.hourly_max]}
                                         min={15}
                                         max={45}
                                         step={1}
@@ -108,8 +117,10 @@ const CaregiverPreferences = () => {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.pillContainer}>
-                                    <InfoPill icon={'👶'} label="Infant" />
-                                    <InfoPill icon={'🧒'} label="Toddler" />
+                                    {caregiverProfileData?.ages_best_with?.map((age: string) => (
+                                        <InfoPill key={age} label={age} />
+                                    ))}
+                                 
                                 </View>
                             </View>
 
@@ -122,8 +133,9 @@ const CaregiverPreferences = () => {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.pillContainer}>
-                                    <InfoPill icon={'📚'} label="Dyslexia" />
-                                    <InfoPill icon={'🧠'} label="ADHD" />
+                                    {caregiverProfileData?.experience_with_disabilities?.disabilities?.map((arrangement: string) => (
+                                        <InfoPill key={arrangement} label={arrangement} />
+                                    ))}
                                 </View>
                             </View>
 
@@ -133,9 +145,9 @@ const CaregiverPreferences = () => {
                                     <View style={styles.lockedContent}>
                                         <ThemedText style={styles.heading}>I Can Work With</ThemedText>
                                         <View style={styles.pillContainer}>
-                                            <InfoPill icon={'🐱'} label="Cat" />
-                                            <InfoPill icon={'🐸'} label="Frog" />
-                                            <InfoPill icon={'🐄'} label="Cow" />
+                                            {caregiverProfileData?.experience_with_pets?.pets?.map((pet: string) => (
+                                                <InfoPill key={pet} label={pet} />
+                                            ))}
                                         </View>
                                     </View>
                                     <Image 
@@ -150,7 +162,7 @@ const CaregiverPreferences = () => {
                                 <View style={styles.lockedContainer}>
                                     <View style={styles.lockedContent}>
                                         <ThemedText style={styles.heading}>Work Type</ThemedText>
-                                        <InfoPill icon={'🏠'} label="Hybrid" />
+                                        <InfoPill icon={'🏠'} label={caregiverProfileData?.arrangement_type} />
                                     </View>
                                     <Image 
                                         source={require('@/assets/icons/lock.png')}
@@ -178,7 +190,7 @@ const CaregiverPreferences = () => {
                                 <View style={styles.lockedContainer}>
                                     <View style={styles.lockedContent}>
                                         <ThemedText style={styles.heading}>Duration</ThemedText>
-                                        <InfoPill icon={'📅'} label="Long Term" />
+                                        <InfoPill icon={'📅'} label={caregiverProfileData?.job_commitment?.commitment} />
                                     </View>
                                     <Image 
                                         source={require('@/assets/icons/lock.png')}
@@ -193,11 +205,17 @@ const CaregiverPreferences = () => {
                                     <View style={styles.lockedContent}>
                                         <ThemedText style={styles.heading}>My Certification/Requirement</ThemedText>
                                         <View style={styles.pillContainer}>
-                                            <InfoPill icon={'🏥'} label="First Aid" />
+                                            {caregiverProfileData?.abilities_and_certifications?.abilities?.map((certification: string) => (
+                                                <InfoPill key={certification} label={certification} />
+                                            ))}
+                                            {caregiverProfileData?.abilities_and_certifications?.certifications?.map((certification: string) => (
+                                                <InfoPill key={certification} label={certification} />
+                                            ))}
+                                            {/* <InfoPill icon={'🏥'} label="First Aid" />
                                             <InfoPill icon={'🚗'} label="Able To Drive" />
                                             <InfoPill icon={'🏊‍♂️'} label="Can Swim" />
                                             <InfoPill icon={'✈️'} label="Can Travel" />
-                                            <InfoPill icon={'💉'} label="COVID Vaccination" />
+                                            <InfoPill icon={'💉'} label="COVID Vaccination" /> */}
                                         </View>
                                     </View>
                                     <Image 
@@ -213,11 +231,15 @@ const CaregiverPreferences = () => {
                                     <View style={styles.lockedContent}>
                                         <ThemedText style={styles.heading}>Benefits I require</ThemedText>
                                         <View style={styles.pillContainer}>
-                                            <InfoPill icon={'💰'} label="Yearly Raise" />
+                                            {caregiverProfileData?.required_benfits?.map((benefit: string) => (
+                                                <InfoPill key={benefit} label={benefit} />
+                                            ))}
+                                            {/* {/* <InfoPill icon={'🏖️'} label="Paid Time Off" /> */}
+                                            {/* <InfoPill icon={'💰'} label="Yearly Raise" />
                                             <InfoPill icon={'👶'} label="Maternity Leave" />
                                             <InfoPill icon={'🏥'} label="Health Insurance" />
                                             <InfoPill icon={'👵'} label="Retirment Account" />
-                                            <InfoPill icon={'🚇'} label="Monthly Metro Card" />
+                                            <InfoPill icon={'🚇'} label="Monthly Metro Card" /> */}
                                         </View>
                                     </View>
                                     <Image 
@@ -239,13 +261,16 @@ const CaregiverPreferences = () => {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.pillContainer}>
-                                    <InfoPill icon={'🍳'} label="Cooking" />
+                                    {caregiverProfileData?.responsibilities?.household_responsibilities?.map((responsibility: string) => (
+                                        <InfoPill key={responsibility} label={responsibility} />
+                                    ))}
+                                    {/* <InfoPill icon={'🍳'} label="Cooking" />
                                     <InfoPill icon={'🐾'} label="Pet Care" />
                                     <InfoPill icon={'🥗'} label="Meal Prep" />
                                     <InfoPill icon={'👕'} label="Laundry" />
                                     <InfoPill icon={'🧹'} label="Deep Housekeeping" />
                                     <InfoPill icon={'📊'} label="Household Budgeting" />
-                                    <InfoPill icon={'👥'} label="Vendor/ Services Management" />
+                                    <InfoPill icon={'👥'} label="Vendor/ Services Management" /> */}
                                 </View>
                             </View>
 
@@ -258,13 +283,19 @@ const CaregiverPreferences = () => {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.pillContainer}>
-                                    <InfoPill icon={'📱'} label="No Screens" />
+                                    {caregiverProfileData?.characteristics?.rules?.map((rule: string) => (
+                                        <InfoPill key={rule} label={rule} />
+                                    ))}
+                                    {caregiverProfileData?.childcare_philosophies?.map((philosophy: string) => (
+                                        <InfoPill key={philosophy} label={philosophy} />
+                                    ))}
+                                    {/* <InfoPill icon={'📱'} label="No Screens" />
                                     <InfoPill icon={'💨'} label="No Vapping" />
                                     <InfoPill icon={'✋'} label="No Hitting" />
                                     <InfoPill icon={'🐮'} label="No Bullying" />
                                     <InfoPill icon={'🚭'} label="No Smoking" />
                                     <InfoPill icon={'🥜'} label="No Nuts" />
-                                    <InfoPill icon={'🌈'} label="Montesiori" />
+                                    <InfoPill icon={'🌈'} label="Montesiori" /> */}
                                 </View>
                             </View>
                         </View>
