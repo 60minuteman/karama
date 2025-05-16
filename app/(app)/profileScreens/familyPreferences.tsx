@@ -8,11 +8,18 @@ import LockedIndicator from '../../components/ui/LockedIndicator'
 import InfoPill from '../../components/ui/InfoPill'
 import { benefits, householdResponsibilities, languages, personality, requirements, rules, schedule, workOptions } from '@/constants/profile'
 import { useRouter } from 'expo-router'
+import { useCurrentUser, useProfile } from '@/services/api/api'
 
 const FamilyPreferences = () => {
     const [payType, setPayType] = useState('Hourly');
     const router = useRouter();
-
+     const { data: currentUser, isLoading: isLoadingCurrentUser } =
+        useCurrentUser();
+    
+      const { data: familyProfile, isLoading: familyProfileLoading }: any =
+        useProfile(currentUser?.data?.role);
+        
+    const familyProfileData = familyProfile?.family_profile;
     const handleBack = () => {
         router.push('/(tabs)/profile');
     };
@@ -28,24 +35,24 @@ const FamilyPreferences = () => {
                                 <ThemedText style={styles.heading}>Pay schedule</ThemedText>
                                 <View style={styles.payTypeContainer}>
                                     <TouchableOpacity
-                                        style={[styles.payTypeButton, payType === 'Hourly' && styles.selectedPayType]}
+                                        style={[styles.payTypeButton, familyProfileData?.extra_info?.payment_info?.type === 'Hourly' && styles.selectedPayType]}
                                         onPress={() => setPayType('Hourly')}
                                     >
                                         <Image
                                             source={require('@/assets/icons/hourly.png')}
                                             style={styles.payTypeIcon}
                                         />
-                                        <ThemedText style={[styles.payTypeText, payType === 'Hourly' && styles.selectedPayTypeText]}>Hourly</ThemedText>
+                                        <ThemedText style={[styles.payTypeText, familyProfileData?.extra_info?.payment_info?.type === 'Hourly' && styles.selectedPayTypeText]}>Hourly</ThemedText>
                                     </TouchableOpacity>
                                     <TouchableOpacity
-                                        style={[styles.payTypeButton, payType === 'Salary' && styles.selectedPayType]}
+                                        style={[styles.payTypeButton, familyProfileData?.extra_info?.payment_info?.type === 'Salary' && styles.selectedPayType]}
                                         onPress={() => setPayType('Salary')}
                                     >
                                         <Image
                                             source={require('@/assets/icons/salary.png')}
                                             style={styles.payTypeIcon}
                                         />
-                                        <ThemedText style={[styles.payTypeText, payType === 'Salary' && styles.selectedPayTypeText]}>Salary Base</ThemedText>
+                                        <ThemedText style={[styles.payTypeText, familyProfileData?.extra_info?.payment_info?.type === 'Salary' && styles.selectedPayTypeText]}>Salary Base</ThemedText>
                                     </TouchableOpacity>
                                 </View>
                                 <View>
@@ -61,7 +68,7 @@ const FamilyPreferences = () => {
                                     <LockedIndicator isEditable />
                                 </View>
                                 <View style={styles.pillContainer}>
-                                    <InfoPill label={'06/26/2024'} />
+                                    <InfoPill label={familyProfileData?.caregiver_preference?.job_commitment?.start_date} />
                                 </View>
                             </View>
                             <View style={styles.subSection}>
@@ -69,7 +76,10 @@ const FamilyPreferences = () => {
                                     <ThemedText style={styles.heading}>We need a...</ThemedText>
                                 </View>
                                 <View style={styles.pillContainer}>
-                                    <InfoPill label={'Caregiver/Household Manager'} icon={'🧢'} />
+                                    {familyProfileData?.caregiver_preference?.caregiver_types?.map((type: string) => {
+                                        return <InfoPill key={type} label={type} icon={'🧢'} />
+                                    })}
+                                    {/* <InfoPill label={familyProfileData?.caregiver_preference?.caregiver_types} icon={'🧢'} /> */}
                                 </View>
                             </View>
                             <View style={styles.subSection}>
@@ -77,7 +87,15 @@ const FamilyPreferences = () => {
                                     <ThemedText style={styles.heading}>Should be an age range of</ThemedText>
                                 </View>
                                 <View style={styles.pillContainer}>
-                                    <InfoPill label={'26 - 30 years old'} />
+                                    <InfoPill label={familyProfileData?.caregiver_preference?.age_preference?.age_group} />
+                                </View>
+                            </View>
+                            <View style={styles.subSection}>
+                                <View style={styles.headerStyle}>
+                                    <ThemedText style={styles.heading}>Should have an experience of</ThemedText>
+                                </View>
+                                <View style={styles.pillContainer}>
+                                    <InfoPill label={familyProfileData?.caregiver_preference?.experience} />
                                 </View>
                             </View>
 
@@ -86,7 +104,7 @@ const FamilyPreferences = () => {
                                     <ThemedText style={styles.heading}>Educational level</ThemedText>
                                 </View>
                                 <View style={styles.pillContainer}>
-                                    <InfoPill icon={'🎓'} label={'Bachelors Degree'} />
+                                    <InfoPill icon={'🎓'} label={familyProfileData?.caregiver_preference?.education_level} />
                                 </View>
                             </View>
                             <View style={styles.subSection}>
@@ -95,7 +113,7 @@ const FamilyPreferences = () => {
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {
-                                        languages.map((language: string) => {
+                                        familyProfileData?.languages?.map((language: string) => {
                                             return <View>
                                                 <InfoPill key={language} label={language} icon={'💬'} />
                                             </View>
@@ -105,12 +123,28 @@ const FamilyPreferences = () => {
                             </View>
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
+                                    <ThemedText style={styles.heading}>Work Option</ThemedText>
+                                </View>
+                                <View style={styles.pillContainer}>
+                                    <InfoPill  label={familyProfileData?.caregiver_preference?.availability} />
+                                </View>
+                            </View>
+                            <View style={styles.subSection}>
+                                <View style={styles.headerStyle}>
+                                    <ThemedText style={styles.heading}>Work Type</ThemedText>
+                                </View>
+                                <View style={styles.pillContainer}>
+                                    <InfoPill  label={familyProfileData?.caregiver_preference?.arrangement_type} />
+                                </View>
+                            </View>
+                            <View style={styles.subSection}>
+                                <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Requirements/Requirements</ThemedText>
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {
-                                        requirements.map((work) => {
-                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
+                                        familyProfileData?.caregiver_preference?.requirements?.requirements?.map((work) => {
+                                            return <InfoPill key={work} label={work}  />
                                         })
                                     }
                                 </View>
@@ -121,8 +155,8 @@ const FamilyPreferences = () => {
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {
-                                        householdResponsibilities.map((work) => {
-                                            return <InfoPill key={work.id} label={work.label} icon={work.icon} />
+                                        familyProfileData?.caregiver_preference?.responsibilities?.household_responsibilities?.map((work) => {
+                                            return <InfoPill key={work} label={work}  />
                                         })
                                     }
                                 </View>
@@ -138,36 +172,27 @@ const FamilyPreferences = () => {
 
                                 <View style={styles.pillContainer}>
                                     {
-                                        schedule.map((work) => {
-                                            return <InfoPill key={work} label={work} />
+                                        familyProfileData?.caregiver_preference?.service_days?.map((work) => {
+                                            return <InfoPill key={work} label={`${work.day}: ${work.begin}- ${work.end}`} />
                                         })
                                     }
                                 </View>
                             </View>
                         </View>
                         <View style={styles.section}>
-                            <View style={styles.subSection}>
+                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Should have an experience of</ThemedText>
-                                    <LockedIndicator />
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    <InfoPill label={'11-20 years'} />
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Work option</ThemedText>
+                                    <ThemedText style={styles.heading}>Household Rules</ThemedText>
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {
-                                        workOptions.slice(1, 2).map((work) => {
-                                            return <InfoPill key={work.label} label={work.label} icon={work.icon} />
+                                        familyProfileData?.household_info?.rules?.map((work) => {
+                                            return <InfoPill key={work} label={work}  />
                                         })
                                     }
                                 </View>
                             </View>
-                            <View style={styles.subSection}>
+                            {/* <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Caregiver personality</ThemedText>
                                 </View>
@@ -178,8 +203,8 @@ const FamilyPreferences = () => {
                                         })
                                     }
                                 </View>
-                            </View>
-                            <View style={styles.subSection}>
+                            </View> */}
+                            {/* <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Work Type</ThemedText>
                                 </View>
@@ -190,9 +215,9 @@ const FamilyPreferences = () => {
                                         })
                                     }
                                 </View>
-                            </View>
+                            </View> */}
 
-                            <View style={styles.subSection}>
+                            {/* <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Duration</ThemedText>
                                 </View>
@@ -203,15 +228,15 @@ const FamilyPreferences = () => {
                                         })
                                     }
                                 </View>
-                            </View>
+                            </View> */}
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Benefits </ThemedText>
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {
-                                        benefits.map((benefit) => {
-                                            return <InfoPill key={benefit.id} label={benefit.label} icon={benefit.icon} />
+                                        familyProfileData?.extra_info?.benefits?.benefits?.map((benefit) => {
+                                            return <InfoPill key={benefit} label={benefit}  />
                                         })
                                     }
                                 </View>
@@ -219,11 +244,10 @@ const FamilyPreferences = () => {
                             <View style={{ backgroundColor: '#FFFFFF', padding: 16, borderRadius: 20, gap: 8, marginBottom: 25 }}>
                                 <ThemedText style={styles.heading}>Anything else you'd like caregivers to know? </ThemedText>
                                 <View style={styles.pillContainer}>
-                                    <ThemedText style={styles.sectionText2}>We are a very sports oriented family. Having a caregiver that is passionate about sports is a huge plus. </ThemedText>
+                                    <ThemedText style={styles.sectionText2}>{familyProfileData?.extra_info?.more_information}</ThemedText>
                                 </View>
                             </View>
                         </View>
-
                     </View>
                 </ScrollView>
             </ThemedView>

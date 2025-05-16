@@ -48,6 +48,9 @@ const FamilyProfileView = () => {
     );
   };
 
+
+  // console.log(familyProfile, 'familyProfile Data')
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView>
@@ -536,7 +539,7 @@ const FamilyProfileView = () => {
                   </View>
                 </View>
               </View>
-              <View style={styles.section}>
+              {/* <View style={styles.section}>
                 {(familyProfile?.family_profile?.extra_info?.prompts || []).map(
                   (prompt) => (
                     <View key={prompt.id} style={styles.subSection}>
@@ -549,7 +552,7 @@ const FamilyProfileView = () => {
                     </View>
                   )
                 )}
-              </View>
+              </View> */}
             </View>
           )}
         </ScrollView>
@@ -562,6 +565,7 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: 16,
     marginTop: 31,
+    marginBottom: 46,
   },
   imageStyle: {
     height: 'auto',
