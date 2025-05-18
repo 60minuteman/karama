@@ -1,37 +1,58 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ItsAMatch = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity >
-          <Ionicons name="chevron-back" size={24} color="#000" />
+        <TouchableOpacity>
+          <Ionicons name='chevron-back' size={24} color='#000' />
         </TouchableOpacity>
       </View>
-      <View >
-        <View style={styles.photoWrapper}>
-          <Image source={require('@/assets/images/uplogoicon.png')} style={styles.logoTop} resizeMode='contain' />
+      <View>
+        {/* <View style={styles.photoWrapper}>
+          <Image
+            source={require('@/assets/images/uplogoicon.png')}
+            style={styles.logoTop}
+            resizeMode='contain'
+          />
           <View style={styles.photoContainer}>
-            <Image source={require('@/assets/images/matchpic.png')} style={styles.photo} resizeMode='contain'/>
+            <Image
+              source={require('@/assets/images/matchpic.png')}
+              style={styles.photo}
+              resizeMode='contain'
+            />
           </View>
-          <Image source={require('@/assets/images/downlogoicon.png')} style={styles.logoBottom} resizeMode='contain' />
-        </View>
+          <Image
+            source={require('@/assets/images/downlogoicon.png')}
+            style={styles.logoBottom}
+            resizeMode='contain'
+          />
+        </View> */}
 
-      <View style={styles.btnCom}>
+        <View style={styles.btnCom}>
           <Text style={styles.matchText}>It's a Match!</Text>
-        <Text style={styles.subText}>The Clarks have 24 hours to reach out!</Text>
+          <Text style={styles.subText}>
+            The Clarks have 24 hours to reach out!
+          </Text>
 
-        <TouchableOpacity style={styles.messageButton}>
-          <Text style={styles.messageButtonText}>Go to Messages</Text>
-        </TouchableOpacity>
+          <TouchableOpacity style={styles.messageButton}>
+            <Text style={styles.messageButtonText}>Go to Messages</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity style={styles.keepSearchingButton}>
-          <Text style={styles.keepSearchingText}>Keep Searching</Text>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity style={styles.keepSearchingButton}>
+            <Text style={styles.keepSearchingText}>Keep Searching</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -111,7 +132,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 30,
     marginBottom: 12,
-    width: '100%'
+    width: '100%',
   },
   messageButtonText: {
     color: 'white',
@@ -124,8 +145,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     paddingHorizontal: 32,
     borderRadius: 30,
-    width: '100%'
-
+    width: '100%',
   },
   keepSearchingText: {
     color: '#FF6B6B',

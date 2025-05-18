@@ -27,6 +27,7 @@ export default function Matches() {
   const [isLoading, setIsLoading] = useState(true);
   const [filteredMatches, setFilteredMatches] = useState<any>([]);
   const socket: any = getSocket();
+  const [deletedConversationId, setDeletedConversationId] = useState<any>(null);
 
   console.log('user_id from user object:', conversations);
   console.log('user_id from user completeMatches:', completeMatches?.data);
@@ -68,11 +69,14 @@ export default function Matches() {
     }
   }, [completeMatches?.data?.matches, conversations]);
 
-  // useEffect(() => {
-  //   socket.on('conversationDeleted', (data: any) => {
-
-  //   });
-  // }, [socket]);
+  useEffect(() => {
+    socket.on('conversationDeleted', () => {
+      setConversations(
+        conversations.filter((conv: any) => conv.id !== deletedConversationId)
+      );
+      setDeletedConversationId(null);
+    });
+  }, [socket]);
 
   return (
     <GestureHandlerRootView style={styles.container}>
@@ -129,6 +133,7 @@ export default function Matches() {
                         <ConversationItem
                           key={conversation.id}
                           handleDeleteConversation={handleDeleteConversation}
+                          setDeletedConversationId={setDeletedConversationId}
                           imageUrl={conversation?.recipient?.image}
                           name={conversation?.recipient?.name}
                           otherUser={conversation?.recipient?.name}

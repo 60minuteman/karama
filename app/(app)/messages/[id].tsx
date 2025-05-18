@@ -21,6 +21,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { io } from 'socket.io-client';
 
 interface Message {
@@ -108,17 +109,19 @@ export default function MessageScreen() {
     setMessage('');
   };
 
-  // const handleClearMessages: any = () => {
-  //   socket.emit('clearAllMessages', {
-  //     conversationId: id,
-  //   });
-  // };
+  const handleClearMessages: any = () => {
+    socket.emit('clearAllMessages', {
+      conversationId: id,
+    });
+  };
 
-  // const handleBlockUser: any = () => {
-  //   socket.emit('blockUser', {
-  //     recipientId: recipientId
-  //   });
-  // };
+  const handleBlockUser: any = () => {
+    socket.emit('blockUser', {
+      recipientId: recipientId,
+    });
+  };
+
+  console.log('messages', messages[0]?.text);
 
   useEffect(() => {
     socket.emit('getChatHistory', {
@@ -129,7 +132,10 @@ export default function MessageScreen() {
   useEffect(() => {
     if (socket) {
       socket.on('chatHistory', (data: any) => {
-        setMessages(data?.messages);
+        const filteredMessages = data?.messages.filter(
+          (message: any) => message.text !== null && message.text !== undefined
+        );
+        setMessages(filteredMessages);
         setIsLoading(false);
       });
 
@@ -156,17 +162,22 @@ export default function MessageScreen() {
     });
   }, [socket]);
 
-  // useEffect(() => {
-  //   socket.on('allMessagesCleared', (data: any) => {
-  //     setMessages([]);
-  //   });
-  // }, [socket]);
+  useEffect(() => {
+    socket.on('allMessagesCleared', (data: any) => {
+      setMessages([]);
+    });
+  }, [socket]);
 
-  // useEffect(() => {
-  //   socket.on('userBlocked', (data: any) => {
-  //     // setMessages([]);
-  //   });
-  // }, [socket]);
+  useEffect(() => {
+    socket.on('userBlocked', (data: any) => {
+      // setMessages([]);
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'User has been blocked successfully.',
+      });
+    });
+  }, [socket]);
 
   // console.log('messages=====+++++++', messages);
 
@@ -216,7 +227,8 @@ export default function MessageScreen() {
         activeTab={activeTab}
         onTabChange={setActiveTab}
         onBack={handleBack}
-        // handleClearMessages={handleClearMessages}
+        handleClearMessages={handleClearMessages}
+        handleBlockUser={handleBlockUser}
       />
 
       {activeTab === 'chat' ? (

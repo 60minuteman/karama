@@ -30,7 +30,7 @@ type FamilyType =
   | 'Dads'
   | 'Guardian'
   | 'Other'
-  |  any
+  | any;
 
 type Condition =
   | 'Dyslexia'
@@ -181,7 +181,7 @@ export type CaregiverPhilosophies =
   | 'Reggio Emillia'
   | 'Gentle Parenting'
   | 'Permissive Parenting'
-  | 'Other'
+  | 'Other';
 
 export type CaregiverPositions =
   | 'Full Time'
@@ -190,7 +190,10 @@ export type CaregiverPositions =
   | 'Night Out'
   | 'After school Pickup';
 
-export type CaregiverPreferredArrangement = '💤 Live In' | '⏰ Live Out' | '🔗 Hybrid';
+export type CaregiverPreferredArrangement =
+  | '💤 Live In'
+  | '⏰ Live Out'
+  | '🔗 Hybrid';
 export type CaregiverCommitment = 'Long Term' | 'Short Term';
 
 export type CaregiverDayOfWeek =
@@ -215,7 +218,7 @@ export interface CaregiverDaySchedule {
 
 export interface CaregiverPositionHistory {
   position: string;
-  positionNumber: 'first' | 'second' |  'Third' |null;
+  positionNumber: 'first' | 'second' | 'Third' | null;
   ageGroup: string;
   familyName: string;
   employmentType: string;
@@ -346,6 +349,7 @@ interface UserState {
   hydrated: boolean;
   subscribed_to_promotions: boolean;
   selectedType: 'family' | 'caregiver' | null;
+  firebaseCurrentUser: any | null;
   //USER IS FAMILY
   familyName: string | null;
   family_description: FamilyDescription | null;
@@ -657,6 +661,7 @@ export const useUserStore = create<UserState>()(
       hydrated: false,
       subscribed_to_promotions: false,
       selectedType: null,
+      firebaseCurrentUser: null,
       // USER IS FAMILY
       familyName: null,
       family_description: null,
