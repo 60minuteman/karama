@@ -1,387 +1,471 @@
-import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity, ImageBackground } from 'react-native'
-import React from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { View, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { ThemedView } from '@/components/ThemedView'
 import ProfileHeader from '@/components/Profile/ProfileHeader'
 import { ThemedText } from '@/components/ThemedText'
-import LockedIndicator from '@/app/components/ui/LockedIndicator'
-import InfoPill from '@/app/components/ui/InfoPill'
-import { children, disability, interests, languages, pets, religion } from '@/constants/profile'
-import PromptCard from '@/components/cards/PromptCard'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
+import { useQuery } from '@tanstack/react-query'
+import * as ImagePicker from 'expo-image-picker'
+import { Entypo } from '@expo/vector-icons'
+// import { api } from '@/services/api/api'
+import InfoPill from '@/components/ui/InfoPill'
+import Skeleton from '@/components/ui/Skeleton'
+import customAxios from '@/services/api/envConfig'
+
+// interface Picture {
+//   id: string;
+//   path: string;
+//   type: 'PROFILE_PICTURE' | 'OTHER';
+//   blur_hash: string;
+//   created_at: string;
+//   updated_at: string;
+//   key: string;
+//   _v: number;
+// }
+
+// interface CaregiverPrompt {
+//   id: string;
+//   category: string;
+//   title: string;
+//   answer: string;
+// }
+
+// interface CaregiverProfile {
+//   id: string;
+//   name: string;
+//   date_of_birth: string;
+//   gender: string | null;
+//   pronouns: string | null;
+//   zipcode: string;
+//   caregiver_type: string;
+//   years_of_experience: string;
+//   education_level: string;
+//   show_edu_level_on_profile: boolean;
+//   pictures: Picture[];
+//   prompts: CaregiverPrompt[];
+//   language: {
+//     languages: string[];
+//     other: string | null;
+//     requires_same_language_family: boolean;
+//   };
+//   characteristics: {
+//     diets: string[];
+//     personalities: string[];
+//     religion: string;
+//     show_diet_on_profile: boolean;
+//     show_religion_on_profile: boolean;
+//   };
+//   hobbies: {
+//     creative_interests: string[];
+//     instrument_interests: string[];
+//     sport_interests: string[];
+//     stem_interests: string[];
+//   };
+// }
+
+// interface ApiResponse {
+//   data: {
+//     caregiverProfile: CaregiverProfile;
+//   };
+// }
 
 const FamilyEditProfile = () => {
-    const router = useRouter()
+    const router = useRouter();
+    const [images, setImages] = useState<string[]>([]);
+
+    const { data: profileData, isLoading } = useQuery<any>({
+        queryKey: ['familyProfile'],
+        queryFn: async () => {
+            const response = await customAxios.get('/family-profile/');
+            return response.data;
+        }
+    });
+
+
+    console.log(profileData?.data?.family_profile, 'data');
     
-    const handleBack = () => {
-        router.push('/(tabs)/profile')
-    }
+    const caregiverProfile = profileData?.data?.family_profile;
+    
+    const pictures = caregiverProfile?.pictures || [];
+    const profilePicture = pictures.find((pic: any) => pic.type === 'PROFILE_PICTURE');
+    const otherPictures = pictures.filter((pic: any) => pic.type === 'OTHER');
 
-    const familyImages = [] // Define familyImages array
-    const writtenPrompts = [] // Define writtenPrompts array 
-    const diets = [] // Define diets array
+    const handleImagePick = async () => {
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
 
-    return (
-        <SafeAreaView>
-            <ThemedView>
-                <ProfileHeader heading='Edit Profile' onBack={handleBack} />
-                <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
-                    <View style={styles.container} >
-                        <View style={styles.photoContainer}>
-                            <ThemedText style={styles.title}>Profile Photo</ThemedText>
-                            <View style={styles.profilePhoto}>
-                                <Image style={{ width: '100%', height: '100%', borderRadius: '50%' }} source={require('@/assets/images/dummy.jpeg')} />
-                            </View>
-                            <ThemedText style={styles.heading}>Tap on photo to edit</ThemedText>
-                        </View>
-                        <View style={styles.section}>
-                            <View style={styles.subSection}>
-                                <ThemedText style={styles.heading}>My Photos</ThemedText>
+        if (!result.canceled && result.assets[0]) {
+            // Here you would typically upload the image to your server
+            setImages(prev => [...prev, result.assets[0].uri]);
+        }
+    };
 
-                                <View style={styles.photoGrid}>
-                                    {[...Array(6)].map((_, index) => (
-                                        <View key={index} style={styles.photoPlaceholder}>
-                                            {index < familyImages.length ? (
-                                                <>
-                                                    <Image
-                                                        source={familyImages[index]}
-                                                        style={styles.photoImage}
-                                                    />
-                                                    <TouchableOpacity
-                                                        style={styles.removeButton}
-                                                    >
-                                                        <ThemedText style={styles.removeButtonText}>✕</ThemedText>
-                                                    </TouchableOpacity>
-                                                </>
-                                            ) : (
-                                                <View style={styles.photoPlaceholderInner}>
-                                                    <Image style={{ width: 42, height: 42 }} resizeMode='contain' source={require('@/assets/icons/plus.png')} />
-                                                </View>
-                                            )}
-                                        </View>
-                                    ))}
-                                </View>
-                                <ThemedText style={styles.heading}>Tap to edit</ThemedText>
+    const handleEditField = (route: string) => {
+        router.push(route);
+    };
 
-                            </View>
-                        </View>
-                        <View style={styles.section}>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Written Prompts (3)</ThemedText>
-                                    <LockedIndicator isEditable />
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        writtenPrompts.map((prompt: any) => {
-                                            return <PromptCard key={prompt.id} heading={prompt.heading} details={prompt.details} />
-                                        })
-                                    }
-                                </View>
-                                <ThemedText style={styles.heading}>Drag to recorder</ThemedText>
-                            </View>
-                        </View>
-                        <View style={styles.section}>
-                            <View style={styles.subSection}>
-                                <ThemedText style={styles.heading}>About Us</ThemedText>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.subContainer}>
-                                    <View style={{gap:8}}>
-                                        <ThemedText style={styles.text1}>Name</ThemedText>
-                                        <ThemedText style={styles.text2}>Adebayos</ThemedText>
+    const renderSkeleton = () => (
+        <SafeAreaView style={styles.safeArea}>
+            <ThemedView style={styles.container}>
+                <ProfileHeader 
+                    heading='Edit profile' 
+                    onBack={() => router.push('/(tabs)/profile')} 
+                />
+                <ScrollView style={styles.scrollView}>
+                    <View style={styles.sectionContainer}>
+                        <Skeleton width={120} height={24} />
+                        <Skeleton width={200} height={32} />
+                        <View style={styles.aboutMeContainer}>
+                            {[1, 2, 3, 4, 5].map((_, index) => (
+                                <View key={index} style={styles.aboutMeItem}>
+                                    <View style={styles.aboutMeContent}>
+                                        <Skeleton width={100} height={16} />
+                                        <Skeleton width={150} height={24} />
                                     </View>
-                                    <View style={styles.imageContainer}>
-                                        <Image style={{ width: '100%', height: '100%' }} source={require('@/assets/icons/chevron-right2.png')} />
-                                    </View>
+                                    <Skeleton width={40} height={24} />
                                 </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Description</ThemedText>
-                                    <LockedIndicator isEditable />
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    <InfoPill label={'Mom & Dad'} icon={'👫🏻'} />
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Address</ThemedText>
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    <InfoPill label={'Manhattan, New York'} icon={''} />
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Ages</ThemedText>
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        children.slice(0, 2).map((child: any) => {
-                                            return <InfoPill key={child.age_group} label={child.age_group} icon={child.icon} />
-                                        })
-                                    }
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>We speak</ThemedText>
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        languages.map((language: string) => {
-                                            return <View>
-                                                <InfoPill key={language} label={language} icon={'💬'} />
-                                            </View>
-                                        })
-                                    }
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Our religion</ThemedText>
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        religion.map((religion: any) => {
-                                            return <View>
-                                                <InfoPill key={religion.label} label={religion.label} icon={religion.icon} />
-                                            </View>
-                                        })
-                                    }
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Children's Interests</ThemedText>
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        interests.map((interest: any) => {
-                                            return <View>
-                                                <InfoPill key={interest.label} label={interest.label} icon={interest.icon} />
-                                            </View>
-                                        })
-                                    }
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Disability Experience</ThemedText>
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        disability.slice(0, 2).map((disability: string) => {
-                                            return <InfoPill key={disability} label={disability} icon={''} />
-                                        })
-                                    }
-
-                                </View>
-                            </View>
+                            ))}
                         </View>
-                        <View style={styles.section}>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>We have a</ThemedText>
-                                    <LockedIndicator />
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        pets.map((pet: any) => {
-                                            return <InfoPill key={pet.label} label={pet.label} icon={pet.emoji} />
-                                        })
-                                    }
-                                </View>
-                            </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Diet</ThemedText>
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        diets.slice(0, 2).map((diet: any) => {
-                                            return <InfoPill key={diet.label} label={diet.label} icon={diet.icon} />
-                                        })
-                                    }
-                                </View>
-                            </View>
+                    </View>
+                    
+                    <View style={styles.sectionContainer}>
+                        <View style={styles.sectionHeader}>
+                            <Skeleton width={120} height={24} />
+                            <Skeleton width={40} height={24} />
+                        </View>
+                        <View style={styles.interestsList}>
+                            {[1, 2, 3, 4, 5].map((_, index) => (
+                                <Skeleton key={index} width={80} height={32} borderRadius={16} />
+                            ))}
                         </View>
                     </View>
                 </ScrollView>
             </ThemedView>
         </SafeAreaView>
-    )
-}
+    );
+
+    if (isLoading) {
+        return renderSkeleton();
+    }
+
+    const getReligion = () => {
+        try {
+            return JSON.parse(caregiverProfile?.characteristics?.religion || '[]')[0];
+        } catch {
+            return caregiverProfile?.characteristics?.religion || '';
+        }
+    };
+
+    return (
+        <SafeAreaView style={styles.safeArea}>
+            <ThemedView style={styles.container}>
+                <ProfileHeader 
+                    heading='Edit profile' 
+                    onBack={() => router.push('/(tabs)/profile')} 
+                />
+                <ScrollView style={styles.scrollView}>
+                    {/* Profile Photo Section */}
+                    <View style={styles.photoSection}>
+                        <ThemedText style={styles.sectionTitle}>Profile photo</ThemedText>
+                        <TouchableOpacity onPress={handleImagePick}>
+                            <View style={styles.profilePhotoContainer}>
+                                {profilePicture?.path ? (
+                                    <Image 
+                                        source={{ uri: profilePicture.path }}
+                                        style={styles.profilePhoto}
+                                    />
+                                ) : (
+                                    <View style={[styles.profilePhoto, styles.defaultProfilePhoto]}>
+                                        <Entypo name="user" size={40} color="#261D2A" />
+                                    </View>
+                                )}
+                                <ThemedText style={styles.photoText}>Tap on photo to edit</ThemedText>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* My Photos Section */}
+                    <View style={styles.sectionContainer}>
+                        <ThemedText style={styles.sectionTitle}>My Photos</ThemedText>
+                        <View style={styles.photoGrid}>
+                            {otherPictures.map((pic: any, index: any) => (
+                                <Image 
+                                    key={pic.id} 
+                                    source={{ uri: pic.path }} 
+                                    style={styles.gridPhoto} 
+                                />
+                            ))}
+                            <TouchableOpacity onPress={handleImagePick} style={styles.addPhotoButton}>
+                                <Entypo name="plus" size={24} color="#261D2A" />
+                            </TouchableOpacity>
+                        </View>
+                        <ThemedText style={styles.photoText}>Tap to Edit</ThemedText>
+                    </View>
+
+                    {/* Written Prompts Section */}
+                    <View style={styles.sectionContainer}>
+                        <View style={styles.sectionHeader}>
+                            <ThemedText style={styles.sectionTitle}>
+                                Written Prompts ({caregiverProfile?.extra_info?.prompts?.length || 0})
+                            </ThemedText>
+                            <TouchableOpacity>
+                                <ThemedText style={styles.editText}>Edit</ThemedText>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.promptsContainer}>
+                            {caregiverProfile?.extra_info?.prompts?.map((prompt: any) => (
+                                <View key={prompt.id} style={styles.promptBox}>
+                                    <ThemedText style={styles.promptQuestion}>{prompt.title}</ThemedText>
+                                    <ThemedText style={styles.promptAnswer}>{prompt.answer}</ThemedText>
+                                    <TouchableOpacity style={styles.closeButton}>
+                                        <Entypo name="cross" size={16} color="#261D2A" />
+                                    </TouchableOpacity>
+                                </View>
+                            ))}
+                        </View>
+                        <ThemedText style={styles.dragText}>Drag to reorder</ThemedText>
+                    </View>
+
+                    {/* About Me Section */}
+                    <View style={styles.sectionContainer}>
+                        <ThemedText style={styles.sectionTitle}>About Us</ThemedText>
+                        <ThemedText style={styles.nameText}>{caregiverProfile?.name}</ThemedText>
+                        <View style={styles.aboutMeContainer}>
+                            {[
+                                { 
+                                    label: 'Description', 
+                                    text: caregiverProfile?.description?.description,
+                                    hasEdit: true 
+                                },
+                                { 
+                                    label: 'Address', 
+                                    text: caregiverProfile?.location,
+                                    hasEdit: true 
+                                },
+                                { 
+                                    label: 'Ages', 
+                                    text: caregiverProfile?.children?.age_group?.join(', '),
+                                    hasEdit: true 
+                                },
+                                { 
+                                    label: 'We speak', 
+                                    text: caregiverProfile?.languages?.join(', '),
+                                    hasEdit: true 
+                                },
+                                { 
+                                    label: 'We have a', 
+                                    text: caregiverProfile?.pets?.join(', '),
+                                    hasEdit: true 
+                                },
+                                { 
+                                    label: 'Our religion', 
+                                    text: caregiverProfile?.household_info?.religion,
+                                    hasEdit: true 
+                                },
+                                { 
+                                    label: 'Diet', 
+                                    text: caregiverProfile?.household_info?.diets?.join(', '),
+                                    hasEdit: true 
+                                },
+                                { 
+                                    label: 'Disability Experience',
+                                    text: caregiverProfile?.behavioural_differences?.join(', '), 
+                                    hasEdit: true 
+                                },
+                                { 
+                                    label: 'Childrend\'s intrests',
+                                    text: [
+                                ...(caregiverProfile?.children_interests?.creative_interests || []),
+                                ...(caregiverProfile?.children_interests?.instrument_interests || []),
+                                ...(caregiverProfile?.children_interests?.sport_interests || []),
+                                ...(caregiverProfile?.children_interests?.stem_interests || [])
+                            ].join(', '),
+                                    hasEdit: true 
+                                },
+                            ].map((item, index) => (
+                                <View key={index} style={styles.aboutMeItem}>
+                                    <View style={styles.aboutMeContent}>
+                                        <ThemedText style={styles.promptLabel}>{item.label}</ThemedText>
+                                        <InfoPill label={item.text || ''} />
+                                    </View>
+                                    {item.hasEdit && (
+                                        <TouchableOpacity>
+                                            <ThemedText style={styles.editText}>Edit</ThemedText>
+                                        </TouchableOpacity>
+                                    )}
+                                </View>
+                            ))}
+                          
+                        </View>
+                    </View>
+                </ScrollView>
+            </ThemedView>
+        </SafeAreaView>
+    );
+};
+
 const styles = StyleSheet.create({
-    photoContainer: {
-        padding: 16,
-        gap: 16,
-        alignSelf: 'center',
-        borderRadius: 20,
-        marginBottom: 16,
-        alignItems: 'center'
-    },
-    profilePhoto: {
-        width: 110,
-        height: 110,
-        aspectRatio: 1,
-        borderWidth: 3,
-        borderRadius: '50%',
-        overflow: 'hidden',
-        borderColor: '#FD9204',
+    safeArea: {
+        flex: 1,
+        backgroundColor: '#F6F6F6',
     },
     container: {
-        marginHorizontal: 16,
-        marginTop: 24,
-        gap: 16
-    },
-    inputStyle: {
-        fontFamily: 'Poppins_400Regular',
-        fontWeight: 300,
-        fontSize: 32,
-        letterSpacing: -0.64
-
-    },
-    heading: {
-        fontFamily: 'Poppins_400Regular',
-        fontWeight: 400,
-        fontSize: 16,
-        lineHeight: 20,
-        color: "#261D2A4D",
-    },
-    subSection: {
-        gap: 16,
-        marginBottom: 24,
-    },
-    section: {
-        backgroundColor: '#261D2A0D',
-        paddingTop: 20,
-        paddingHorizontal: 20,
-        marginTop: 6,
-        borderRadius: 20,
-        overflow: 'hidden',
         flex: 1,
     },
-    pillContainer: {
+    scrollView: {
+        flex: 1,
+        paddingHorizontal: 16,
+    },
+    photoSection: {
+        marginTop: 16,
+        marginBottom: 16,
+    },
+    sectionContainer: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: 20,
+        padding: 20,
+        marginBottom: 16,
+    },
+    sectionHeader: {
         flexDirection: 'row',
-        gap: 8,
-        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    lastSection: {
+        marginBottom: 32,
     },
     sectionTitle: {
         fontSize: 16,
-        fontFamily: 'Poppins_600SemiBold',
-        marginBottom: 12,
-    },
-
-    headerStyle: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-    },
-    sectionText2: {
-        fontFamily: 'Poppins_400Regular',
-        fontWeight: 400,
-        fontSize: 16,
-        lineHeight: 20,
-        color: '#261D2A'
-    },
-    subHeading: {
-        fontFamily: 'Poppins_400Regular',
-        fontWeight: 400,
-        fontSize: 16,
-        lineHeight: 20,
-        color: '#EB4430',
-    },
-    text: {
+        color: '#261D2A4D',
+        marginBottom: 16,
         fontFamily: 'Poppins',
-        fontWeight: 600,
-        fontSize: 16,
-        lineHeight: 20,
-        color: "#261D2AE5"
     },
-    subContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+    profilePhotoContainer: {
         alignItems: 'center',
     },
-    imageContainer: {
-        width: 32,
-        height: 32,
+    profilePhoto: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        marginBottom: 8,
+    },
+    photoText: {
+        fontSize: 14,
+        color: '#261D2A99',
+        fontFamily: 'Poppins',
     },
     photoGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        gap: 12,
-        marginBottom: 16,
+        gap: 8,
+        marginBottom: 8,
     },
-    photoPlaceholder: {
-        width: 105,
-        aspectRatio: 1,
-        borderRadius: 12,
-        overflow: 'hidden',
+    gridPhoto: {
+        width: 80,
+        height: 80,
+        borderRadius: 8,
+    },
+    addPhotoButton: {
+        width: 80,
+        height: 80,
+        borderRadius: 8,
+        backgroundColor: '#F6F6F6',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    promptsContainer: {
+        gap: 8,
+    },
+    promptBox: {
+        backgroundColor: '#F6F6F6',
+        borderRadius: 16,
+        padding: 16,
         position: 'relative',
     },
-    photoPlaceholderInner: {
-        flex: 1,
-        backgroundColor: 'rgba(164, 161, 161, 0.2)',
-        justifyContent: 'center',
-        alignItems: 'center'
+    promptQuestion: {
+        fontSize: 14,
+        color: '#7B787D',
+        fontFamily: 'Poppins',
+        marginBottom: 4,
     },
-    removeButton: {
+    promptAnswer: {
+        fontSize: 16,
+        color: '#261D2A',
+        fontFamily: 'Poppins',
+    },
+    closeButton: {
         position: 'absolute',
-        top: 4,
-        right: 4,
+        top: 8,
+        right: 8,
         width: 24,
         height: 24,
         borderRadius: 12,
-        backgroundColor: 'white',
+        backgroundColor: '#FFFFFF',
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
     },
-    removeButtonText: {
+    dragText: {
         fontSize: 14,
-        color: '#64748B',
-        fontWeight: '500',
-    },
-    photoImage: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 12,
-    },
-    title: {
-        fontFamily: "Poppins",
-        fontWeight: 600,
-        fontSize: 16,
-        lineHeight: 20,
-        color: '#261D2AE5'
-    },
-    text1: {
+        color: '#261D2A99',
         fontFamily: 'Poppins',
+        marginTop: 8,
+    },
+    editText: {
         fontSize: 14,
-        fontWeight: 500,
-        color: "#261D2A4D",
-        lineHeight: 18,
-        marginBottom:8
-
-    },
-    text2: {
+        color: '#EB4430',
         fontFamily: 'Poppins',
-        color: '#261D2AE5',
-        fontSize: 20,
-        lineHeight: 20,
-        fontWeight: 600
+    },
+    interestsContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+    },
+    interestsList: {
+        flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 8,
+    },
+    personalityContainer: {
+        flexDirection: 'row',
+        gap: 8,
+        marginTop: 8,
+    },
+    defaultProfilePhoto: {
+        backgroundColor: '#FFE5E5',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    aboutMeContainer: {
+        gap: 16,
+    },
+    aboutMeItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+    },
+    aboutMeContent: {
+        flex: 1,
+        gap: 4,
+    },
+    nameText: {
+        fontSize: 24,
+        color: '#261D2A',
+        fontFamily: 'Poppins',
+        marginBottom: 16,
+    },
+    promptLabel: {
+        fontSize: 14,
+        color: '#7B787D',
+        fontFamily: 'Poppins',
+        marginBottom: 4,
+    },
+});
 
-    }
-}
-)
-export default FamilyEditProfile
+export default FamilyEditProfile;

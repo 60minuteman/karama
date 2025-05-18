@@ -25,6 +25,17 @@ export const useOtherStore = create<any>()(
         otherConditons: '',
         otherHear: '',
         familyEducation: '',
+        prompts: [
+            {
+                category: '',
+                title: '',
+                answer: '',
+            }
+        ],
+        addPrompts: (item: { category: string; title: string; answer: string }) =>
+            set((state: any) => ({
+            prompts: [...state.prompts, item],
+            })),
         setFamilyEducation: (item: string) =>
             set(() => ({
             familyEducation: item,

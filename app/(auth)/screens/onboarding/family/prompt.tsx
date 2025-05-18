@@ -5,6 +5,7 @@ import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
@@ -40,15 +41,13 @@ export default function Prompt() {
     family_prompt_category,
     setFamilyPromptCategory,
   } = useUserStore();
+  const { 
+    prompts
+  } = useOtherStore();
 
   const handleNext = () => {
-    if (family_prompt) {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/promptAnswer');
-      router.push({
-        pathname: '/(auth)/screens/onboarding/family/promptAnswer',
-        params: { prompt: family_prompt },
-      });
-    }
+    setOnboardingScreen('/(auth)/screens/onboarding/family/moreInfo');
+    router.push('/(auth)/screens/onboarding/family/moreInfo');
   };
 
   const handleCategoryPress = (categoryId: string) => {
@@ -62,14 +61,11 @@ export default function Prompt() {
     }
   };
 const handleAdd = (item: any) => {
-  // Set delay in milliseconds (e.g., 2 minutes = 2 * 60 * 1000)
-  const delay = 2 * 60 * 1000;
-
-  setTimeout(() => {
-    setFamilyPrompt(item);
-    setOnboardingScreen('/(auth)/screens/onboarding/family/promptAnswer');
-    router.push('/(auth)/screens/onboarding/family/promptAnswer');
-  }, delay);
+      setOnboardingScreen('/(auth)/screens/onboarding/family/promptAnswer');
+      router.push({
+        pathname: '/(auth)/screens/onboarding/family/promptAnswer',
+        params: { prompt: item },
+      });
 };
 
 
@@ -107,7 +103,9 @@ const handleAdd = (item: any) => {
               <View key={index} style={styles.pillWrapper}>
                 <Pill
                   label={prompt}
-                  selected={family_prompt === prompt}
+                  selected={
+                      prompts.some((item: any) => item.title === prompt) ||
+                      family_prompt === prompt}
                   onPress={() => handleAdd(prompt)}
                 />
               </View>
@@ -119,14 +117,15 @@ const handleAdd = (item: any) => {
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
-          <View style={styles.buttonContainer}>
+          {prompts.length > 1 && (
+             <View style={styles.buttonContainer}>
             <Button
               label='Next'
               onPress={handleNext}
               variant='compact'
-              disabled={!family_prompt}
             />
           </View>
+          )}
         </LinearGradient>
       </View>
     </ThemedView>

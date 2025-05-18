@@ -57,7 +57,14 @@ export default function Prompt() {
    useEffect(() => {
       setCaregiverFirstPromptAnswer('');
     }, [])
+const { 
+    prompts
+  } = useOtherStore();
 
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/moreInfo');
+    router.push('/(auth)/screens/onboarding/caregiver/moreInfo');
+  };
   // Initialize with default category if not set
   useEffect(() => {
     if (!caregiverPromptCategory) {
@@ -65,15 +72,7 @@ export default function Prompt() {
     }
   }, []);
 
-  const handleNext = () => {
-    if (caregiverFirstPrompt) {
-      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/promptAnswer');
-      router.push({
-        pathname: '/(auth)/screens/onboarding/caregiver/promptAnswer',
-        params: { prompt: caregiverFirstPrompt }
-      });
-    }
-  };
+ 
 
   const handleCategoryPress = (categoryId: PromptCategory) => {
     setCaregiverPromptCategory(categoryId);
@@ -83,13 +82,13 @@ export default function Prompt() {
 
   // Now TypeScript knows this is safe
   const currentPrompts = prompts[caregiverPromptCategory || 'get_to_know'];
-
-  const handleAdd = (item: any) => {
-    setCaregiverFirstPrompt(item) ;
-        setOnboardingScreen('/(auth)/screens/onboarding/caregiver/promptAnswer');
-        router.push('/(auth)/screens/onboarding/caregiver/promptAnswer');
-  };
-
+const handleAdd = (item: any) => {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/promptAnswer');
+      router.push({
+        pathname: '/(auth)/screens/onboarding/caregiver/promptAnswer',
+        params: { prompt: item },
+      });
+};
 
   return (
     <ThemedView style={styles.container}>
@@ -123,11 +122,11 @@ export default function Prompt() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.promptsContainer}>
-            {currentPrompts.map((prompt, index) => (
+            {currentPrompts.map((prompt: any, index: any) => (
               <View key={index} style={styles.pillWrapper}>
                 <Pill
                   label={prompt}
-                  selected={caregiverFirstPrompt === prompt}
+                  selected={prompts.some((item: any) => item.title === prompt) || caregiverFirstPrompt === prompt}
                   onPress={() =>  handleAdd(prompt)}
                 />
               </View>
@@ -139,14 +138,16 @@ export default function Prompt() {
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
+          {prompts.length > 1 && (
+
           <View style={styles.buttonContainer}>
             <Button
               label="Next"
               onPress={handleNext}
               variant="compact"
-              disabled={!caregiverFirstPrompt}
             />
           </View>
+          )}
         </LinearGradient>
       </View>
     </ThemedView>

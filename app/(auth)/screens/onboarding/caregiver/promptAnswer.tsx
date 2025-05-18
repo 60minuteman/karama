@@ -24,6 +24,10 @@ import { benefitsOptions } from './benefits';
 export default function PromptAnswer() {
   const router = useRouter();
   const { prompt } = useLocalSearchParams();
+   const { 
+        prompts,
+        addPrompts
+      } = useOtherStore();
 
   const getDefaultStartDate = () => {
     const tomorrow = new Date();
@@ -322,6 +326,19 @@ export default function PromptAnswer() {
   const handleSubmit = async () => {
     createProfile.mutate(onboadingInfo);
   };
+
+  const handleAddPrompt = (answer: any) => {
+    if (answer) {
+      addPrompts({
+        category: caregiverPromptCategory,
+        title: prompt,
+        answer: answer,
+      });
+      setCaregiverFirstPromptAnswer('');
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/prompt');
+      router.push('/(auth)/screens/onboarding/caregiver/prompt');
+    }
+  };
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -334,7 +351,7 @@ export default function PromptAnswer() {
           <View style={styles.spacerTop} />
           <ProgressBar progress={0.9} />
 
-          <ThemedText style={styles.title}>{caregiverFirstPrompt}</ThemedText>
+          <ThemedText style={styles.title}>{prompt}</ThemedText>
 
           <View style={styles.inputContainer}>
             <TextInput
@@ -348,14 +365,15 @@ export default function PromptAnswer() {
             />
           </View>
 
-          {/* <View style={styles.addButtonContainer}>
+          <View style={styles.addButtonContainer}>
             <Button
               label='Add Another Prompt'
-              onPress={() => router.back()}
+                onPress={() => handleAddPrompt(caregiverFirstPromptAnswer)}
+
               variant='compact'
-              style={styles.addButton}
+              // style={styles.addButton}
             />
-          </View> */}
+          </View>
         </View>
 
         <View style={styles.bottomNav}>
