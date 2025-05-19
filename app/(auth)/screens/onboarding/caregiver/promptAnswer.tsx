@@ -25,7 +25,6 @@ export default function PromptAnswer() {
   const router = useRouter();
   const { prompt } = useLocalSearchParams();
    const { 
-        prompts,
         addPrompts
       } = useOtherStore();
 
@@ -131,6 +130,7 @@ export default function PromptAnswer() {
     otherHouseholdResponsibilities,
     otherChildResponsibilities,
     caregiverThirdPosition,
+    prompts
   } = useOtherStore();
 
   console.log(
@@ -281,13 +281,7 @@ export default function PromptAnswer() {
     ]
       .filter(Boolean)
       .filter((position) => position.start_date && position.end_date),
-    prompts: [
-      {
-        category: caregiverPromptCategory,
-        title: caregiverFirstPrompt,
-        answer: caregiverFirstPromptAnswer,
-      },
-    ],
+    prompts,
   };
 
   useEffect(() => {

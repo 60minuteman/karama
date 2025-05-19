@@ -10,6 +10,7 @@ import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useUserStore } from '@/services/state/user';
+import { useOtherStore } from '@/services/state/other';
 
 // Add these type definitions at the top
 type PromptCategory = 'get_to_know' | 'childcare';

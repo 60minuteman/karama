@@ -6,6 +6,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import useAuthMutation from '@/hooks/useAuthMutation';
 import customAxios from '@/services/api/envConfig';
+import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { useRouter } from 'expo-router';
 import React, { useState, useEffect } from 'react';
@@ -26,6 +27,9 @@ export default function MoreInfo() {
     family_prompt_answer,
     setSteps,
   } = useUserStore();
+    const { 
+        prompts
+      } = useOtherStore();
 
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -87,13 +91,7 @@ export default function MoreInfo() {
         method: family_payment_method?.selected_method,
         show_method_on_profile: family_payment_method?.show_on_profile,
       },
-      prompts: [
-        {
-          category: family_prompt_category,
-          title: family_prompt,
-          answer: family_prompt_answer,
-        },
-      ],
+      prompts,
       more_information: family_more_info,
       benefits: {
         benefits: family_benefits?.selected_benefits,
