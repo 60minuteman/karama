@@ -134,14 +134,14 @@ export default function ServiceDaysScreen() {
                     style={[
                       styles.dayPill,
                       day.isActive && styles.activeDayPill,
-                      !day.isActive && styles.inactiveDayPill
+                      !day.isActive && styles.inactiveDayPill,
                     ]}
                   >
                     <ThemedText
                       style={[
                         styles.dayText,
                         day.isActive && styles.activeDayText,
-                        !day.isActive && styles.inactiveDayText
+                        !day.isActive && styles.inactiveDayText,
                       ]}
                     >
                       {day.day}
@@ -155,15 +155,15 @@ export default function ServiceDaysScreen() {
                       activeField?.field === 'begin' &&
                       styles.activeTimePill,
                     day.isActive && styles.filledTimePill,
-                    !day.isActive && styles.inactiveTimePill
+                    !day.isActive && styles.inactiveTimePill,
                   ]}
                   onPress={() => handleTimePress(day.day, true)}
                 >
-                  <ThemedText 
+                  <ThemedText
                     style={[
-                      styles.timeText, 
+                      styles.timeText,
                       day.isActive && styles.filledTimeText,
-                      !day.isActive && styles.inactiveTimeText
+                      !day.isActive && styles.inactiveTimeText,
                     ]}
                   >
                     {day.timeSlot?.begin || '00:00'}
@@ -176,15 +176,15 @@ export default function ServiceDaysScreen() {
                       activeField?.field === 'end' &&
                       styles.activeTimePill,
                     day.isActive && styles.filledTimePill,
-                    !day.isActive && styles.inactiveTimePill
+                    !day.isActive && styles.inactiveTimePill,
                   ]}
                   onPress={() => handleTimePress(day.day, false)}
                 >
-                  <ThemedText 
+                  <ThemedText
                     style={[
-                      styles.timeText, 
+                      styles.timeText,
                       day.isActive && styles.filledTimeText,
-                      !day.isActive && styles.inactiveTimeText
+                      !day.isActive && styles.inactiveTimeText,
                     ]}
                   >
                     {day.timeSlot?.end || '00:00'}
