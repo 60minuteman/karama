@@ -219,6 +219,8 @@ export const useCompletedMatches = (role: string) => {
   });
 };
 
+
+
 export const fetchCompleteMatches = async (role: string) => {
   const endpoint =
     role === 'FAMILY'
@@ -231,7 +233,6 @@ export const fetchCompleteMatches = async (role: string) => {
 
 export const useCompleteMatches = (role: string) => {
   const { token } = useUserStore();
-
   return useAuthQuery({
     queryKey: ['complete-matches', role],
     queryFn: () => fetchCompleteMatches(role),
@@ -239,3 +240,22 @@ export const useCompleteMatches = (role: string) => {
     enabled: !!token && !!role,
   });
 };
+
+
+export const fetchLikes = async (role: string, cursor: string, page_size: number) => {
+    const endpoint = role === 'FAMILY' 
+    ? `/family-likes?cursor=${cursor}&page_size=${page_size}`
+    : `/caregiver-likes?cursor=${cursor}&page_size=${page_size}`
+    const { data } = await customAxios.get(endpoint);
+    return data;
+}
+
+export const useFetchLikes = (role: string, cursor: string, page_size: number) => {
+  const { token } = useUserStore();
+  return useAuthQuery({
+    queryKey: ['like-you', role],
+    queryFn: () => fetchLikes(role, cursor, page_size),
+    retry: 3,
+    enabled: !!token && !!role,
+  });
+}
