@@ -44,7 +44,7 @@ export default function MessageScreen() {
   const { token, user } = useUserStore();
   const socket: any = getSocket();
 
-  const [profile, setProfile] = useState<any>()
+  const [profile, setProfile] = useState<any>();
 
   // console.log('messages', messages);
   console.log('profile', profile);
@@ -265,7 +265,7 @@ export default function MessageScreen() {
         </View>
       ) : (
         <View style={{ height: '80%', display: 'flex', alignItems: 'center' }}>
-          <Container profileData={profile} data={profile} />
+          {/* <Container profileData={profile} data={profile} /> */}
         </View>
       )}
     </KeyboardAvoidingView>
