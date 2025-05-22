@@ -68,7 +68,7 @@ export const Religion = ({
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>My Personality</ThemedText>
         <View style={styles.pillContainer}>
-          {personality.map((trait, index) => (
+          {personality?.map((trait, index) => (
             <Pill2
               key={index}
               // icon={personalityIcons[trait] || '✨'}
@@ -84,7 +84,7 @@ export const Religion = ({
           Disability Experience
         </ThemedText>
         <View style={styles.pillContainer}>
-          {disabilities.map((disability, index) => (
+          {disabilities?.map((disability, index) => (
             <Pill2 key={index} label={disability} style={styles.pill} />
           ))}
         </View>

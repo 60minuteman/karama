@@ -30,7 +30,7 @@ export const ExperienceAndLanguages = ({
 
       <Section title='I speak'>
         <View style={styles.languagesContainer}>
-          {languages.map((language, index) => (
+          {languages?.map((language, index) => (
             <Pill2
               key={index}
               icon='💬'

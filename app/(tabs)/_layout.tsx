@@ -137,6 +137,7 @@ export default function TabsLayout() {
           flexWrap: 'nowrap',
         },
         headerShown: false,
+        
       }}
     >
       <Tabs.Screen

@@ -41,7 +41,7 @@ export const Certifications = ({
           My Certifications/Requirements
         </ThemedText>
         <View style={styles.pillsContainer}>
-          {margeArray.map((item: any, index: any) => (
+          {margeArray?.map((item: any, index: any) => (
             <Pill2
               key={index}
               // icon={item.icon}
