@@ -189,7 +189,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
             certifications={[
               ...(abilitiesAndCerts?.abilities || []),
               ...(abilitiesAndCerts?.certifications || []),
-            ].filter(Boolean)}
+            ]?.filter(Boolean)}
             data={data}
           />
         </View>
@@ -203,7 +203,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
             animals={[
               ...(experienceWithDisabilities?.disabilities || []),
               ...(experienceWithPets?.pets || []),
-            ].filter(Boolean)}
+            ]?.filter(Boolean)}
             data={data}
           />
         </View>

@@ -44,7 +44,10 @@ export default function MessageScreen() {
   const { token, user } = useUserStore();
   const socket: any = getSocket();
 
-  console.log('messages', messages);
+  const [profile, setProfile] = useState<any>()
+
+  // console.log('messages', messages);
+  console.log('profile', profile);
 
   useEffect(() => {
     const fetchOtherUserData = async () => {
@@ -128,6 +131,11 @@ export default function MessageScreen() {
       conversationId: id,
     });
   }, []);
+  useEffect(() => {
+    socket.emit('getProfile', {
+      conversationId: id,
+    });
+  }, []);
 
   useEffect(() => {
     if (socket) {
@@ -167,6 +175,12 @@ export default function MessageScreen() {
       setMessages([]);
     });
   }, [socket]);
+
+  useEffect(() => {
+    socket.on('recipientProfile', (data: any) => {
+      setProfile(data);
+    });
+  }, []);
 
   useEffect(() => {
     socket.on('userBlocked', (data: any) => {
@@ -250,8 +264,8 @@ export default function MessageScreen() {
           </View>
         </View>
       ) : (
-        <View style={{ height: '80%' }}>
-          <Container profileData={profileData} />
+        <View style={{ height: '80%', display: 'flex', alignItems: 'center' }}>
+          <Container profileData={profile} data={profile} />
         </View>
       )}
     </KeyboardAvoidingView>

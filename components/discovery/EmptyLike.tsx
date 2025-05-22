@@ -11,8 +11,9 @@ const EmptyLikes = () => {
     <View style={styles.container}>
       <View style={styles.content}>
         <Image
-          source={require('@/assets/images/matches-empty.png')}
+          source={require('@/assets/images/like-empty.png')}
           style={styles.image}
+          resizeMode='contain'
         />
         <ThemedText style={styles.title}>
           Profiles that like you will appear here 

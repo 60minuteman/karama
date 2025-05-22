@@ -3,6 +3,7 @@ import { LikedYouCard } from '@/components/cards/LikedYouCard';
 import EmptyLikes from '@/components/discovery/EmptyLike';
 import { HomeNav } from '@/components/home/HomeNav';
 import { useCurrentUser, useFetchLikes } from '@/services/api/api';
+import { useOtherStore } from '@/services/state/other';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -37,9 +38,11 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
    const { data: currentUser, isLoading: isLoadingCurrentUser } =
       useCurrentUser();
 
+      const {addLikeProfile} = useOtherStore()
+
       const {data: like_you, isLoading: isLoading} = useFetchLikes(currentUser?.data?.role, cursor, nextPage )
 
-      console.log(like_you, 'like-you');
+      console.log(like_you?.data?.scored_caregivers, 'like-you');
       
 
   // Responsive calculations
@@ -56,9 +59,12 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
     // router.push('/caregiver/preview');
   };
 
-  const handleCardPress = (profileId: string) => {
+  const handleCardPress = (profile: any) => {
     // Navigate to the caregiver preview screen when a card is pressed
-    // router.push('/caregiver/preview');
+    addLikeProfile(profile)
+    // console.log(profile, 'log');
+    
+    router.push('/caregiver/profilePreview');
   };
 
   const profiles: Profile[] = [
@@ -120,7 +126,7 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
         >
           Liked you
         </ThemedText>
-        {!like_you?.data?.scored_families?.length || !like_you?.data?.scored_caregivers?.length ? (
+        {like_you?.data?.scored_families?.length  === 0 || like_you?.data?.scored_caregivers?.length === 0 ? (
           <EmptyLikes />
         ) : (
 
@@ -129,23 +135,23 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
             <>
             {currentUser?.data?.role === 'FAMILY' ? (
             <View style={[styles.profileGrid, { gap: cardGap }]}>
-              {like_you?.data?.scored_families?.map((profile: any) => (
-                <LikedYouCard
-                  key={profile.id}
-                  profile={profile}
-                  isBlurred={false}
-                  onPress={() => handleCardPress(profile.id)}
-                />
-              ))}
-            </View>
-            ) : (
-            <View style={[styles.profileGrid, { gap: cardGap }]}>
               {like_you?.data?.scored_caregivers?.map((profile: any) => (
                 <LikedYouCard
                   key={profile.id}
                   profile={profile}
                   isBlurred={false}
-                  onPress={() => handleCardPress(profile.id)}
+                  onPress={() => handleCardPress(profile)}
+                />
+              ))}
+            </View>
+            ) : (
+            <View style={[styles.profileGrid, { gap: cardGap }]}>
+              {like_you?.data?.scored_families?.map((profile: any) => (
+                <LikedYouCard
+                  key={profile.id}
+                  profile={profile}
+                  isBlurred={false}
+                  onPress={() => handleCardPress(profile)}
                 />
               ))}
             </View>
@@ -154,7 +160,7 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
            
           ) : (
             <>
-              <View style={[styles.profileGrid, { gap: cardGap }]}>
+              {/* <View style={[styles.profileGrid, { gap: cardGap }]}>
                 {profiles.map((profile) => (
                   <LikedYouCard
                     key={profile.id}
@@ -163,27 +169,27 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
                     onPress={() => handleCardPress(profile.id)}
                   />
                 ))}
-              </View>
+              </View> */}
 
                 {currentUser?.data?.role === 'FAMILY' ? (
+            <View style={[styles.profileGrid, { gap: cardGap }]}>
+              {like_you?.data?.scored_caregivers?.map((profile: any) => (
+                <LikedYouCard
+                  key={profile.id}
+                  profile={profile.caregiver_profile}
+                  isBlurred={profile.id !== '1'} // Only the first card is unblurred
+                  onPress={() => handleCardPress(profile)}
+                />
+              ))}
+            </View>
+            ) : (
             <View style={[styles.profileGrid, { gap: cardGap }]}>
               {like_you?.data?.scored_families?.map((profile: any) => (
                 <LikedYouCard
                   key={profile.id}
                   profile={profile}
                   isBlurred={profile.id !== '1'} // Only the first card is unblurred
-                  onPress={() => handleCardPress(profile.id)}
-                />
-              ))}
-            </View>
-            ) : (
-            <View style={[styles.profileGrid, { gap: cardGap }]}>
-              {like_you?.data?.scored_caregivers?.map((profile: any) => (
-                <LikedYouCard
-                  key={profile.id}
-                  profile={profile}
-                  isBlurred={profile.id !== '1'} // Only the first card is unblurred
-                  onPress={() => handleCardPress(profile.id)}
+                  onPress={() => handleCardPress(profile)}
                 />
               ))}
             </View>
@@ -264,8 +270,9 @@ const styles = StyleSheet.create({
   profileGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    // borderWidth: 1
   },
   upgradeContainer: {
     position: 'absolute',

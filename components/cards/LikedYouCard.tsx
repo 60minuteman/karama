@@ -14,15 +14,18 @@ interface LikedYouCardProps {
     rating: number;
     gender: 'She / Her' | 'He / Him';
     image: string | number; // Allow both URI strings and require() image numbers
+    score: number
   };
   isBlurred?: boolean;
   onPress?: () => void;
+  key: any
 }
 
 export const LikedYouCard = ({ 
   profile, 
   isBlurred = false,
-  onPress 
+  onPress,
+  key
 }: LikedYouCardProps) => {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -38,6 +41,7 @@ export const LikedYouCard = ({
       onPress={onPress}
       activeOpacity={0.9}
       style={styles.card}
+      key={key}
     >
       <ImageBackground 
         source={typeof profile.image === 'string' ? { uri: profile.image } : profile.image}
@@ -50,7 +54,7 @@ export const LikedYouCard = ({
               <ThemedText style={styles.genderText}>{profile.gender}</ThemedText>
             </BlurView>
             <View style={styles.ratingPill}>
-              <ThemedText style={styles.rating}>{profile.rating}</ThemedText>
+              <ThemedText style={styles.rating}>{profile.score}</ThemedText>
               <ThemedText style={styles.starIcon}>⭐</ThemedText>
             </View>
           </View>

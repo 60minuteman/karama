@@ -34,7 +34,7 @@ export const ProfileDetails = ({
 
       <Section title='I have experience with'>
         <View style={styles.pillsContainer}>
-          {experience.map((exp, index) => {
+          {experience?.map((exp, index) => {
             const icons = {
               'School Age': '🛴',
               Toddler: '🧸',

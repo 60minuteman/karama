@@ -35,7 +35,7 @@ export const Work = ({
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>I can work with</ThemedText>
         <View style={styles.pillsContainer}>
-          {animalsData.map((animal: any, index: any) => (
+          {animalsData?.map((animal: any, index: any) => (
             <View key={index} style={styles.pillWrapper}>
               <Pill2
                 //  icon={animal.icon}
