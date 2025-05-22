@@ -205,14 +205,14 @@ const FamilySettings = () => {
               </ThemedText>
             </View>
             <View style={styles.section2}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={[styles.button, { backgroundColor: '#261D2A1A' }]}
                 onPress={handleDelete}
               >
                 <ThemedText style={[styles.buttonText, { color: '#052222' }]}>
                   Delete account
                 </ThemedText>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               <TouchableOpacity
                 style={[styles.button, { backgroundColor: '#EB4430' }]}
