@@ -19,7 +19,7 @@ const ItsAMatch = () => {
         </TouchableOpacity>
       </View>
       <View>
-        {/* <View style={styles.photoWrapper}>
+        <View style={styles.photoWrapper}>
           <Image
             source={require('@/assets/images/uplogoicon.png')}
             style={styles.logoTop}
@@ -37,7 +37,7 @@ const ItsAMatch = () => {
             style={styles.logoBottom}
             resizeMode='contain'
           />
-        </View> */}
+        </View>
 
         <View style={styles.btnCom}>
           <Text style={styles.matchText}>It's a Match!</Text>

@@ -29,8 +29,7 @@ export default function Matches() {
   const socket: any = getSocket();
   const [deletedConversationId, setDeletedConversationId] = useState<any>(null);
 
-  console.log('user_id from user object:', conversations);
-  console.log('user_id from user completeMatches:', completeMatches?.data);
+  console.log('conversations', conversations, currentUser?.data?.name);
 
   const handleDeleteConversation: any = (id: any) => {
     socket.emit('deleteConversation', {
@@ -138,6 +137,7 @@ export default function Matches() {
                           name={conversation?.recipient?.name}
                           otherUser={conversation?.recipient?.name}
                           lastMessage={conversation?.last_message?.text}
+                          currentUser={currentUser?.data}
                           time={
                             conversation?.last_message?.timestamp
                               ? new Date(
@@ -152,7 +152,14 @@ export default function Matches() {
                           conversation={conversation}
                           onPress={() =>
                             router.push(
-                              `/messages/${conversation.id}?name=${conversation?.recipient?.name}&recipientId=${conversation?.recipient?.id}&senderId=${conversation?.creator?.id}`
+                              `/messages/${conversation.id}?name=${
+                                currentUser?.data?.name ===
+                                conversation?.recipient?.name
+                                  ? conversation?.creator?.name
+                                  : conversation?.recipient?.name
+                              }&recipientId=${
+                                conversation?.recipient?.id
+                              }&senderId=${conversation?.creator?.id}`
                             )
                           }
                         />

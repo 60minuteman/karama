@@ -1,7 +1,7 @@
 import ProfileCardLoader from '@/components/cards/ProfileCardLoader';
 import EmptyDiscovery from '@/components/discovery/EmptyDiscovery';
 import { CaregiverContainer } from '@/components/home/CaregiverContainer';
-import { Container } from '@/components/home/Container';
+import { Container, ContainerRef } from '@/components/home/Container';
 import { HomeHeader } from '@/components/home/HomeHeader';
 import { HomeNav } from '@/components/home/HomeNav';
 import { FloatingButton } from '@/components/ui/FloatingButton';
@@ -505,7 +505,7 @@ export default function DiscoverScreen() {
                 }
                 style={[styles.rejectButton, { width: buttonWidth }] as any}
                 onPress={() => {
-                  containerRef.current?.animateReject();
+                  containerRef.current?.swipeLeft();
                 }}
               />
               <FloatingButton
@@ -517,7 +517,7 @@ export default function DiscoverScreen() {
                 }
                 style={[styles.likeButton, { width: buttonWidth }] as any}
                 onPress={() => {
-                  containerRef.current?.animateLike();
+                  containerRef.current?.swipeRight();
                 }}
               />
             </>

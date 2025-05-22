@@ -48,8 +48,8 @@ interface ContainerProps {
 
 // Create a type for the ref
 export interface ContainerRef {
-  animateLike: () => void;
-  animateReject: () => void;
+  swipeRight: () => void;
+  swipeLeft: () => void;
 }
 
 // Properly type the forwardRef
@@ -59,11 +59,19 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
     const isLargeScreen = windowWidth > 768;
     const containerWidth = Math.min(windowWidth * 0.9, 500);
 
-    // Add animation value
+    // Add animation values
     const slideAnim = new Animated.Value(0);
+    const rotateAnim = slideAnim.interpolate({
+      inputRange: [-windowWidth, 0, windowWidth],
+      outputRange: ['-15deg', '0deg', '15deg'],
+    });
+    const opacityAnim = slideAnim.interpolate({
+      inputRange: [-windowWidth / 2, 0, windowWidth / 2],
+      outputRange: [0.5, 1, 0.5],
+    });
 
     // Animation functions
-    const animateLike = () => {
+    const swipeRight = () => {
       Animated.timing(slideAnim, {
         toValue: windowWidth,
         duration: 300,
@@ -74,7 +82,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
       });
     };
 
-    const animateReject = () => {
+    const swipeLeft = () => {
       Animated.timing(slideAnim, {
         toValue: -windowWidth,
         duration: 300,
@@ -87,8 +95,8 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
 
     // Expose animation functions to parent
     useImperativeHandle(ref, () => ({
-      animateLike,
-      animateReject,
+      swipeRight,
+      swipeLeft,
     }));
 
     // Add debug log
@@ -224,7 +232,8 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
           styles.container,
           {
             width: containerWidth,
-            transform: [{ translateX: slideAnim }],
+            transform: [{ translateX: slideAnim }, { rotate: rotateAnim }],
+            opacity: opacityAnim,
           },
         ]}
       >
