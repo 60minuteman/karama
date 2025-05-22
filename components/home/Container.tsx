@@ -209,7 +209,10 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
         </View>
         <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>
-          <Position positions={caregiverProfile?.past_positions || []} data={data} />
+          <Position
+            positions={caregiverProfile?.past_positions || []}
+            data={data}
+          />
         </View>
         <View style={styles.bottomSpacer} />
       </>

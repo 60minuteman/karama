@@ -36,13 +36,15 @@ export default function ServiceDaysScreen() {
     field: 'begin' | 'end';
   } | null>(null);
 
+  console.log('family_schedule', family_schedule);
+
   const handleTimeSelect = (event: any, selectedTime?: Date) => {
     setShowTimePicker(false);
     if (selectedTime && selectedDay) {
       const formattedTime = selectedTime.toLocaleTimeString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
-        hour12: false,
+        hour12: false, // Changed to 12-hour format
       });
 
       const updatedSchedule = family_schedule.map((day) => {
@@ -101,7 +103,7 @@ export default function ServiceDaysScreen() {
               <DateTimePicker
                 value={new Date()}
                 mode='time'
-                is24Hour={true}
+                is24Hour={false} // Changed to 12-hour format
                 display='spinner'
                 onChange={handleTimeSelect}
               />
@@ -166,7 +168,13 @@ export default function ServiceDaysScreen() {
                       !day.isActive && styles.inactiveTimeText,
                     ]}
                   >
-                    {day.timeSlot?.begin || '00:00'}
+                    {day.timeSlot?.begin
+                      ? `${
+                          parseInt(day.timeSlot.begin.split(':')[0]) % 12 || 12
+                        }:${day.timeSlot.begin.split(':')[1]} ${
+                          day.timeSlot.begin.split(':')[0] > '12' ? 'PM' : 'AM'
+                        }`
+                      : '00:00'}
                   </ThemedText>
                 </Pressable>
                 <Pressable
@@ -187,7 +195,13 @@ export default function ServiceDaysScreen() {
                       !day.isActive && styles.inactiveTimeText,
                     ]}
                   >
-                    {day.timeSlot?.end || '00:00'}
+                    {day.timeSlot?.end
+                      ? `${
+                          parseInt(day.timeSlot.end.split(':')[0]) % 12 || 12
+                        }:${day.timeSlot.end.split(':')[1]} ${
+                          day.timeSlot.end.split(':')[0] > '12' ? 'PM' : 'AM'
+                        }`
+                      : '00:00'}
                   </ThemedText>
                 </Pressable>
               </View>
