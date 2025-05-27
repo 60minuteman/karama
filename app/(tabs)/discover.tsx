@@ -166,6 +166,8 @@ export default function DiscoverScreen() {
     }
   );
 
+  console.log('currentUser', currentUser?.data?.role, data);
+
   // console.log('currentProfilecaregiver see===', data);
 
   useEffect(() => {
@@ -269,6 +271,8 @@ export default function DiscoverScreen() {
     }
     return age;
   };
+
+  console.log('currentProfile', currentProfile);
 
   const profileDataFamily = currentProfile
     ? {
@@ -470,7 +474,7 @@ export default function DiscoverScreen() {
               <ProfileCardLoader />
             ) : !currentProfile ? (
               <View style={styles.emptyStateContainer}>
-                <EmptyDiscovery role={userData?.role} />
+                <EmptyDiscovery role={currentUser?.data?.role} />
               </View>
             ) : (
               <>

@@ -171,9 +171,9 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
           />
         </View>
         <View style={styles.spacer} />
-        <View style={dynamicStyles.componentContainer}>
+        {/* <View style={dynamicStyles.componentContainer}>
           <Obsession obsession={profileData.obsession} />
-        </View>
+        </View> */}
         <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>
           <Interests data={data} interests={profileData.interests} />
@@ -203,7 +203,11 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
         </View>
         <View style={styles.spacer} />
         <View style={[dynamicStyles.componentContainer, styles.imageContainer]}>
-          <Image data={pictures[5]?.path || pictures[4]?.path || null} />
+          <Image
+            data={data?.pictures?.[3]?.path}
+            resizeMode='cover'
+            resizeMethod='scale'
+          />
         </View>
         <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>

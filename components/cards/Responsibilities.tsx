@@ -48,10 +48,8 @@ export const Responsibilities = ({
     return null;
   }
 
-  
-
   const childcareResp =
-    data?.responsibilities?.childcare_responsibilities ||  [];
+    data?.responsibilities?.childcare_responsibilities || [];
   const householdResp =
     data?.responsibilities?.household_responsibilities || [];
 
@@ -59,8 +57,10 @@ export const Responsibilities = ({
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          data={data?.caregiver_profile?.pictures?.[3]?.path}
+          data={data?.pictures?.[1]?.path}
           style={styles.imagePlaceholder}
+          resizeMode='cover'
+          resizeMethod='scale'
         />
       </View>
 
@@ -79,9 +79,9 @@ export const Responsibilities = ({
           ))}
           {data?.responsibilities?.household_responsibilities && (
             <Pill2
-            // icon={item.icon || '👶'}
-            label={data?.responsibilities?.household_responsibilities}
-            style={styles.pill}
+              // icon={item.icon || '👶'}
+              label={data?.responsibilities?.household_responsibilities}
+              style={styles.pill}
             />
           )}
         </View>
@@ -101,11 +101,11 @@ export const Responsibilities = ({
             />
           ))}
 
-           {data?.responsibilities?.other_childcare_responsibilities && (
+          {data?.responsibilities?.other_childcare_responsibilities && (
             <Pill2
-            // icon={item.icon || '👶'}
-            label={data?.responsibilities?.other_childcare_responsibilities}
-            style={styles.pill}
+              // icon={item.icon || '👶'}
+              label={data?.responsibilities?.other_childcare_responsibilities}
+              style={styles.pill}
             />
           )}
         </View>

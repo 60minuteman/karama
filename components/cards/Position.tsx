@@ -1,14 +1,18 @@
+import { Image } from '@/components/cards/Image';
 import { ThemedText } from '@/components/ThemedText';
 import { useFonts } from '@expo-google-fonts/poppins';
 import React, { useState } from 'react';
-import { StyleSheet, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 import { PastPosition } from './PastPosition';
-import { Image } from '@/components/cards/Image';
-
 
 interface PositionProps {
   positions?: Array<any>;
-  data: any
+  data: any;
 }
 
 export const Position = ({
@@ -16,7 +20,7 @@ export const Position = ({
     { name: 'Willson', onPress: () => {} },
     { name: 'Johnsons', onPress: () => {} },
   ],
-  data
+  data,
 }: PositionProps) => {
   const [selectedPosition, setSelectedPosition] = useState<string | null>(null);
 
@@ -24,42 +28,46 @@ export const Position = ({
     'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
   });
-    const { width: windowWidth } = useWindowDimensions();
-      const isLargeScreen = windowWidth > 768;
-      const containerWidth = Math.min(windowWidth * 0.9, 500);
+  const { width: windowWidth } = useWindowDimensions();
+  const isLargeScreen = windowWidth > 768;
+  const containerWidth = Math.min(windowWidth * 0.9, 500);
 
   if (!fontsLoaded) {
     return null;
   }
-   const dynamicStyles = StyleSheet.create({
-        container: {
-          alignSelf: 'center',
-          backgroundColor: '#F6F6F6',
-          borderRadius: 20,
-          overflow: 'hidden',
-          width: containerWidth,
-          height: isLargeScreen ? windowWidth * 0.8 : 'auto',
-        },
-        profileCardContainer: {
-          width: '100%',
-          height: isLargeScreen ? '100%' : 'auto',
-        },
-        componentContainer: {
-          width: '100%',
-          padding: containerWidth * 0.02, // Responsive padding
-          backgroundColor: '#ECEBEC',
-          borderRadius: 10,
-          marginBottom: containerWidth * 0.03,
-        },
-      });
+  const dynamicStyles = StyleSheet.create({
+    container: {
+      alignSelf: 'center',
+      backgroundColor: '#F6F6F6',
+      borderRadius: 20,
+      overflow: 'hidden',
+      width: containerWidth,
+      height: isLargeScreen ? windowWidth * 0.8 : 'auto',
+    },
+    profileCardContainer: {
+      width: '100%',
+      height: isLargeScreen ? '100%' : 'auto',
+    },
+    componentContainer: {
+      width: '100%',
+      padding: containerWidth * 0.02, // Responsive padding
+      backgroundColor: '#ECEBEC',
+      borderRadius: 10,
+      marginBottom: containerWidth * 0.03,
+    },
+  });
 
-      const pastPositions = data?.past_positions || [];
+  const pastPositions = data?.past_positions || [];
 
   return (
     <View style={styles.container}>
       <View style={[dynamicStyles.componentContainer, styles.imageContainer]}>
-          <Image data={data?.past_positions?.pictures?.path || null} />
-        </View>
+        <Image
+          data={data?.pictures?.[3]?.path}
+          resizeMode='cover'
+          resizeMethod='scale'
+        />
+      </View>
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>My Past positions</ThemedText>
         <ThemedText style={styles.subtitle}>Tap to view</ThemedText>
@@ -141,7 +149,7 @@ const styles = StyleSheet.create({
   pastPositionContainer: {
     marginTop: 16,
   },
-   imageContainer: {
+  imageContainer: {
     padding: 0,
     overflow: 'hidden',
   },

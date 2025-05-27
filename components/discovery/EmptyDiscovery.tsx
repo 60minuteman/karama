@@ -1,12 +1,10 @@
 import { ThemedText } from '@/components/ThemedText';
 import React, { useEffect } from 'react';
-import { Image, StyleSheet, View,  } from 'react-native';
-
-
+import { Image, StyleSheet, View } from 'react-native';
 
 const EmptyDiscovery = ({ role }: { role: string }) => {
- 
-  
+  console.log('role', role);
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -20,9 +18,6 @@ const EmptyDiscovery = ({ role }: { role: string }) => {
         <ThemedText style={styles.description}>
           Your matches will appear here
         </ThemedText>
-        
-       
-        
       </View>
     </View>
   );

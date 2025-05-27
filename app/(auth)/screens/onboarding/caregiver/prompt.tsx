@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useUserStore } from '@/services/state/user';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { useOtherStore } from '@/services/state/other';
+import { useUserStore } from '@/services/state/user';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 // Add these type definitions at the top
 type PromptCategory = 'get_to_know' | 'childcare';
@@ -20,7 +20,11 @@ type Prompts = {
 };
 
 const promptCategories = [
-  { id: 'get_to_know' as PromptCategory, label: 'Get to know Me', primary: true },
+  {
+    id: 'get_to_know' as PromptCategory,
+    label: 'Get to know Me',
+    primary: true,
+  },
   { id: 'childcare' as PromptCategory, label: 'Childcare' },
 ];
 
@@ -42,7 +46,7 @@ const prompts: Prompts = {
     'My experience with special needs includes',
     'My favorite age group to work with is',
     'My teaching style can be described as',
-  ]
+  ],
 };
 
 export default function Prompt() {
@@ -53,55 +57,51 @@ export default function Prompt() {
     caregiverFirstPrompt,
     setCaregiverFirstPrompt,
     setOnboardingScreen,
-    setCaregiverFirstPromptAnswer
+    setCaregiverFirstPromptAnswer,
   } = useUserStore();
-   useEffect(() => {
-      setCaregiverFirstPromptAnswer('');
-    }, [])
-const { 
-    prompts
-  } = useOtherStore();
+  const { prompts: promptsData } = useOtherStore();
+
+  useEffect(() => {
+    setCaregiverFirstPromptAnswer('');
+  }, []);
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/moreInfo');
     router.push('/(auth)/screens/onboarding/caregiver/moreInfo');
   };
-  // Initialize with default category if not set
+
   useEffect(() => {
     if (!caregiverPromptCategory) {
       setCaregiverPromptCategory('get_to_know');
     }
   }, []);
 
- 
-
   const handleCategoryPress = (categoryId: PromptCategory) => {
     setCaregiverPromptCategory(categoryId);
-    // Clear previous prompt selection when changing categories
-    setCaregiverFirstPrompt(null);
+    setCaregiverFirstPrompt(undefined);
   };
 
-  // Now TypeScript knows this is safe
-  const currentPrompts = prompts[caregiverPromptCategory || 'get_to_know'];
-const handleAdd = (item: any) => {
-      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/promptAnswer');
-      router.push({
-        pathname: '/(auth)/screens/onboarding/caregiver/promptAnswer',
-        params: { prompt: item },
-      });
-};
+  const currentCategory = (caregiverPromptCategory ||
+    'get_to_know') as PromptCategory;
+  const currentPrompts = prompts[currentCategory];
+
+  const handleAdd = (prompt: string) => {
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/promptAnswer');
+    router.push({
+      pathname: '/(auth)/screens/onboarding/caregiver/promptAnswer',
+      params: { prompt },
+    });
+  };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
 
-        <ThemedText style={styles.title}>
-          Choose your prompt
-        </ThemedText>
+        <ThemedText style={styles.title}>Choose your prompt</ThemedText>
 
         <View style={styles.categories}>
           {promptCategories.map((category) => (
@@ -123,12 +123,12 @@ const handleAdd = (item: any) => {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.promptsContainer}>
-            {currentPrompts.map((prompt: any, index: any) => (
+            {currentPrompts.map((prompt: string, index: number) => (
               <View key={index} style={styles.pillWrapper}>
                 <Pill
                   label={prompt}
-                  selected={prompts.some((item: any) => item.title === prompt) || caregiverFirstPrompt === prompt}
-                  onPress={() =>  handleAdd(prompt)}
+                  selected={caregiverFirstPrompt === prompt}
+                  onPress={() => handleAdd(prompt)}
                 />
               </View>
             ))}
@@ -139,15 +139,10 @@ const handleAdd = (item: any) => {
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
-          {prompts.length > 1 && (
-
-          <View style={styles.buttonContainer}>
-            <Button
-              label="Next"
-              onPress={handleNext}
-              variant="compact"
-            />
-          </View>
+          {currentPrompts.length > 1 && (
+            <View style={styles.buttonContainer}>
+              <Button label='Next' onPress={handleNext} variant='compact' />
+            </View>
           )}
         </LinearGradient>
       </View>
@@ -215,5 +210,5 @@ const styles = StyleSheet.create({
     right: 0,
     height: 100,
     paddingHorizontal: 20,
-  }
+  },
 });

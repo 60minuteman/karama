@@ -10,20 +10,7 @@ interface InterestsProps {
   data?: any;
 }
 
-export const Interests = ({
-  interests = [
-    'Dance',
-    'DIY',
-    'Magic',
-    'Gaming',
-    'Painting',
-    'Film Making',
-    'Trumpet',
-    'Piano',
-    'Drama',
-  ],
-  data,
-}: InterestsProps) => {
+export const Interests = ({ interests, data }: InterestsProps) => {
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
     'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
@@ -45,12 +32,16 @@ export const Interests = ({
     return null;
   }
 
+  console.log('Image path:', data?.pictures?.[0]?.path);
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          data={data?.caregiver_profile?.pictures?.[2]?.path}
+          data={data?.pictures?.[0]?.path}
           style={styles.imagePlaceholder}
+          resizeMode='cover'
+          resizeMethod='scale'
         />
       </View>
       <View style={styles.section}>

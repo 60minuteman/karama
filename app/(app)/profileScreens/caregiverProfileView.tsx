@@ -38,7 +38,7 @@ const CaregiverProfileView = () => {
       data: CaregiverProfile;
       isLoading: boolean;
     };
-console.log('Caregiver profile data:', caregiverProfile);
+  console.log('Caregiver profile data:', caregiverProfile);
 
   // Add debug logs
   // console.log('Raw caregiver profile data:', caregiverProfile);
@@ -47,9 +47,9 @@ console.log('Caregiver profile data:', caregiverProfile);
   //   caregiverProfile?.caregiverProfile?.pictures
   // );
 
-    function calculateAge(birthDate: string) {
-        const birth = new Date(birthDate);
-        const today = new Date();
+  function calculateAge(birthDate: string) {
+    const birth = new Date(birthDate);
+    const today = new Date();
     return today.getFullYear() - birth.getFullYear();
   }
 
@@ -63,8 +63,8 @@ console.log('Caregiver profile data:', caregiverProfile);
 
   if (caregiverProfileLoading) {
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <ThemedView>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ThemedView>
           <ProfileHeader
             heading='Profile'
             edit
@@ -72,7 +72,7 @@ console.log('Caregiver profile data:', caregiverProfile);
           />
           <View style={styles.loadingContainer}>
             <ActivityIndicator size={'large'} />
-                                        </View>
+          </View>
         </ThemedView>
       </SafeAreaView>
     );
@@ -131,8 +131,7 @@ console.log('Caregiver profile data:', caregiverProfile);
             []),
         ].filter(Boolean),
         obsession:
-          caregiverProfile?.caregiverProfile?.prompts?.[0]?.answer ||
-          'Chickens! The kids love them and we just got two chicks named Bo & Sam.',
+          caregiverProfile?.caregiverProfile?.prompts?.[0]?.answer || '',
         religion: (() => {
           try {
             const religionStr =
@@ -182,62 +181,62 @@ console.log('Caregiver profile data:', caregiverProfile);
               pastPositions,
             }}
           />
-                        </View>
-            </ThemedView>
+        </View>
+      </ThemedView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-    container: {
+  container: {
     flex: 1,
   },
   contentContainer: {
     flex: 1,
-        paddingHorizontal: 16,
+    paddingHorizontal: 16,
     paddingVertical: 8,
     backgroundColor: '#F6F6F6',
-        alignItems: 'center',
+    alignItems: 'center',
     justifyContent: 'center',
-    },
-    text1: {
-        color: 'white',
-    fontFamily: 'Poppins',
-    },
-    ratingText: {
-        color: '#052222',
-        fontSize: 16,
-        fontWeight: 500,
-    },
-    parentHeading: {
-        fontFamily: 'Poppins',
-        fontSize: 32,
-        color: '#FFFFFF',
-        fontWeight: 500,
-    lineHeight: 36,
-    },
-    parentText: {
-        fontFamily: 'Poppins',
-        fontSize: 16,
-        fontWeight: 400,
-        lineHeight: 20,
+  },
+  text1: {
     color: 'white',
-    },
-    section: {
-        backgroundColor: '#261D2A0D',
-        paddingTop: 25,
-        paddingHorizontal: 25,
-        marginTop: 6,
+    fontFamily: 'Poppins',
+  },
+  ratingText: {
+    color: '#052222',
+    fontSize: 16,
+    fontWeight: 500,
+  },
+  parentHeading: {
+    fontFamily: 'Poppins',
+    fontSize: 32,
+    color: '#FFFFFF',
+    fontWeight: 500,
+    lineHeight: 36,
+  },
+  parentText: {
+    fontFamily: 'Poppins',
+    fontSize: 16,
+    fontWeight: 400,
+    lineHeight: 20,
+    color: 'white',
+  },
+  section: {
+    backgroundColor: '#261D2A0D',
+    paddingTop: 25,
+    paddingHorizontal: 25,
+    marginTop: 6,
     borderRadius: 20,
-        overflow: 'hidden',
-        flex: 1,
+    overflow: 'hidden',
+    flex: 1,
     paddingVertical: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
   loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
   },
 });

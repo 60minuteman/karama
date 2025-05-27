@@ -49,7 +49,7 @@ export default function Page() {
               clearUser();
               queryClient.clear();
               router.push('/(tabs)/discover');
-              router.reload();
+              // router.reload();
             }}
             variant='compact'
           />

@@ -48,7 +48,6 @@ const FamilyProfileView = () => {
     );
   };
 
-
   // console.log(familyProfile, 'familyProfile Data')
 
   return (
@@ -81,6 +80,7 @@ const FamilyProfileView = () => {
                       familyProfile?.family_profile?.pictures?.[0]?.path ||
                       require('@/assets/images/dummy.jpeg'),
                   }}
+                  resizeMode='cover'
                 >
                   <View style={styles.topCOntainer}>
                     <View style={styles.parentButton}>
@@ -158,7 +158,11 @@ const FamilyProfileView = () => {
                   <Image
                     style={styles.sectionImage}
                     resizeMode='cover'
-                    source={require('@/assets/images/d2.png')}
+                    source={{
+                      uri:
+                        familyProfile?.family_profile?.pictures?.[1]?.path ||
+                        familyProfile?.family_profile?.pictures?.[0]?.path,
+                    }}
                   />
                 </View>
                 <View style={[styles.subSection, { marginTop: 325 }]}>
@@ -289,7 +293,12 @@ const FamilyProfileView = () => {
                   <Image
                     style={styles.sectionImage}
                     resizeMode='cover'
-                    source={require('@/assets/images/d3.png')}
+                    resizeMethod='scale'
+                    source={{
+                      uri:
+                        familyProfile?.family_profile?.pictures?.[2]?.path ||
+                        familyProfile?.family_profile?.pictures?.[0]?.path,
+                    }}
                   />
                 </View>
                 <View style={[styles.subSection, { marginTop: 325 }]}>
@@ -318,7 +327,12 @@ const FamilyProfileView = () => {
                   <Image
                     style={styles.sectionImage}
                     resizeMode='cover'
-                    source={require('@/assets/images/d3.png')}
+                    resizeMethod='scale'
+                    source={{
+                      uri:
+                        familyProfile?.family_profile?.pictures?.[3]?.path ||
+                        familyProfile?.family_profile?.pictures?.[0]?.path,
+                    }}
                   />
                 </View>
                 <View
@@ -333,7 +347,12 @@ const FamilyProfileView = () => {
                   <Image
                     style={styles.sectionImage}
                     resizeMode='cover'
-                    source={require('@/assets/images/d4.png')}
+                    resizeMethod='scale'
+                    source={{
+                      uri:
+                        familyProfile?.family_profile?.pictures?.[4]?.path ||
+                        familyProfile?.family_profile?.pictures?.[0]?.path,
+                    }}
                   />
                 </View>
               </View>
@@ -350,7 +369,12 @@ const FamilyProfileView = () => {
                   <Image
                     style={styles.sectionImage}
                     resizeMode='cover'
-                    source={require('@/assets/images/d5.png')}
+                    resizeMethod='scale'
+                    source={{
+                      uri:
+                        familyProfile?.family_profile?.pictures?.[5]?.path ||
+                        familyProfile?.family_profile?.pictures?.[0]?.path,
+                    }}
                   />
                 </View>
               </View>
@@ -568,12 +592,13 @@ const styles = StyleSheet.create({
     marginBottom: 46,
   },
   imageStyle: {
-    height: 'auto',
+    height: 400,
     minWidth: '100%',
     paddingVertical: 25,
     paddingHorizontal: 16,
     gap: 460,
     borderRadius: 18,
+    backgroundColor: '#f0f0f0',
   },
   topCOntainer: {
     flexDirection: 'row',
