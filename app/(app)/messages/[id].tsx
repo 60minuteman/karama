@@ -265,7 +265,7 @@ export default function MessageScreen() {
         </View>
       ) : (
         <View style={{ height: '80%', display: 'flex', alignItems: 'center' }}>
-          {/* <Container profileData={profile} data={profile} /> */}
+          <Container profileData={profile} data={profile?.family_profile || profile?.cargiver_profile} role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'} />
         </View>
       )}
     </KeyboardAvoidingView>

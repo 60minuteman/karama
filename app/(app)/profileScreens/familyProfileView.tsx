@@ -48,7 +48,7 @@ const FamilyProfileView = () => {
     );
   };
 
-  // console.log(familyProfile, 'familyProfile Data')
+  console.log(familyProfile, 'familyProfile Data')
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -384,10 +384,7 @@ const FamilyProfileView = () => {
                     We are looking for ..
                   </ThemedText>
                   <View style={styles.pillContainer}>
-                    {(
-                      familyProfile?.family_profile?.caregiver_preference
-                        ?.caregiver_type || []
-                    ).map((type: string) => (
+                    {familyProfile?.family_profile?.caregiver_preference?.caregiver_types.map((type: string) => (
                       <InfoPill key={type} label={type} icon={'🧢'} />
                     ))}
                   </View>
@@ -396,10 +393,7 @@ const FamilyProfileView = () => {
                   <ThemedText style={styles.pillHeading}>Start Date</ThemedText>
                   <View style={styles.pillContainer}>
                     <InfoPill
-                      label={
-                        familyProfile?.family_profile?.job_commitment
-                          ?.start_date || 'Not specified'
-                      }
+                      label={familyProfile?.family_profile?.job_commitment?.start_date}
                     />
                   </View>
                 </View>

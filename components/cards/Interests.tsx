@@ -8,9 +8,10 @@ import { Image } from './Image';
 interface InterestsProps {
   interests?: string[];
   data?: any;
+  role?: any
 }
 
-export const Interests = ({ interests, data }: InterestsProps) => {
+export const Interests = ({ interests, data, role }: InterestsProps) => {
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
     'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
@@ -32,7 +33,11 @@ export const Interests = ({ interests, data }: InterestsProps) => {
     return null;
   }
 
-  console.log('Image path:', data?.pictures?.[0]?.path);
+  // console.log('Image path:', data?.pictures?.[0]?.path);
+
+  const allInterests = Object.entries(data?.children_interests || data?.hobbies)
+  .filter(([key]) => key !== "id")
+  .flatMap(([, value]) => value);
 
   return (
     <View style={styles.container}>
@@ -45,9 +50,9 @@ export const Interests = ({ interests, data }: InterestsProps) => {
         />
       </View>
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>My Interests</ThemedText>
+        <ThemedText style={styles.sectionTitle}>{role === 'FAMILY' ? 'Children\'s interest' : 'My Interests'}</ThemedText>
         <View style={styles.interestsContainer}>
-          {interests?.map((interest, index) => (
+          {allInterests?.map((interest: any, index: any) => (
             <Pill2
               key={index}
               // icon={interestIcons[interest] || '✨'}

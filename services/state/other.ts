@@ -31,11 +31,16 @@ export const useOtherStore = create<any>()(
           answer: '',
         },
       ],
-      likeProfile: [],
-      addLikeProfile: (item: any) =>
+      accountType: 'FAMILY',
+      setAccountType:  (item: string) =>
         set(() => ({
-          likeProfile: [item],
+          accountType: item,
         })),
+     likeProfile: [],
+    addLikeProfile: (item: any) =>
+      set((state: any) => ({
+        likeProfile: [...state.likeProfile, item],
+      })),
       addPrompts: (item: { category: string; title: string; answer: string }) =>
         set((state: any) => ({
           prompts: [...state.prompts, item],

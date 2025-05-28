@@ -441,7 +441,7 @@ export default function DiscoverScreen() {
     // education: currentProfile?.family_profile?.
   };
 
-  console.log('profiledata', currentProfile?.family_profile?.pictures);
+  // console.log('profiledata', currentProfile?.family_profile?.pictures);
 
   const handleLike = () => {
     submitLike.mutate(
@@ -481,10 +481,10 @@ export default function DiscoverScreen() {
                 {currentUser?.data?.role === 'FAMILY' ? (
                   <Container
                     ref={containerRef}
-                    profileData={profileDataFamily}
-                    data={currentProfile}
+                    data={data}
                     onLike={() => handleLike(currentIndex)}
                     onReject={() => handleReject(currentIndex)}
+                    role={currentUser?.data?.role}
                   />
                 ) : (
                   <CaregiverContainer

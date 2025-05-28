@@ -1,5 +1,5 @@
 import { View, Text, Pressable, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router, Stack } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
@@ -9,12 +9,25 @@ import { Container } from '@/components/home/Container'
 import { useOtherStore } from '@/services/state/other'
 
 const profilePreview = () => {
+  const [profileData, setProfileData] = useState<any>()
 
     const {
-        likeProfile
+        likeProfile,
+        accountType
     } = useOtherStore()
 
-    console.log(likeProfile, 'likeProfiles');
+    useEffect(() => {
+      if (likeProfile?.length) {
+        setProfileData(likeProfile?.[0])
+      }
+    }, [likeProfile])
+    
+
+
+  //  const {name} = likeProfile
+
+  //  console.log(accountType, 'name');
+   
     
 
     
@@ -27,14 +40,15 @@ const profilePreview = () => {
           <View style={styles.container}>
             <Pressable onPress={handleGoBack} style={styles.backButton}>
             <Ionicons name='arrow-back' size={24} color='#002140' />
-                <Text>{likeProfile?.caregiver_profile?.name}</Text>
+                <Text>{profileData?.name}</Text>
             </Pressable>
              <ThemedView style={styles.container}>
        
         <View style={styles.contentContainer}>
           <Container
-            profileData={likeProfile}
-            data={likeProfile}
+            profileData={profileData}
+            data={profileData}
+            role={accountType}
           />
             </View>
             </ThemedView>
