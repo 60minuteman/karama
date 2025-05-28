@@ -432,7 +432,7 @@ export default function Prompt() {
         >
           {promptsData.length > 1 && (
             <View style={styles.buttonContainer}>
-              <Button label='Next' onPress={handleSubmit} variant='compact' />
+              <Button label='Next' onPress={handleSubmit} loading={createProfile.isPending} variant='compact' />
             </View>
           )}
         </LinearGradient>
