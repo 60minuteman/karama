@@ -71,8 +71,8 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
                 <Pill
                   label={option.label}
                   // icon={option.icon}
-                  selected={caregiverPaymentMethod === option.id}
-                  onPress={() => setCaregiverPaymentMethod(option.id)}
+                  selected={caregiverPaymentMethod === option.label}
+                  onPress={() => setCaregiverPaymentMethod(option.label)}
                 />
               </View>
             ))}

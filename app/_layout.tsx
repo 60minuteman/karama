@@ -76,7 +76,7 @@ export const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const [isReady, setIsReady] = useState(false);
-  const { hydrated } = useUserStore();
+  const { hydrated, clearCaregiverData } = useUserStore();
 
   useEffect(() => {
     async function prepare() {
@@ -89,6 +89,11 @@ export default function RootLayout() {
     }
     prepare();
   }, []);
+
+  // useEffect(() => {
+  //   // clearAllData();
+  //   clearCaregiverData();
+  // }, []);
 
   useEffect(() => {
     if (isReady && hydrated) {

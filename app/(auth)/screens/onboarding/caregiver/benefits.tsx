@@ -39,8 +39,8 @@ export default function Benefits() {
     setShowCaregiverRequiredBenefits,
     setOnboardingScreen,
   } = useUserStore();
-  const toggleBenefit = (benefitId: string) => {
-    if (benefitId === 'other') {
+  const toggleBenefit = (benefitLabel: string) => {
+    if (benefitLabel === '✨ Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/caregiver/OtherBenefits');
       router.push('/(auth)/screens/onboarding/caregiver/OtherBenefits');
       return;
@@ -48,23 +48,24 @@ export default function Benefits() {
     const prev = caregiverRequiredBenefits ?? [];
 
     // Only allow valid benefits from benefitsOptions
-    if (!benefitsOptions.find((opt) => opt.id === benefitId)) {
+    const benefit = benefitsOptions.find((opt) => opt.label === benefitLabel);
+    if (!benefit) {
       return;
     }
 
     // Remove if exists, add if doesn't exist and under 10 items
-    const updatedBenefits = prev.includes(benefitId)
-      ? prev.filter((id) => id !== benefitId)
+    const updatedBenefits = prev.includes(benefit.label)
+      ? prev.filter((label) => label !== benefit.label)
       : prev.length < 10
-      ? [...prev, benefitId]
+      ? [...prev, benefit.label]
       : prev;
 
     setCaregiverRequiredBenefits(updatedBenefits);
   };
 
   const handleNext = () => {
-      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/PastPosition');
-      router.push('/(auth)/screens/onboarding/caregiver/PastPosition');
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/PastPosition');
+    router.push('/(auth)/screens/onboarding/caregiver/PastPosition');
   };
 
   return (
@@ -90,8 +91,8 @@ export default function Benefits() {
                 <Pill
                   label={benefit.label}
                   // icon={benefit.icon}
-                  selected={caregiverRequiredBenefits?.includes(benefit.id)}
-                  onPress={() => toggleBenefit(benefit.id)}
+                  selected={caregiverRequiredBenefits?.includes(benefit.label)}
+                  onPress={() => toggleBenefit(benefit.label)}
                 />
               </View>
             ))}

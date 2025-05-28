@@ -108,8 +108,8 @@ export default function AboutScreen() {
   };
   const toggleRulesSelection = (item: string) => {
     if (item === '🎈 Other') {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet')
-      router.push('/(auth)/screens/onboarding/family/otherDiet?category=rules')
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
+      router.push('/(auth)/screens/onboarding/family/otherDiet?category=rules');
       return;
     }
     const prev = caregiverRules ?? [];
@@ -120,8 +120,8 @@ export default function AboutScreen() {
   };
   const toggleDietSelection = (item: string) => {
     if (item === '🥑 Other') {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet')
-      router.push('/(auth)/screens/onboarding/family/otherDiet?category=diet')
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
+      router.push('/(auth)/screens/onboarding/family/otherDiet?category=diet');
       return;
     }
     const prev = caregiverDiet ?? [];
@@ -132,20 +132,30 @@ export default function AboutScreen() {
   };
   const toggleReligionSelection = (item: string) => {
     if (item === '📿 Other') {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet')
-      router.push('/(auth)/screens/onboarding/family/otherDiet?category=religion')
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
+      router.push(
+        '/(auth)/screens/onboarding/family/otherDiet?category=religion'
+      );
       return;
     }
-    const prev = caregiverReligion ?? [];
-    const selectedReligion = prev.includes(item)
-      ? prev.filter((i) => i !== item)
-      : [...prev, item];
-    setCaregiverReligion(selectedReligion);
+    // For religion, we only want to allow one selection
+    setCaregiverReligion([item]);
   };
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/philo');
     router.push('/(auth)/screens/onboarding/caregiver/philo');
+  };
+
+  const handleSkip = () => {
+    // Reset all selections when skipping
+    setCaregiverPersonality([]);
+    setCaregiverDiet([]);
+    setCaregiverReligion([]);
+    setShowCaregiverPersonality(false);
+    setShowCaregiverDiet(false);
+    setShowCaregiverReligion(false);
+    handleNext();
   };
 
   return (
@@ -205,16 +215,12 @@ export default function AboutScreen() {
                       value={
                         category === 'Personality'
                           ? showCaregiverPersonality
-                          : category === 'Diet'
-                          ? showCaregiverDiet
-                          : showCaregiverReligion
+                          : showCaregiverDiet
                       }
                       onValueChange={(value) => {
                         category === 'Personality'
                           ? setShowCaregiverPersonality(value)
-                          : category === 'Diet'
-                          ? setShowCaregiverDiet(value)
-                          : setShowCaregiverReligion(value);
+                          : setShowCaregiverDiet(value);
                       }}
                     />
                   </View>
@@ -237,16 +243,15 @@ export default function AboutScreen() {
             pointerEvents='none'
           />
           <View style={styles.buttonContainer}>
-            <Button label='Skip' onPress={handleNext} variant='skip' />
+            <Button label='Skip' onPress={handleSkip} variant='skip' />
             <Button
               label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={
-                caregiverDiet?.length === 0 ||
-                caregiverPersonality?.length === 0 ||
-                caregiverReligion?.length === 0 ||
-                caregiverRules?.length === 0
+                !caregiverDiet?.length ||
+                !caregiverPersonality?.length ||
+                !caregiverReligion?.length
               }
             />
           </View>
@@ -266,10 +271,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   spacerTop: {
-    height: 120,
+    height: 100,
   },
   spacerBottom: {
-    height: 120,
+    height: 100,
   },
   scrollViewContainer: {
     flex: 1,
@@ -295,18 +300,19 @@ const styles = StyleSheet.create({
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,
-    marginBottom: 40,
+    marginBottom: 32,
     fontWeight: '500',
-    marginTop: 20,
+    marginTop: 16,
   },
   categoryContainer: {
-    marginBottom: 32,
+    marginBottom: 40,
   },
   categoryTitle: {
     fontFamily: 'Poppins',
-    fontSize: 16,
+    fontSize: 18,
     color: '#666',
     marginBottom: 16,
+    fontWeight: '500',
   },
   pillsContainer: {
     flexDirection: 'row',
@@ -318,7 +324,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: 12,
   },
   switchLabel: {
     fontSize: 14,
@@ -327,19 +333,20 @@ const styles = StyleSheet.create({
   disclaimer: {
     fontSize: 14,
     color: '#666',
-    marginTop: 8,
+    marginTop: 12,
     fontStyle: 'italic',
+    lineHeight: 20,
   },
   buttonGradient: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    height: 120,
+    height: 100,
   },
   buttonContainer: {
     position: 'absolute',
-    bottom: 50,
+    bottom: 40,
     left: 20,
     right: 20,
     flexDirection: 'row',

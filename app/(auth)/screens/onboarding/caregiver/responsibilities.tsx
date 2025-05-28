@@ -111,35 +111,47 @@ export default function ResponsibilitiesScreen() {
     setCaregiverHouseholdResponsibilities,
     setOnboardingScreen,
   } = useUserStore();
-  const toggleChildcareResponsibility = (id: string) => {
-    if (id === 'other') {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherChildResponsibilities');
-      router.push('/(auth)/screens/onboarding/family/otherChildResponsibilities');
+  console.log(
+    'caregiverChildcareResponsibilities',
+    caregiverChildcareResponsibilities,
+    caregiverHouseholdResponsibilities
+  );
+  const toggleChildcareResponsibility = (label: string) => {
+    if (label === '➕ Other') {
+      setOnboardingScreen(
+        '/(auth)/screens/onboarding/family/otherChildResponsibilities'
+      );
+      router.push(
+        '/(auth)/screens/onboarding/family/otherChildResponsibilities'
+      );
       return;
     }
     const prev = caregiverChildcareResponsibilities ?? [];
-    const selectedResponsibilities = prev.includes(id)
-      ? prev.filter((item) => item !== id)
-      : [...prev, id];
+    const selectedResponsibilities = prev.includes(label)
+      ? prev.filter((item) => item !== label)
+      : [...prev, label];
     setCaregiverChildcareResponsibilities(selectedResponsibilities);
   };
-  const toggleHouseholdResponsibility = (id: string) => {
-    if (id === 'other2') {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherHouseholdResponsibilities');
-      router.push('/(auth)/screens/onboarding/family/otherHouseholdResponsibilities');
+  const toggleHouseholdResponsibility = (label: string) => {
+    if (label === '➕ Other') {
+      setOnboardingScreen(
+        '/(auth)/screens/onboarding/family/otherHouseholdResponsibilities'
+      );
+      router.push(
+        '/(auth)/screens/onboarding/family/otherHouseholdResponsibilities'
+      );
       return;
     }
     const prev = caregiverHouseholdResponsibilities ?? [];
-    const selectedResponsibilities = prev.includes(id)
-      ? prev.filter((item) => item !== id)
-      : [...prev, id];
+    const selectedResponsibilities = prev.includes(label)
+      ? prev.filter((item) => item !== label)
+      : [...prev, label];
     setCaregiverHouseholdResponsibilities(selectedResponsibilities);
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-
+      <Header variant='back' />
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
@@ -169,9 +181,9 @@ export default function ResponsibilitiesScreen() {
                   label={item.label}
                   // icon={item.icon}
                   selected={caregiverChildcareResponsibilities?.includes(
-                    item.id
+                    item.label
                   )}
-                  onPress={() => toggleChildcareResponsibility(item.id)}
+                  onPress={() => toggleChildcareResponsibility(item.label)}
                 />
               ))}
             </View>
@@ -188,9 +200,9 @@ export default function ResponsibilitiesScreen() {
                   label={item.label}
                   // icon={item.icon}
                   selected={caregiverHouseholdResponsibilities?.includes(
-                    item.id
+                    item.label
                   )}
-                  onPress={() => toggleHouseholdResponsibility(item.id)}
+                  onPress={() => toggleHouseholdResponsibility(item.label)}
                 />
               ))}
             </View>

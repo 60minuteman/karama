@@ -9,8 +9,16 @@ import customAxios from '@/services/api/envConfig';
 import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { useRouter } from 'expo-router';
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, TextInput, View, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  TextInput,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import Toast from 'react-native-toast-message';
 
 export default function MoreInfo() {
@@ -27,9 +35,7 @@ export default function MoreInfo() {
     family_prompt_answer,
     setSteps,
   } = useUserStore();
-    const { 
-        prompts
-      } = useOtherStore();
+  const { prompts } = useOtherStore();
 
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -130,10 +136,12 @@ export default function MoreInfo() {
             </View>
           </View>
 
-          <View style={[
-            styles.bottomNav,
-            isKeyboardVisible ? { marginBottom: -10 } : { marginBottom: 40 }
-          ]}>
+          <View
+            style={[
+              styles.bottomNav,
+              isKeyboardVisible ? { marginBottom: -10 } : { marginBottom: 40 },
+            ]}
+          >
             <Button label='Skip' onPress={() => router.back()} variant='skip' />
             <Button
               label='Next'
