@@ -1,7 +1,7 @@
 import { Container } from '@/components/home/Container';
 import ProfileHeader from '@/components/Profile/ProfileHeader';
 import { ThemedView } from '@/components/ThemedView';
-import { useProfile } from '@/services/api/api';
+import { useCurrentUser, useProfile } from '@/services/api/api';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { ActivityIndicator, Alert, StyleSheet, View } from 'react-native';
@@ -33,11 +33,11 @@ interface CaregiverProfile {
 
 const CaregiverProfileView = () => {
   const router = useRouter();
-  const { data: caregiverProfile, isLoading: caregiverProfileLoading } =
-    useProfile('CAREGIVER') as {
-      data: CaregiverProfile;
-      isLoading: boolean;
-    };
+    const { data: currentUser, isLoading: isLoadingCurrentUser } =
+      useCurrentUser();
+  
+    const { data: caregiverProfile, isLoading: caregiverProfileLoading }: any =
+      useProfile(currentUser?.data?.role);
   console.log('Caregiver profile data:', caregiverProfile);
 
   // Add debug logs
@@ -173,13 +173,8 @@ const CaregiverProfileView = () => {
         <View style={styles.contentContainer}>
           <Container
             profileData={profileData}
-            data={{
-              ...caregiverProfile?.caregiverProfile,
-              pictures,
-              profilePicture: profilePicture?.path,
-              galleryPictures: otherPictures.map((pic) => pic.path),
-              pastPositions,
-            }}
+            data={caregiverProfile?.caregiverProfile}
+            role={currentUser?.data?.role}
           />
         </View>
       </ThemedView>

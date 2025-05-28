@@ -38,11 +38,11 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
    const { data: currentUser, isLoading: isLoadingCurrentUser } =
       useCurrentUser();
 
-      const {addLikeProfile} = useOtherStore()
+      const { addLikeProfile, setAccountType } = useOtherStore()
 
       const {data: like_you, isLoading: isLoading} = useFetchLikes(currentUser?.data?.role, cursor, nextPage )
 
-      console.log(like_you?.data?.scored_caregivers, 'like-you');
+      // console.log(like_you, 'like-you');
       
 
   // Responsive calculations
@@ -61,6 +61,7 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
 
   const handleCardPress = (profile: any) => {
     // Navigate to the caregiver preview screen when a card is pressed
+    setAccountType(like_you?.data?.scored_families ? 'FAMILY' : 'CAREGIVER')
     addLikeProfile(profile)
     // console.log(profile, 'log');
     
@@ -138,9 +139,9 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
               {like_you?.data?.scored_caregivers?.map((profile: any) => (
                 <LikedYouCard
                   key={profile.id}
-                  profile={profile}
+                  profile={profile?.caregiver_profile}
                   isBlurred={false}
-                  onPress={() => handleCardPress(profile)}
+                  onPress={() => handleCardPress(profile?.caregiver_profile)}
                 />
               ))}
             </View>
@@ -149,9 +150,9 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
               {like_you?.data?.scored_families?.map((profile: any) => (
                 <LikedYouCard
                   key={profile.id}
-                  profile={profile}
+                  profile={profile?.family_profile}
                   isBlurred={false}
-                  onPress={() => handleCardPress(profile)}
+                  onPress={() => handleCardPress(profile?.family_profile)}
                 />
               ))}
             </View>
@@ -176,9 +177,9 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
               {like_you?.data?.scored_caregivers?.map((profile: any) => (
                 <LikedYouCard
                   key={profile.id}
-                  profile={profile.caregiver_profile}
+                  profile={profile?.caregiver_profile}
                   isBlurred={profile.id !== '1'} // Only the first card is unblurred
-                  onPress={() => handleCardPress(profile)}
+                  onPress={() => handleCardPress(profile?.caregiver_profile)}
                 />
               ))}
             </View>
@@ -187,9 +188,9 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
               {like_you?.data?.scored_families?.map((profile: any) => (
                 <LikedYouCard
                   key={profile.id}
-                  profile={profile}
+                  profile={profile?.family_profile}
                   isBlurred={profile.id !== '1'} // Only the first card is unblurred
-                  onPress={() => handleCardPress(profile)}
+                  onPress={() => handleCardPress(profile?.family_profile)}
                 />
               ))}
             </View>

@@ -7,11 +7,15 @@ import { StyleSheet, View } from 'react-native';
 interface ExperienceAndLanguagesProps {
   yearsOfExperience: string;
   languages: string[];
+  data?: any
+  role?: any
 }
 
 export const ExperienceAndLanguages = ({
   yearsOfExperience = '11-20 years',
   languages = ['Hausa', 'Arbic', 'Hindu'],
+  data,
+  role
 }: ExperienceAndLanguagesProps) => {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -25,12 +29,12 @@ export const ExperienceAndLanguages = ({
   return (
     <View style={styles.container}>
       <Section title='With an experience of'>
-        <Pill2 label={yearsOfExperience} style={styles.experiencePill} />
+        <Pill2 label={data?.years_of_experience} style={styles.experiencePill} />
       </Section>
 
       <Section title='I speak'>
         <View style={styles.languagesContainer}>
-          {languages?.map((language, index) => (
+          {data?.language?.languages?.map((language, index) => (
             <Pill2
               key={index}
               icon='💬'

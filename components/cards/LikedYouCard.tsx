@@ -36,6 +36,8 @@ export const LikedYouCard = ({
     return null;
   }
 
+  
+
   return (
     <TouchableOpacity 
       onPress={onPress}
@@ -44,18 +46,18 @@ export const LikedYouCard = ({
       key={key}
     >
       <ImageBackground 
-        source={typeof profile.image === 'string' ? { uri: profile.image } : profile.image}
+        source={typeof profile.pictures?.[0]?.path === 'string' ? { uri: profile.pictures?.[0]?.path } : profile.image}
         style={styles.imageBackground}
         resizeMode="cover"
       >
         <View style={styles.overlay}>
           <View style={styles.header}>
             <BlurView intensity={20} style={styles.genderPill}>
-              <ThemedText style={styles.genderText}>{profile.gender}</ThemedText>
+              <ThemedText style={styles.genderText}>{profile?.description?.description || profile?.pronounce}</ThemedText>
             </BlurView>
             <View style={styles.ratingPill}>
-              <ThemedText style={styles.rating}>{profile.score}</ThemedText>
-              <ThemedText style={styles.starIcon}>⭐</ThemedText>
+              <ThemedText style={styles.rating}>{profile.rating_count}</ThemedText>
+              <ThemedText style={styles.starIcon}>⭐</ThemedText> 
             </View>
           </View>
 

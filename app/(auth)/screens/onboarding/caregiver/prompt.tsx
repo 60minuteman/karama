@@ -139,7 +139,7 @@ export default function Prompt() {
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
-          {currentPrompts.length > 1 && (
+          {promptsData.length > 1 && (
             <View style={styles.buttonContainer}>
               <Button label='Next' onPress={handleNext} variant='compact' />
             </View>

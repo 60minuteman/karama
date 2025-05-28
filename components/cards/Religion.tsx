@@ -9,6 +9,7 @@ interface ReligionProps {
   personality?: string[];
   disabilities?: string[];
   data?: any;
+  role?: any
 }
 
 export const Religion = ({
@@ -16,6 +17,7 @@ export const Religion = ({
   personality = ['Caring', 'Patient', 'Creative'],
   disabilities = ['Dyslexia', 'ADHD'],
   data,
+  role
 }: ReligionProps) => {
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -53,22 +55,31 @@ export const Religion = ({
   return (
     <View style={styles.container}>
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>My Religion</ThemedText>
+        <ThemedText style={styles.sectionTitle}>{role === 'CARGIVER' ? 'My' : 'Our'} Religion</ThemedText>
         <View style={styles.pillContainer}>
-          {religion && (
             <Pill2
               // icon={religionIcons[religion] || religionIcons['Other']}
-              label={religion}
+              label={data?.household_info?.religion  || data?.characteristics?.religion}
               style={styles.pill}
             />
-          )}
         </View>
       </View>
 
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>My Personality</ThemedText>
+        <ThemedText style={styles.sectionTitle}>{role === 'CARGIVER' ? 'My' : ''} Personality</ThemedText>
+        {role === 'CARGIVER' ? (
+          <View style={styles.pillContainer}>
+          {data?.characteristics?.personalities?.map((item) => (
+            <Pill2
+              // icon={personalityIcons[trait] || '✨'}
+              label={item}
+              style={styles.pill}
+            />
+          ))}
+        </View>
+        ) : (
         <View style={styles.pillContainer}>
-          {personality?.map((trait, index) => (
+          {data?.caregiver_preference?.personalities?.map((trait, index) => (
             <Pill2
               key={index}
               // icon={personalityIcons[trait] || '✨'}
@@ -77,18 +88,21 @@ export const Religion = ({
             />
           ))}
         </View>
+        )}
       </View>
 
-      <View style={styles.section}>
+     {role === 'CAREGIVER' && (
+       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>
           Disability Experience
         </ThemedText>
         <View style={styles.pillContainer}>
-          {disabilities?.map((disability, index) => (
+          {data?.behavioural_differences?.map((disability, index) => (
             <Pill2 key={index} label={disability} style={styles.pill} />
           ))}
         </View>
       </View>
+     )}
     </View>
   );
 };

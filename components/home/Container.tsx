@@ -20,6 +20,7 @@ import {
   View,
 } from 'react-native';
 import ProfileCardLoader from '../cards/ProfileCardLoader';
+import { Pill2 } from '@/app/components/ui/Pill2';
 
 interface ContainerProps {
   profileData: {
@@ -44,6 +45,7 @@ interface ContainerProps {
   data?: any;
   onLike?: () => void;
   onReject?: () => void;
+  role?:any
 }
 
 // Create a type for the ref
@@ -54,11 +56,16 @@ export interface ContainerRef {
 
 // Properly type the forwardRef
 const Container = forwardRef<ContainerRef, ContainerProps>(
-  ({ profileData, data, onLike, onReject }, ref) => {
+  ({ profileData, data, onLike, onReject, role }, ref) => {
     const { width: windowWidth } = useWindowDimensions();
     const isLargeScreen = windowWidth > 768;
     const containerWidth = Math.min(windowWidth * 0.9, 500);
 
+    // console.log(data, 'show');
+    // return
+
+    // const role = 'FAMILY'
+    
     // Add animation values
     const slideAnim = new Animated.Value(0);
     const rotateAnim = slideAnim.interpolate({
@@ -157,27 +164,34 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
         <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>
           <ProfileDetails
-            role={profileData.role}
+            role={role}
             experience={profileData.experience}
             lookingFor={profileData.lookingFor}
             hourlyRate={profileData.hourlyRate}
+            data={data}
           />
         </View>
-        <View style={styles.spacer} />
+        {role === 'CAREGIVER' &&  (
+         <>
+          <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>
           <ExperienceAndLanguages
             yearsOfExperience={caregiverProfile?.years_of_experience}
             languages={profileData.languages}
+            data={data}
+            role
           />
         </View>
-        <View style={styles.spacer} />
-        {/* <View style={dynamicStyles.componentContainer}>
-          <Obsession obsession={profileData.obsession} />
-        </View> */}
+        </>
+
+        )}
+         <View style={styles.spacer} />
+       
         <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>
-          <Interests data={data} interests={profileData.interests} />
+          <Interests data={data} role={role} interests={profileData.interests} />
         </View>
+
         <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>
           <Religion
@@ -185,23 +199,16 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
             personality={profileData.personality}
             disabilities={profileData.disabilities}
             data={data}
+            role
           />
         </View>
-        <View style={styles.spacer} />
+
+           <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>
-          <Responsibilities data={data} />
+          <Responsibilities data={data} role={role} />
         </View>
-        <View style={styles.spacer} />
-        <View style={dynamicStyles.componentContainer}>
-          <Certifications
-            certifications={[
-              ...(abilitiesAndCerts?.abilities || []),
-              ...(abilitiesAndCerts?.certifications || []),
-            ]?.filter(Boolean)}
-            data={data}
-          />
-        </View>
-        <View style={styles.spacer} />
+
+         <View style={styles.spacer} />
         <View style={[dynamicStyles.componentContainer, styles.imageContainer]}>
           <Image
             data={data?.pictures?.[3]?.path}
@@ -209,6 +216,38 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
             resizeMethod='scale'
           />
         </View>
+        {role === 'FAMILY' && (
+         <>
+         <View style={styles.spacer} />
+        <View style={dynamicStyles.componentContainer}>
+         <View style={styles.containers}>
+               <View style={styles.section}>
+                 <ThemedText style={styles.sectionTitle}>We are looking for....</ThemedText>
+                 <View style={styles.pillContainer}>
+                    {data?.caregiver_preference?.caregiver_types?.map((item: any) => (
+                      <Pill2
+                       label={item}
+                       style={styles.pill}
+                     />
+                    ))}
+                 </View>
+               </View>
+         
+               <View style={styles.section}>
+                 <ThemedText style={styles.sectionTitle}>
+                   Education Level
+                 </ThemedText>
+                 <View style={styles.pillContainer}>
+                     <Pill2 label={data?.caregiver_preference?.education_level} style={styles.pill} />
+                 </View>
+               </View>
+             </View>
+        </View>
+         </>
+       )}
+
+       {role === 'CAREGIVER' && (
+      <>
         <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>
           <Work
@@ -227,6 +266,19 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
           />
         </View>
         <View style={styles.bottomSpacer} />
+      </>
+    )} 
+        {/* 
+       
+        
+
+      
+       
+       
+
+         
+
+    */}
       </>
     );
 
@@ -278,6 +330,9 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden',
   },
+  containers : {
+    padding: 16
+  },
   largeScreenLayout: {
     flexDirection: 'row',
     height: '120%',
@@ -314,5 +369,28 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_400Regular',
     color: '#666666',
     textAlign: 'center',
+  },
+  //  container: {
+  //   padding: 16,
+  // },
+  section: {
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontFamily: 'Bogart-Regular',
+    color: 'rgba(38, 29, 42, 0.4)',
+    marginBottom: 12,
+  },
+  pillContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  pill: {
+    backgroundColor: '#E0E0E0',
+    borderRadius: 50,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
   },
 });
