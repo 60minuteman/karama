@@ -45,6 +45,7 @@ export default function Page() {
     setOnboardingScreen,
   } = useUserStore();
   // const [selectedPets, setSelectedPets] = useState<string[]>([]);
+  console.log('caregiverPetExperience', caregiverPetExperience);
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/interest');
@@ -53,8 +54,8 @@ export default function Page() {
 
   const togglePet = (pet: PetType) => {
     if (pet === 'Other') {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherPet')
-      router.push('/(auth)/screens/onboarding/family/otherPet')
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherPet');
+      router.push('/(auth)/screens/onboarding/family/otherPet');
       return;
     }
     const prev = caregiverPetExperience ?? [];
@@ -89,10 +90,8 @@ export default function Page() {
             <Pill
               key={pet.label}
               label={pet.label}
-              onPress={() => togglePet(pet.label.split(' ')[1])}
-              selected={caregiverPetExperience?.includes(
-                pet.label.split(' ')[1]
-              )}
+              onPress={() => togglePet(pet.label)}
+              selected={caregiverPetExperience?.includes(pet.label)}
               disabled={
                 pet.label.split(' ')[1] !== 'None' &&
                 caregiverPetExperience?.includes('None')

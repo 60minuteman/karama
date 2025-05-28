@@ -99,6 +99,10 @@ export default function AboutScreen() {
     ],
   };
 
+  console.log('caregiverPersonality', caregiverPersonality);
+  console.log('caregiverDiet', caregiverDiet);
+  console.log('caregiverReligion', caregiverReligion);
+
   const togglePersonalitySelection = (item: string) => {
     const prev = caregiverPersonality ?? [];
     const selectedPersonality = prev.includes(item)

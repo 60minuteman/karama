@@ -105,22 +105,17 @@ export default function InterestScreen() {
     ],
   };
 
-  useEffect(() => {
-    console.log(caregiverCreativeInterests);
-    console.log(caregiverInstrumentInterests);
-    console.log(caregiverSportInterest);
-    console.log(caregiverStemInterests);
-  }, [
-    caregiverCreativeInterests,
-    caregiverInstrumentInterests,
-    caregiverStemInterests,
-    caregiverSportInterest,
-  ]);
+  console.log('caregiverCreativeInterests', caregiverCreativeInterests);
+  console.log('caregiverInstrumentInterests', caregiverInstrumentInterests);
+  console.log('caregiverSportInterest', caregiverSportInterest);
+  console.log('caregiverStemInterests', caregiverStemInterests);
 
   const toggleCreativeInterest = (interest: string) => {
     if (interest === '👨‍🎨 Other') {
       // Redirect to the custom interest input screen
-      router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Creative`);
+      router.push(
+        `/(auth)/screens/onboarding/family/custom-interest?category=Creative`
+      );
       return;
     }
     const prev = caregiverCreativeInterests ?? [];
@@ -132,7 +127,9 @@ export default function InterestScreen() {
   const toggleInstrumentInterest = (interest: string) => {
     if (interest === '🎼 Other') {
       // Redirect to the custom interest input screen
-      router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Instrument`);
+      router.push(
+        `/(auth)/screens/onboarding/family/custom-interest?category=Instrument`
+      );
       return;
     }
     const prev = caregiverInstrumentInterests ?? [];
@@ -144,7 +141,9 @@ export default function InterestScreen() {
   const toggleSportInterest = (interest: string) => {
     if (interest === '🏅 Other') {
       // Redirect to the custom interest input screen
-      router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Sport`);
+      router.push(
+        `/(auth)/screens/onboarding/family/custom-interest?category=Sport`
+      );
       return;
     }
     const prev = caregiverSportInterest ?? [];
@@ -156,7 +155,9 @@ export default function InterestScreen() {
   const toggleStemInterest = (interest: string) => {
     if (interest === '🔬 Other') {
       // Redirect to the custom interest input screen
-      router.push(`/(auth)/screens/onboarding/family/custom-interest?category=stem`);
+      router.push(
+        `/(auth)/screens/onboarding/family/custom-interest?category=stem`
+      );
       return;
     }
     const prev = caregiverStemInterests ?? [];
