@@ -24,9 +24,7 @@ import { benefitsOptions } from './benefits';
 export default function PromptAnswer() {
   const router = useRouter();
   const { prompt } = useLocalSearchParams();
-   const { 
-        addPrompts
-      } = useOtherStore();
+  const { addPrompts } = useOtherStore();
 
   const getDefaultStartDate = () => {
     const tomorrow = new Date();
@@ -130,14 +128,10 @@ export default function PromptAnswer() {
     otherHouseholdResponsibilities,
     otherChildResponsibilities,
     caregiverThirdPosition,
-    prompts
+    prompts,
   } = useOtherStore();
 
-  console.log(
-    'carePosition',
-    caregiverFirstPosition,
-    caregiverFirstPosition.startDate
-  );
+  console.log('prompts', prompts);
 
   const payment_info =
     caregiverPaymentType === 'Salary Base'
@@ -229,12 +223,7 @@ export default function PromptAnswer() {
       other_household_responsibilities: otherHouseholdResponsibilities || '',
     },
     payment_info,
-    required_benefits: (caregiverRequiredBenefits || [])
-      .filter(
-        (benefit) =>
-          benefit && benefitsOptions?.find((opt) => opt.id === benefit)
-      )
-      .slice(0, 10),
+    required_benefits: caregiverRequiredBenefits?.slice(0, 10) || [],
     past_positions: [
       caregiverFirstPosition && {
         family_or_business_name: caregiverFirstPosition.familyName,
@@ -281,14 +270,19 @@ export default function PromptAnswer() {
     ]
       .filter(Boolean)
       .filter((position) => position.start_date && position.end_date),
-    prompts,
+    prompts: prompts?.slice(-2) || [],
   };
 
   useEffect(() => {
     setCaregiverFirstPromptAnswer('');
   }, []);
 
-  console.log(onboadingInfo, 'TO Create PROFIELEEE');
+  console.log(
+    'TO Create PROFIELEEE',
+    onboadingInfo,
+    otherRequirement,
+    caregiverFirstPosition
+  );
   const createProfile: any = useAuthMutation({
     mutationFn: (data: any) => {
       return customAxios.post(`/caregiver-profile/create-profile`, data);
@@ -362,8 +356,7 @@ export default function PromptAnswer() {
           <View style={styles.addButtonContainer}>
             <Button
               label='Add Another Prompt'
-                onPress={() => handleAddPrompt(caregiverFirstPromptAnswer)}
-
+              onPress={() => handleAddPrompt(caregiverFirstPromptAnswer)}
               variant='compact'
               // style={styles.addButton}
             />
