@@ -265,3 +265,18 @@ export const useFetchLikes = (
     enabled: !!token && !!role,
   });
 };
+
+// export const deleteUser = async () => {
+//   const { data } = await customAxios.delete('/users/delete');
+//   return data;
+// };
+
+// export const useDeleteUser = () => {
+//   const { token } = useUserStore();
+//   return useAuthQuery({
+//     queryKey: ['delete-user'],
+//     queryFn: deleteUser,
+//     retry: 3,
+//     enabled: !!token,
+//   });
+// };

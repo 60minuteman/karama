@@ -303,8 +303,8 @@ export default function DiscoverScreen() {
                 .join(', '),
         location: `📍 ${
           currentUser?.data?.role === 'FAMILY'
-            ? currentProfile?.caregiver_profile?.zipcode
-            : currentProfile?.family_profile?.zipcode
+            ? currentProfile?.caregiver_profile?.location
+            : currentProfile?.family_profile?.location
         }`,
         age:
           currentUser?.data?.role === 'FAMILY'
@@ -395,12 +395,14 @@ export default function DiscoverScreen() {
       }
     : null;
 
+  console.log('profileDataFamily', currentProfile);
+
   const profileDataCaregiver: any = {
     image: currentProfile?.family_profile?.pictures, // No image path provided in the data
     name: currentProfile?.family_profile?.name || '', // "Smith Family"
     description: currentProfile?.family_profile?.description?.description || '', // "Mom & Dad"
     children: currentProfile?.family_profile?.children, // "1 Teenager, 1 Pre Schooler"
-    location: `📍 ${currentProfile?.family_profile?.zipcode}`, // "📍 12345"
+    location: `📍 ${currentProfile?.family_profile?.location}`, // "📍 12345"
     rating: currentProfile?.score || '0', // 5.0
     experience: [
       currentProfile?.family_profile?.household_info.rules.join('-') || '', // "1-5 years"
