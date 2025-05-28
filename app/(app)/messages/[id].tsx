@@ -12,6 +12,7 @@ import {
   sendMessage,
 } from '@/services/chat';
 import { useUserStore } from '@/services/state/user';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -29,6 +30,12 @@ interface Message {
   text: string;
   timestamp: string;
   type: 'system' | 'sent' | 'received';
+  senderId?: string;
+  created_at?: string;
+  sender?: {
+    user_id?: string;
+    id?: string;
+  };
 }
 
 export default function MessageScreen() {
@@ -40,18 +47,45 @@ export default function MessageScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
+  const [hasCachedData, setHasCachedData] = useState(false);
   const firebaseUser = useUserStore((state) => state.firebaseCurrentUser);
   const { token, user } = useUserStore();
   const socket: any = getSocket();
 
   const [profile, setProfile] = useState<any>();
+  const [pendingMessages, setPendingMessages] = useState<Set<string>>(
+    new Set()
+  );
 
   // console.log('messages', messages);
   console.log('profile', profile);
 
+  // Load cached messages on mount
+  useEffect(() => {
+    const loadCachedMessages = async () => {
+      try {
+        const cachedMessages = await AsyncStorage.getItem(`@messages_${id}`);
+        if (cachedMessages) {
+          setMessages(JSON.parse(cachedMessages));
+          setHasCachedData(true);
+          setIsLoading(false);
+        } else {
+          setHasCachedData(false);
+        }
+      } catch (error) {
+        console.error('Error loading cached messages:', error);
+        setHasCachedData(false);
+      }
+    };
+
+    loadCachedMessages();
+  }, [id]);
+
   useEffect(() => {
     const fetchOtherUserData = async () => {
-      setIsLoading(true);
+      if (!hasCachedData) {
+        setIsLoading(true);
+      }
       try {
         const userData = await getUserDataById(name as string);
         const currentUser = firebaseUser;
@@ -64,20 +98,92 @@ export default function MessageScreen() {
         }
         setOtherUserData(userData);
       } finally {
-        setIsLoading(false);
+        if (!hasCachedData) {
+          setIsLoading(false);
+        }
       }
     };
     fetchOtherUserData();
-  }, []);
+  }, [name, hasCachedData]);
 
   useEffect(() => {
-    const unsubscribe = getChatMessages(id as string, setMessages);
+    const unsubscribe = getChatMessages(id as string, (newMessages) => {
+      setMessages(newMessages);
+      // Only cache if messages have changed
+      AsyncStorage.getItem(`@messages_${id}`).then((cachedMessages) => {
+        if (JSON.stringify(cachedMessages) !== JSON.stringify(newMessages)) {
+          AsyncStorage.setItem(
+            `@messages_${id}`,
+            JSON.stringify(newMessages)
+          ).catch((error) => console.error('Error caching messages:', error));
+        }
+      });
+    });
     return () => {
       if (unsubscribe) {
         unsubscribe();
       }
-    }; // Cleanup listener on unmount
+    };
   }, [id]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('chatHistory', (data: any) => {
+        const filteredMessages = data?.messages.filter(
+          (message: any) => message.text !== null && message.text !== undefined
+        );
+        setMessages(filteredMessages);
+        // Only cache if messages have changed
+        AsyncStorage.getItem(`@messages_${id}`).then((cachedMessages) => {
+          if (
+            JSON.stringify(cachedMessages) !== JSON.stringify(filteredMessages)
+          ) {
+            AsyncStorage.setItem(
+              `@messages_${id}`,
+              JSON.stringify(filteredMessages)
+            ).catch((error) => console.error('Error caching messages:', error));
+          }
+        });
+        setIsLoading(false);
+      });
+
+      socket.on('newMessage', (data: any) => {
+        // Don't add if it's a pending message we already showed
+        if (pendingMessages.has(data.id)) return;
+
+        setMessages((prevMessages) => {
+          const messageExists = prevMessages.some((msg) => msg.id === data.id);
+          if (!messageExists) {
+            const newMessages = [data, ...prevMessages];
+            // Cache updated messages
+            AsyncStorage.setItem(
+              `@messages_${id}`,
+              JSON.stringify(newMessages)
+            ).catch((error) => console.error('Error caching messages:', error));
+            return newMessages;
+          }
+          return prevMessages;
+        });
+      });
+
+      socket.on('allMessagesCleared', () => {
+        setMessages([]);
+        setPendingMessages(new Set());
+        // Clear cached messages
+        AsyncStorage.removeItem(`@messages_${id}`).catch((error) =>
+          console.error('Error clearing cached messages:', error)
+        );
+      });
+    }
+
+    return () => {
+      if (socket) {
+        socket.off('chatHistory');
+        socket.off('newMessage');
+        socket.off('allMessagesCleared');
+      }
+    };
+  }, [socket, id, pendingMessages]);
 
   // Mock profile data to pass to Container component
   const profileData = {
@@ -104,12 +210,81 @@ export default function MessageScreen() {
     router.back();
   };
 
-  const handleSendMessage: any = () => {
-    socket.emit('sendMessage', {
-      conversationId: id,
+  const handleSendMessage = () => {
+    if (!message.trim()) return;
+
+    // Generate a temporary ID for the optimistic message
+    const tempId = `temp_${Date.now()}`;
+    const optimisticMessage = {
+      id: tempId,
       text: message,
-    });
+      timestamp: new Date().toISOString(),
+      type: 'sent' as const,
+      sender: {
+        user_id: user?.user_id,
+      },
+    };
+
+    // Add to pending messages
+    setPendingMessages((prev) => new Set(prev).add(tempId));
+
+    // Optimistically update UI
+    setMessages((prev) => [optimisticMessage, ...prev]);
     setMessage('');
+
+    // Send to backend
+    socket.emit(
+      'sendMessage',
+      {
+        conversationId: id,
+        text: message,
+      },
+      (response: any) => {
+        if (response?.error) {
+          // Remove failed message from UI
+          setMessages((prev) => prev.filter((msg) => msg.id !== tempId));
+          Toast.show({
+            type: 'error',
+            text1: 'Error',
+            text2: 'Failed to send message. Please try again.',
+          });
+        } else {
+          // Remove the optimistic message and add the server response
+          setMessages((prev) => {
+            // Remove the optimistic message
+            const withoutOptimistic = prev.filter((msg) => msg.id !== tempId);
+            // Add the server response
+            return [response, ...withoutOptimistic];
+          });
+
+          // Update cache
+          AsyncStorage.getItem(`@messages_${id}`).then((cachedMessages) => {
+            if (cachedMessages) {
+              const messages = JSON.parse(cachedMessages);
+              const withoutOptimistic = messages.filter(
+                (msg: Message) => msg.id !== tempId
+              );
+              const updatedMessages = [response, ...withoutOptimistic];
+              AsyncStorage.setItem(
+                `@messages_${id}`,
+                JSON.stringify(updatedMessages)
+              ).catch((error) =>
+                console.error('Error updating message cache:', error)
+              );
+            }
+          });
+        }
+        // Remove from pending messages
+        setPendingMessages((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(tempId);
+          return newSet;
+        });
+      }
+    );
+
+    // Remove optimistic message immediately after sending
+    setMessages((prev) => prev.filter((msg) => msg.id !== tempId));
   };
 
   const handleClearMessages: any = () => {
@@ -138,41 +313,13 @@ export default function MessageScreen() {
   }, []);
 
   useEffect(() => {
-    if (socket) {
-      socket.on('chatHistory', (data: any) => {
-        const filteredMessages = data?.messages.filter(
-          (message: any) => message.text !== null && message.text !== undefined
-        );
-        setMessages(filteredMessages);
-        setIsLoading(false);
-      });
-
-      socket.on('newMessage conversationUpdated', (data: any) => {
-        // console.log('newMessage=++++++++++++', data?.sender?.user_id);
-        // setMessages(data);
-      });
-
-      socket.on('exception', (data: any) => {
-        // console.log('exception', data);
-      });
-    }
-  }, [socket]);
-
-  useEffect(() => {
-    socket.on('newMessage', (data: any) => {
-      setMessages((prevMessages) => {
-        const messageExists = prevMessages.some((msg) => msg.id === data.id);
-        if (!messageExists) {
-          return [data, ...prevMessages];
-        }
-        return prevMessages;
-      });
+    socket.on('newMessage conversationUpdated', (data: any) => {
+      // console.log('newMessage=++++++++++++', data?.sender?.user_id);
+      // setMessages(data);
     });
-  }, [socket]);
 
-  useEffect(() => {
-    socket.on('allMessagesCleared', (data: any) => {
-      setMessages([]);
+    socket.on('exception', (data: any) => {
+      // console.log('exception', data);
     });
   }, [socket]);
 
@@ -196,7 +343,6 @@ export default function MessageScreen() {
   // console.log('messages=====+++++++', messages);
 
   const renderMessage = ({ item }: { item: Message }) => {
-    // console.log('item++++++++++++', item?.sender?.id || item?.sender?.user_id);
     if (item.senderId === 'system') {
       return (
         <View style={styles.systemContainer}>
@@ -204,6 +350,9 @@ export default function MessageScreen() {
         </View>
       );
     }
+
+    const isPending = item.id.startsWith('temp_');
+
     return (
       <ChatBubble
         message={item.text}
@@ -222,6 +371,7 @@ export default function MessageScreen() {
             ? 'sent'
             : 'received'
         }
+        isPending={isPending}
       />
     );
   };

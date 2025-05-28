@@ -11,6 +11,7 @@ interface ChatBubbleProps {
   variant: ChatBubbleVariant;
   isRead?: boolean;
   isDelivered?: boolean;
+  isPending?: boolean;
 }
 
 export function ChatBubble({
@@ -19,6 +20,7 @@ export function ChatBubble({
   variant,
   isRead,
   isDelivered,
+  isPending,
 }: ChatBubbleProps) {
   if (variant === 'system') {
     return (
@@ -35,7 +37,9 @@ export function ChatBubble({
 
   const renderTicks = () => {
     if (!isReceived) {
-      if (isRead) {
+      if (isPending) {
+        return <Ionicons name='time-outline' size={16} color='#002140' />;
+      } else if (isRead) {
         return <Ionicons name='checkmark-done' size={16} color='#002140' />;
       } else if (isDelivered) {
         return <Ionicons name='checkmark' size={16} color='#002140' />;
@@ -55,12 +59,14 @@ export function ChatBubble({
         style={[
           styles.bubble,
           isReceived ? styles.receivedBubble : styles.sentBubble,
+          isPending && styles.pendingBubble,
         ]}
       >
         <ThemedText
           style={[
             styles.messageText,
             isReceived ? styles.receivedText : styles.sentText,
+            isPending && styles.pendingText,
           ]}
         >
           {message}
@@ -70,6 +76,7 @@ export function ChatBubble({
             style={[
               styles.timestamp,
               isReceived ? styles.receivedTimestamp : styles.sentTimestamp,
+              isPending && styles.pendingTimestamp,
             ]}
           >
             {timestamp}
@@ -105,6 +112,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#EEEEEE',
     borderBottomLeftRadius: 4,
   },
+  pendingBubble: {
+    backgroundColor: '#FF4B5580', // Semi-transparent version of sent bubble
+  },
   messageText: {
     fontSize: 16,
     lineHeight: 24,
@@ -114,6 +124,9 @@ const styles = StyleSheet.create({
   },
   receivedText: {
     color: '#002140',
+  },
+  pendingText: {
+    color: '#FFFFFF80', // Semi-transparent version of sent text
   },
   messageFooter: {
     flexDirection: 'row',
@@ -130,6 +143,9 @@ const styles = StyleSheet.create({
   },
   receivedTimestamp: {
     color: 'rgba(0, 0, 0, 0.5)',
+  },
+  pendingTimestamp: {
+    color: 'rgba(255, 255, 255, 0.3)',
   },
   systemContainer: {
     alignItems: 'center',
