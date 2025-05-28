@@ -102,7 +102,8 @@ export default function Prompt2() {
               <View key={index} style={styles.pillWrapper}>
                 <Pill
                   label={prompt}
-                  selected={selectedPrompt === prompt}
+                   selected={prompts.some((item: any) => item.title === prompt) ||
+                      selectedPrompt === prompt}
                   onPress={() => handleAdd(prompt)}
                 />
               </View>
