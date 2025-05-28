@@ -167,7 +167,6 @@ export default function Prompt() {
       otherHouseholdResponsibilities,
       otherChildResponsibilities,
       caregiverThirdPosition,
-      prompts
     } = useOtherStore();
   
     console.log(
@@ -318,7 +317,7 @@ export default function Prompt() {
       ]
         .filter(Boolean)
         .filter((position) => position.start_date && position.end_date),
-      prompts,
+      prompts: promptsData,
     };
 
   // const handleNext = () => {
@@ -394,7 +393,7 @@ export default function Prompt() {
         <ThemedText style={styles.title}>Choose your prompt</ThemedText>
 
         <View style={styles.categories}>
-          {promptCategories.map((category) => (
+          {promptCategories?.map((category) => (
             <View key={category.id} style={styles.pillWrapper}>
               <Pill
                 label={category.label}
@@ -413,11 +412,11 @@ export default function Prompt() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.promptsContainer}>
-            {currentPrompts.map((prompt: string, index: number) => (
+            {currentPrompts?.map((prompt: string, index: number) => (
               <View key={index} style={styles.pillWrapper}>
                 <Pill
                   label={prompt}
-                  selected={promptsData.some((item: any) => item.title === prompt) ||
+                  selected={promptsData?.some((item: any) => item.title === prompt) ||
                       caregiverFirstPrompt === prompt}
                   onPress={() => handleAdd(prompt)}
                 />
@@ -430,7 +429,7 @@ export default function Prompt() {
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
-          {promptsData.length > 1 && (
+          {promptsData?.length > 1 && (
             <View style={styles.buttonContainer}>
               <Button label='Next' onPress={handleSubmit} loading={createProfile.isPending} variant='compact' />
             </View>
