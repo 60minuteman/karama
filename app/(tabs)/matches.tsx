@@ -37,7 +37,12 @@ export default function Matches() {
   const [deletedConversationId, setDeletedConversationId] = useState<any>(null);
   const queryClient = useQueryClient();
 
-  console.log('conversations', conversations, currentUser?.data?.name);
+  console.log(
+    'conversations',
+    currentUser?.data?.role,
+    completeMatches?.data?.matches?.length
+    // filteredMatches
+  );
 
   // Load cached data on mount
   useEffect(() => {

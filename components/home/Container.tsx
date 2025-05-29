@@ -1,3 +1,4 @@
+import { Pill2 } from '@/app/components/ui/Pill2';
 import { Certifications } from '@/components/cards/Certifications';
 import { ExperienceAndLanguages } from '@/components/cards/ExperienceAndLanguages';
 import { Image } from '@/components/cards/Image';
@@ -20,7 +21,6 @@ import {
   View,
 } from 'react-native';
 import ProfileCardLoader from '../cards/ProfileCardLoader';
-import { Pill2 } from '@/app/components/ui/Pill2';
 
 interface ContainerProps {
   profileData: {
@@ -45,7 +45,7 @@ interface ContainerProps {
   data?: any;
   onLike?: () => void;
   onReject?: () => void;
-  role?:any
+  role?: any;
 }
 
 // Create a type for the ref
@@ -65,7 +65,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
     // return
 
     // const role = 'FAMILY'
-    
+
     // Add animation values
     const slideAnim = new Animated.Value(0);
     const rotateAnim = slideAnim.interpolate({
@@ -171,25 +171,24 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
             data={data}
           />
         </View>
-        {role === 'CAREGIVER' &&  (
-         <>
-          <View style={styles.spacer} />
-        <View style={dynamicStyles.componentContainer}>
-          <ExperienceAndLanguages
-            yearsOfExperience={caregiverProfile?.years_of_experience}
-            languages={profileData.languages}
-            data={data}
-            role
-          />
-        </View>
-        </>
-
+        {role === 'CAREGIVER' && (
+          <>
+            <View style={styles.spacer} />
+            <View style={dynamicStyles.componentContainer}>
+              <ExperienceAndLanguages
+                yearsOfExperience={caregiverProfile?.years_of_experience}
+                languages={profileData.languages}
+                data={data}
+                role
+              />
+            </View>
+          </>
         )}
-         <View style={styles.spacer} />
-       
+        <View style={styles.spacer} />
+
         <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>
-          <Interests data={data} role={role} interests={profileData.interests} />
+          {/* <Interests data={data} role={role} interests={profileData.interests} /> */}
         </View>
 
         <View style={styles.spacer} />
@@ -203,12 +202,12 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
           />
         </View>
 
-           <View style={styles.spacer} />
+        <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>
           <Responsibilities data={data} role={role} />
         </View>
 
-         <View style={styles.spacer} />
+        <View style={styles.spacer} />
         <View style={[dynamicStyles.componentContainer, styles.imageContainer]}>
           <Image
             data={data?.pictures?.[3]?.path}
@@ -217,57 +216,61 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
           />
         </View>
         {role === 'FAMILY' && (
-         <>
-         <View style={styles.spacer} />
-        <View style={dynamicStyles.componentContainer}>
-         <View style={styles.containers}>
-               <View style={styles.section}>
-                 <ThemedText style={styles.sectionTitle}>We are looking for....</ThemedText>
-                 <View style={styles.pillContainer}>
-                    {data?.caregiver_preference?.caregiver_types?.map((item: any) => (
-                      <Pill2
-                       label={item}
-                       style={styles.pill}
-                     />
-                    ))}
-                 </View>
-               </View>
-         
-               <View style={styles.section}>
-                 <ThemedText style={styles.sectionTitle}>
-                   Education Level
-                 </ThemedText>
-                 <View style={styles.pillContainer}>
-                     <Pill2 label={data?.caregiver_preference?.education_level} style={styles.pill} />
-                 </View>
-               </View>
-             </View>
-        </View>
-         </>
-       )}
+          <>
+            <View style={styles.spacer} />
+            <View style={dynamicStyles.componentContainer}>
+              <View style={styles.containers}>
+                <View style={styles.section}>
+                  <ThemedText style={styles.sectionTitle}>
+                    We are looking for....
+                  </ThemedText>
+                  <View style={styles.pillContainer}>
+                    {data?.caregiver_preference?.caregiver_types?.map(
+                      (item: any) => (
+                        <Pill2 label={item} style={styles.pill} />
+                      )
+                    )}
+                  </View>
+                </View>
 
-       {role === 'CAREGIVER' && (
-      <>
-        <View style={styles.spacer} />
-        <View style={dynamicStyles.componentContainer}>
-          <Work
-            animals={[
-              ...(experienceWithDisabilities?.disabilities || []),
-              ...(experienceWithPets?.pets || []),
-            ]?.filter(Boolean)}
-            data={data}
-          />
-        </View>
-        <View style={styles.spacer} />
-        <View style={dynamicStyles.componentContainer}>
-          <Position
-            positions={caregiverProfile?.past_positions || []}
-            data={data}
-          />
-        </View>
-        <View style={styles.bottomSpacer} />
-      </>
-    )} 
+                <View style={styles.section}>
+                  <ThemedText style={styles.sectionTitle}>
+                    Education Level
+                  </ThemedText>
+                  <View style={styles.pillContainer}>
+                    <Pill2
+                      label={data?.caregiver_preference?.education_level}
+                      style={styles.pill}
+                    />
+                  </View>
+                </View>
+              </View>
+            </View>
+          </>
+        )}
+
+        {role === 'CAREGIVER' && (
+          <>
+            <View style={styles.spacer} />
+            <View style={dynamicStyles.componentContainer}>
+              <Work
+                animals={[
+                  ...(experienceWithDisabilities?.disabilities || []),
+                  ...(experienceWithPets?.pets || []),
+                ]?.filter(Boolean)}
+                data={data}
+              />
+            </View>
+            <View style={styles.spacer} />
+            <View style={dynamicStyles.componentContainer}>
+              <Position
+                positions={caregiverProfile?.past_positions || []}
+                data={data}
+              />
+            </View>
+            <View style={styles.bottomSpacer} />
+          </>
+        )}
         {/* 
        
         
@@ -330,8 +333,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: 'hidden',
   },
-  containers : {
-    padding: 16
+  containers: {
+    padding: 16,
   },
   largeScreenLayout: {
     flexDirection: 'row',

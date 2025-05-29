@@ -42,11 +42,18 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
       const inAuthGroup = rootSegments[0] === '(auth)';
 
+      console.log('user', user);
+      console.log('onboarding_screen', !onboarding_screen);
+      console.log('inAuthGroup', inAuthGroup);
+
       try {
         if (user && !onboarding_screen && inAuthGroup) {
           // Redirect away from auth group if authenticated
           router.replace('/(tabs)/discover');
-        } else if (!user && !inAuthGroup) {
+        } else if (
+          (!user && !inAuthGroup) ||
+          (onboarding_screen && !inAuthGroup)
+        ) {
           // Redirect to auth group if not authenticated
           router.replace('/(auth)/onboarding');
         }

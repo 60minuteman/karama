@@ -395,7 +395,7 @@ export default function DiscoverScreen() {
       }
     : null;
 
-  console.log('profileDataFamily', currentProfile);
+  console.log('profileDataFamily', profileDataFamily);
 
   const profileDataCaregiver: any = {
     image: currentProfile?.family_profile?.pictures, // No image path provided in the data
@@ -481,13 +481,16 @@ export default function DiscoverScreen() {
             ) : (
               <>
                 {currentUser?.data?.role === 'FAMILY' ? (
-                  <Container
-                    ref={containerRef}
-                    data={data}
-                    onLike={() => handleLike(currentIndex)}
-                    onReject={() => handleReject(currentIndex)}
-                    role={currentUser?.data?.role}
-                  />
+                  <>
+                    <Container
+                      ref={containerRef}
+                      data={currentProfile}
+                      profileData={profileDataFamily}
+                      onLike={() => handleLike(currentIndex)}
+                      onReject={() => handleReject(currentIndex)}
+                      role={currentUser?.data?.role}
+                    />
+                  </>
                 ) : (
                   <CaregiverContainer
                     ref={containerRef}
