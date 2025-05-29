@@ -24,13 +24,7 @@ export const useOtherStore = create<any>()(
       otherConditons: '',
       otherHear: '',
       familyEducation: '',
-      prompts: [
-        {
-          category: '',
-          title: '',
-          answer: '',
-        },
-      ],
+      prompts: [],
       accountType: 'FAMILY',
       setAccountType:  (item: string) =>
         set(() => ({

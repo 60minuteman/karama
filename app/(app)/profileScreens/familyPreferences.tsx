@@ -24,6 +24,17 @@ const FamilyPreferences = () => {
         router.push('/(tabs)/profile');
     };
 
+    
+  const formatTime = (timeStr: any) => {
+  if (!timeStr || timeStr === "00:00:00") return "12:00AM";
+  const [hours, minutes] = timeStr.split(':');
+  const hourNum = parseInt(hours);
+  const minuteStr = minutes.padStart(2, '0');
+  const suffix = hourNum >= 12 ? 'PM' : 'AM';
+  const hour12 = hourNum % 12 || 12;
+  return `${hour12.toString().padStart(2, '0')}:${minuteStr}${suffix}`;
+};
+
     return (
         <SafeAreaView>
             <ThemedView>
@@ -139,6 +150,14 @@ const FamilyPreferences = () => {
                             </View>
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
+                                    <ThemedText style={styles.heading}>Duration</ThemedText>
+                                </View>
+                                <View style={styles.pillContainer}>
+                                    <InfoPill  label={familyProfileData?.caregiver_preference?.job_commitment?.commitment} />
+                                </View>
+                            </View>
+                            <View style={styles.subSection}>
+                                <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Requirements/Requirements</ThemedText>
                                 </View>
                                 <View style={styles.pillContainer}>
@@ -168,18 +187,43 @@ const FamilyPreferences = () => {
                                     <ThemedText style={styles.heading}>Schedule</ThemedText>
                                     <LockedIndicator isEditable />
                                 </View>
-                                <ThemedText style={styles.subHeading}>40 Hours</ThemedText>
-
-                                <View style={styles.pillContainer}>
-                                    {
-                                        familyProfileData?.caregiver_preference?.service_days?.map((work) => {
-                                            return <InfoPill key={work} label={`${work.day}: ${work.begin}- ${work.end}`} />
-                                        })
-                                    }
-                                </View>
+                                {/* <ThemedText style={styles.subHeading}>40 Hours</ThemedText> */}
+                                 <View style={styles.pillContainer}>
+                                {(familyProfile?.family_profile?.caregiver_preference?.service_days || [])
+                                .filter(schedule => !(schedule.begin === "00:00:00" && schedule.end === "00:00:00")) // optional: skip inactive days
+                                .map((schedule) => (
+                                    <InfoPill
+                                    key={schedule.id}
+                                    label={`${schedule.day}: ${formatTime(schedule.begin)} - ${formatTime(schedule.end)}`}
+                                    />
+                                ))}
+                            </View>
                             </View>
                         </View>
+                        
                         <View style={styles.section}>
+                             <View style={styles.subSection}>
+                                              <ThemedText style={styles.pillHeading}>
+                                                Household Responsibilities{' '}
+                                              </ThemedText>
+                                              <View style={styles.pillContainer}>
+                                                {(
+                                                  familyProfile?.family_profile?.caregiver_preference
+                                                    ?.responsibilities?.household_responsibilities || []
+                                                ).map((option: string) => (
+                                                  <InfoPill key={option} label={option} />
+                                                ))}
+                                                {familyProfile?.family_profile?.caregiver_preference
+                                                  ?.responsibilities?.other_household_responsibilities && (
+                                                  <InfoPill
+                                                    label={
+                                                      familyProfile?.family_profile?.caregiver_preference
+                                                        ?.responsibilities?.other_household_responsibilities
+                                                    }
+                                                  />
+                                                )}
+                                              </View>
+                                            </View>
                              <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Household Rules</ThemedText>

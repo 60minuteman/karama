@@ -425,7 +425,7 @@ export default function Prompt() {
           </View>
         </ScrollView>
 
-        <LinearGradient
+        {/* <LinearGradient
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
@@ -434,7 +434,7 @@ export default function Prompt() {
               <Button label='Next' onPress={handleSubmit} loading={createProfile.isPending} variant='compact' />
             </View>
           )}
-        </LinearGradient>
+        </LinearGradient> */}
       </View>
     </ThemedView>
   );

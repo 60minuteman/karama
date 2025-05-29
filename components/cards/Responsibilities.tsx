@@ -73,7 +73,7 @@ export const Responsibilities = ({
        {role === 'CAREGIVER' ? (
 
         <View style={styles.pillsContainer}>
-          {data?.childcare_responsibilities?.map((item: any, index: number) => (
+          {data?.responsibilities?.childcare_responsibilities?.map((item: any, index: number) => (
             <Pill2
               key={index}
               // icon={item.icon || '👶'}
@@ -81,13 +81,7 @@ export const Responsibilities = ({
               style={styles.pill}
             />
           ))}
-          {data?.responsibilities?.household_responsibilities && (
-            <Pill2
-              // icon={item.icon || '👶'}
-              label={data?.responsibilities?.household_responsibilities}
-              style={styles.pill}
-            />
-          )}
+          
         </View>
        ) : (
          <View style={styles.pillsContainer}>
@@ -116,21 +110,17 @@ export const Responsibilities = ({
           Household Responsibilities
         </ThemedText>
         <View style={styles.pillsContainer}>
-          {data?.household_responsibilities?.map((item: any, index: number) => (
+          {data?.responsibilities?.household_responsibilities && (
+           <>
+            {data?.responsibilities?.household_responsibilities.map((item: any, index: number) => (
             <Pill2
               key={index}
-              // icon={item.icon || '🏠'}
+              // icon={item.icon || '👶'}
               label={item}
               style={styles.pill}
             />
           ))}
-
-          {data?.responsibilities?.other_childcare_responsibilities && (
-            <Pill2
-              // icon={item.icon || '👶'}
-              label={data?.responsibilities?.other_childcare_responsibilities}
-              style={styles.pill}
-            />
+           </>
           )}
         </View>
       </View>

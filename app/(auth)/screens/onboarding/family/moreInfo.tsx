@@ -18,8 +18,8 @@ export default function MoreInfo() {
   const {
     family_more_info,
     setFamilyMoreInfo,
-    setOnboardingScreen,
-    family_payment,
+    // setOnboardingScreen,
+    // family_payment,
     family_payment_method,
     family_benefits,
     family_prompt,
@@ -27,6 +27,11 @@ export default function MoreInfo() {
     family_prompt_answer,
     setSteps,
   } = useUserStore();
+
+  const { family_payment, setFamilyPayment, setOnboardingScreen } =
+      useUserStore();
+    const { selected_type, hourly_rate, salary_amount, has_interacted } =
+      family_payment;
     const { 
         prompts
       } = useOtherStore();
@@ -82,15 +87,24 @@ export default function MoreInfo() {
     },
   });
 
+  const payment_info =
+    family_payment?.selected_type === 'Salary Base'
+      ? {
+          type: family_payment?.selected_type,
+          salary: salary_amount || '',
+          show_method_on_profile: family_payment_method?.show_on_profile,
+        }
+      : {
+          type: family_payment?.selected_type,
+          hourly_min: 1,
+          hourly_max: family_payment?.hourly_rate,
+          method: family_payment_method?.selected_method,
+          show_method_on_profile: family_payment_method?.show_on_profile,
+        };
+
   const handleSubmit = () => {
     submit.mutate({
-      payment_info: {
-        type: family_payment?.selected_type,
-        hourly_min: 15,
-        hourly_max: family_payment?.hourly_rate,
-        method: family_payment_method?.selected_method,
-        show_method_on_profile: family_payment_method?.show_on_profile,
-      },
+      payment_info,
       prompts,
       more_information: family_more_info,
       benefits: {
@@ -137,7 +151,7 @@ export default function MoreInfo() {
             <Button label='Skip' onPress={() => router.back()} variant='skip' />
             <Button
               label='Next'
-              onPress={handleNext}
+              onPress={handleSubmit}
               variant='compact'
               loading={submit.isPending}
             />

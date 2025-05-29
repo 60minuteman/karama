@@ -251,7 +251,7 @@ const CaregiverEditProfile = () => {
                                 },
                                 { 
                                     label: 'Location', 
-                                    text: caregiverProfile?.zipcode,
+                                    text: caregiverProfile?.location,
                                     hasEdit: true 
                                 },
                                 { 

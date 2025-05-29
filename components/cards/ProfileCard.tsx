@@ -86,7 +86,7 @@ export const ProfileCard = ({
           <View style={styles.infoOverlay}>
             <View style={styles.infoContainer}>
               <ThemedText style={styles.nameAge}>
-                {data?.name || 'Anonymous'}, {age || '?'}
+                {data?.name || 'Anonymous'}
               </ThemedText>
               <ThemedText style={styles.role}>
                 {data?.location || 'Role not specified'}

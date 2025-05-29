@@ -1,4 +1,5 @@
 import InfoPill from '@/app/components/ui/InfoPill';
+import { ProfileCard } from '@/components/cards/ProfileCard';
 import ProfileHeader from '@/components/Profile/ProfileHeader';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
@@ -29,6 +30,7 @@ import {
   ImageBackground,
   ScrollView,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -49,6 +51,24 @@ const FamilyProfileView = () => {
   };
 
   console.log(familyProfile, 'familyProfile Data')
+
+  const formatTime = (timeStr: any) => {
+  if (!timeStr || timeStr === "00:00:00") return "12:00AM";
+  const [hours, minutes] = timeStr.split(':');
+  const hourNum = parseInt(hours);
+  const minuteStr = minutes.padStart(2, '0');
+  const suffix = hourNum >= 12 ? 'PM' : 'AM';
+  const hour12 = hourNum % 12 || 12;
+  return `${hour12.toString().padStart(2, '0')}:${minuteStr}${suffix}`;
+};
+
+  const dynamicStyles = StyleSheet.create({
+       
+        profileCardContainer: {
+          width: '100%',
+        },
+        
+      });
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -72,7 +92,10 @@ const FamilyProfileView = () => {
             </View>
           ) : (
             <View style={styles.container}>
-              <View style={{ borderRadius: 18, overflow: 'hidden' }}>
+              <View style={dynamicStyles.profileCardContainer}>
+                  <ProfileCard {...familyProfile} data={familyProfile?.family_profile} />
+                </View>
+              {/* <View style={{ borderRadius: 18, overflow: 'hidden' }}>
                 <ImageBackground
                   style={styles.imageStyle}
                   source={{
@@ -92,8 +115,8 @@ const FamilyProfileView = () => {
                     </View>
                   </View>
                   <View>
-                    <ThemedText style={styles.parentHeading}>
-                      {familyProfile?.family_profile?.name || 'No name'}
+                    <ThemedText style={{color: 'black'}}>
+                      {familyProfile?.data?.name || 'No name'}
                     </ThemedText>
                     <ThemedText style={styles.parentText}>
                       {familyProfile?.zipcode || 'No zipcode'}
@@ -109,7 +132,7 @@ const FamilyProfileView = () => {
                     </ThemedText>
                   </View>
                 </ImageBackground>
-              </View>
+              </View> */}
               <View style={styles.section}>
                 <View style={styles.subSection}>
                   <ThemedText style={styles.pillHeading}>We have</ThemedText>
@@ -174,16 +197,16 @@ const FamilyProfileView = () => {
                       familyProfile?.family_profile?.children_interests
                         ?.creative_interests || []
                     ).map((interest: string) => (
-                      <InfoPill key={interest} label={interest} icon='🎨' />
+                      <InfoPill key={interest} label={interest}  />
                     ))}
                     {familyProfile?.family_profile?.children_interests
-                      ?.other_creative_interests !== 'N/A' && (
+                      ?.other_creative_interests  && (
                       <InfoPill
                         label={
                           familyProfile?.family_profile?.children_interests
                             ?.other_creative_interests
                         }
-                        icon='🎨'
+                        
                       />
                     )}
 
@@ -191,16 +214,16 @@ const FamilyProfileView = () => {
                       familyProfile?.family_profile?.children_interests
                         ?.instrument_interests || []
                     ).map((interest: string) => (
-                      <InfoPill key={interest} label={interest} icon='🎵' />
+                      <InfoPill key={interest} label={interest}  />
                     ))}
                     {familyProfile?.family_profile?.children_interests
-                      ?.other_instrument_interests !== 'N/A' && (
+                      ?.other_instrument_interests  && (
                       <InfoPill
                         label={
                           familyProfile?.family_profile?.children_interests
                             ?.other_instrument_interests
                         }
-                        icon='🎵'
+                        
                       />
                     )}
 
@@ -208,16 +231,16 @@ const FamilyProfileView = () => {
                       familyProfile?.family_profile?.children_interests
                         ?.sport_interests || []
                     ).map((interest: string) => (
-                      <InfoPill key={interest} label={interest} icon='⚽' />
+                      <InfoPill key={interest} label={interest} />
                     ))}
                     {familyProfile?.family_profile?.children_interests
-                      ?.other_sport_interests !== 'N/A' && (
+                      ?.other_sport_interests  && (
                       <InfoPill
                         label={
                           familyProfile?.family_profile?.children_interests
                             ?.other_sport_interests
                         }
-                        icon='⚽'
+                        
                       />
                     )}
 
@@ -228,13 +251,12 @@ const FamilyProfileView = () => {
                       <InfoPill key={interest} label={interest} icon='🔬' />
                     ))}
                     {familyProfile?.family_profile?.children_interests
-                      ?.other_stem_interests !== 'N/A' && (
+                      ?.other_stem_interests  && (
                       <InfoPill
                         label={
                           familyProfile?.family_profile?.children_interests
                             ?.other_stem_interests
                         }
-                        icon='🔬'
                       />
                     )}
                   </View>
@@ -311,10 +333,42 @@ const FamilyProfileView = () => {
                     ).map((rule: string) => (
                       <InfoPill key={rule} label={rule} />
                     ))}
+                    {familyProfile?.family_profile?.household_info?.other_rules  && (
+                      <InfoPill
+                        label={
+                         familyProfile?.family_profile?.household_info?.other_rules
+                        }
+                      />
+                    )}
+                    
+                    {(
+                      familyProfile?.family_profile?.household_info?.diets || []
+                    ).map((rule: string) => (
+                      <InfoPill key={rule} label={rule} />
+                    ))}
+                    {familyProfile?.family_profile?.household_info?.other_diets  && (
+                      <InfoPill
+                        label={
+                         familyProfile?.family_profile?.household_info?.other_diets
+                        }
+                      />
+                    )}
+                     {familyProfile?.family_profile?.philosophies?.other  && (
+                      <InfoPill
+                        label={
+                         familyProfile?.family_profile?.philosophies?.other
+                        }
+                      />
+                    )}
+                    {(
+                      familyProfile?.family_profile?.philosophies?.philosophies || []
+                    ).map((rule: string) => (
+                      <InfoPill key={rule} label={rule} />
+                    ))}
                   </View>
                 </View>
               </View>
-              <View style={[styles.section, { height: 650 }]}>
+              <View style={[styles.section, { height: 325 }]}>
                 <View
                   style={{
                     position: 'absolute',
@@ -335,6 +389,9 @@ const FamilyProfileView = () => {
                     }}
                   />
                 </View>
+                </View>
+                {familyProfile?.family_profile?.pictures?.[4]?.path && (
+              <View style={[styles.section, { height: 325 }]}>
                 <View
                   style={{
                     position: 'absolute',
@@ -351,11 +408,15 @@ const FamilyProfileView = () => {
                     source={{
                       uri:
                         familyProfile?.family_profile?.pictures?.[4]?.path ||
-                        familyProfile?.family_profile?.pictures?.[0]?.path,
+                        '',
                     }}
                   />
                 </View>
+
               </View>
+)}
+                {familyProfile?.family_profile?.pictures?.[4]?.path && (
+
               <View style={[styles.section, { height: 325 }]}>
                 <View
                   style={{
@@ -373,11 +434,13 @@ const FamilyProfileView = () => {
                     source={{
                       uri:
                         familyProfile?.family_profile?.pictures?.[5]?.path ||
-                        familyProfile?.family_profile?.pictures?.[0]?.path,
+                        '',
                     }}
                   />
                 </View>
               </View>
+)}
+
               <View style={styles.section}>
                 <View style={styles.subSection}>
                   <ThemedText style={styles.pillHeading}>
@@ -385,7 +448,7 @@ const FamilyProfileView = () => {
                   </ThemedText>
                   <View style={styles.pillContainer}>
                     {familyProfile?.family_profile?.caregiver_preference?.caregiver_types.map((type: string) => (
-                      <InfoPill key={type} label={type} icon={'🧢'} />
+                      <InfoPill key={type} label={type}  />
                     ))}
                   </View>
                 </View>
@@ -393,11 +456,12 @@ const FamilyProfileView = () => {
                   <ThemedText style={styles.pillHeading}>Start Date</ThemedText>
                   <View style={styles.pillContainer}>
                     <InfoPill
-                      label={familyProfile?.family_profile?.job_commitment?.start_date}
+                      label={familyProfile?.family_profile?.caregiver_preference?.job_commitment?.start_date}
                     />
                   </View>
                 </View>
-                <View style={styles.subSection}>
+                {familyProfile?.family_profile?.payment_info && (
+                  <View style={styles.subSection}>
                   <ThemedText style={styles.pillHeading}>
                     Hourly Pay Rate
                   </ThemedText>
@@ -414,13 +478,14 @@ const FamilyProfileView = () => {
                     />
                   </View>
                 </View>
+                )}
                 <View style={styles.subSection}>
                   <ThemedText style={styles.pillHeading}>
                     Education Level
                   </ThemedText>
                   <View style={styles.pillContainer}>
                     <InfoPill
-                      icon={'🎓'}
+                      // icon={'🎓'}
                       label={
                         familyProfile?.family_profile?.caregiver_preference
                           ?.education_level || 'Not specified'
@@ -435,15 +500,14 @@ const FamilyProfileView = () => {
                     <ThemedText style={styles.pillHeading}>Schedule</ThemedText>
                   </View>
                   <View style={styles.pillContainer}>
-                    {(
-                      familyProfile?.family_profile?.caregiver_preference
-                        ?.service_days || []
-                    ).map((schedule) => (
-                      <InfoPill
-                        key={schedule.id}
-                        label={`${schedule.day}: ${schedule.begin}-${schedule.end}`}
-                      />
-                    ))}
+                    {(familyProfile?.family_profile?.caregiver_preference?.service_days || [])
+                      .filter(schedule => !(schedule.begin === "00:00:00" && schedule.end === "00:00:00")) // optional: skip inactive days
+                      .map((schedule) => (
+                        <InfoPill
+                          key={schedule.id}
+                          label={`${schedule.day}: ${formatTime(schedule.begin)} - ${formatTime(schedule.end)}`}
+                        />
+                      ))}
                   </View>
                 </View>
               </View>
@@ -456,7 +520,7 @@ const FamilyProfileView = () => {
                     {familyProfile?.family_profile?.caregiver_preference
                       ?.availability && (
                       <InfoPill
-                        icon={'🎓'}
+                        // icon={'🎓'}
                         label={
                           familyProfile?.family_profile?.caregiver_preference
                             ?.availability
@@ -466,7 +530,7 @@ const FamilyProfileView = () => {
                     {familyProfile?.family_profile?.caregiver_preference
                       ?.arrangement_type && (
                       <InfoPill
-                        icon={'🎓'}
+                        // icon={'🎓'}
                         label={
                           familyProfile?.family_profile?.caregiver_preference
                             ?.arrangement_type
@@ -492,6 +556,21 @@ const FamilyProfileView = () => {
                         label={
                           familyProfile?.family_profile?.caregiver_preference
                             ?.requirements?.other_requirement
+                        }
+                      />
+                    )}
+                    {(
+                      familyProfile?.family_profile?.caregiver_preference
+                        ?.requirements?.certifications || []
+                    ).map((requirement) => (
+                      <InfoPill key={requirement} label={requirement} />
+                    ))}
+                    {familyProfile?.family_profile?.caregiver_preference
+                      ?.requirements?.other_requirement && (
+                      <InfoPill
+                        label={
+                          familyProfile?.family_profile?.caregiver_preference
+                            ?.requirements?.other_certification
                         }
                       />
                     )}
@@ -557,7 +636,7 @@ const FamilyProfileView = () => {
                   </View>
                 </View>
               </View>
-              {/* <View style={styles.section}>
+              <View style={styles.section}>
                 {(familyProfile?.family_profile?.extra_info?.prompts || []).map(
                   (prompt) => (
                     <View key={prompt.id} style={styles.subSection}>
@@ -570,7 +649,7 @@ const FamilyProfileView = () => {
                     </View>
                   )
                 )}
-              </View> */}
+              </View>
             </View>
           )}
         </ScrollView>

@@ -43,7 +43,7 @@ export const Interests = ({ interests, data, role }: InterestsProps) => {
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          data={data?.pictures?.[0]?.path}
+          data={data?.pictures?.[1]?.path}
           style={styles.imagePlaceholder}
           resizeMode='cover'
           resizeMethod='scale'
@@ -52,7 +52,7 @@ export const Interests = ({ interests, data, role }: InterestsProps) => {
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>{role === 'FAMILY' ? 'Children\'s interest' : 'My Interests'}</ThemedText>
         <View style={styles.interestsContainer}>
-          {allInterests?.map((interest: any, index: any) => (
+          {allInterests?.filter((item) => item.other_creative_interest !== '' && item.other_instrument_interest !== '' && item.other_sport_interest !== '' && item.other_stem_interest !== '' )?.map((interest: any, index: any) => (
             <Pill2
               key={index}
               // icon={interestIcons[interest] || '✨'}

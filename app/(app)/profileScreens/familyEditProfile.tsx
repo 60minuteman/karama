@@ -247,11 +247,11 @@ const FamilyEditProfile = () => {
                                     text: caregiverProfile?.location,
                                     hasEdit: true 
                                 },
-                                { 
-                                    label: 'Ages', 
-                                    text: caregiverProfile?.children?.age_group?.join(', '),
-                                    hasEdit: true 
-                                },
+                                // { 
+                                //     label: 'Ages', 
+                                //     text: caregiverProfile?.children?.age_group?.join(', '),
+                                //     hasEdit: true 
+                                // },
                                 { 
                                     label: 'We speak', 
                                     text: caregiverProfile?.languages?.join(', '),
