@@ -1,5 +1,4 @@
 import { CaregiverContainer } from '@/components/home/CaregiverContainer';
-import { ThemedText } from '@/components/ThemedText';
 import { FloatingButton } from '@/components/ui/FloatingButton';
 import { Ionicons } from '@expo/vector-icons';
 import { Stack, router } from 'expo-router';
@@ -76,25 +75,7 @@ const mockCaregiverData = {
 };
 
 const CaregiverPreviewScreen = () => {
-  const caregiverContainerRef = useRef<any>(null);
-  const { width: windowWidth } = useWindowDimensions();
-  const buttonWidth = (windowWidth - 100) / 2;
-
-  const handleLike = () => {
-    console.log('Liked caregiver!');
-  };
-
-  const handleReject = () => {
-    console.log('Rejected caregiver!');
-  };
-
-  const handleAnimateLike = () => {
-    caregiverContainerRef.current?.animateLike();
-  };
-
-  const handleAnimateReject = () => {
-    caregiverContainerRef.current?.animateReject();
-  };
+ 
 
   const handleGoBack = () => {
     router.back();
@@ -116,16 +97,16 @@ const CaregiverPreviewScreen = () => {
         />
         <View style={styles.content}>
           <View style={styles.containerWrapper}>
-            <CaregiverContainer
-              ref={caregiverContainerRef}
+            {/* <CaregiverContainer
+              // ref={caregiverContainerRef}
               profileData={mockCaregiverProfileData}
               data={mockCaregiverData}
-              onLike={handleLike}
-              onReject={handleReject}
-            />
+              // onLike={handleLike}
+              // onReject={handleReject}
+            /> */}
           </View>
 
-          <FloatingButton
+          {/* <FloatingButton
             icon={
               <Image
                 source={require('@/assets/picker/xmark.png')}
@@ -136,11 +117,11 @@ const CaregiverPreviewScreen = () => {
               position: 'absolute',
               left: 40,
               bottom: 60,
-              width: buttonWidth,
+              // width: buttonWidth,
             }}
-            onPress={handleAnimateReject}
-          />
-
+            // onPress={handleAnimateReject}
+          /> */}
+{/* 
           <FloatingButton
             icon={
               <Image
@@ -152,10 +133,10 @@ const CaregiverPreviewScreen = () => {
               position: 'absolute',
               right: 40,
               bottom: 60,
-              width: buttonWidth,
+              // width: buttonWidth,
             }}
-            onPress={handleAnimateLike}
-          />
+            // onPress={handleAnimateLike}
+          /> */}
         </View>
       </View>
     </SafeAreaView>

@@ -8,9 +8,10 @@ import { useRouter } from 'expo-router'
 import { useQuery } from '@tanstack/react-query'
 import * as ImagePicker from 'expo-image-picker'
 import { Entypo } from '@expo/vector-icons'
-import { api } from '@/services/api/api'
+// import { api } from '@/services/api/api'
 import InfoPill from '@/components/ui/InfoPill'
 import Skeleton from '@/components/ui/Skeleton'
+import customAxios from '@/services/api/envConfig'
 
 interface Picture {
   id: string;
@@ -76,7 +77,7 @@ const CaregiverEditProfile = () => {
     const { data: profileData, isLoading } = useQuery<ApiResponse>({
         queryKey: ['caregiverProfile'],
         queryFn: async () => {
-            const response = await api.get('/caregiver-profile/');
+            const response = await customAxios.get('/caregiver-profile/');
             return response.data;
         }
     });
@@ -250,7 +251,7 @@ const CaregiverEditProfile = () => {
                                 },
                                 { 
                                     label: 'Location', 
-                                    text: caregiverProfile?.zipcode,
+                                    text: caregiverProfile?.location,
                                     hasEdit: true 
                                 },
                                 { 

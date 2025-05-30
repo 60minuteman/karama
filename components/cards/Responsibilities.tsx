@@ -15,6 +15,7 @@ interface ResponsibilitiesProps {
     label: string;
   }>;
   data: any;
+  role?: any
 }
 
 export const Responsibilities = ({
@@ -38,6 +39,7 @@ export const Responsibilities = ({
     { icon: '🏠', label: 'Vendor/ Services Management' },
   ],
   data,
+  role
 }: ResponsibilitiesProps) => {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -48,10 +50,8 @@ export const Responsibilities = ({
     return null;
   }
 
-  
-
   const childcareResp =
-    data?.responsibilities?.childcare_responsibilities ||  [];
+    data?.responsibilities?.childcare_responsibilities || [];
   const householdResp =
     data?.responsibilities?.household_responsibilities || [];
 
@@ -59,17 +59,33 @@ export const Responsibilities = ({
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          data={data?.caregiver_profile?.pictures?.[3]?.path}
+          data={data?.pictures?.[2]?.path}
           style={styles.imagePlaceholder}
+          resizeMode='cover'
+          resizeMethod='scale'
         />
       </View>
 
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>
-          Childcare Responsibilities
+          {role === 'FAMILY'  ?'Household Rules' : 'Childcare Responsibilities'}
         </ThemedText>
+       {role === 'CAREGIVER' ? (
+
         <View style={styles.pillsContainer}>
-          {childcareResp.map((item: any, index: number) => (
+          {data?.responsibilities?.childcare_responsibilities?.map((item: any, index: number) => (
+            <Pill2
+              key={index}
+              // icon={item.icon || '👶'}
+              label={item}
+              style={styles.pill}
+            />
+          ))}
+          
+        </View>
+       ) : (
+         <View style={styles.pillsContainer}>
+          {data?.household_info?.rules?.map((item: any, index: number) => (
             <Pill2
               key={index}
               // icon={item.icon || '👶'}
@@ -79,37 +95,36 @@ export const Responsibilities = ({
           ))}
           {data?.responsibilities?.household_responsibilities && (
             <Pill2
-            // icon={item.icon || '👶'}
-            label={data?.responsibilities?.household_responsibilities}
-            style={styles.pill}
+              // icon={item.icon || '👶'}
+              label={data?.responsibilities?.household_responsibilities}
+              style={styles.pill}
             />
           )}
         </View>
+       )}
       </View>
+       {role === 'CAREGIVER' && (
 
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>
           Household Responsibilities
         </ThemedText>
         <View style={styles.pillsContainer}>
-          {householdResp.map((item: any, index: number) => (
+          {data?.responsibilities?.household_responsibilities && (
+           <>
+            {data?.responsibilities?.household_responsibilities.map((item: any, index: number) => (
             <Pill2
               key={index}
-              // icon={item.icon || '🏠'}
+              // icon={item.icon || '👶'}
               label={item}
               style={styles.pill}
             />
           ))}
-
-           {data?.responsibilities?.other_childcare_responsibilities && (
-            <Pill2
-            // icon={item.icon || '👶'}
-            label={data?.responsibilities?.other_childcare_responsibilities}
-            style={styles.pill}
-            />
+           </>
           )}
         </View>
       </View>
+       )}
     </View>
   );
 };

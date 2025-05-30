@@ -18,6 +18,7 @@ type ConversationItemProps = {
   handleDeleteConversation: any;
   key: any;
   setDeletedConversationId: any;
+  currentUser: any;
 };
 
 export function ConversationItem({
@@ -31,6 +32,7 @@ export function ConversationItem({
   handleDeleteConversation,
   key,
   setDeletedConversationId,
+  currentUser,
 }: ConversationItemProps) {
   const [otherUserData, setOtherUserData] = useState<any>(null);
   const { token, user } = useUserStore();
@@ -88,7 +90,9 @@ export function ConversationItem({
             <View style={styles.content}>
               <View style={styles.header}>
                 <ThemedText style={styles.name}>
-                  {conversation?.recipient?.name}
+                  {currentUser?.name === conversation?.recipient?.name
+                    ? conversation?.creator?.name
+                    : conversation?.recipient?.name}
                 </ThemedText>
                 <ThemedText style={styles.time}>{time}</ThemedText>
               </View>

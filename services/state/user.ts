@@ -224,6 +224,8 @@ export interface CaregiverPositionHistory {
   employmentType: string;
   startDate: string;
   endDate: string;
+  childCare: string;
+  household: string;
 }
 
 interface AgeGroup {
@@ -898,6 +900,8 @@ export const useUserStore = create<UserState>()(
         employmentType: '',
         startDate: '',
         endDate: '',
+        childCare: '',
+        household: ''
       },
       caregiverSecondPosition: {
         positionNumber: null,
@@ -907,6 +911,8 @@ export const useUserStore = create<UserState>()(
         employmentType: '',
         startDate: '',
         endDate: '',
+        childCare: '',
+        household: ''
       },
       caregiverThirdPosition: {
         positionNumber: null,
@@ -916,6 +922,8 @@ export const useUserStore = create<UserState>()(
         employmentType: '',
         startDate: '',
         endDate: '',
+        childCare: '',
+        household: ''
       },
       caregiverPromptCategory: '',
       caregiverFirstPrompt: '',

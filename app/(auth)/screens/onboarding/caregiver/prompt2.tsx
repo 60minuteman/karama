@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useOtherStore } from '@/services/state/other';
+import { useUserStore } from '@/services/state/user';
 
 export const promptCategories = [
   { id: 'get_to_know', label: 'Get to know Me', primary: true },
@@ -35,14 +37,16 @@ export const promptOptions = [
 export default function Prompt2() {
   const router = useRouter();
   const [selectedPrompt, setSelectedPrompt] = useState<string>('');
+  const { 
+      prompts
+    } = useOtherStore();
+     const {
+        setOnboardingScreen,
+      } = useUserStore();
 
   const handleNext = () => {
-    if (selectedPrompt) {
-      router.push({
-        pathname: '/(auth)/screens/onboarding/caregiver/promptAnswer',
-        params: { prompt: selectedPrompt }
-      });
-    }
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/moreInfo');
+    router.push('/(auth)/screens/onboarding/caregiver/moreInfo');
   };
 
   const handleCategoryPress = (categoryId: string) => {
@@ -52,6 +56,15 @@ export default function Prompt2() {
       router.push('/(auth)/screens/onboarding/caregiver/prompt3');
     }
   };
+
+  const handleAdd = (item: any) => {
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/promptAnswer');
+      router.push({
+        pathname: '/(auth)/screens/onboarding/caregiver/promptAnswer',
+        params: { prompt: item },
+      });
+};
+
 
   return (
     <ThemedView style={styles.container}>
@@ -89,27 +102,29 @@ export default function Prompt2() {
               <View key={index} style={styles.pillWrapper}>
                 <Pill
                   label={prompt}
-                  selected={selectedPrompt === prompt}
-                  onPress={() => setSelectedPrompt(prompt)}
+                   selected={prompts.some((item: any) => item.title === prompt) ||
+                      selectedPrompt === prompt}
+                  onPress={() => handleAdd(prompt)}
                 />
               </View>
             ))}
           </View>
         </ScrollView>
 
-        <LinearGradient
+        {/* <LinearGradient
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
-          <View style={styles.buttonContainer}>
-            <Button
-              label="Next"
-              onPress={handleNext}
-              variant="compact"
-              disabled={!selectedPrompt}
-            />
-          </View>
-        </LinearGradient>
+           {prompts.length > 1 && (
+                    <View style={styles.buttonContainer}>
+                      <Button
+                        label="Next"
+                        onPress={handleNext}
+                        variant="compact"
+                      />
+                    </View>
+                    )}
+        </LinearGradient> */}
       </View>
     </ThemedView>
   );

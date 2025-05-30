@@ -8,22 +8,10 @@ import { Image } from './Image';
 interface InterestsProps {
   interests?: string[];
   data?: any;
+  role?: any
 }
 
-export const Interests = ({
-  interests = [
-    'Dance',
-    'DIY',
-    'Magic',
-    'Gaming',
-    'Painting',
-    'Film Making',
-    'Trumpet',
-    'Piano',
-    'Drama',
-  ],
-  data,
-}: InterestsProps) => {
+export const Interests = ({ interests, data, role }: InterestsProps) => {
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
     'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
@@ -45,25 +33,37 @@ export const Interests = ({
     return null;
   }
 
+  // console.log('Image path:', data?.pictures?.[0]?.path);
+
+  const allInterests = Object.entries(data?.children_interests || data?.hobbies)
+  .filter(([key]) => key !== "id")
+  .flatMap(([, value]) => value);
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          data={data?.caregiver_profile?.pictures?.[2]?.path}
+          data={data?.pictures?.[1]?.path}
           style={styles.imagePlaceholder}
+          resizeMode='cover'
+          resizeMethod='scale'
         />
       </View>
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>My Interests</ThemedText>
+        <ThemedText style={styles.sectionTitle}>{role === 'FAMILY' ? 'Children\'s interest' : 'My Interests'}</ThemedText>
         <View style={styles.interestsContainer}>
-          {interests?.map((interest, index) => (
-            <Pill2
+          {allInterests?.map((interest: any, index: any) => {
+            if (interest === '' || interest === null) return;
+            return (
+              <Pill2
               key={index}
               // icon={interestIcons[interest] || '✨'}
               label={interest}
               style={styles.interestPill}
-            />
-          ))}
+              />
+            )
+          }
+        )}
         </View>
       </View>
     </View>

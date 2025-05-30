@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -20,11 +21,16 @@ import {
 export default function PromptAnswer() {
   const router = useRouter();
   const { prompt } = useLocalSearchParams();
+   const { 
+      prompts,
+      addPrompts
+    } = useOtherStore();
   const {
     family_prompt_answer,
     family_prompt,
     setFamilyPromptAnswer,
     setOnboardingScreen,
+    family_prompt_category
   } = useUserStore();
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -55,6 +61,18 @@ export default function PromptAnswer() {
     router.push('/(auth)/screens/onboarding/family/moreInfo');
   };
 
+  const handleAddPrompt = (answer: string) => {
+    if (answer) {
+      addPrompts({
+        category: family_prompt_category,
+        title: prompt,
+        answer: answer,
+      });
+      setFamilyPromptAnswer('');
+      setOnboardingScreen(`/(auth)/screens/onboarding/family/${family_prompt_category}`);
+      router.push('/(auth)/screens/onboarding/family/prompt');
+    }
+  }
   return (
     <ThemedView style={styles.container}>
       <Header variant='back' />
@@ -82,18 +100,20 @@ export default function PromptAnswer() {
                 textAlignVertical='top'
               />
             </View>
+          {prompts?.length < 2 && (
 
-            {/* <View style={styles.addButtonContainer}>
+            <View style={styles.addButtonContainer}>
               <Button
                 label='Add Another Prompt'
-                onPress={() => router.back()}
+                onPress={() => handleAddPrompt(family_prompt_answer)}
                 variant='compact'
-                style={styles.addButton}
+                // style={styles.addButton}
               />
-            </View> */}
+            </View>
+          )}
           </View>
-
-          <View
+          {prompts?.length > 1 && (
+              <View
             style={[
               styles.bottomNav,
               isKeyboardVisible ? { marginBottom: 10 } : { marginBottom: 40 },
@@ -101,6 +121,8 @@ export default function PromptAnswer() {
           >
             <Button label='Next' onPress={handleNext} variant='compact' />
           </View>
+            )
+          }
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </ThemedView>

@@ -468,8 +468,29 @@ const PastPosition: React.FC = () => {
                     <Pill
                       key={responsibility.id}
                       label={responsibility.label}
-                      selected={false}
-                      onPress={() => {}}
+                      selected={
+                        selectedPositionNumber === 'first'
+                          ? caregiverFirstPosition?.childCare === responsibility.id
+                          : selectedPositionNumber === 'third'
+                          ? caregiverThirdPosition?.childCare === responsibility.id
+                          : caregiverSecondPosition?.childCare === responsibility.id
+                      }
+                      onPress={() => {
+                        selectedPositionNumber === 'first'
+                          ? setCaregiverFirstPosition({
+                              ...caregiverFirstPosition,
+                              childCare: responsibility.id,
+                            })
+                          : selectedPositionNumber === 'third'
+                          ? setCaregiverThirdPosition({
+                              ...caregiverThirdPosition,
+                              childCare: responsibility.id,
+                            })
+                          : setCaregiverSecondPosition({
+                              ...caregiverSecondPosition,
+                              childCare: responsibility.id,
+                            });
+                      }}
                     />
                   ))}
                 </View>
@@ -484,8 +505,29 @@ const PastPosition: React.FC = () => {
                     <Pill
                       key={responsibility.id}
                       label={responsibility.label}
-                      selected={false}
-                      onPress={() => {}}
+                       selected={
+                        selectedPositionNumber === 'first'
+                          ? caregiverFirstPosition?.household === responsibility.id
+                          : selectedPositionNumber === 'third'
+                          ? caregiverThirdPosition?.household === responsibility.id
+                          : caregiverSecondPosition?.household === responsibility.id
+                      }
+                      onPress={() => {
+                        selectedPositionNumber === 'first'
+                          ? setCaregiverFirstPosition({
+                              ...caregiverFirstPosition,
+                              household: responsibility.id,
+                            })
+                          : selectedPositionNumber === 'third'
+                          ? setCaregiverThirdPosition({
+                              ...caregiverThirdPosition,
+                              household: responsibility.id,
+                            })
+                          : setCaregiverSecondPosition({
+                              ...caregiverSecondPosition,
+                              household: responsibility.id,
+                            });
+                      }}
                     />
                   ))}
                 </View>

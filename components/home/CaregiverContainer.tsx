@@ -49,8 +49,8 @@ interface CaregiverContainerProps {
 }
 
 export interface CaregiverContainerRef {
-  animateLike: () => void;
-  animateReject: () => void;
+  swipeRight: () => void;
+  swipeLeft: () => void;
 }
 
 const CaregiverContainer = forwardRef<
@@ -61,7 +61,17 @@ const CaregiverContainer = forwardRef<
   const isLargeScreen = windowWidth > 768;
   const containerWidth = Math.min(windowWidth * 0.9, 500);
 
+  // Add animation values
   const slideAnim = new Animated.Value(0);
+  const rotateAnim = slideAnim.interpolate({
+    inputRange: [-windowWidth, 0, windowWidth],
+    outputRange: ['-15deg', '0deg', '15deg'],
+  });
+  const opacityAnim = slideAnim.interpolate({
+    inputRange: [-windowWidth / 2, 0, windowWidth / 2],
+    outputRange: [0.5, 1, 0.5],
+  });
+
   const swipeThreshold = windowWidth * 0.25;
 
   // Setup PanResponder for swipe gestures
@@ -73,10 +83,10 @@ const CaregiverContainer = forwardRef<
     onPanResponderRelease: (_, gesture) => {
       if (gesture.dx > swipeThreshold) {
         // Swiped right - like
-        animateLike();
+        swipeRight();
       } else if (gesture.dx < -swipeThreshold) {
         // Swiped left - reject
-        animateReject();
+        swipeLeft();
       } else {
         // Reset position
         Animated.spring(slideAnim, {
@@ -87,7 +97,7 @@ const CaregiverContainer = forwardRef<
     },
   });
 
-  const animateLike = () => {
+  const swipeRight = () => {
     Animated.timing(slideAnim, {
       toValue: windowWidth,
       duration: 300,
@@ -98,7 +108,7 @@ const CaregiverContainer = forwardRef<
     });
   };
 
-  const animateReject = () => {
+  const swipeLeft = () => {
     Animated.timing(slideAnim, {
       toValue: -windowWidth,
       duration: 300,
@@ -110,8 +120,8 @@ const CaregiverContainer = forwardRef<
   };
 
   useImperativeHandle(ref, () => ({
-    animateLike,
-    animateReject,
+    swipeRight,
+    swipeLeft,
   }));
 
   if (!profileData || !data) {
@@ -153,7 +163,8 @@ const CaregiverContainer = forwardRef<
           styles.container,
           {
             width: containerWidth,
-            transform: [{ translateX: slideAnim }],
+            transform: [{ translateX: slideAnim }, { rotate: rotateAnim }],
+            opacity: opacityAnim,
           },
         ]}
       >

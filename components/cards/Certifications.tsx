@@ -25,15 +25,17 @@ export const Certifications = ({
 
   const abi = data?.abilities_and_certifications?.abilities || [];
   const cert = data?.abilities_and_certifications?.certifications || [];
-  
+
   const margeArray = [...abi, ...cert];
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          data={data?.caregiver_profile?.pictures?.[4]?.path}
+          data={data?.pictures?.[3]?.path}
           style={styles.imagePlaceholder}
+          resizeMode='cover'
+          resizeMethod='scale'
         />
       </View>
       <View style={styles.section}>
@@ -41,7 +43,7 @@ export const Certifications = ({
           My Certifications/Requirements
         </ThemedText>
         <View style={styles.pillsContainer}>
-          {margeArray.map((item: any, index: any) => (
+          {margeArray?.map((item: any, index: any) => (
             <Pill2
               key={index}
               // icon={item.icon}

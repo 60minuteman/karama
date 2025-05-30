@@ -48,20 +48,21 @@ const CaregiverPreferences = () => {
                                         <ThemedText style={[styles.payTypeText, caregiverProfileData?.payment_info?.type === 'Hourly' && styles.selectedPayTypeText]}>Hourly</ThemedText>
                                     </TouchableOpacity>
                                     <TouchableOpacity
-                                        style={[styles.payTypeButton, caregiverProfileData?.payment_info?.type === 'Salary' && styles.selectedPayType]}
+                                        style={[styles.payTypeButton, caregiverProfileData?.payment_info?.type === 'Salary Base' && styles.selectedPayType]}
                                         onPress={() => setPayType('Salary')}
                                     >
                                         <Image
                                             source={require('@/assets/icons/salary.png')}
                                             style={styles.payTypeIcon}
                                         />
-                                        <ThemedText style={[styles.payTypeText, caregiverProfileData?.payment_info?.type === 'Salary' && styles.selectedPayTypeText]}>Salary Base</ThemedText>
+                                        <ThemedText style={[styles.payTypeText, caregiverProfileData?.payment_info?.type === 'Salary Base' && styles.selectedPayTypeText]}>Salary Base</ThemedText>
                                     </TouchableOpacity>
                                 </View>
                             </View>
 
                             {/* Pay Rate Section */}
-                            <View style={styles.subSection}>
+                            {caregiverProfileData?.payment_info?.type === 'Hourly' ? (
+                                <View style={styles.subSection}>
                                 <ThemedText style={styles.heading}>Pay rate</ThemedText>
                                 <View style={styles.pillContainer}>
                                     <InfoPill icon={'⌛'} label={`$${caregiverProfileData?.payment_info?.hourly_min} - $${caregiverProfileData?.payment_info?.hourly_max}`} />
@@ -82,6 +83,7 @@ const CaregiverPreferences = () => {
                                         max={45}
                                         step={1}
                                         sliderLength={318}
+                                        
                                         selectedStyle={{
                                             backgroundColor: '#EB4430',
                                         }}
@@ -104,6 +106,15 @@ const CaregiverPreferences = () => {
                                     />
                                 </View>
                             </View>
+                            ): (
+                                <View style={styles.subSection}>
+                                <ThemedText style={styles.heading}>Pay rate</ThemedText>
+                                <View style={styles.pillContainer}>
+                                    <InfoPill icon={'⌛'} label={`${caregiverProfileData?.payment_info?.salary}/Year`} />
+                                </View>
+                            </View>
+                            )}
+                            
                         </View>
 
                         {/* Experience Section */}

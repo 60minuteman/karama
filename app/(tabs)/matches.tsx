@@ -11,11 +11,18 @@ import {
   useCurrentUser,
 } from '@/services/api/api';
 import { useUserStore } from '@/services/state/user';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { getSocket } from '../_layout';
+
+const CACHE_KEYS = {
+  CONVERSATIONS: '@matches_conversations',
+  MATCHES: '@matches_data',
+};
 
 export default function Matches() {
   const [conversations, setConversations] = useState<any>([]);
@@ -28,11 +35,64 @@ export default function Matches() {
   const [filteredMatches, setFilteredMatches] = useState<any>([]);
   const socket: any = getSocket();
   const [deletedConversationId, setDeletedConversationId] = useState<any>(null);
+  const queryClient = useQueryClient();
 
-  console.log('user_id from user object:', conversations);
-  console.log('user_id from user completeMatches:', completeMatches?.data);
+  console.log('conversations', conversations, currentUser?.data?.name);
+
+  // Load cached data on mount
+  useEffect(() => {
+    const loadCachedData = async () => {
+      try {
+        const cachedConversations = await AsyncStorage.getItem(
+          CACHE_KEYS.CONVERSATIONS
+        );
+        const cachedMatches = await AsyncStorage.getItem(CACHE_KEYS.MATCHES);
+
+        if (cachedConversations) {
+          setConversations(JSON.parse(cachedConversations));
+          setIsLoading(false); // Show cached data immediately
+        }
+        if (cachedMatches) {
+          setFilteredMatches(JSON.parse(cachedMatches));
+        }
+      } catch (error) {
+        console.error('Error loading cached data:', error);
+      }
+    };
+
+    loadCachedData();
+  }, []);
+
+  // Cache data when it changes
+  useEffect(() => {
+    const cacheData = async () => {
+      try {
+        await AsyncStorage.setItem(
+          CACHE_KEYS.CONVERSATIONS,
+          JSON.stringify(conversations)
+        );
+        await AsyncStorage.setItem(
+          CACHE_KEYS.MATCHES,
+          JSON.stringify(filteredMatches)
+        );
+      } catch (error) {
+        console.error('Error caching data:', error);
+      }
+    };
+
+    if (conversations.length > 0 || filteredMatches.length > 0) {
+      cacheData();
+    }
+  }, [conversations, filteredMatches]);
 
   const handleDeleteConversation: any = (id: any) => {
+    // Optimistic update
+    const updatedConversations = conversations.filter(
+      (conv: any) => conv.id !== id
+    );
+    setConversations(updatedConversations);
+    setDeletedConversationId(id);
+
     socket.emit('deleteConversation', {
       conversationId: id,
     });
@@ -41,20 +101,37 @@ export default function Matches() {
   useEffect(() => {
     if (socket) {
       socket.emit('getAllConversations');
-      // socket.emit('getChatHistory');
+
       socket.on('allConversations', (data) => {
         setIsLoading(false);
         setConversations(data);
+        // Update React Query cache
+        queryClient.setQueryData(['conversations'], data);
       });
+
       socket.on('exception', (data) => {
         setIsLoading(false);
+        // Revert optimistic update on error
+        if (deletedConversationId) {
+          const originalConversations = conversations;
+          setConversations(originalConversations);
+        }
       });
+
       socket.on('newMessage conversationUpdated', (data: any) => {
         setIsLoading(false);
-        // setMessages(data);
+        // Update React Query cache with new message
+        queryClient.setQueryData(['conversations'], (oldData: any) => {
+          if (!oldData) return data;
+          return oldData.map((conv: any) =>
+            conv.id === data.id
+              ? { ...conv, last_message: data.last_message }
+              : conv
+          );
+        });
       });
     }
-  }, [user?.user_id, token, socket]);
+  }, [user?.user_id, token, socket, queryClient]);
 
   useEffect(() => {
     if (completeMatches?.data?.matches && conversations) {
@@ -82,7 +159,7 @@ export default function Matches() {
     <GestureHandlerRootView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
         <ThemedText style={styles.title}>Matches</ThemedText>
-        {isLoadingCompleteMatches || isLoading ? (
+        {isLoadingCompleteMatches || (isLoading && !conversations.length) ? (
           <MatchesSkeleton />
         ) : (
           <>
@@ -91,8 +168,8 @@ export default function Matches() {
             ) : (
               <>
                 <SearchBar
-                  // value={searchQuery}
-                  // onChangeText={setSearchQuery}
+                  value=''
+                  onChangeText={() => {}}
                   onSearch={() => {}}
                 />
                 {/* <SearchBar />
@@ -138,6 +215,7 @@ export default function Matches() {
                           name={conversation?.recipient?.name}
                           otherUser={conversation?.recipient?.name}
                           lastMessage={conversation?.last_message?.text}
+                          currentUser={currentUser?.data}
                           time={
                             conversation?.last_message?.timestamp
                               ? new Date(
@@ -152,7 +230,14 @@ export default function Matches() {
                           conversation={conversation}
                           onPress={() =>
                             router.push(
-                              `/messages/${conversation.id}?name=${conversation?.recipient?.name}&recipientId=${conversation?.recipient?.id}&senderId=${conversation?.creator?.id}`
+                              `/messages/${conversation.id}?name=${
+                                currentUser?.data?.name ===
+                                conversation?.recipient?.name
+                                  ? conversation?.creator?.name
+                                  : conversation?.recipient?.name
+                              }&recipientId=${
+                                conversation?.recipient?.id
+                              }&senderId=${conversation?.creator?.id}`
                             )
                           }
                         />

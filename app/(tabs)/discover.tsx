@@ -1,7 +1,7 @@
 import ProfileCardLoader from '@/components/cards/ProfileCardLoader';
 import EmptyDiscovery from '@/components/discovery/EmptyDiscovery';
 import { CaregiverContainer } from '@/components/home/CaregiverContainer';
-import { Container } from '@/components/home/Container';
+import { Container, ContainerRef } from '@/components/home/Container';
 import { HomeHeader } from '@/components/home/HomeHeader';
 import { HomeNav } from '@/components/home/HomeNav';
 import { FloatingButton } from '@/components/ui/FloatingButton';
@@ -166,6 +166,8 @@ export default function DiscoverScreen() {
     }
   );
 
+  console.log('currentUser', currentUser?.data?.role, data);
+
   // console.log('currentProfilecaregiver see===', data);
 
   useEffect(() => {
@@ -269,6 +271,8 @@ export default function DiscoverScreen() {
     }
     return age;
   };
+
+  console.log('currentProfile', currentProfile);
 
   const profileDataFamily = currentProfile
     ? {
@@ -437,7 +441,7 @@ export default function DiscoverScreen() {
     // education: currentProfile?.family_profile?.
   };
 
-  console.log('profiledata', currentProfile?.family_profile?.pictures);
+  // console.log('profiledata', currentProfile?.family_profile?.pictures);
 
   const handleLike = () => {
     submitLike.mutate(
@@ -470,17 +474,17 @@ export default function DiscoverScreen() {
               <ProfileCardLoader />
             ) : !currentProfile ? (
               <View style={styles.emptyStateContainer}>
-                <EmptyDiscovery role={userData?.role} />
+                <EmptyDiscovery role={currentUser?.data?.role} />
               </View>
             ) : (
               <>
                 {currentUser?.data?.role === 'FAMILY' ? (
                   <Container
                     ref={containerRef}
-                    profileData={profileDataFamily}
-                    data={currentProfile}
+                    data={data}
                     onLike={() => handleLike(currentIndex)}
                     onReject={() => handleReject(currentIndex)}
+                    role={currentUser?.data?.role}
                   />
                 ) : (
                   <CaregiverContainer
@@ -505,7 +509,7 @@ export default function DiscoverScreen() {
                 }
                 style={[styles.rejectButton, { width: buttonWidth }] as any}
                 onPress={() => {
-                  containerRef.current?.animateReject();
+                  containerRef.current?.swipeLeft();
                 }}
               />
               <FloatingButton
@@ -517,7 +521,7 @@ export default function DiscoverScreen() {
                 }
                 style={[styles.likeButton, { width: buttonWidth }] as any}
                 onPress={() => {
-                  containerRef.current?.animateLike();
+                  containerRef.current?.swipeRight();
                 }}
               />
             </>

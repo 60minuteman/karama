@@ -14,15 +14,18 @@ interface LikedYouCardProps {
     rating: number;
     gender: 'She / Her' | 'He / Him';
     image: string | number; // Allow both URI strings and require() image numbers
+    score: number
   };
   isBlurred?: boolean;
   onPress?: () => void;
+  key: any
 }
 
 export const LikedYouCard = ({ 
   profile, 
   isBlurred = false,
-  onPress 
+  onPress,
+  key
 }: LikedYouCardProps) => {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -33,25 +36,28 @@ export const LikedYouCard = ({
     return null;
   }
 
+  
+
   return (
     <TouchableOpacity 
       onPress={onPress}
       activeOpacity={0.9}
       style={styles.card}
+      key={key}
     >
       <ImageBackground 
-        source={typeof profile.image === 'string' ? { uri: profile.image } : profile.image}
+        source={typeof profile.pictures?.[0]?.path === 'string' ? { uri: profile.pictures?.[0]?.path } : profile.image}
         style={styles.imageBackground}
         resizeMode="cover"
       >
         <View style={styles.overlay}>
           <View style={styles.header}>
             <BlurView intensity={20} style={styles.genderPill}>
-              <ThemedText style={styles.genderText}>{profile.gender}</ThemedText>
+              <ThemedText style={styles.genderText}>{profile?.description?.description || profile?.pronounce}</ThemedText>
             </BlurView>
             <View style={styles.ratingPill}>
-              <ThemedText style={styles.rating}>{profile.rating}</ThemedText>
-              <ThemedText style={styles.starIcon}>⭐</ThemedText>
+              <ThemedText style={styles.rating}>{profile.rating_count}</ThemedText>
+              <ThemedText style={styles.starIcon}>⭐</ThemedText> 
             </View>
           </View>
 

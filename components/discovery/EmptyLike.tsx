@@ -1,29 +1,32 @@
 import { ThemedText } from '@/components/ThemedText';
 import React, { useEffect } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View,  } from 'react-native';
 
-const EmptyDiscovery = ({ role }: { role: string }) => {
-  console.log('role', role);
 
+
+const EmptyLikes = () => {
+ 
+  
   return (
     <View style={styles.container}>
       <View style={styles.content}>
         <Image
-          source={require('@/assets/images/matches-empty.png')}
+          source={require('@/assets/images/like-empty.png')}
           style={styles.image}
+          resizeMode='contain'
         />
         <ThemedText style={styles.title}>
-          No {role === 'FAMILY' ? 'Caregivers' : 'Families'} Yet
+          Profiles that like you will appear here 
         </ThemedText>
-        <ThemedText style={styles.description}>
-          Your matches will appear here
-        </ThemedText>
+        {/* <ThemedText style={styles.description}>
+         Profiles that like you will appear here 
+        </ThemedText> */}
       </View>
     </View>
   );
 };
 
-export default EmptyDiscovery;
+export default EmptyLikes;
 
 const styles = StyleSheet.create({
   container: {

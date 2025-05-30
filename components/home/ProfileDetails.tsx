@@ -9,6 +9,7 @@ interface ProfileDetailsProps {
   experience: string[];
   lookingFor: string[];
   hourlyRate: string;
+  data?: any
 }
 
 export const ProfileDetails = ({
@@ -16,6 +17,7 @@ export const ProfileDetails = ({
   experience,
   lookingFor,
   hourlyRate,
+  data
 }: ProfileDetailsProps) => {
   const [fontsLoaded] = useFonts({
     'Poppins-Regular': Poppins_400Regular,
@@ -26,15 +28,50 @@ export const ProfileDetails = ({
     return null;
   }
 
+  console.log(data, 'profile');
+  
+
+
   return (
     <View style={styles.container}>
-      <Section title='I am'>
-        <Pill2 label={role} icon='👩' style={styles.pill} />
+      {role === 'CAREGIVER' && (
+        <Section title='I am'>
+        <Pill2 label={data?.caregiver_type}  style={styles.pill} />
       </Section>
+      )}
+      {role === 'FAMILY' && (
+        <Section title='We have'>
+          <View style={{display: 'flex', gap: 2, flexDirection: 'row', flexWrap: 'wrap'}}>
+            {data?.children?.map((item: any) => (
+            <Pill2 label={item.age_group} icon='👩' style={styles.pill} />
+          ))}
+          </View>
+      </Section>
+      )}
+      {role === 'FAMILY' && (
+        <Section title='We have a'>
+          <View style={{display: 'flex', gap: 2, flexDirection: 'row', flexWrap: 'wrap'}}>
+            {data?.pets?.map((item: any) => (
+            <Pill2 label={item}  style={styles.pill} />
+          ))}
+          </View>
+      </Section>
+      )}
+      {role === 'FAMILY' && (
+        <Section title='We speak'>
+          <View style={{display: 'flex', gap: 2, flexDirection: 'row', flexWrap: 'wrap'}}>
+            {data?.languages?.map((item: any) => (
+            <Pill2 label={item}  style={styles.pill} />
+          ))}
+          </View>
+      </Section>
+      )}
 
-      <Section title='I have experience with'>
+      {role === 'CAREGIVER' && (
+        <>
+        <Section title='I have experience with'>
         <View style={styles.pillsContainer}>
-          {experience.map((exp, index) => {
+          {data?.ages_best_with?.map((exp, index) => {
             const icons = {
               'School Age': '🛴',
               Toddler: '🧸',
@@ -54,7 +91,7 @@ export const ProfileDetails = ({
 
       <Section title="I'm Looking For">
         <View style={styles.pillsContainer}>
-          {lookingFor?.map((item, index) => {
+          {data?.availability?.map((item, index) => {
             const icons = {
               'Full Time': '⏰',
               'Long Term': '📋',
@@ -72,9 +109,18 @@ export const ProfileDetails = ({
         </View>
       </Section>
 
-      <Section title='My Hourly Rate'>
-        <Pill2 label={hourlyRate} icon='⌛' style={styles.pill} />
+      {data?.payment_info?.type === 'Salary Base' ? (
+        <Section title='My Salary Rate'>
+        <Pill2 label={`${data?.payment_info?.salary}/Year`}  style={styles.pill} />
       </Section>
+      ) :(
+      <Section title='My Hourly Rate'>
+        <Pill2 label={`${data?.payment_info?.hourly_min} - ${data?.payment_info?.hourly_max}`} icon='⌛' style={styles.pill} />
+      </Section>
+      )}
+
+        </>
+      )}
     </View>
   );
 };

@@ -21,16 +21,7 @@ interface ProfileCardProps {
   pronouns: string;
   rating: number;
   role: string;
-  data: {
-    profilePicture?: string;
-    pictures?: string[];
-    caregiver_profile?: {
-      pictures?: Array<{ path: string; type: string }>;
-    };
-    family_profile?: {
-      pictures?: Array<{ path: string; type: string }>;
-    };
-  };
+  data: any
 }
 
 export const ProfileCard = ({
@@ -62,10 +53,12 @@ export const ProfileCard = ({
   if (!fontsLoaded) {
     return null;
   }
+  // console.log(data, 'show items');
+  
 
   // Get profile picture with fallback
-  const imageSource = data.profilePicture
-    ? { uri: data.profilePicture }
+  const imageSource = data?.pictures?.[0]?.path
+    ? { uri: data?.pictures?.[0]?.path }
     : require('@/assets/icons/fallback.png');
 
   return (
@@ -83,20 +76,20 @@ export const ProfileCard = ({
         >
           <View style={styles.header}>
             <View style={styles.pronounsContainer}>
-              <ThemedText style={styles.pronouns}>{pronouns || ''}</ThemedText>
+              <ThemedText style={styles.pronouns}>{data?.description?.description || data?.pronouns}</ThemedText>
             </View>
             <View style={styles.ratingContainer}>
-              <ThemedText style={styles.rating}>{rating || 0}</ThemedText>
+              <ThemedText style={styles.rating}>{data?.rating_count || rating || 0}</ThemedText>
               <ThemedText style={styles.star}>⭐</ThemedText>
             </View>
           </View>
           <View style={styles.infoOverlay}>
             <View style={styles.infoContainer}>
               <ThemedText style={styles.nameAge}>
-                {name || 'Anonymous'}, {age || '?'}
+                {data?.name || 'Anonymous'}
               </ThemedText>
               <ThemedText style={styles.role}>
-                {role || 'Role not specified'}
+                {data?.location || 'Role not specified'}
               </ThemedText>
               {/* <ThemedText style={styles.address}>{address}</ThemedText> */}
             </View>

@@ -8,8 +8,15 @@ import { Slider } from '@/components/ui/Slider';
 import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
 import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
-import { StyleSheet, TextInput, View, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
+import { useEffect, useState } from 'react';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 
 type PaymentType = '🤑 Hourly' | '💰 Salary Base';
 
@@ -64,7 +71,7 @@ export default function PaymentScreen() {
     <ThemedView style={styles.container}>
       <Header variant='back' />
 
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.content}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 10 : 10}
@@ -158,10 +165,12 @@ export default function PaymentScreen() {
           )}
         </View>
 
-        <View style={[
-          styles.buttonContainer,
-          isKeyboardVisible ? { marginBottom: 10 } : { marginBottom: 50 }
-        ]}>
+        <View
+          style={[
+            styles.buttonContainer,
+            isKeyboardVisible ? { marginBottom: 10 } : { marginBottom: 50 },
+          ]}
+        >
           <Button
             label='Next'
             onPress={handleNext}

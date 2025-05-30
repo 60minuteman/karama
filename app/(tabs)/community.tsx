@@ -1,42 +1,39 @@
 import { ThemedText } from '@/components/ThemedText';
-import React from 'react';
-import { StyleSheet, View, Image } from 'react-native';
+import { Button } from '@/components/ui/Button';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { Button } from '@/components/ui/Button';
-
+import React from 'react';
+import { Image, StyleSheet, View } from 'react-native';
 
 export default function CommunityScreen() {
   const handleNavigateToDiscover = () => {
-      router.push('itsAmatch');
-    };
+    router.push('itsAmatch');
+  };
 
   return (
-    <LinearGradient
-      colors={['#FF8A00', '#FF4B55']}
-      style={styles.container}
-    >
+    <LinearGradient colors={['#FF8A00', '#FF4B55']} style={styles.container}>
       <View style={styles.content}>
-        <Image 
-          source={require('@/assets/icons/user-group.png')} 
+        <Image
+          source={require('@/assets/icons/user-group.png')}
           style={styles.icon}
         />
         <ThemedText style={styles.title}>Community</ThemedText>
         <ThemedText style={styles.subtitle}>Coming Soon</ThemedText>
         <ThemedText style={styles.description}>
-        Get answers to your every question and give solutions to child related problems
+          Get answers to your every question and give solutions to child related
+          problems
         </ThemedText>
-   
-          <Button
+
+        {/* <Button
           onPress={handleNavigateToDiscover}
           label='Start Matching'
-        />
+        /> */}
       </View>
       <View style={styles.phoneContainer}>
         <Image
           source={require('@/assets/images/xphone.png')}
           style={styles.phoneImage}
-          resizeMode="contain"
+          resizeMode='contain'
         />
       </View>
     </LinearGradient>

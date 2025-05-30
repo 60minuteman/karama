@@ -210,7 +210,7 @@ const CaregiverSettings = () => {
             </View> */}
 
             <View style={styles.section2}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={[styles.button, styles.deleteButton]}
                 onPress={handleDelete}
               >
@@ -219,7 +219,7 @@ const CaregiverSettings = () => {
                 >
                   Delete account
                 </ThemedText>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               <TouchableOpacity
                 style={[styles.button, styles.logoutButton]}
