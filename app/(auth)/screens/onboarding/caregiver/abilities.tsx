@@ -47,26 +47,55 @@ export default function Page() {
 
   const toggleAbilitiesSelection = (label: CaregiverAbilities) => {
     if (label === '🏕️ Other') {
-      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/otherAbilities')
-      router.push('/(auth)/screens/onboarding/caregiver/otherAbilities')
+      setOnboardingScreen(
+        '/(auth)/screens/onboarding/caregiver/otherAbilities'
+      );
+      router.push('/(auth)/screens/onboarding/caregiver/otherAbilities');
       return;
     }
     const prev = caregiverAbilities ?? [];
-    const updatedAbilities = prev.includes(label)
-      ? prev.filter((item) => item !== label)
-      : [...prev, label];
+    const totalSelections =
+      (caregiverCertifications?.length ?? 0) + prev.length;
+
+    // If trying to deselect, allow it
+    if (prev.includes(label)) {
+      const updatedAbilities = prev.filter((item) => item !== label);
+      setCaregiverAbilities(updatedAbilities);
+      return;
+    }
+
+    // If already at max selections, don't allow more
+    if (totalSelections >= 6) {
+      return;
+    }
+
+    const updatedAbilities = [...prev, label];
     setCaregiverAbilities(updatedAbilities);
   };
   const toggleCertificationSelection = (label: CaregiverCertification) => {
     if (label === '📃 Other') {
-      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/otherCertification')
-      router.push('/(auth)/screens/onboarding/caregiver/otherCertification')
+      setOnboardingScreen(
+        '/(auth)/screens/onboarding/caregiver/otherCertification'
+      );
+      router.push('/(auth)/screens/onboarding/caregiver/otherCertification');
       return;
     }
     const prev = caregiverCertifications ?? [];
-    const updatedCertification = prev.includes(label)
-      ? prev.filter((item) => item !== label)
-      : [...prev, label];
+    const totalSelections = (caregiverAbilities?.length ?? 0) + prev.length;
+
+    // If trying to deselect, allow it
+    if (prev.includes(label)) {
+      const updatedCertification = prev.filter((item) => item !== label);
+      setCaregiverCertification(updatedCertification);
+      return;
+    }
+
+    // If already at max selections, don't allow more
+    if (totalSelections >= 6) {
+      return;
+    }
+
+    const updatedCertification = [...prev, label];
     setCaregiverCertification(updatedCertification);
   };
   const handleNext = () => {
@@ -92,26 +121,44 @@ export default function Page() {
         >
           <ThemedText style={styles.sectionTitle}>Abilities</ThemedText>
           <View style={styles.optionsContainer}>
-            {abilities.map((option) => (
-              <Pill
-                key={option.label}
-                label={option.label}
-                onPress={() => toggleAbilitiesSelection(option.label)}
-                selected={caregiverAbilities?.includes(option.label)}
-              />
-            ))}
+            {abilities.map((option) => {
+              const totalSelections =
+                (caregiverAbilities?.length ?? 0) +
+                (caregiverCertifications?.length ?? 0);
+              const isDisabled =
+                !caregiverAbilities?.includes(option.label) &&
+                totalSelections >= 6;
+              return (
+                <Pill
+                  key={option.label}
+                  label={option.label}
+                  onPress={() => toggleAbilitiesSelection(option.label)}
+                  selected={caregiverAbilities?.includes(option.label)}
+                  disabled={isDisabled}
+                />
+              );
+            })}
           </View>
 
           <ThemedText style={styles.sectionTitle}>Certifications</ThemedText>
           <View style={styles.optionsContainer}>
-            {certifications.map((option) => (
-              <Pill
-                key={option.label}
-                label={option.label}
-                onPress={() => toggleCertificationSelection(option.label)}
-                selected={caregiverCertifications?.includes(option.label)}
-              />
-            ))}
+            {certifications.map((option) => {
+              const totalSelections =
+                (caregiverAbilities?.length ?? 0) +
+                (caregiverCertifications?.length ?? 0);
+              const isDisabled =
+                !caregiverCertifications?.includes(option.label) &&
+                totalSelections >= 6;
+              return (
+                <Pill
+                  key={option.label}
+                  label={option.label}
+                  onPress={() => toggleCertificationSelection(option.label)}
+                  selected={caregiverCertifications?.includes(option.label)}
+                  disabled={isDisabled}
+                />
+              );
+            })}
           </View>
           <View style={styles.scrollEndSpacer} />
         </ScrollView>
@@ -129,7 +176,14 @@ export default function Page() {
         />
         <View style={styles.bottomNav}>
           <Button label='Skip' onPress={handleNext} variant='skip' />
-          <Button label='Next' onPress={handleNext} variant='compact' />
+          <Button
+            label='Next'
+            onPress={handleNext}
+            variant='compact'
+            disabled={
+              !caregiverAbilities?.length && !caregiverCertifications?.length
+            }
+          />
         </View>
       </View>
     </ThemedView>

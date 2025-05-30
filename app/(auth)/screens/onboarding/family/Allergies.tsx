@@ -75,12 +75,26 @@ export default function Allergies() {
     }).start();
   }, []);
 
+  const getTotalSelectedCount = () => {
+    return (
+      localAllergies.food.length +
+      localAllergies.environmental.length +
+      localAllergies.other.length
+    );
+  };
+
   const handleAllergyToggle = (
     id: string,
     category: 'food' | 'environmental' | 'other'
   ) => {
     const newSelected = [...localAllergies[category]];
     const index = newSelected.indexOf(id);
+
+    // If trying to add a new allergy and already at max limit
+    if (index === -1 && getTotalSelectedCount() >= 10) {
+      return; // Don't allow adding more allergies
+    }
+
     if (index > -1) {
       newSelected.splice(index, 1);
     } else {
@@ -274,7 +288,12 @@ export default function Allergies() {
           />
           <View style={styles.buttonContainer}>
             <Button label='Skip' onPress={() => router.back()} variant='skip' />
-            <Button label='Next' onPress={handleNext} variant='compact' />
+            <Button
+              label='Next'
+              onPress={handleNext}
+              variant='compact'
+              disabled={getTotalSelectedCount() === 0}
+            />
           </View>
         </View>
       </View>

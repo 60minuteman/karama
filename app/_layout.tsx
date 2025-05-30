@@ -4,6 +4,7 @@ import { Colors } from '@/constants/Colors';
 import { FontProvider } from '@/providers/FontProvider';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { useUserStore } from '@/services/state/user';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Slot } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -76,7 +77,7 @@ export const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const [isReady, setIsReady] = useState(false);
-  const { hydrated } = useUserStore();
+  const { hydrated, clearCaregiverData, clearUser } = useUserStore();
 
   useEffect(() => {
     async function prepare() {
@@ -89,6 +90,24 @@ export default function RootLayout() {
     }
     prepare();
   }, []);
+
+  // useEffect(() => {
+  //   // clearAllData();
+  //   clearCaregiverData();
+  //   clearUser();
+  //   const clearAsyncStorageData = async () => {
+  //     try {
+  //       await AsyncStorage.removeItem('token');
+  //       await AsyncStorage.removeItem('user-storage');
+  //       await AsyncStorage.clear();
+  //       console.log('Async storage data cleared successfully.');
+  //     } catch (error) {
+  //       console.error('Error clearing async storage data:', error);
+  //     }
+  //   };
+
+  //   clearAsyncStorageData();
+  // }, []);
 
   useEffect(() => {
     if (isReady && hydrated) {

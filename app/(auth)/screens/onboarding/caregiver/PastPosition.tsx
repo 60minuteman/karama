@@ -359,25 +359,25 @@ const PastPosition: React.FC = () => {
                       label={position.label}
                       selected={
                         selectedPositionNumber === 'first'
-                          ? caregiverFirstPosition?.position === position.id
+                          ? caregiverFirstPosition?.position === position.label
                           : selectedPositionNumber === 'third'
-                          ? caregiverThirdPosition?.position === position.id
-                          : caregiverSecondPosition?.position === position.id
+                          ? caregiverThirdPosition?.position === position.label
+                          : caregiverSecondPosition?.position === position.label
                       }
                       onPress={() => {
                         selectedPositionNumber === 'first'
                           ? setCaregiverFirstPosition({
                               ...caregiverFirstPosition,
-                              position: position.id,
+                              position: position.label,
                             })
                           : selectedPositionNumber === 'third'
                           ? setCaregiverThirdPosition({
                               ...caregiverThirdPosition,
-                              position: position.id,
+                              position: position.label,
                             })
                           : setCaregiverSecondPosition({
                               ...caregiverSecondPosition,
-                              position: position.id,
+                              position: position.label,
                             });
                       }}
                     />

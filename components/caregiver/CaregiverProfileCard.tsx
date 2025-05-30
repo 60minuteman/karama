@@ -79,10 +79,10 @@ export const CaregiverProfileCard = ({
 
           <View style={styles.infoContainer}>
             <ThemedText style={styles.familyName}>{familyName}</ThemedText>
-            {/* <View style={styles.locationContainer}>
-              <ThemedText style={styles.locationIcon}>📍</ThemedText>
+            <View style={styles.locationContainer}>
+              {/* <ThemedText style={styles.locationIcon}>📍</ThemedText> */}
               <ThemedText style={styles.locationText}>{location}</ThemedText>
-            </View> */}
+            </View>
             {/* <View style={styles.salaryContainer}>
               <ThemedText style={styles.salaryIcon}>💰</ThemedText>
               <ThemedText style={styles.salaryText}>{salary}</ThemedText>

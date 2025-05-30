@@ -1,25 +1,32 @@
-import { StyleSheet, View, ScrollView, Pressable, Modal } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
+import {
+  CaregiverDayOfWeek,
+  CaregiverDaySchedule,
+  useUserStore,
+} from '@/services/state/user';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { LinearGradient } from 'expo-linear-gradient';
-import { CaregiverDayOfWeek, CaregiverDaySchedule, useUserStore } from '@/services/state/user';
-
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 export default function ServiceDaysScreen() {
   const router = useRouter();
-  const { caregiverSchedule, setCaregiverSchedule, setOnboardingScreen } = useUserStore()
+  const { caregiverSchedule, setCaregiverSchedule, setOnboardingScreen } =
+    useUserStore();
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [selectedDay, setSelectedDay] = useState<CaregiverDayOfWeek | null>(null);
+  const [selectedDay, setSelectedDay] = useState<CaregiverDayOfWeek | null>(
+    null
+  );
   const [isSettingBeginTime, setIsSettingBeginTime] = useState(true);
   const [activeField, setActiveField] = useState<{
-    day: CaregiverDayOfWeek, field: 'begin' | 'end'
+    day: CaregiverDayOfWeek;
+    field: 'begin' | 'end';
   } | null>(null);
 
   useEffect(() => {
@@ -29,7 +36,8 @@ export default function ServiceDaysScreen() {
         day: day.day,
         begin: day.timeSlot?.begin,
         end: day.timeSlot?.end,
-      })))
+      }))
+    );
   }, []);
 
   const handleTimeSelect = (event: any, selectedTime?: Date) => {
@@ -79,9 +87,19 @@ export default function ServiceDaysScreen() {
     setActiveField({ day, field: isBegin ? 'begin' : 'end' });
   };
 
+  const formatTimeDisplay = (time: string) => {
+    const [hours, minutes] = time.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+  };
+
+  const isAnyDaySelected = caregiverSchedule?.some((day) => day.isActive);
+
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
+      <Header variant='back' />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -121,16 +139,20 @@ export default function ServiceDaysScreen() {
             {caregiverSchedule?.map((day) => (
               <View key={day.day} style={styles.dayRow}>
                 <View style={styles.dayColumn}>
-                  <Pressable style={[
-                    styles.dayPill, 
-                    day.isActive && styles.activeDayPill,
-                    !day.isActive && styles.inactiveDayPill
-                  ]}>
-                    <ThemedText style={[
-                      styles.dayText, 
-                      day.isActive && styles.activeDayText,
-                      !day.isActive && styles.inactiveDayText
-                    ]}>
+                  <Pressable
+                    style={[
+                      styles.dayPill,
+                      day.isActive && styles.activeDayPill,
+                      !day.isActive && styles.inactiveDayPill,
+                    ]}
+                  >
+                    <ThemedText
+                      style={[
+                        styles.dayText,
+                        day.isActive && styles.activeDayText,
+                        !day.isActive && styles.inactiveDayText,
+                      ]}
+                    >
                       {day.day}
                     </ThemedText>
                   </Pressable>
@@ -138,35 +160,43 @@ export default function ServiceDaysScreen() {
                 <Pressable
                   style={[
                     styles.timePill,
-                    activeField?.day === day.day && activeField?.field === 'begin' && styles.activeTimePill,
+                    activeField?.day === day.day &&
+                      activeField?.field === 'begin' &&
+                      styles.activeTimePill,
                     day.isActive && styles.filledTimePill,
-                    !day.isActive && styles.inactiveTimePill
+                    !day.isActive && styles.inactiveTimePill,
                   ]}
                   onPress={() => handleTimePress(day.day, true)}
                 >
-                  <ThemedText style={[
-                    styles.timeText,
-                    day.isActive && styles.filledTimeText,
-                    !day.isActive && styles.inactiveTimeText
-                  ]}>
-                    {day.timeSlot.begin}
+                  <ThemedText
+                    style={[
+                      styles.timeText,
+                      day.isActive && styles.filledTimeText,
+                      !day.isActive && styles.inactiveTimeText,
+                    ]}
+                  >
+                    {formatTimeDisplay(day.timeSlot.begin)}
                   </ThemedText>
                 </Pressable>
                 <Pressable
                   style={[
                     styles.timePill,
-                    activeField?.day === day.day && activeField?.field === 'end' && styles.activeTimePill,
+                    activeField?.day === day.day &&
+                      activeField?.field === 'end' &&
+                      styles.activeTimePill,
                     day.isActive && styles.filledTimePill,
-                    !day.isActive && styles.inactiveTimePill
+                    !day.isActive && styles.inactiveTimePill,
                   ]}
                   onPress={() => handleTimePress(day.day, false)}
                 >
-                  <ThemedText style={[
-                    styles.timeText,
-                    day.isActive && styles.filledTimeText,
-                    !day.isActive && styles.inactiveTimeText
-                  ]}>
-                    {day.timeSlot.end}
+                  <ThemedText
+                    style={[
+                      styles.timeText,
+                      day.isActive && styles.filledTimeText,
+                      !day.isActive && styles.inactiveTimeText,
+                    ]}
+                  >
+                    {formatTimeDisplay(day.timeSlot.end)}
                   </ThemedText>
                 </Pressable>
               </View>
@@ -179,12 +209,17 @@ export default function ServiceDaysScreen() {
           style={styles.buttonContainer}
         >
           <Button
-            label="Next"
+            label='Next'
             onPress={() => {
-              setOnboardingScreen('/(auth)/screens/onboarding/caregiver/responsibilities')
-              router.push('/(auth)/screens/onboarding/caregiver/responsibilities')
+              setOnboardingScreen(
+                '/(auth)/screens/onboarding/caregiver/responsibilities'
+              );
+              router.push(
+                '/(auth)/screens/onboarding/caregiver/responsibilities'
+              );
             }}
-            variant="compact"
+            variant='compact'
+            disabled={!isAnyDaySelected}
           />
         </LinearGradient>
       </View>
@@ -307,10 +342,10 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 20,
     flexDirection: 'row',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
   },
   nextButton: {
-    alignSelf: 'flex-end'
+    alignSelf: 'flex-end',
   },
   timePickerContainer: {
     position: 'absolute',

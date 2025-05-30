@@ -15,7 +15,9 @@ export default function TypeScreen() {
   const router = useRouter();
   const { caregiver_type, setCaregiverType, setOnboardingScreen } =
     useUserStore();
-  const { selected_type, is_dealbreaker } = caregiver_type;
+  const { selected_types = [], is_dealbreaker } = caregiver_type;
+
+  console.log(selected_types);
 
   const caregiverTypes = [
     { label: '🌙   Night Nurse' },
@@ -30,11 +32,20 @@ export default function TypeScreen() {
   ];
 
   const handleTypeSelect = (type: string) => {
-    setCaregiverType({ selected_type: type });
+    const currentTypes = selected_types || [];
+    if (currentTypes.includes(type)) {
+      // If already selected, remove it
+      setCaregiverType({
+        selected_types: currentTypes.filter((t) => t !== type),
+      });
+    } else if (currentTypes.length < 3) {
+      // If not selected and under limit, add it
+      setCaregiverType({ selected_types: [...currentTypes, type] });
+    }
   };
 
   const handleNext = () => {
-    if (selected_type) {
+    if (selected_types && selected_types.length > 0) {
       setOnboardingScreen('/(auth)/screens/onboarding/family/trait');
       router.push('/(auth)/screens/onboarding/family/trait');
     }
@@ -63,6 +74,8 @@ export default function TypeScreen() {
           What type of{'\n'}caregiver are you{'\n'}seeking?
         </ThemedText>
 
+        <ThemedText style={styles.subtitle}>Select up to 3 options</ThemedText>
+
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -75,11 +88,11 @@ export default function TypeScreen() {
                   key={index}
                   label={type.label}
                   onPress={() => handleTypeSelect(type.label)}
-                  selected={selected_type === type.label}
+                  selected={selected_types?.includes(type.label)}
                   style={[
                     styles.typePill,
-                    (type.label === '🥜 Caregiver/Housekeeper' ||
-                      type.label === '🗣 Caregiver/Household Manager') &&
+                    (type.label === '🧽 Caregiver/Housekeeper' ||
+                      type.label === '🧢 Caregiver/Household Manager') &&
                       styles.highlightedPill,
                   ]}
                 />
@@ -111,7 +124,7 @@ export default function TypeScreen() {
               label='Next'
               onPress={handleNext}
               variant='compact'
-              disabled={!selected_type}
+              disabled={!selected_types || selected_types.length === 0}
             />
           </View>
         </LinearGradient>
@@ -150,9 +163,14 @@ const styles = StyleSheet.create({
     lineHeight: 42,
     fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    marginBottom: 30,
+    marginBottom: 10,
     color: Colors.light.text,
     marginTop: 20,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: Colors.light.text,
+    marginBottom: 30,
   },
   typesContainer: {
     flexDirection: 'row',

@@ -32,6 +32,25 @@ const CaregiverSettings = () => {
   const { data: currentUser } = useCurrentUser();
   const [deviceId, setDeviceId] = useState(null);
 
+  const deleteUserMutation = useAuthMutation({
+    mutationFn: async () => {
+      const { data } = await customAxios.delete('/users/delete');
+      return data;
+    },
+    onSuccess: () => {
+      Alert.alert(
+        'Account Deleted',
+        'Your account has been successfully deleted.'
+      );
+      clearUser();
+      logout();
+      queryClient.clear();
+    },
+    onError: (error: any) => {
+      Alert.alert('Error', 'Failed to delete account. Please try again.');
+    },
+  });
+
   const [settings, setSettings] = useState<SettingsState>({
     isPaused: false,
     showLastActive: true,
@@ -94,7 +113,8 @@ const CaregiverSettings = () => {
         {
           text: 'Delete',
           onPress: () => {
-            router.push('/(app)/profileScreens/deleteAccount');
+            deleteUserMutation.mutate();
+            // router.push('/(app)/profileScreens/deleteAccount');
           },
           style: 'destructive',
         },
@@ -210,7 +230,7 @@ const CaregiverSettings = () => {
             </View> */}
 
             <View style={styles.section2}>
-              {/* <TouchableOpacity
+              <TouchableOpacity
                 style={[styles.button, styles.deleteButton]}
                 onPress={handleDelete}
               >
@@ -219,7 +239,7 @@ const CaregiverSettings = () => {
                 >
                   Delete account
                 </ThemedText>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
 
               <TouchableOpacity
                 style={[styles.button, styles.logoutButton]}

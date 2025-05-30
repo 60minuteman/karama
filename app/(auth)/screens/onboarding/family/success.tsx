@@ -11,7 +11,8 @@ import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 
 export default function Page() {
-  const { clearUser, selectedType, user, token } = useUserStore();
+  const { clearUser, selectedType, user, token, clearCaregiverData } =
+    useUserStore();
   const queryClient = useQueryClient();
 
   console.log('user', user, token);
@@ -47,6 +48,7 @@ export default function Page() {
             label='Finish'
             onPress={() => {
               clearUser();
+              clearCaregiverData();
               queryClient.clear();
               router.push('/(tabs)/discover');
               // router.reload();

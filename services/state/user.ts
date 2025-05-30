@@ -383,7 +383,7 @@ interface UserState {
     is_dealbreaker: boolean;
   };
   caregiver_type: {
-    selected_type: string | null;
+    selected_types: string[];
     is_dealbreaker: boolean;
   };
   caregiver_traits: {
@@ -651,6 +651,7 @@ interface UserState {
   setFamilyImages: (images: string[]) => void;
   logout: () => Promise<void>;
   resetOnboarding: () => void;
+  clearCaregiverData: () => void;
 }
 
 export const useUserStore = create<UserState>()(
@@ -706,7 +707,7 @@ export const useUserStore = create<UserState>()(
         is_dealbreaker: false,
       },
       caregiver_type: {
-        selected_type: null,
+        selected_types: [],
         is_dealbreaker: false,
       },
       caregiver_traits: {
@@ -901,7 +902,7 @@ export const useUserStore = create<UserState>()(
         startDate: '',
         endDate: '',
         childCare: '',
-        household: ''
+        household: '',
       },
       caregiverSecondPosition: {
         positionNumber: null,
@@ -912,7 +913,7 @@ export const useUserStore = create<UserState>()(
         startDate: '',
         endDate: '',
         childCare: '',
-        household: ''
+        household: '',
       },
       caregiverThirdPosition: {
         positionNumber: null,
@@ -923,7 +924,7 @@ export const useUserStore = create<UserState>()(
         startDate: '',
         endDate: '',
         childCare: '',
-        household: ''
+        household: '',
       },
       caregiverPromptCategory: '',
       caregiverFirstPrompt: '',
@@ -1224,7 +1225,7 @@ export const useUserStore = create<UserState>()(
             is_dealbreaker: false,
           },
           caregiver_type: {
-            selected_type: null,
+            selected_types: [],
             is_dealbreaker: false,
           },
           caregiver_traits: {
@@ -1429,6 +1430,128 @@ export const useUserStore = create<UserState>()(
           onboarding_screen: null,
           steps: '',
           selectedType: null,
+        }),
+
+      clearCaregiverData: () =>
+        set({
+          caregiverName: null,
+          caregiverDob: null,
+          caregiverGender: null,
+          caregiverPronouns: null,
+          caregiverShowPronouns: false,
+          caregiverReferral: null,
+          caregiverLocation: null,
+          caregiverPositionType: null,
+          caregiverExperienceDuration: null,
+          caregiverEducation: null,
+          caregiverShowEducation: false,
+          caregiverAbilities: [],
+          caregiverCertifications: [],
+          caregiverLanguages: [],
+          caregiverAgeExperience: [],
+          caregiverChildrenCount: 0,
+          hasNeuroDivergentExperience: null,
+          caregiverConditionExperience: [],
+          hasPetExperience: null,
+          caregiverPetExperience: [],
+          caregiverCreativeInterests: [],
+          caregiverInstrumentInterests: [],
+          caregiverSportInterest: [],
+          caregiverStemInterests: [],
+          caregiverPersonality: [],
+          showCaregiverPersonality: false,
+          caregiverRules: [],
+          caregiverDiet: [],
+          showCaregiverDiet: false,
+          caregiverReligion: [],
+          showCaregiverReligion: false,
+          hasPhilosophyExperience: null,
+          caregiverPhilosophyExperience: [],
+          caregiverLanguageMatch: null,
+          caregiverPreferredPositions: [],
+          caregiverPreferredArrangement: null,
+          isDealBreaker: null,
+          caregiverCommitmentType: null,
+          caregiverCommitmentStartDate: new Date(),
+          caregiverCommitmentEndDate: new Date(),
+          caregiverSchedule: [
+            {
+              day: 'Mon',
+              timeSlot: { begin: '00:00', end: '00:00' },
+              isActive: false,
+            },
+            {
+              day: 'Tue',
+              timeSlot: { begin: '00:00', end: '00:00' },
+              isActive: false,
+            },
+            {
+              day: 'Wed',
+              timeSlot: { begin: '00:00', end: '00:00' },
+              isActive: false,
+            },
+            {
+              day: 'Thu',
+              timeSlot: { begin: '00:00', end: '00:00' },
+              isActive: false,
+            },
+            {
+              day: 'Fri',
+              timeSlot: { begin: '00:00', end: '00:00' },
+              isActive: false,
+            },
+            {
+              day: 'Sat',
+              timeSlot: { begin: '00:00', end: '00:00' },
+              isActive: false,
+            },
+            {
+              day: 'Sun',
+              timeSlot: { begin: '00:00', end: '00:00' },
+              isActive: false,
+            },
+          ],
+          caregiverChildcareResponsibilities: [],
+          caregiverHouseholdResponsibilities: [],
+          caregiverHourlyRate: 15,
+          caregiverSalaryAmount: '50,000',
+          caregiverPaymentType: null,
+          caregiverPaymentMethod: '',
+          showCaregiverPaymentMethod: false,
+          caregiverRequiredBenefits: [],
+          showCaregiverRequiredBenefit: false,
+          caregiverFirstPosition: {
+            positionNumber: null,
+            position: '',
+            ageGroup: '',
+            familyName: '',
+            employmentType: '',
+            startDate: '',
+            endDate: '',
+          },
+          caregiverSecondPosition: {
+            positionNumber: null,
+            position: '',
+            ageGroup: '',
+            familyName: '',
+            employmentType: '',
+            startDate: '',
+            endDate: '',
+          },
+          caregiverThirdPosition: {
+            positionNumber: null,
+            position: '',
+            ageGroup: '',
+            familyName: '',
+            employmentType: '',
+            startDate: '',
+            endDate: '',
+          },
+          caregiverPromptCategory: '',
+          caregiverFirstPrompt: '',
+          caregiverFirstPromptAnswer: '',
+          caregiverMoreInfo: '',
+          caregiverImages: [],
         }),
     }),
     {

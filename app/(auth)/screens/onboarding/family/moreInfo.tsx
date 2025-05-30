@@ -9,8 +9,16 @@ import customAxios from '@/services/api/envConfig';
 import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { useRouter } from 'expo-router';
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, TextInput, View, KeyboardAvoidingView, Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  TextInput,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import Toast from 'react-native-toast-message';
 
 export default function MoreInfo() {
@@ -26,15 +34,14 @@ export default function MoreInfo() {
     family_prompt_category,
     family_prompt_answer,
     setSteps,
+    steps,
   } = useUserStore();
 
   const { family_payment, setFamilyPayment, setOnboardingScreen } =
-      useUserStore();
-    const { selected_type, hourly_rate, salary_amount, has_interacted } =
-      family_payment;
-    const { 
-        prompts
-      } = useOtherStore();
+    useUserStore();
+  const { selected_type, hourly_rate, salary_amount, has_interacted } =
+    family_payment;
+  const { prompts } = useOtherStore();
 
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -103,6 +110,11 @@ export default function MoreInfo() {
         };
 
   const handleSubmit = () => {
+    if (steps === 'more-info') {
+      handleNext();
+      return;
+    }
+
     submit.mutate({
       payment_info,
       prompts,
@@ -144,10 +156,12 @@ export default function MoreInfo() {
             </View>
           </View>
 
-          <View style={[
-            styles.bottomNav,
-            isKeyboardVisible ? { marginBottom: -10 } : { marginBottom: 40 }
-          ]}>
+          <View
+            style={[
+              styles.bottomNav,
+              isKeyboardVisible ? { marginBottom: -10 } : { marginBottom: 40 },
+            ]}
+          >
             <Button label='Skip' onPress={() => router.back()} variant='skip' />
             <Button
               label='Next'

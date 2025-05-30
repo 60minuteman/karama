@@ -103,7 +103,6 @@ const householdResponsibilities: Responsibility[] = [
 
 export default function ResponsibilitiesScreen() {
   const router = useRouter();
-  // const [selectedResponsibilities, setSelectedResponsibilities] = useState<string[]>([]);
   const {
     caregiverChildcareResponsibilities,
     setCaregiverChildcareResponsibilities,
@@ -111,35 +110,80 @@ export default function ResponsibilitiesScreen() {
     setCaregiverHouseholdResponsibilities,
     setOnboardingScreen,
   } = useUserStore();
-  const toggleChildcareResponsibility = (id: string) => {
-    if (id === 'other') {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherChildResponsibilities');
-      router.push('/(auth)/screens/onboarding/family/otherChildResponsibilities');
+
+  console.log(
+    'caregiverChildcareResponsibilities',
+    caregiverChildcareResponsibilities
+  );
+  console.log(
+    'caregiverHouseholdResponsibilities',
+    caregiverHouseholdResponsibilities
+  );
+
+  const getTotalResponsibilities = () => {
+    return (
+      (caregiverChildcareResponsibilities?.length ?? 0) +
+      (caregiverHouseholdResponsibilities?.length ?? 0)
+    );
+  };
+
+  const toggleChildcareResponsibility = (label: string) => {
+    if (label === '➕ Other') {
+      setOnboardingScreen(
+        '/(auth)/screens/onboarding/family/otherChildResponsibilities'
+      );
+      router.push(
+        '/(auth)/screens/onboarding/family/otherChildResponsibilities'
+      );
       return;
     }
     const prev = caregiverChildcareResponsibilities ?? [];
-    const selectedResponsibilities = prev.includes(id)
-      ? prev.filter((item) => item !== id)
-      : [...prev, id];
+    const newTotal = prev.includes(label)
+      ? getTotalResponsibilities() - 1
+      : getTotalResponsibilities() + 1;
+
+    if (newTotal > 10) {
+      return; // Don't allow more than 10 total responsibilities
+    }
+
+    const selectedResponsibilities = prev.includes(label)
+      ? prev.filter((item) => item !== label)
+      : [...prev, label];
     setCaregiverChildcareResponsibilities(selectedResponsibilities);
   };
-  const toggleHouseholdResponsibility = (id: string) => {
-    if (id === 'other2') {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherHouseholdResponsibilities');
-      router.push('/(auth)/screens/onboarding/family/otherHouseholdResponsibilities');
+
+  const toggleHouseholdResponsibility = (label: string) => {
+    if (label === '➕ Other') {
+      setOnboardingScreen(
+        '/(auth)/screens/onboarding/family/otherHouseholdResponsibilities'
+      );
+      router.push(
+        '/(auth)/screens/onboarding/family/otherHouseholdResponsibilities'
+      );
       return;
     }
     const prev = caregiverHouseholdResponsibilities ?? [];
-    const selectedResponsibilities = prev.includes(id)
-      ? prev.filter((item) => item !== id)
-      : [...prev, id];
+    const newTotal = prev.includes(label)
+      ? getTotalResponsibilities() - 1
+      : getTotalResponsibilities() + 1;
+
+    if (newTotal > 10) {
+      return; // Don't allow more than 10 total responsibilities
+    }
+
+    const selectedResponsibilities = prev.includes(label)
+      ? prev.filter((item) => item !== label)
+      : [...prev, label];
     setCaregiverHouseholdResponsibilities(selectedResponsibilities);
   };
 
+  const totalResponsibilities = getTotalResponsibilities();
+  const isWithinRange =
+    totalResponsibilities >= 3 && totalResponsibilities <= 10;
+
   return (
     <ThemedView style={styles.container}>
-      <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-
+      <Header variant='back' />
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
@@ -154,8 +198,12 @@ export default function ResponsibilitiesScreen() {
           showsVerticalScrollIndicator={false}
         >
           <ThemedText style={styles.subtitle}>
-            Please note that taking on more responsibilities may increase your
-            rate.
+            Please select between 3-10 total responsibilities. Taking on more
+            responsibilities may increase your rate.
+          </ThemedText>
+
+          <ThemedText style={styles.counter}>
+            Selected: {totalResponsibilities}/10
           </ThemedText>
 
           <View style={styles.section}>
@@ -167,11 +215,10 @@ export default function ResponsibilitiesScreen() {
                 <Pill
                   key={item.id}
                   label={item.label}
-                  // icon={item.icon}
                   selected={caregiverChildcareResponsibilities?.includes(
-                    item.id
+                    item.label
                   )}
-                  onPress={() => toggleChildcareResponsibility(item.id)}
+                  onPress={() => toggleChildcareResponsibility(item.label)}
                 />
               ))}
             </View>
@@ -186,11 +233,10 @@ export default function ResponsibilitiesScreen() {
                 <Pill
                   key={item.id}
                   label={item.label}
-                  // icon={item.icon}
                   selected={caregiverHouseholdResponsibilities?.includes(
-                    item.id
+                    item.label
                   )}
-                  onPress={() => toggleHouseholdResponsibility(item.id)}
+                  onPress={() => toggleHouseholdResponsibility(item.label)}
                 />
               ))}
             </View>
@@ -211,10 +257,7 @@ export default function ResponsibilitiesScreen() {
                 router.push('/(auth)/screens/onboarding/caregiver/payment');
               }}
               variant='compact'
-              disabled={
-                caregiverChildcareResponsibilities?.length === 0 ||
-                caregiverHouseholdResponsibilities?.length === 0
-              }
+              disabled={!isWithinRange}
             />
           </View>
         </LinearGradient>
@@ -283,5 +326,11 @@ const styles = StyleSheet.create({
     right: 20,
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+  counter: {
+    fontSize: 14,
+    color: '#666666',
+    marginBottom: 16,
+    textAlign: 'center',
   },
 });
