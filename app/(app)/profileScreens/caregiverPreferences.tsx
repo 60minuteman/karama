@@ -102,7 +102,8 @@ const CaregiverPreferences = () => {
                                             width: 20,
                                         }}
                                         onValuesChange={setPayRange}
-                                        enabledTwo={true}
+                                        enabledTwo={false}
+                                        enabledOne={false}
                                     />
                                 </View>
                             </View>

@@ -238,7 +238,7 @@ const FamilyEditProfile = () => {
                         <ThemedText style={styles.sectionTitle}>About Us</ThemedText>
                         <ThemedText style={styles.nameText}>{caregiverProfile?.name}</ThemedText>
                         <View style={styles.aboutMeContainer}>
-                            {[
+                           {[
                                 { 
                                     label: 'Description', 
                                     text: caregiverProfile?.description?.description,
@@ -249,19 +249,14 @@ const FamilyEditProfile = () => {
                                     text: caregiverProfile?.location,
                                     hasEdit: true 
                                 },
-                                // { 
-                                //     label: 'Ages', 
-                                //     text: caregiverProfile?.children?.age_group?.join(', '),
-                                //     hasEdit: true 
-                                // },
                                 { 
                                     label: 'We speak', 
-                                    text: caregiverProfile?.languages?.join(', '),
+                                    text: caregiverProfile?.languages,
                                     hasEdit: true 
                                 },
                                 { 
                                     label: 'We have a', 
-                                    text: caregiverProfile?.pets?.join(', '),
+                                    text: caregiverProfile?.pets,
                                     hasEdit: true 
                                 },
                                 { 
@@ -271,38 +266,51 @@ const FamilyEditProfile = () => {
                                 },
                                 { 
                                     label: 'Diet', 
-                                    text: caregiverProfile?.household_info?.diets?.join(', '),
+                                    text: caregiverProfile?.household_info?.diets,
                                     hasEdit: true 
                                 },
                                 { 
                                     label: 'Disability Experience',
-                                    text: caregiverProfile?.behavioural_differences?.join(', '), 
+                                    text: caregiverProfile?.behavioural_differences, 
                                     hasEdit: true 
                                 },
                                 { 
-                                    label: 'Childrend\'s intrests',
+                                    label: "Children's interests",
                                     text: [
-                                ...(caregiverProfile?.children_interests?.creative_interests || []),
-                                ...(caregiverProfile?.children_interests?.instrument_interests || []),
-                                ...(caregiverProfile?.children_interests?.sport_interests || []),
-                                ...(caregiverProfile?.children_interests?.stem_interests || [])
-                            ].join(', '),
+                                    ...(caregiverProfile?.children_interests?.creative_interests || []),
+                                    ...(caregiverProfile?.children_interests?.instrument_interests || []),
+                                    ...(caregiverProfile?.children_interests?.sport_interests || []),
+                                    ...(caregiverProfile?.children_interests?.stem_interests || [])
+                                    ],
                                     hasEdit: true 
                                 },
-                            ].map((item, index) => (
+                                ].map((item, index) => (
                                 <View key={index} style={styles.aboutMeItem}>
                                     <View style={styles.aboutMeContent}>
-                                        <ThemedText style={styles.promptLabel}>{item.label}</ThemedText>
-                                        <InfoPill label={item.text || ''} />
+                                    <ThemedText style={styles.promptLabel}>{item.label}</ThemedText>
+
+                                    <View style={{display: 'flex', flexWrap: 'wrap', gap: 8, flexDirection: 'row'}}>
+                                        {Array.isArray(item.text) ? (
+                                        item.text.length > 0 ? (
+                                        item.text.map((subItem, subIndex) => (
+                                            <InfoPill key={subIndex} label={subItem} />
+                                        ))
+                                        ) : (
+                                        <ThemedText style={styles.emptyText}>No info</ThemedText>
+                                        )
+                                    ) : (
+                                        <InfoPill label={item.text || 'No info'} />
+                                    )}
                                     </View>
+                                    </View>
+
                                     {item.hasEdit && (
-                                        <TouchableOpacity>
-                                            <ThemedText style={styles.editText}>Edit</ThemedText>
-                                        </TouchableOpacity>
+                                    <TouchableOpacity>
+                                        <ThemedText style={styles.editText}>Edit</ThemedText>
+                                    </TouchableOpacity>
                                     )}
                                 </View>
-                            ))}
-                          
+                                ))}
                         </View>
                     </View>
                 </ScrollView>
