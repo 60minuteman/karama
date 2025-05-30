@@ -323,7 +323,9 @@ export default function PromptAnswer() {
         answer: answer,
       });
       setCaregiverFirstPromptAnswer('');
-      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/prompt');
+      setOnboardingScreen(
+        `/(auth)/screens/onboarding/caregiver/${caregiverPromptCategory}`
+      );
       router.push('/(auth)/screens/onboarding/caregiver/prompt');
     }
   };
@@ -353,26 +355,27 @@ export default function PromptAnswer() {
             />
           </View>
 
-          {prompts?.length < 2 && (
+          {prompts?.length < 1 && (
             <View style={styles.addButtonContainer}>
-            <Button
-              label='Add Another Prompt'
-              onPress={() => handleAddPrompt(caregiverFirstPromptAnswer)}
-              variant='compact'
-              // style={styles.addButton}
-            />
-          </View>
+              <Button
+                label='Add Another Prompt'
+                onPress={() => handleAddPrompt(caregiverFirstPromptAnswer)}
+                variant='compact'
+                // style={styles.addButton}
+              />
+            </View>
           )}
         </View>
-
-        <View style={styles.bottomNav}>
-          <Button
-            label='Next'
-            onPress={handleSubmit}
-            variant='compact'
-            loading={createProfile.isPending}
-          />
-        </View>
+        {prompts?.length > 0 && (
+          <View style={styles.bottomNav}>
+            <Button
+              label='Next'
+              onPress={handleSubmit}
+              variant='compact'
+              loading={createProfile.isPending}
+            />
+          </View>
+        )}
       </ThemedView>
     </KeyboardAvoidingView>
   );

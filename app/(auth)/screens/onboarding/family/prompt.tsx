@@ -113,7 +113,7 @@ const handleAdd = (item: any) => {
           </View>
         </ScrollView>
 
-        <LinearGradient
+        {/* <LinearGradient
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
@@ -126,7 +126,7 @@ const handleAdd = (item: any) => {
             />
           </View>
           )}
-        </LinearGradient>
+        </LinearGradient> */}
       </View>
     </ThemedView>
   );

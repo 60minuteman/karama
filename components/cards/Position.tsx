@@ -63,7 +63,7 @@ export const Position = ({
     <View style={styles.container}>
       <View style={[dynamicStyles.componentContainer, styles.imageContainer]}>
         <Image
-          data={data?.pictures?.[3]?.path}
+          data={data?.pictures?.[0]?.path}
           resizeMode='cover'
           resizeMethod='scale'
         />

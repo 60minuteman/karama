@@ -109,7 +109,7 @@ export default function Prompt3() {
           </View>
         </ScrollView>
 
-        <LinearGradient
+        {/* <LinearGradient
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
@@ -122,7 +122,7 @@ export default function Prompt3() {
                      />
                    </View>
                    )}
-        </LinearGradient>
+        </LinearGradient> */}
       </View>
     </ThemedView>
   );

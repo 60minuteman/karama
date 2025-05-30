@@ -6,7 +6,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -25,6 +25,10 @@ export default function MoreInfo() {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/upload');
     router.push('/(auth)/screens/onboarding/caregiver/upload');
   };
+
+  useEffect(() => {
+    setCaregiverMoreInfo('');
+  }, []);
 
   return (
     <KeyboardAvoidingView

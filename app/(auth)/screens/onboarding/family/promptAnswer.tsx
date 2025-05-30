@@ -69,7 +69,7 @@ export default function PromptAnswer() {
         answer: answer,
       });
       setFamilyPromptAnswer('');
-      setOnboardingScreen('/(auth)/screens/onboarding/family/prompt');
+      setOnboardingScreen(`/(auth)/screens/onboarding/family/${family_prompt_category}`);
       router.push('/(auth)/screens/onboarding/family/prompt');
     }
   }
@@ -100,6 +100,7 @@ export default function PromptAnswer() {
                 textAlignVertical='top'
               />
             </View>
+          {prompts?.length < 2 && (
 
             <View style={styles.addButtonContainer}>
               <Button
@@ -109,9 +110,9 @@ export default function PromptAnswer() {
                 // style={styles.addButton}
               />
             </View>
+          )}
           </View>
-          {
-            prompts.length > 1 && (
+          {prompts?.length > 1 && (
               <View
             style={[
               styles.bottomNav,

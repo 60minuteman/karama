@@ -83,7 +83,7 @@ const FamilyEditProfile = () => {
     });
 
 
-    console.log(profileData?.data?.family_profile, 'data');
+    // console.log(profileData?.data?.family_profile, 'data');
     
     const caregiverProfile = profileData?.data?.family_profile;
     
@@ -161,6 +161,8 @@ const FamilyEditProfile = () => {
         }
     };
 
+    // console.log(caregiverProfile?.extra_info?.prompts, 'promts');
+    
     return (
         <SafeAreaView style={styles.safeArea}>
             <ThemedView style={styles.container}>

@@ -115,7 +115,7 @@ export const ProfileDetails = ({
       </Section>
       ) :(
       <Section title='My Hourly Rate'>
-        <Pill2 label={`${data?.payment_info?.hourly_max}- ${data?.payment_info?.hourly_min}`} icon='⌛' style={styles.pill} />
+        <Pill2 label={`${data?.payment_info?.hourly_min} - ${data?.payment_info?.hourly_max}`} icon='⌛' style={styles.pill} />
       </Section>
       )}
 

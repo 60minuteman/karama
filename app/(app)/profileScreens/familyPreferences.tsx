@@ -9,6 +9,7 @@ import InfoPill from '../../components/ui/InfoPill'
 import { benefits, householdResponsibilities, languages, personality, requirements, rules, schedule, workOptions } from '@/constants/profile'
 import { useRouter } from 'expo-router'
 import { useCurrentUser, useProfile } from '@/services/api/api'
+import MultiSlider from '@ptomasroos/react-native-multi-slider'
 
 const FamilyPreferences = () => {
     const [payType, setPayType] = useState('Hourly');
@@ -46,29 +47,79 @@ const FamilyPreferences = () => {
                                 <ThemedText style={styles.heading}>Pay schedule</ThemedText>
                                 <View style={styles.payTypeContainer}>
                                     <TouchableOpacity
-                                        style={[styles.payTypeButton, familyProfileData?.extra_info?.payment_info?.type === 'Hourly' && styles.selectedPayType]}
+                                        style={[styles.payTypeButton, familyProfileData?.extra_info?.payment_info?.type?.toLowerCase().includes('hourly') && styles.selectedPayType]}
                                         onPress={() => setPayType('Hourly')}
                                     >
                                         <Image
                                             source={require('@/assets/icons/hourly.png')}
                                             style={styles.payTypeIcon}
                                         />
-                                        <ThemedText style={[styles.payTypeText, familyProfileData?.extra_info?.payment_info?.type === 'Hourly' && styles.selectedPayTypeText]}>Hourly</ThemedText>
+                                        <ThemedText style={[styles.payTypeText, familyProfileData?.extra_info?.payment_info?.type?.toLowerCase().includes('hourly') && styles.selectedPayTypeText]}>Hourly</ThemedText>
                                     </TouchableOpacity>
                                     <TouchableOpacity
-                                        style={[styles.payTypeButton, familyProfileData?.extra_info?.payment_info?.type === 'Salary' && styles.selectedPayType]}
+                                        style={[styles.payTypeButton, familyProfileData?.extra_info?.payment_info?.type?.toLowerCase().includes('salary') && styles.selectedPayType]}
                                         onPress={() => setPayType('Salary')}
                                     >
                                         <Image
                                             source={require('@/assets/icons/salary.png')}
                                             style={styles.payTypeIcon}
                                         />
-                                        <ThemedText style={[styles.payTypeText, familyProfileData?.extra_info?.payment_info?.type === 'Salary' && styles.selectedPayTypeText]}>Salary Base</ThemedText>
+                                        <ThemedText style={[styles.payTypeText, familyProfileData?.extra_info?.payment_info?.type?.toLowerCase().includes('salary') && styles.selectedPayTypeText]}>Salary Base</ThemedText>
                                     </TouchableOpacity>
                                 </View>
-                                <View>
-                                    <TextInput style={styles.inputStyle} placeholderTextColor={'#261D2A4D'} placeholder='Eg. $50,000/yr' />
-                                </View>
+                                 {familyProfileData?.extra_info?.payment_info?.type?.toLowerCase().includes('hourly')  ? (
+                                                                <View style={styles.subSection}>
+                                                                <ThemedText style={styles.heading}>Pay rate</ThemedText>
+                                                                <View style={styles.pillContainer}>
+                                                                    <InfoPill icon={'⌛'} label={`$${familyProfileData?.extra_info?.payment_info?.hourly_min} - $${familyProfileData?.extra_info?.payment_info?.hourly_max}`} />
+                                                                </View>
+                                                                <View style={styles.sliderContainer}>
+                                                                    <View style={styles.sliderLabels}>
+                                                                        <ThemedText>$15</ThemedText>
+                                                                        <ThemedText>$20</ThemedText>
+                                                                        <ThemedText>$25</ThemedText>
+                                                                        <ThemedText>$30</ThemedText>
+                                                                        <ThemedText>$35</ThemedText>
+                                                                        <ThemedText>$40</ThemedText>
+                                                                        <ThemedText>$45+</ThemedText>
+                                                                    </View>
+                                                                    <MultiSlider
+                                                                        values={[familyProfileData?.extra_info?.payment_info?.hourly_min, familyProfileData?.extra_info?.payment_info?.hourly_max]}
+                                                                        min={15}
+                                                                        max={45}
+                                                                        step={1}
+                                                                        sliderLength={318}
+                                                                        
+                                                                        selectedStyle={{
+                                                                            backgroundColor: '#EB4430',
+                                                                        }}
+                                                                        unselectedStyle={{
+                                                                            backgroundColor: '#E8E8E8',
+                                                                        }}
+                                                                        containerStyle={{
+                                                                            height: 40,
+                                                                        }}
+                                                                        trackStyle={{
+                                                                            height: 4,
+                                                                        }}
+                                                                        markerStyle={{
+                                                                            backgroundColor: '#EB4430',
+                                                                            height: 20,
+                                                                            width: 20,
+                                                                        }}
+                                                                        // onValuesChange={setPayRange}
+                                                                        enabledTwo={true}
+                                                                    />
+                                                                </View>
+                                                            </View>
+                                                            ): (
+                                                                <View style={styles.subSection}>
+                                                                <View>
+                                                                    <TextInput style={styles.inputStyle} placeholderTextColor={'#261D2A4D'} placeholder={familyProfileData?.extra_info?.payment_info?.salary} />
+                                                                </View>
+                                                            </View>
+                                                            )}
+                               
                             </View>
 
                         </View>
@@ -109,15 +160,17 @@ const FamilyPreferences = () => {
                                     <InfoPill label={familyProfileData?.caregiver_preference?.experience} />
                                 </View>
                             </View>
-
-                            <View style={styles.subSection}>
+                                    {familyProfileData?.caregiver_preference?.education_level && (
+                                        <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Educational level</ThemedText>
                                 </View>
                                 <View style={styles.pillContainer}>
-                                    <InfoPill icon={'🎓'} label={familyProfileData?.caregiver_preference?.education_level} />
+                                    <InfoPill  label={familyProfileData?.caregiver_preference?.education_level} />
                                 </View>
                             </View>
+                                    )}
+                            
                             <View style={styles.subSection}>
                                 <View style={styles.headerStyle}>
                                     <ThemedText style={styles.heading}>Language Requirement</ThemedText>
@@ -346,6 +399,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 12,
         marginBottom: 16,
+    },
+    sliderContainer: {
+        borderRadius: 8,
+    },
+    sliderLabels: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 8,
+        width: '100%'
     },
     payTypeButton: {
         flexDirection: 'row',

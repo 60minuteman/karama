@@ -59,7 +59,7 @@ export const Responsibilities = ({
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          data={data?.pictures?.[1]?.path}
+          data={data?.pictures?.[2]?.path}
           style={styles.imagePlaceholder}
           resizeMode='cover'
           resizeMethod='scale'
