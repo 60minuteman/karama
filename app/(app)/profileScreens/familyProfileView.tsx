@@ -169,6 +169,19 @@ const FamilyProfileView = () => {
                   </View>
                 </View>
               </View>
+                {familyProfile?.family_profile?.extra_info?.prompts?.[0]?.title && (
+                  <View style={styles.section}>
+                <View style={styles.subSection}>
+                  <ThemedText style={styles.pillHeading}>
+                    {familyProfile?.family_profile?.extra_info?.prompts?.[0]?.title}
+                  </ThemedText>
+                  <View style={styles.pillContainer}>
+                    <Text style={{fontSize: 22}}>{familyProfile?.family_profile?.extra_info?.prompts?.[0]?.answer}</Text>
+                  </View>
+                </View>
+              </View>
+              )}
+
               <View style={styles.section}>
                 <View
                   style={{
@@ -368,6 +381,7 @@ const FamilyProfileView = () => {
                   </View>
                 </View>
               </View>
+              
               <View style={[styles.section, { height: 325 }]}>
                 <View
                   style={{
@@ -390,6 +404,7 @@ const FamilyProfileView = () => {
                   />
                 </View>
                 </View>
+                
                 {familyProfile?.family_profile?.pictures?.[4]?.path && (
               <View style={[styles.section, { height: 325 }]}>
                 <View
@@ -414,8 +429,22 @@ const FamilyProfileView = () => {
                 </View>
 
               </View>
-)}
-                {familyProfile?.family_profile?.pictures?.[4]?.path && (
+              
+            )}  
+          {familyProfile?.family_profile?.extra_info?.prompts?.[1]?.title && (
+              <View style={styles.section}>
+                <View style={styles.subSection}>
+                  <ThemedText style={styles.pillHeading}>
+                    {familyProfile?.family_profile?.extra_info?.prompts?.[1]?.title}
+                  </ThemedText>
+                  <View style={styles.pillContainer}>
+                    <Text style={{fontSize: 22}}>{familyProfile?.family_profile?.extra_info?.prompts?.[1]?.answer}</Text>
+                  </View>
+                </View>
+              </View>
+            )}
+           
+                {familyProfile?.family_profile?.pictures?.[5]?.path && (
 
               <View style={[styles.section, { height: 325 }]}>
                 <View
@@ -637,18 +666,17 @@ const FamilyProfileView = () => {
                 </View>
               </View>
               <View style={styles.section}>
-                {(familyProfile?.family_profile?.extra_info?.prompts || []).map(
-                  (prompt) => (
-                    <View key={prompt.id} style={styles.subSection}>
-                      <ThemedText style={styles.pillHeading}>
-                        {prompt.title}
+                {familyProfile?.family_profile?.extra_info?.more_information && (
+                    <View  style={styles.subSection}>
+                      <ThemedText style={{color: 'red'}}>
+                       You Should Know
                       </ThemedText>
                       <ThemedText style={styles.sectionText}>
-                        {prompt.answer}
+                        {familyProfile?.family_profile?.extra_info?.more_information}
                       </ThemedText>
                     </View>
                   )
-                )}
+                }
               </View>
             </View>
           )}

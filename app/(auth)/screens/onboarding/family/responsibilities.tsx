@@ -84,6 +84,8 @@ export default function ResponsibilitiesScreen() {
     family_schedule,
     setSteps,
   } = useUserStore();
+  const {  familyEducation } = useOtherStore();
+
 
   const toggleResponsibility = (id: string) => {
     if (id === 'other') {
@@ -175,7 +177,7 @@ export default function ResponsibilitiesScreen() {
       experience: caregiver_experience?.selected_experience,
       must_speak_same_language:
         caregiver_language_required === 'Yes, required' ? true : false,
-      // education_level: 'Undergraduate Degree',
+      education_level: familyEducation,
       show_education_level_on_profile: true,
       requirements: {
         requirements: caregiver_requirements?.selected_requirements || [],
