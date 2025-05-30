@@ -34,6 +34,7 @@ export default function MoreInfo() {
     family_prompt_category,
     family_prompt_answer,
     setSteps,
+    steps,
   } = useUserStore();
 
   const { family_payment, setFamilyPayment, setOnboardingScreen } =
@@ -109,6 +110,11 @@ export default function MoreInfo() {
         };
 
   const handleSubmit = () => {
+    if (steps === 'more-info') {
+      handleNext();
+      return;
+    }
+
     submit.mutate({
       payment_info,
       prompts,

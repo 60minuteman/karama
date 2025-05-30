@@ -84,6 +84,7 @@ export default function ResponsibilitiesScreen() {
     family_commitment,
     family_schedule,
     setSteps,
+    steps,
   } = useUserStore();
 
   console.log('onboarding_screen', onboarding_screen);
@@ -169,6 +170,11 @@ export default function ResponsibilitiesScreen() {
   } = useOtherStore();
 
   const handleSubmit = () => {
+    if (steps === 'responsibilities') {
+      handleNext();
+      return;
+    }
+
     if (onboarding_screen === '/(auth)/screens/onboarding/family/payment') {
       return router.push('/(auth)/screens/onboarding/family/payment');
     }

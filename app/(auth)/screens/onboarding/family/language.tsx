@@ -11,26 +11,26 @@ import { useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 const languages = [
-  'English',
-  'Spanish',
-  'French',
-  'German',
-  'Hausa',
-  'Italian',
-  'Russian',
-  'Arabic',
-  'Chinese',
-  'Korean',
-  'Japanese',
-  'Yoruba',
-  'Afrikaans',
-  'Hindi',
-  'Dutch',
-  'Estonian',
-  'Croatian',
-  'Swedish',
-  'Portuguese',
-  'Other',
+  '💬 English',
+  '💬 Spanish',
+  '💬 French',
+  '💬 German',
+  '💬 Hausa',
+  '💬 Italian',
+  '💬 Russian',
+  '💬 Arabic',
+  '💬 Chinese',
+  '💬 Korean',
+  '💬 Japanese',
+  '💬 Yoruba',
+  '💬 Afrikaans',
+  '💬 Hindi',
+  '💬 Dutch',
+  '💬 Estonian',
+  '💬 Croatian',
+  '💬 Swedish',
+  '💬 Portuguese',
+  '💬 Other',
 ] as const;
 
 export default function LanguageScreen() {
@@ -85,7 +85,7 @@ export default function LanguageScreen() {
                 <Pill
                   key={language}
                   label={language}
-                  icon='💬'
+                  // icon='💬'
                   selected={family_languages.includes(language)}
                   onPress={() => toggleLanguage(language)}
                 />

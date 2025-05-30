@@ -34,11 +34,14 @@ export default function IntermissionScreen() {
     family_philosophies,
     family_allergies,
     setSteps,
+    steps,
   } = useUserStore();
+
+  console.log('steps', steps);
 
   const {
     otherConditons,
-    otherPet, 
+    otherPet,
     otherCreativeActivity,
     otherSport,
     otherStem,
@@ -93,6 +96,11 @@ export default function IntermissionScreen() {
   });
 
   const handleSubmit = async () => {
+    if (steps === 'intermission') {
+      handleNext();
+      return;
+    }
+
     submit.mutate({
       name: familyName,
       description: {
@@ -102,7 +110,7 @@ export default function IntermissionScreen() {
       children: family_age_groups,
       behavioural_difference: {
         differences: family_behaviour?.conditions || [],
-        other: otherConditons || ''
+        other: otherConditons || '',
       },
       zipcode: family_zipcode,
       languages: {
