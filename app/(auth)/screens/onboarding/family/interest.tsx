@@ -105,14 +105,28 @@ export default function InterestScreen() {
   }, []);
   const toggleInterest = (interest: Interest) => {
     const { label, category } = interest;
-  
+
     // Check if "Other" is selected
-    if (label === '👨‍🎨 Other' || label === '🎼 Other' || label === '🏅 Other' || label === '🔬 Other') {
+    if (
+      label === '👨‍🎨 Other' ||
+      label === '🎼 Other' ||
+      label === '🏅 Other' ||
+      label === '🔬 Other'
+    ) {
       // Redirect to the custom interest input screen
-      router.push(`/(auth)/screens/onboarding/family/custom-interest?category=${category}`);
+      router.push(
+        `/(auth)/screens/onboarding/family/custom-interest?category=${category}`
+      );
       return;
     }
-  
+
+    // Calculate total selected interests
+    const totalSelected =
+      family_interests.creative_interests.length +
+      family_interests.instrument_interests.length +
+      family_interests.sport_interests.length +
+      family_interests.stem_interests.length;
+
     // Get current interests array for this category
     let currentInterests: string[] = [];
     switch (category) {
@@ -129,7 +143,12 @@ export default function InterestScreen() {
         currentInterests = family_interests.stem_interests;
         break;
     }
-  
+
+    // If trying to add a new interest and already at limit, return
+    if (!currentInterests.includes(label) && totalSelected >= 10) {
+      return;
+    }
+
     // Toggle the interest in the appropriate category
     const updatedInterests = {
       ...family_interests,
@@ -158,10 +177,9 @@ export default function InterestScreen() {
             : [...currentInterests, label]
           : family_interests.stem_interests,
     };
-  
+
     setFamilyInterests(updatedInterests);
   };
-  
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/family/household');

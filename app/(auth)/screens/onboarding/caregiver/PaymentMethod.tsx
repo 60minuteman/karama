@@ -36,6 +36,8 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
   // const [selectedMethod, setSelectedMethod] = useState<string>('');
   // const [showOnProfile, setShowOnProfile] = useState(false);
 
+  console.log('caregiverPaymentMethod', caregiverPaymentMethod);
+
   const handleNext = () => {
     if (onNext) {
       onNext(caregiverPaymentMethod);

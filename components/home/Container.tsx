@@ -198,7 +198,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
             personality={profileData.personality}
             disabilities={profileData.disabilities}
             data={data}
-            role
+            role={role}
           />
         </View>
 

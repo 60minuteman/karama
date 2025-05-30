@@ -36,17 +36,17 @@ export default function TraitScreen() {
 
   const handleTraitSelect = (trait: string) => {
     const isSelected = selected_traits.includes(trait);
-  
+
     let newTraits;
-  
+
     if (isSelected) {
       newTraits = selected_traits.filter((t) => t !== trait);
     } else {
       // Only add if the current selection is less than 3
-      if (selected_traits.length >= 3) return; 
+      if (selected_traits.length >= 3) return;
       newTraits = [...selected_traits, trait];
     }
-  
+
     setCaregiverTraits({ selected_traits: newTraits });
   };
 
@@ -91,6 +91,10 @@ export default function TraitScreen() {
                 />
               ))}
             </View>
+
+            <ThemedText style={styles.selectionCount}>
+              {selected_traits.length}/3 traits selected
+            </ThemedText>
 
             <View style={styles.dealbreakerContainer}>
               <ThemedText style={styles.dealbreakerText}>
@@ -180,6 +184,12 @@ const styles = StyleSheet.create({
   dealbreakerText: {
     fontSize: 16,
     color: Colors.light.text,
+  },
+  selectionCount: {
+    fontSize: 14,
+    color: Colors.light.text,
+    marginTop: 10,
+    textAlign: 'center',
   },
   buttonGradient: {
     position: 'absolute',

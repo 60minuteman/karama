@@ -110,6 +110,15 @@ export default function InterestScreen() {
   console.log('caregiverSportInterest', caregiverSportInterest);
   console.log('caregiverStemInterests', caregiverStemInterests);
 
+  const getTotalSelectedInterests = () => {
+    return (
+      (caregiverCreativeInterests?.length ?? 0) +
+      (caregiverInstrumentInterests?.length ?? 0) +
+      (caregiverSportInterest?.length ?? 0) +
+      (caregiverStemInterests?.length ?? 0)
+    );
+  };
+
   const toggleCreativeInterest = (interest: string) => {
     if (interest === '👨‍🎨 Other') {
       // Redirect to the custom interest input screen
@@ -119,11 +128,24 @@ export default function InterestScreen() {
       return;
     }
     const prev = caregiverCreativeInterests ?? [];
-    const selectedInterests = prev.includes(interest)
+    const isSelected = prev.includes(interest);
+
+    // If trying to deselect and total would be less than 1, prevent it
+    if (isSelected && getTotalSelectedInterests() <= 1) {
+      return;
+    }
+
+    // If trying to select and total would be more than 10, prevent it
+    if (!isSelected && getTotalSelectedInterests() >= 10) {
+      return;
+    }
+
+    const selectedInterests = isSelected
       ? prev.filter((item) => item !== interest)
       : [...prev, interest];
     setCaregiverCreativeInterests(selectedInterests);
   };
+
   const toggleInstrumentInterest = (interest: string) => {
     if (interest === '🎼 Other') {
       // Redirect to the custom interest input screen
@@ -133,11 +155,24 @@ export default function InterestScreen() {
       return;
     }
     const prev = caregiverInstrumentInterests ?? [];
-    const selectedInterests = prev.includes(interest)
+    const isSelected = prev.includes(interest);
+
+    // If trying to deselect and total would be less than 1, prevent it
+    if (isSelected && getTotalSelectedInterests() <= 1) {
+      return;
+    }
+
+    // If trying to select and total would be more than 10, prevent it
+    if (!isSelected && getTotalSelectedInterests() >= 10) {
+      return;
+    }
+
+    const selectedInterests = isSelected
       ? prev.filter((item) => item !== interest)
       : [...prev, interest];
     setCaregiverInstrumentsInterests(selectedInterests);
   };
+
   const toggleSportInterest = (interest: string) => {
     if (interest === '🏅 Other') {
       // Redirect to the custom interest input screen
@@ -147,11 +182,24 @@ export default function InterestScreen() {
       return;
     }
     const prev = caregiverSportInterest ?? [];
-    const selectedInterests = prev.includes(interest)
+    const isSelected = prev.includes(interest);
+
+    // If trying to deselect and total would be less than 1, prevent it
+    if (isSelected && getTotalSelectedInterests() <= 1) {
+      return;
+    }
+
+    // If trying to select and total would be more than 10, prevent it
+    if (!isSelected && getTotalSelectedInterests() >= 10) {
+      return;
+    }
+
+    const selectedInterests = isSelected
       ? prev.filter((item) => item !== interest)
       : [...prev, interest];
     setCaregiverSportsInterests(selectedInterests);
   };
+
   const toggleStemInterest = (interest: string) => {
     if (interest === '🔬 Other') {
       // Redirect to the custom interest input screen
@@ -161,7 +209,19 @@ export default function InterestScreen() {
       return;
     }
     const prev = caregiverStemInterests ?? [];
-    const selectedInterests = prev.includes(interest)
+    const isSelected = prev.includes(interest);
+
+    // If trying to deselect and total would be less than 1, prevent it
+    if (isSelected && getTotalSelectedInterests() <= 1) {
+      return;
+    }
+
+    // If trying to select and total would be more than 10, prevent it
+    if (!isSelected && getTotalSelectedInterests() >= 10) {
+      return;
+    }
+
+    const selectedInterests = isSelected
       ? prev.filter((item) => item !== interest)
       : [...prev, interest];
     setCaregiverStemInterests(selectedInterests);

@@ -103,11 +103,30 @@ export default function AboutScreen() {
   console.log('caregiverDiet', caregiverDiet);
   console.log('caregiverReligion', caregiverReligion);
 
+  const getTotalSelections = () => {
+    return (
+      (caregiverPersonality?.length || 0) +
+      (caregiverDiet?.length || 0) +
+      (caregiverReligion?.length || 0)
+    );
+  };
+
+  const canSelectMore = () => {
+    return getTotalSelections() < 10;
+  };
+
   const togglePersonalitySelection = (item: string) => {
     const prev = caregiverPersonality ?? [];
-    const selectedPersonality = prev.includes(item)
-      ? prev.filter((i) => i !== item)
-      : [...prev, item];
+    const willBeSelected = !prev.includes(item);
+
+    // Check if adding this selection would exceed the limit
+    if (willBeSelected && !canSelectMore()) {
+      return;
+    }
+
+    const selectedPersonality = willBeSelected
+      ? [...prev, item]
+      : prev.filter((i) => i !== item);
     setCaregiverPersonality(selectedPersonality);
   };
   const toggleRulesSelection = (item: string) => {
@@ -128,10 +147,18 @@ export default function AboutScreen() {
       router.push('/(auth)/screens/onboarding/family/otherDiet?category=diet');
       return;
     }
+
     const prev = caregiverDiet ?? [];
-    const selectedDiet = prev.includes(item)
-      ? prev.filter((i) => i !== item)
-      : [...prev, item];
+    const willBeSelected = !prev.includes(item);
+
+    // Check if adding this selection would exceed the limit
+    if (willBeSelected && !canSelectMore()) {
+      return;
+    }
+
+    const selectedDiet = willBeSelected
+      ? [...prev, item]
+      : prev.filter((i) => i !== item);
     setCaregiverDiet(selectedDiet);
   };
   const toggleReligionSelection = (item: string) => {
@@ -172,6 +199,10 @@ export default function AboutScreen() {
 
         <ThemedText style={styles.title}>
           Tell us about{'\n'}yourself.
+        </ThemedText>
+
+        <ThemedText style={styles.selectionLimit}>
+          Select 3-10 traits total (Religion is required)
         </ThemedText>
 
         <View style={styles.scrollViewContainer}>
@@ -253,9 +284,9 @@ export default function AboutScreen() {
               onPress={handleNext}
               variant='compact'
               disabled={
-                !caregiverDiet?.length ||
-                !caregiverPersonality?.length ||
-                !caregiverReligion?.length
+                !caregiverReligion?.length ||
+                getTotalSelections() < 3 ||
+                getTotalSelections() > 10
               }
             />
           </View>
@@ -355,5 +386,11 @@ const styles = StyleSheet.create({
     right: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  selectionLimit: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 16,
+    textAlign: 'center',
   },
 });

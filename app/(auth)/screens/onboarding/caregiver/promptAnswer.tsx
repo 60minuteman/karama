@@ -137,7 +137,7 @@ export default function PromptAnswer() {
     caregiverPaymentType === 'Salary Base'
       ? {
           type: caregiverPaymentType,
-          salary: caregiverSalaryAmount || '',
+          salary: Number(caregiverSalaryAmount?.replace(/,/g, '')) || 0,
           show_method_on_profile: showCaregiverPaymentMethod,
         }
       : {
@@ -353,7 +353,8 @@ export default function PromptAnswer() {
             />
           </View>
 
-          <View style={styles.addButtonContainer}>
+          {prompts?.length < 2 && (
+            <View style={styles.addButtonContainer}>
             <Button
               label='Add Another Prompt'
               onPress={() => handleAddPrompt(caregiverFirstPromptAnswer)}
@@ -361,6 +362,7 @@ export default function PromptAnswer() {
               // style={styles.addButton}
             />
           </View>
+          )}
         </View>
 
         <View style={styles.bottomNav}>

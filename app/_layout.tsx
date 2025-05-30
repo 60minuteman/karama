@@ -77,7 +77,7 @@ export const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const [isReady, setIsReady] = useState(false);
-  const { hydrated, clearCaregiverData } = useUserStore();
+  const { hydrated, clearCaregiverData, clearUser } = useUserStore();
 
   useEffect(() => {
     async function prepare() {
@@ -94,6 +94,7 @@ export default function RootLayout() {
   // useEffect(() => {
   //   // clearAllData();
   //   clearCaregiverData();
+  //   clearUser();
   //   const clearAsyncStorageData = async () => {
   //     try {
   //       await AsyncStorage.removeItem('token');

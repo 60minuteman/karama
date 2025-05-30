@@ -55,7 +55,7 @@ export const Religion = ({
   return (
     <View style={styles.container}>
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>{role === 'CARGIVER' ? 'My' : 'Our'} Religion</ThemedText>
+        <ThemedText style={styles.sectionTitle}>{role === 'CAREGIVER' ? 'My' : 'Our'} Religion</ThemedText>
         <View style={styles.pillContainer}>
             <Pill2
               // icon={religionIcons[religion] || religionIcons['Other']}
@@ -66,10 +66,10 @@ export const Religion = ({
       </View>
 
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>{role === 'CARGIVER' ? 'My' : ''} Personality</ThemedText>
-        {role === 'CARGIVER' ? (
+        <ThemedText style={styles.sectionTitle}>{role === 'CAREGIVER' ? 'My' : ''} Personality</ThemedText>
+        {role === 'CAREGIVER' ? (
           <View style={styles.pillContainer}>
-          {data?.characteristics?.personalities?.map((item) => (
+          {data?.characteristics?.personalities?.map(item => (
             <Pill2
               // icon={personalityIcons[trait] || '✨'}
               label={item}
@@ -97,7 +97,7 @@ export const Religion = ({
           Disability Experience
         </ThemedText>
         <View style={styles.pillContainer}>
-          {data?.behavioural_differences?.map((disability, index) => (
+          {data?.experience_with_disabilities?.disabilities?.map((disability, index) => (
             <Pill2 key={index} label={disability} style={styles.pill} />
           ))}
         </View>

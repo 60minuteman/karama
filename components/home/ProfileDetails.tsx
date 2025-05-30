@@ -36,7 +36,7 @@ export const ProfileDetails = ({
     <View style={styles.container}>
       {role === 'CAREGIVER' && (
         <Section title='I am'>
-        <Pill2 label={data?.caregiver_type} icon='👩' style={styles.pill} />
+        <Pill2 label={data?.caregiver_type}  style={styles.pill} />
       </Section>
       )}
       {role === 'FAMILY' && (
@@ -109,9 +109,16 @@ export const ProfileDetails = ({
         </View>
       </Section>
 
+      {data?.payment_info?.type === 'Salary Base' ? (
+        <Section title='My Salary Rate'>
+        <Pill2 label={`${data?.payment_info?.salary}/Year`}  style={styles.pill} />
+      </Section>
+      ) :(
       <Section title='My Hourly Rate'>
         <Pill2 label={`${data?.payment_info?.hourly_max}- ${data?.payment_info?.hourly_min}`} icon='⌛' style={styles.pill} />
       </Section>
+      )}
+
         </>
       )}
     </View>

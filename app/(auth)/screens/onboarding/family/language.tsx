@@ -29,7 +29,7 @@ const languages = [
   'Estonian',
   'Croatian',
   'Swedish',
-  'Portugese',
+  'Portuguese',
   'Other',
 ] as const;
 
@@ -88,7 +88,6 @@ export default function LanguageScreen() {
                   icon='💬'
                   selected={family_languages.includes(language)}
                   onPress={() => toggleLanguage(language)}
-                  style={styles.pill}
                 />
               ))}
             </View>

@@ -39,6 +39,7 @@ export default function Benefits() {
     setShowCaregiverRequiredBenefits,
     setOnboardingScreen,
   } = useUserStore();
+  console.log('caregiverRequiredBenefits', caregiverRequiredBenefits);
   const toggleBenefit = (benefitLabel: string) => {
     if (benefitLabel === '✨ Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/caregiver/OtherBenefits');

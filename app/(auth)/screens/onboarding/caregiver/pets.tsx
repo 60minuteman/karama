@@ -13,29 +13,29 @@ import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-const PETS = [
-  { label: '🐱 Cat' as const },
-  { label: '🐶 Small Dog' as const },
-  { label: '🐽 Pig' as const },
-  { label: '🐩 Large Dog' as const },
-  { label: '🐮 Cow' as const },
-  { label: '🦋 Butterfly' as const },
-  { label: '🐢 Turtle' as const },
-  { label: '🐍 Snake' as const },
-  { label: '🦜 Parrot' as const },
-  { label: '🐰 Rabbit' as const },
-  { label: '🐑 Sheep' as const },
-  { label: '🦆 Duck' as const },
-  { label: '🐎 Horse' as const },
-  { label: '🐸 Frog' as const },
-  { label: '🦎 Gecko' as const },
-  { label: '🐳 Whale' as const },
-  { label: '🐔 Chicken' as const },
-  { label: '🐹 Hamster' as const },
-  { label: '🦕 Dinosaur' as const },
-  { label: '🐘 Baby Elephant' as const },
-  { label: '🦄 Unicorn' as const },
-  { label: '🐾 Other' as const },
+const PETS: { label: PetType; emoji: string }[] = [
+  { label: '🐱 Cat', emoji: '🐱' },
+  { label: '🐶 Small Dog', emoji: '🐶' },
+  { label: '🐽 Pig', emoji: '🐽' },
+  { label: '🐩 Large Dog', emoji: '🐩' },
+  { label: '🐮 Cow', emoji: '🐮' },
+  { label: '🦋 Butterfly', emoji: '🦋' },
+  { label: '🐢 Turtle', emoji: '🐢' },
+  { label: '🐍 Snake', emoji: '🐍' },
+  { label: '🦜 Parrot', emoji: '🦜' },
+  { label: '🐰 Rabbit', emoji: '🐰' },
+  { label: '🐑 Sheep', emoji: '🐑' },
+  { label: '🦆 Duck', emoji: '🦆' },
+  { label: '🐎 Horse', emoji: '🐎' },
+  { label: '🐸 Frog', emoji: '🐸' },
+  { label: '🦎 Gecko', emoji: '🦎' },
+  { label: '🐳 Whale', emoji: '🐳' },
+  { label: '🐔 Chicken', emoji: '🐔' },
+  { label: '🐹 Hamster', emoji: '🐹' },
+  { label: '🦕 Dinosaur', emoji: '🦕' },
+  { label: '🐘 Baby Elephant', emoji: '🐘' },
+  { label: '🦄 Unicorn', emoji: '🦄' },
+  { label: '🐾 Other', emoji: '🐾' },
 ];
 
 export default function Page() {
@@ -60,10 +60,14 @@ export default function Page() {
     }
     const prev = caregiverPetExperience ?? [];
     const filtered = prev.filter((p) => p !== 'None');
+
     if (prev.includes(pet)) {
       setCaregiverPetExperience(filtered.filter((p) => p !== pet));
     } else {
-      setCaregiverPetExperience([...filtered, pet]);
+      // Only add if we haven't reached the limit of 10
+      if (filtered.length < 10) {
+        setCaregiverPetExperience([...filtered, pet]);
+      }
     }
   };
 
@@ -78,6 +82,9 @@ export default function Page() {
         <ThemedText style={styles.title}>
           What pets can you{'\n'}work with?
         </ThemedText>
+        <ThemedText style={styles.subtitle}>
+          Select 1-10 pets ({caregiverPetExperience?.length ?? 0}/10)
+        </ThemedText>
       </View>
 
       <ScrollView
@@ -89,12 +96,11 @@ export default function Page() {
           {PETS.map((pet) => (
             <Pill
               key={pet.label}
-              label={pet.label}
+              label={`${pet.label}`}
               onPress={() => togglePet(pet.label)}
               selected={caregiverPetExperience?.includes(pet.label)}
               disabled={
-                pet.label.split(' ')[1] !== 'None' &&
-                caregiverPetExperience?.includes('None')
+                pet.label !== 'None' && caregiverPetExperience?.includes('None')
               }
             />
           ))}
@@ -142,11 +148,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     lineHeight: 44,
-    fontFamily: 'Bogart-Semibold', // Changed to use Bogart-Bold font
+    fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
     color: Colors.light.text,
-    marginBottom: 40,
+    marginBottom: 20,
     marginTop: 20,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: Colors.light.text,
+    marginBottom: 40,
   },
   petsContainer: {
     flexDirection: 'row',

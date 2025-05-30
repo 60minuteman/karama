@@ -103,7 +103,6 @@ const householdResponsibilities: Responsibility[] = [
 
 export default function ResponsibilitiesScreen() {
   const router = useRouter();
-  // const [selectedResponsibilities, setSelectedResponsibilities] = useState<string[]>([]);
   const {
     caregiverChildcareResponsibilities,
     setCaregiverChildcareResponsibilities,
@@ -111,11 +110,23 @@ export default function ResponsibilitiesScreen() {
     setCaregiverHouseholdResponsibilities,
     setOnboardingScreen,
   } = useUserStore();
+
   console.log(
     'caregiverChildcareResponsibilities',
-    caregiverChildcareResponsibilities,
+    caregiverChildcareResponsibilities
+  );
+  console.log(
+    'caregiverHouseholdResponsibilities',
     caregiverHouseholdResponsibilities
   );
+
+  const getTotalResponsibilities = () => {
+    return (
+      (caregiverChildcareResponsibilities?.length ?? 0) +
+      (caregiverHouseholdResponsibilities?.length ?? 0)
+    );
+  };
+
   const toggleChildcareResponsibility = (label: string) => {
     if (label === '➕ Other') {
       setOnboardingScreen(
@@ -127,11 +138,20 @@ export default function ResponsibilitiesScreen() {
       return;
     }
     const prev = caregiverChildcareResponsibilities ?? [];
+    const newTotal = prev.includes(label)
+      ? getTotalResponsibilities() - 1
+      : getTotalResponsibilities() + 1;
+
+    if (newTotal > 10) {
+      return; // Don't allow more than 10 total responsibilities
+    }
+
     const selectedResponsibilities = prev.includes(label)
       ? prev.filter((item) => item !== label)
       : [...prev, label];
     setCaregiverChildcareResponsibilities(selectedResponsibilities);
   };
+
   const toggleHouseholdResponsibility = (label: string) => {
     if (label === '➕ Other') {
       setOnboardingScreen(
@@ -143,11 +163,23 @@ export default function ResponsibilitiesScreen() {
       return;
     }
     const prev = caregiverHouseholdResponsibilities ?? [];
+    const newTotal = prev.includes(label)
+      ? getTotalResponsibilities() - 1
+      : getTotalResponsibilities() + 1;
+
+    if (newTotal > 10) {
+      return; // Don't allow more than 10 total responsibilities
+    }
+
     const selectedResponsibilities = prev.includes(label)
       ? prev.filter((item) => item !== label)
       : [...prev, label];
     setCaregiverHouseholdResponsibilities(selectedResponsibilities);
   };
+
+  const totalResponsibilities = getTotalResponsibilities();
+  const isWithinRange =
+    totalResponsibilities >= 3 && totalResponsibilities <= 10;
 
   return (
     <ThemedView style={styles.container}>
@@ -166,8 +198,12 @@ export default function ResponsibilitiesScreen() {
           showsVerticalScrollIndicator={false}
         >
           <ThemedText style={styles.subtitle}>
-            Please note that taking on more responsibilities may increase your
-            rate.
+            Please select between 3-10 total responsibilities. Taking on more
+            responsibilities may increase your rate.
+          </ThemedText>
+
+          <ThemedText style={styles.counter}>
+            Selected: {totalResponsibilities}/10
           </ThemedText>
 
           <View style={styles.section}>
@@ -179,7 +215,6 @@ export default function ResponsibilitiesScreen() {
                 <Pill
                   key={item.id}
                   label={item.label}
-                  // icon={item.icon}
                   selected={caregiverChildcareResponsibilities?.includes(
                     item.label
                   )}
@@ -198,7 +233,6 @@ export default function ResponsibilitiesScreen() {
                 <Pill
                   key={item.id}
                   label={item.label}
-                  // icon={item.icon}
                   selected={caregiverHouseholdResponsibilities?.includes(
                     item.label
                   )}
@@ -223,10 +257,7 @@ export default function ResponsibilitiesScreen() {
                 router.push('/(auth)/screens/onboarding/caregiver/payment');
               }}
               variant='compact'
-              disabled={
-                caregiverChildcareResponsibilities?.length === 0 ||
-                caregiverHouseholdResponsibilities?.length === 0
-              }
+              disabled={!isWithinRange}
             />
           </View>
         </LinearGradient>
@@ -295,5 +326,11 @@ const styles = StyleSheet.create({
     right: 20,
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+  counter: {
+    fontSize: 14,
+    color: '#666666',
+    marginBottom: 16,
+    textAlign: 'center',
   },
 });

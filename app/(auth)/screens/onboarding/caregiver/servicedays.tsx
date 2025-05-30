@@ -95,6 +95,8 @@ export default function ServiceDaysScreen() {
     return `${hour12}:${minutes} ${ampm}`;
   };
 
+  const isAnyDaySelected = caregiverSchedule?.some((day) => day.isActive);
+
   return (
     <ThemedView style={styles.container}>
       <Header variant='back' />
@@ -217,6 +219,7 @@ export default function ServiceDaysScreen() {
               );
             }}
             variant='compact'
+            disabled={!isAnyDaySelected}
           />
         </LinearGradient>
       </View>

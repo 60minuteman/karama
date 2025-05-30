@@ -224,6 +224,8 @@ export interface CaregiverPositionHistory {
   employmentType: string;
   startDate: string;
   endDate: string;
+  childCare: string;
+  household: string;
 }
 
 interface AgeGroup {
@@ -381,7 +383,7 @@ interface UserState {
     is_dealbreaker: boolean;
   };
   caregiver_type: {
-    selected_type: string | null;
+    selected_types: string[];
     is_dealbreaker: boolean;
   };
   caregiver_traits: {
@@ -705,7 +707,7 @@ export const useUserStore = create<UserState>()(
         is_dealbreaker: false,
       },
       caregiver_type: {
-        selected_type: null,
+        selected_types: [],
         is_dealbreaker: false,
       },
       caregiver_traits: {
@@ -899,6 +901,8 @@ export const useUserStore = create<UserState>()(
         employmentType: '',
         startDate: '',
         endDate: '',
+        childCare: '',
+        household: '',
       },
       caregiverSecondPosition: {
         positionNumber: null,
@@ -908,6 +912,8 @@ export const useUserStore = create<UserState>()(
         employmentType: '',
         startDate: '',
         endDate: '',
+        childCare: '',
+        household: '',
       },
       caregiverThirdPosition: {
         positionNumber: null,
@@ -917,6 +923,8 @@ export const useUserStore = create<UserState>()(
         employmentType: '',
         startDate: '',
         endDate: '',
+        childCare: '',
+        household: '',
       },
       caregiverPromptCategory: '',
       caregiverFirstPrompt: '',
@@ -1217,7 +1225,7 @@ export const useUserStore = create<UserState>()(
             is_dealbreaker: false,
           },
           caregiver_type: {
-            selected_type: null,
+            selected_types: [],
             is_dealbreaker: false,
           },
           caregiver_traits: {

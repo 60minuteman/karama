@@ -73,7 +73,7 @@ export const PastPosition = ({ positionName }: PastPositionProps) => {
           ))}
         </View>
       </View>
-
+{/* 
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>Work Options</ThemedText>
         <View style={styles.pillsContainer}>
@@ -86,7 +86,7 @@ export const PastPosition = ({ positionName }: PastPositionProps) => {
             />
           ))}
         </View>
-      </View>
+      </View> */}
 
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>
