@@ -110,7 +110,7 @@ export default function Prompt3() {
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
-          {prompts.length > 1 && (
+          {/* {prompts.length > 1 && (
                       <View style={styles.buttonContainer}>
                      <Button
                        label='Next'
@@ -118,7 +118,7 @@ export default function Prompt3() {
                        variant='compact'
                      />
                    </View>
-                   )}
+                   )} */}
         </LinearGradient>
       </View>
     </ThemedView>

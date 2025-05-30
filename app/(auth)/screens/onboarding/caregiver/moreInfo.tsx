@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
@@ -18,6 +18,11 @@ export default function MoreInfo() {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/upload');
     router.push('/(auth)/screens/onboarding/caregiver/upload');
   };
+
+  useEffect(() => {
+    setCaregiverMoreInfo('')
+  }, [])
+  
 
   return (
     <KeyboardAvoidingView 

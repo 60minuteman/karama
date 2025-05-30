@@ -52,14 +52,18 @@ export const Interests = ({ interests, data, role }: InterestsProps) => {
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>{role === 'FAMILY' ? 'Children\'s interest' : 'My Interests'}</ThemedText>
         <View style={styles.interestsContainer}>
-          {allInterests?.filter((item) => item.other_creative_interest !== '' && item.other_instrument_interest !== '' && item.other_sport_interest !== '' && item.other_stem_interest !== '' )?.map((interest: any, index: any) => (
-            <Pill2
+          {allInterests?.map((interest: any, index: any) => {
+            if (interest === '' || interest === null) return;
+            return (
+              <Pill2
               key={index}
               // icon={interestIcons[interest] || '✨'}
               label={interest}
               style={styles.interestPill}
-            />
-          ))}
+              />
+            )
+          }
+        )}
         </View>
       </View>
     </View>
