@@ -17,6 +17,7 @@ import {
   PanResponder,
   ScrollView,
   StyleSheet,
+  Text,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -107,6 +108,8 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
     }));
 
     // Add debug log
+    console.log(data, 'prompts');
+    
 
     if (!profileData || !data) {
       return (
@@ -171,18 +174,38 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
             data={data}
           />
         </View>
+        {role === 'CAREGIVER' &&  (
+         <>
+          <View style={styles.spacer} />
+        <View style={dynamicStyles.componentContainer}>
+          <ExperienceAndLanguages
+            yearsOfExperience={caregiverProfile?.years_of_experience}
+            languages={profileData.languages}
+            data={data}
+            role
+          />
+        </View>
+        </>
+
+        
+
+        )}
+
         {role === 'CAREGIVER' && (
-          <>
-            <View style={styles.spacer} />
-            <View style={dynamicStyles.componentContainer}>
-              <ExperienceAndLanguages
-                yearsOfExperience={caregiverProfile?.years_of_experience}
-                languages={profileData.languages}
-                data={data}
-                role
-              />
+           <>
+           {data?.prompts?.[0]?.title && (
+              <View style={styles.section}>
+            <View style={styles.subSection} >
+              <ThemedText>
+                {data?.prompts?.[0]?.title}
+              </ThemedText>
+              <View style={styles.pillContainer}>
+                <Text style={{fontSize: 22}}>{data?.prompts?.[0]?.answer}</Text>
+              </View>
             </View>
-          </>
+          </View>
+          )}
+           </>
         )}
         <View style={styles.spacer} />
 
@@ -249,28 +272,44 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
           </>
         )}
 
-        {role === 'CAREGIVER' && (
-          <>
-            <View style={styles.spacer} />
-            <View style={dynamicStyles.componentContainer}>
-              <Work
-                animals={[
-                  ...(experienceWithDisabilities?.disabilities || []),
-                  ...(experienceWithPets?.pets || []),
-                ]?.filter(Boolean)}
-                data={data}
-              />
+       {role === 'CAREGIVER' && (
+      <>
+        <View style={styles.spacer} />
+        <View style={dynamicStyles.componentContainer}>
+          <Work
+            animals={[
+              ...(experienceWithDisabilities?.disabilities || []),
+              ...(experienceWithPets?.pets || []),
+            ]?.filter(Boolean)}
+            data={data}
+          />
+        </View>
+         {role === 'CAREGIVER' && (
+           <>
+           {data?.prompts?.[1]?.title && (
+              <View style={styles.section}>
+            <View style={styles.subSection} >
+              <ThemedText>
+                {data?.prompts?.[1]?.title}
+              </ThemedText>
+              <View style={styles.pillContainer}>
+                <Text style={{fontSize: 22}}>{data?.prompts?.[1]?.answer}</Text>
+              </View>
             </View>
-            <View style={styles.spacer} />
-            <View style={dynamicStyles.componentContainer}>
-              <Position
-                positions={caregiverProfile?.past_positions || []}
-                data={data}
-              />
-            </View>
-            <View style={styles.bottomSpacer} />
-          </>
+          </View>
+          )}
+           </>
         )}
+        <View style={styles.spacer} />
+        <View style={dynamicStyles.componentContainer}>
+          <Position
+            positions={caregiverProfile?.past_positions || []}
+            data={data}
+          />
+        </View>
+        <View style={styles.bottomSpacer} />
+      </>
+    )} 
         {/* 
        
         
@@ -376,14 +415,29 @@ const styles = StyleSheet.create({
   //  container: {
   //   padding: 16,
   // },
-  section: {
-    marginBottom: 8,
-  },
+  // section: {
+  //   marginBottom: 8,
+  // },
   sectionTitle: {
     fontSize: 16,
     fontFamily: 'Bogart-Regular',
     color: 'rgba(38, 29, 42, 0.4)',
     marginBottom: 12,
+  },
+  section: {
+    backgroundColor: '#261D2A0D',
+    paddingTop: 25,
+    marginBottom: 8,
+
+    paddingHorizontal: 25,
+    marginTop: 6,
+    borderRadius: 10,
+    overflow: 'hidden',
+    flex: 1,
+  },
+  subSection: {
+    gap: 24,
+    marginBottom: 25,
   },
   pillContainer: {
     flexDirection: 'row',
