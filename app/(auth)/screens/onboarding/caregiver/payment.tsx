@@ -7,12 +7,32 @@ import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
 import Slider from '@react-native-community/slider';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import {
+  StyleSheet,
+  TextInput,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 type PaymentType = 'Hourly' | 'Salary Base';
+
+interface CustomThumbProps {
+  value: number;
+}
+
+const CustomThumb: React.FC<CustomThumbProps> = ({ value }) => (
+  <View style={styles.thumbContainer}>
+    <View style={styles.thumbValueContainer}>
+      <ThemedText style={styles.thumbValue}>${value.toString()}</ThemedText>
+    </View>
+    <View style={styles.thumb} />
+  </View>
+);
 
 export default function PaymentScreen() {
   const router = useRouter();
@@ -55,7 +75,7 @@ export default function PaymentScreen() {
 
   const handleSliderChange = (value: number) => {
     setHasInteracted(true);
-    setCaregiverHourlyRate(Math.round(value));
+    setCaregiverHourlyRate(value);
   };
 
   const handleTextInputChange = (text: string) => {
@@ -108,27 +128,35 @@ export default function PaymentScreen() {
 
             {caregiverPaymentType === 'Hourly' && (
               <View style={styles.inputContainer}>
-                <View
-                  style={[
-                    styles.sliderContainer,
-                    { backgroundColor: '#FAFAFA' },
-                  ]}
-                >
-                  <View style={styles.sliderWrapper}>
-                    <Slider
-                      style={{ width: '100%', height: 40 }}
-                      minimumValue={15}
-                      maximumValue={45}
-                      value={caregiverHourlyRate || 20}
-                      step={1}
-                      onValueChange={handleSliderChange}
-                      minimumTrackTintColor={Colors.light.primary}
-                      maximumTrackTintColor='#E5E5E5'
-                      thumbTintColor={Colors.light.primary}
-                    />
+                <View style={styles.sliderContainer}>
+                  <View
+                    style={[
+                      styles.valueContainer,
+                      {
+                        left: `${
+                          (((caregiverHourlyRate || 20) - 15) / (45 - 15)) * 100
+                        }%`,
+                        transform: [{ translateX: -30 }],
+                      },
+                    ]}
+                  >
+                    <ThemedText style={styles.valueText}>
+                      ${(caregiverHourlyRate || 20).toString()}
+                    </ThemedText>
                   </View>
+                  <Slider
+                    style={{ width: '100%', height: 40 }}
+                    minimumValue={15}
+                    maximumValue={45}
+                    value={caregiverHourlyRate || 20}
+                    step={1}
+                    onValueChange={handleSliderChange}
+                    minimumTrackTintColor={Colors.light.primary}
+                    maximumTrackTintColor='#E5E5E5'
+                    thumbTintColor={Colors.light.primary}
+                  />
                 </View>
-                <View
+                {/* <View
                   style={[
                     styles.inputBorder,
                     (caregiverHourlyRate || 0) > 0 && styles.inputBorderActive,
@@ -143,7 +171,7 @@ export default function PaymentScreen() {
                     keyboardType='numeric'
                     maxLength={2}
                   />
-                </View>
+                </View> */}
               </View>
             )}
 
@@ -211,26 +239,40 @@ const styles = StyleSheet.create({
     fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
     color: Colors.light.text,
-    marginBottom: 40,
+    marginBottom: 16,
     marginTop: 20,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#666666',
+    marginBottom: 32,
   },
   optionsContainer: {
     flexDirection: 'row',
     gap: 12,
     marginBottom: 40,
   },
-  sliderContainer: {
-    marginBottom: 20,
-    width: '100%',
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  sliderWrapper: {
-    width: '80%',
-    borderRadius: 60,
-  },
   inputContainer: {
-    marginTop: 20,
+    marginBottom: 20,
+  },
+  sliderContainer: {
+    marginTop: 40,
+    paddingHorizontal: 10,
+    position: 'relative',
+  },
+  valueContainer: {
+    position: 'absolute',
+    top: -30,
+    backgroundColor: Colors.light.primary,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    zIndex: 1,
+  },
+  valueText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
   },
   inputBorder: {
     borderBottomWidth: 2,
@@ -254,6 +296,27 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   button: {
-    alignSelf: 'flex-end',
+    marginTop: 20,
+  },
+  thumbContainer: {
+    alignItems: 'center',
+  },
+  thumbValueContainer: {
+    backgroundColor: Colors.light.primary,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    marginBottom: 4,
+  },
+  thumbValue: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  thumb: {
+    width: 20,
+    height: 20,
+    backgroundColor: Colors.light.primary,
+    borderRadius: 10,
   },
 });

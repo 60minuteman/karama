@@ -18,9 +18,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import PhoneNumberScreen from '../../../signInPhone';
 
 export default function Page() {
-  const { caregiverImages, setCaregiverImages } = useUserStore();
+  const { caregiverImages, setCaregiverImages, user } = useUserStore();
+
+  console.log('user', user);
+
+  useEffect(() => {
+    console.log('Phone Number:', user?.phone_number);
+  }, [user]);
 
   const uploadImages = useAuthMutation({
     mutationFn: async () => {

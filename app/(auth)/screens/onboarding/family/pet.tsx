@@ -92,6 +92,8 @@ export default function PetScreen() {
         ? [pet]
         : family_pets.includes(pet)
         ? family_pets.filter((p) => p !== pet)
+        : family_pets.length >= 10
+        ? family_pets
         : [...family_pets, pet];
       setFamilyPets(newPets);
     }

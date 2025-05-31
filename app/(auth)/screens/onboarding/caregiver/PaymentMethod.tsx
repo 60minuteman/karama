@@ -36,6 +36,8 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
   // const [selectedMethod, setSelectedMethod] = useState<string>('');
   // const [showOnProfile, setShowOnProfile] = useState(false);
 
+  console.log('caregiverPaymentMethod', caregiverPaymentMethod);
+
   const handleNext = () => {
     if (onNext) {
       onNext(caregiverPaymentMethod);
@@ -71,8 +73,8 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
                 <Pill
                   label={option.label}
                   // icon={option.icon}
-                  selected={caregiverPaymentMethod === option.id}
-                  onPress={() => setCaregiverPaymentMethod(option.id)}
+                  selected={caregiverPaymentMethod === option.label}
+                  onPress={() => setCaregiverPaymentMethod(option.label)}
                 />
               </View>
             ))}

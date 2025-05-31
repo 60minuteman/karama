@@ -108,7 +108,9 @@ const FamilyPreferences = () => {
                                                                             width: 20,
                                                                         }}
                                                                         // onValuesChange={setPayRange}
-                                                                        enabledTwo={true}
+                                                                        enabledOne={false}
+                                                                        enabledTwo={false}
+
                                                                     />
                                                                 </View>
                                                             </View>
@@ -139,7 +141,7 @@ const FamilyPreferences = () => {
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {familyProfileData?.caregiver_preference?.caregiver_types?.map((type: string) => {
-                                        return <InfoPill key={type} label={type} icon={'🧢'} />
+                                        return <InfoPill key={type} label={type}  />
                                     })}
                                     {/* <InfoPill label={familyProfileData?.caregiver_preference?.caregiver_types} icon={'🧢'} /> */}
                                 </View>
@@ -179,7 +181,7 @@ const FamilyPreferences = () => {
                                     {
                                         familyProfileData?.languages?.map((language: string) => {
                                             return <View>
-                                                <InfoPill key={language} label={language} icon={'💬'} />
+                                                <InfoPill key={language} label={language}  />
                                             </View>
                                         })
                                     }
@@ -221,18 +223,7 @@ const FamilyPreferences = () => {
                                     }
                                 </View>
                             </View>
-                            <View style={styles.subSection}>
-                                <View style={styles.headerStyle}>
-                                    <ThemedText style={styles.heading}>Household Responsibilities</ThemedText>
-                                </View>
-                                <View style={styles.pillContainer}>
-                                    {
-                                        familyProfileData?.caregiver_preference?.responsibilities?.household_responsibilities?.map((work) => {
-                                            return <InfoPill key={work} label={work}  />
-                                        })
-                                    }
-                                </View>
-                            </View>
+                            
                         </View>
                         <View style={styles.section}>
                             <View style={styles.subSection}>
@@ -256,7 +247,7 @@ const FamilyPreferences = () => {
                         
                         <View style={styles.section}>
                              <View style={styles.subSection}>
-                                              <ThemedText style={styles.pillHeading}>
+                                              <ThemedText style={styles.heading}>
                                                 Household Responsibilities{' '}
                                               </ThemedText>
                                               <View style={styles.pillContainer}>

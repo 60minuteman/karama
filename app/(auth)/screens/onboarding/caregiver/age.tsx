@@ -70,6 +70,9 @@ export default function Page() {
             </View>
           ))}
         </View>
+        <ThemedText style={styles.validationText}>
+          Please select 1-3 age groups you have experience with
+        </ThemedText>
       </View>
 
       <View style={styles.bottomNav}>
@@ -124,5 +127,12 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+  validationText: {
+    fontSize: 14,
+    color: Colors.light.text,
+    opacity: 0.7,
+    textAlign: 'center',
+    marginTop: 16,
   },
 });

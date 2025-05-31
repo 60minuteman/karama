@@ -71,6 +71,7 @@ export default function ResponsibilitiesScreen() {
     family_responsibilities,
     setFamilyResponsibilities,
     setOnboardingScreen,
+    onboarding_screen,
     family_gender_preference,
     caregiver_type,
     caregiver_traits,
@@ -83,26 +84,54 @@ export default function ResponsibilitiesScreen() {
     family_commitment,
     family_schedule,
     setSteps,
+    steps,
   } = useUserStore();
   const {  familyEducation } = useOtherStore();
 
 
+  console.log('onboarding_screen', onboarding_screen);
+
+  const MIN_RESPONSIBILITIES = 3;
+  const MAX_RESPONSIBILITIES = 10;
+
   const toggleResponsibility = (id: string) => {
     if (id === 'other') {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherChildResponsibilities');
-      router.push('/(auth)/screens/onboarding/family/otherChildResponsibilities');
+      setOnboardingScreen(
+        '/(auth)/screens/onboarding/family/otherChildResponsibilities'
+      );
+      router.push(
+        '/(auth)/screens/onboarding/family/otherChildResponsibilities'
+      );
       return;
     } else if (id === 'other2') {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherHouseholdResponsibilities');
-      router.push('/(auth)/screens/onboarding/family/otherHouseholdResponsibilities');
+      setOnboardingScreen(
+        '/(auth)/screens/onboarding/family/otherHouseholdResponsibilities'
+      );
+      router.push(
+        '/(auth)/screens/onboarding/family/otherHouseholdResponsibilities'
+      );
       return;
     }
 
-    setFamilyResponsibilities(
-      family_responsibilities.includes(id)
-        ? family_responsibilities.filter((item) => item !== id)
-        : [...family_responsibilities, id]
-    );
+    if (family_responsibilities.includes(id)) {
+      // Allow removing if we have more than minimum
+      if (family_responsibilities.length > MIN_RESPONSIBILITIES) {
+        setFamilyResponsibilities(
+          family_responsibilities.filter((item) => item !== id)
+        );
+      }
+    } else {
+      // Allow adding if we haven't reached maximum
+      if (family_responsibilities.length < MAX_RESPONSIBILITIES) {
+        setFamilyResponsibilities([...family_responsibilities, id]);
+      } else {
+        Toast.show({
+          type: 'info',
+          text1: 'Maximum limit reached',
+          text2: `You can select up to ${MAX_RESPONSIBILITIES} responsibilities`,
+        });
+      }
+    }
   };
 
   const handleNext = () => {
@@ -135,7 +164,7 @@ export default function ResponsibilitiesScreen() {
   });
 
   const {
-    otherGender, 
+    otherGender,
     otherRequirement,
     otherCertifications,
     otherHouseholdResponsibilities,
@@ -143,6 +172,14 @@ export default function ResponsibilitiesScreen() {
   } = useOtherStore();
 
   const handleSubmit = () => {
+    if (steps === 'responsibilities') {
+      handleNext();
+      return;
+    }
+
+    if (onboarding_screen === '/(auth)/screens/onboarding/family/payment') {
+      return router.push('/(auth)/screens/onboarding/family/payment');
+    }
     const childcareIds = childcareResponsibilities.map((r) => r.id);
     const householdIds = householdResponsibilities.map((r) => r.id);
 
@@ -164,9 +201,7 @@ export default function ResponsibilitiesScreen() {
         other: otherGender,
         dealbreaker: family_gender_preference?.is_dealbreaker,
       },
-      caregiver_types: caregiver_type?.selected_type
-        ? [caregiver_type?.selected_type]
-        : [],
+      caregiver_types: caregiver_type?.selected_types || [],
       caregiver_type_is_dealbreaker: caregiver_type?.is_dealbreaker,
       personalities: caregiver_traits?.selected_traits || [],
       personality_is_dealbreaker: caregiver_traits?.is_dealbreaker,
@@ -248,9 +283,16 @@ export default function ResponsibilitiesScreen() {
           showsVerticalScrollIndicator={false}
         >
           <ThemedText style={styles.subtitle}>
-            Please note that assigning more responsibilities to your caregiver
-            will likely result in a higher rate charged for their services.
+            Please select between {MIN_RESPONSIBILITIES} and{' '}
+            {MAX_RESPONSIBILITIES} responsibilities. More responsibilities may
+            result in higher service rates.
           </ThemedText>
+
+          <View style={styles.selectionCount}>
+            <ThemedText style={styles.selectionCountText}>
+              Selected: {family_responsibilities.length}/{MAX_RESPONSIBILITIES}
+            </ThemedText>
+          </View>
 
           <View style={styles.section}>
             <ThemedText style={styles.sectionTitle}>
@@ -263,6 +305,10 @@ export default function ResponsibilitiesScreen() {
                   label={item.label}
                   selected={family_responsibilities.includes(item.id)}
                   onPress={() => toggleResponsibility(item.id)}
+                  disabled={
+                    !family_responsibilities.includes(item.id) &&
+                    family_responsibilities.length >= MAX_RESPONSIBILITIES
+                  }
                 />
               ))}
             </View>
@@ -279,6 +325,10 @@ export default function ResponsibilitiesScreen() {
                   label={item.label}
                   selected={family_responsibilities.includes(item.id)}
                   onPress={() => toggleResponsibility(item.id)}
+                  disabled={
+                    !family_responsibilities.includes(item.id) &&
+                    family_responsibilities.length >= MAX_RESPONSIBILITIES
+                  }
                 />
               ))}
             </View>
@@ -294,7 +344,10 @@ export default function ResponsibilitiesScreen() {
               label='Next'
               onPress={handleSubmit}
               variant='compact'
-              disabled={family_responsibilities.length === 0}
+              disabled={
+                family_responsibilities.length < MIN_RESPONSIBILITIES ||
+                family_responsibilities.length > MAX_RESPONSIBILITIES
+              }
               loading={submit.isPending}
             />
           </View>
@@ -364,5 +417,13 @@ const styles = StyleSheet.create({
     right: 20,
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+  selectionCount: {
+    marginBottom: 16,
+  },
+  selectionCountText: {
+    fontSize: 14,
+    color: '#666666',
+    fontWeight: '500',
   },
 });

@@ -1,25 +1,25 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { CaregiverPhilosophies, useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 const PHILOSOPHIES = [
-  { label: 'Montessori' as const, icon: '🌈' },
-  { label: 'Waldorf/ Steiner' as const, icon: '🌈' },
-  { label: 'Harkness' as const, icon: '🌈' },
-  { label: 'Sudbury' as const, icon: '🌈' },
-  { label: 'Reggio Emillia' as const, icon: '🌈' },
-  { label: 'Gentle Parenting' as const, icon: '🌈' },
-  { label: 'Permissive Parenting' as const, icon: '🌈' },
-  { label: 'Other' as const, icon: '🌈' },
-  { label: 'None' as const, icon: '🚫' },
+  { label: '🌈 Montessori' as const, icon: '🌈' },
+  { label: '🌈 Waldorf/ Steiner' as const, icon: '🌈' },
+  { label: '🌈 Harkness' as const, icon: '🌈' },
+  { label: '🌈 Sudbury' as const, icon: '🌈' },
+  { label: '🌈 Reggio Emillia' as const, icon: '🌈' },
+  { label: '🌈 Gentle Parenting' as const, icon: '🌈' },
+  { label: '🌈 Permissive Parenting' as const, icon: '🌈' },
+  { label: '🌈 Other' as const, icon: '🌈' },
+  { label: '🚫 None' as const, icon: '🚫' },
 ];
 
 export default function PhiloScreen() {
@@ -30,7 +30,7 @@ export default function PhiloScreen() {
     caregiverPhilosophyExperience,
     setCaregiverPhilosophyExperience,
     setOnboardingScreen,
-  }=useUserStore()
+  } = useUserStore();
   // const [hasExperience, setHasExperience] = useState<boolean | null>(null);
   // const [selectedPhilosophies, setSelectedPhilosophies] = useState<string[]>([]);
 
@@ -43,14 +43,14 @@ export default function PhiloScreen() {
 
     if (philosophy === 'None') {
       setCaregiverPhilosophyExperience(['None']);
-       setOnboardingScreen('/(auth)/screens/onboarding/caregiver/speak');
-    router.push('/(auth)/screens/onboarding/caregiver/speak');
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/speak');
+      router.push('/(auth)/screens/onboarding/caregiver/speak');
     } else {
-    const prev = caregiverPhilosophyExperience ?? [];
-    const selectedPhilosophies = prev.includes(philosophy)
-      ? prev.filter((item) => item !== philosophy)
-      : [...prev, philosophy];
-    setCaregiverPhilosophyExperience(selectedPhilosophies);
+      const prev = caregiverPhilosophyExperience ?? [];
+      const selectedPhilosophies = prev.includes(philosophy)
+        ? prev.filter((item) => item !== philosophy)
+        : [...prev, philosophy];
+      setCaregiverPhilosophyExperience(selectedPhilosophies);
     }
   };
 
@@ -62,35 +62,32 @@ export default function PhiloScreen() {
   if (hasPhilosophyExperience === null) {
     return (
       <ThemedView style={styles.container}>
-        <Header variant="back" />
-        
+        <Header variant='back' />
+
         <View style={styles.content}>
           <View style={styles.spacerTop} />
           <ProgressBar progress={0.8} />
-          
+
           <ThemedText style={styles.title}>
-            Do you have{'\n'}experience with{'\n'}educational or{'\n'}parenting{'\n'}philosophies?
+            Do you have{'\n'}experience with{'\n'}educational or{'\n'}parenting
+            {'\n'}philosophies?
           </ThemedText>
 
           <View style={styles.optionsContainer}>
             <Pill
-              label="Yes"
+              label='Yes'
               onPress={() => setHasPhilosophyExperience('yes')}
               selected={hasPhilosophyExperience === 'yes'}
             />
             <Pill
-              label="No"
+              label='No'
               onPress={() => setHasPhilosophyExperience('no')}
               selected={hasPhilosophyExperience === 'no'}
             />
           </View>
 
           <View style={styles.bottomContainer}>
-            <Button
-              label="Skip"
-              onPress={handleNext}
-              variant="skip"
-            />
+            <Button label='Skip' onPress={handleNext} variant='skip' />
           </View>
         </View>
       </ThemedView>
@@ -99,28 +96,23 @@ export default function PhiloScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.8} />
-        
+
         <ThemedText style={styles.title}>
-          Do you have{'\n'}experience with{'\n'}educational or{'\n'}parenting{'\n'}philosophies?
+          Do you have{'\n'}experience with{'\n'}educational or{'\n'}parenting
+          {'\n'}philosophies?
         </ThemedText>
 
         <View style={styles.optionsContainer}>
-          <Pill
-            label="Yes"
-            selected={true}
-          />
-          <Pill
-            label="No"
-            selected={false}
-          />
+          <Pill label='Yes' selected={true} />
+          <Pill label='No' selected={false} />
         </View>
 
-        <ScrollView 
+        <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
@@ -130,8 +122,10 @@ export default function PhiloScreen() {
               <Pill
                 key={philosophy.label}
                 label={philosophy.label}
-                icon={philosophy.icon}
-                selected={caregiverPhilosophyExperience?.includes(philosophy.label)}
+                // icon={philosophy.icon}
+                selected={caregiverPhilosophyExperience?.includes(
+                  philosophy.label
+                )}
                 onPress={() => togglePhilosophy(philosophy.label)}
               />
             ))}
@@ -139,15 +133,11 @@ export default function PhiloScreen() {
         </ScrollView>
 
         <View style={styles.bottomContainer}>
+          <Button label='Skip' onPress={handleNext} variant='skip' />
           <Button
-            label="Skip"
+            label='Next'
             onPress={handleNext}
-            variant="skip"
-          />
-          <Button
-            label="Next"
-            onPress={handleNext}
-            variant="compact"
+            variant='compact'
             disabled={caregiverPhilosophyExperience?.length === 0}
           />
         </View>
@@ -202,4 +192,4 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: Colors.light.background,
   },
-}); 
+});

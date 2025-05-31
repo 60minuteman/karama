@@ -36,7 +36,7 @@ export default function PhoneNumberScreen() {
   const [isChecked, setIsChecked] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { setToken, setUser } = useUserStore();
+  const { setToken, setUser, setOnboardingScreen } = useUserStore();
   const { signIn: authSignIn } = useAuth();
   const queryClient = useQueryClient();
 
@@ -45,6 +45,7 @@ export default function PhoneNumberScreen() {
       return customAxios.post(`/auth/phone/signin/complete`, data);
     },
     onSuccess: async (response: any) => {
+      setOnboardingScreen(null);
       const token = response?.data?.data?.token;
       const userData = response?.data?.data?.user;
       setToken(token);

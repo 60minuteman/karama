@@ -1,9 +1,9 @@
-import { Redirect } from 'expo-router';
 import { useOnboarding } from '@/hooks/useOnboarding';
-import { View, StyleSheet } from 'react-native';
-import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Redirect } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 export default function InitialScreen() {
   const { isFirstLaunch } = useOnboarding();
@@ -14,7 +14,7 @@ export default function InitialScreen() {
       try {
         await SplashScreen.preventAutoHideAsync();
         const token = await AsyncStorage.getItem('userToken');
-        
+
         if (token) {
           setInitialRoute('/(tabs)/discover');
         } else if (isFirstLaunch) {

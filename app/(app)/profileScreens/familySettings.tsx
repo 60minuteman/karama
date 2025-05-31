@@ -26,6 +26,25 @@ const FamilySettings = () => {
   const { clearUser, logout } = useUserStore();
   const [deviceId, setDeviceId] = useState(null);
 
+  const deleteUserMutation = useAuthMutation({
+    mutationFn: async () => {
+      const { data } = await customAxios.delete('/users/delete');
+      return data;
+    },
+    onSuccess: () => {
+      Alert.alert(
+        'Account Deleted',
+        'Your account has been successfully deleted.'
+      );
+      clearUser();
+      logout();
+      queryClient.clear();
+    },
+    onError: (error: any) => {
+      Alert.alert('Error', 'Failed to delete account. Please try again.');
+    },
+  });
+
   useEffect(() => {
     const getDeviceId = async () => {
       let deviceId: any = await AsyncStorage.getItem('karama_id_device');
@@ -76,6 +95,7 @@ const FamilySettings = () => {
         {
           text: 'Delete',
           onPress: () => {
+            deleteUserMutation.mutate();
             // Handle delete account logic here
           },
           style: 'destructive',
@@ -205,14 +225,14 @@ const FamilySettings = () => {
               </ThemedText>
             </View>
             <View style={styles.section2}>
-              {/* <TouchableOpacity
+              <TouchableOpacity
                 style={[styles.button, { backgroundColor: '#261D2A1A' }]}
                 onPress={handleDelete}
               >
                 <ThemedText style={[styles.buttonText, { color: '#052222' }]}>
                   Delete account
                 </ThemedText>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
 
               <TouchableOpacity
                 style={[styles.button, { backgroundColor: '#EB4430' }]}

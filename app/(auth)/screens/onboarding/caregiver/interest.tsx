@@ -105,62 +105,123 @@ export default function InterestScreen() {
     ],
   };
 
-  useEffect(() => {
-    console.log(caregiverCreativeInterests);
-    console.log(caregiverInstrumentInterests);
-    console.log(caregiverSportInterest);
-    console.log(caregiverStemInterests);
-  }, [
-    caregiverCreativeInterests,
-    caregiverInstrumentInterests,
-    caregiverStemInterests,
-    caregiverSportInterest,
-  ]);
+  console.log('caregiverCreativeInterests', caregiverCreativeInterests);
+  console.log('caregiverInstrumentInterests', caregiverInstrumentInterests);
+  console.log('caregiverSportInterest', caregiverSportInterest);
+  console.log('caregiverStemInterests', caregiverStemInterests);
+
+  const getTotalSelectedInterests = () => {
+    return (
+      (caregiverCreativeInterests?.length ?? 0) +
+      (caregiverInstrumentInterests?.length ?? 0) +
+      (caregiverSportInterest?.length ?? 0) +
+      (caregiverStemInterests?.length ?? 0)
+    );
+  };
 
   const toggleCreativeInterest = (interest: string) => {
     if (interest === '👨‍🎨 Other') {
       // Redirect to the custom interest input screen
-      router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Creative`);
+      router.push(
+        `/(auth)/screens/onboarding/family/custom-interest?category=Creative`
+      );
       return;
     }
     const prev = caregiverCreativeInterests ?? [];
-    const selectedInterests = prev.includes(interest)
+    const isSelected = prev.includes(interest);
+
+    // If trying to deselect and total would be less than 1, prevent it
+    if (isSelected && getTotalSelectedInterests() <= 1) {
+      return;
+    }
+
+    // If trying to select and total would be more than 10, prevent it
+    if (!isSelected && getTotalSelectedInterests() >= 10) {
+      return;
+    }
+
+    const selectedInterests = isSelected
       ? prev.filter((item) => item !== interest)
       : [...prev, interest];
     setCaregiverCreativeInterests(selectedInterests);
   };
+
   const toggleInstrumentInterest = (interest: string) => {
     if (interest === '🎼 Other') {
       // Redirect to the custom interest input screen
-      router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Instrument`);
+      router.push(
+        `/(auth)/screens/onboarding/family/custom-interest?category=Instrument`
+      );
       return;
     }
     const prev = caregiverInstrumentInterests ?? [];
-    const selectedInterests = prev.includes(interest)
+    const isSelected = prev.includes(interest);
+
+    // If trying to deselect and total would be less than 1, prevent it
+    if (isSelected && getTotalSelectedInterests() <= 1) {
+      return;
+    }
+
+    // If trying to select and total would be more than 10, prevent it
+    if (!isSelected && getTotalSelectedInterests() >= 10) {
+      return;
+    }
+
+    const selectedInterests = isSelected
       ? prev.filter((item) => item !== interest)
       : [...prev, interest];
     setCaregiverInstrumentsInterests(selectedInterests);
   };
+
   const toggleSportInterest = (interest: string) => {
     if (interest === '🏅 Other') {
       // Redirect to the custom interest input screen
-      router.push(`/(auth)/screens/onboarding/family/custom-interest?category=Sport`);
+      router.push(
+        `/(auth)/screens/onboarding/family/custom-interest?category=Sport`
+      );
       return;
     }
     const prev = caregiverSportInterest ?? [];
-    const selectedInterests = prev.includes(interest)
+    const isSelected = prev.includes(interest);
+
+    // If trying to deselect and total would be less than 1, prevent it
+    if (isSelected && getTotalSelectedInterests() <= 1) {
+      return;
+    }
+
+    // If trying to select and total would be more than 10, prevent it
+    if (!isSelected && getTotalSelectedInterests() >= 10) {
+      return;
+    }
+
+    const selectedInterests = isSelected
       ? prev.filter((item) => item !== interest)
       : [...prev, interest];
     setCaregiverSportsInterests(selectedInterests);
   };
+
   const toggleStemInterest = (interest: string) => {
     if (interest === '🔬 Other') {
       // Redirect to the custom interest input screen
-      router.push(`/(auth)/screens/onboarding/family/custom-interest?category=stem`);
+      router.push(
+        `/(auth)/screens/onboarding/family/custom-interest?category=stem`
+      );
       return;
     }
     const prev = caregiverStemInterests ?? [];
-    const selectedInterests = prev.includes(interest)
+    const isSelected = prev.includes(interest);
+
+    // If trying to deselect and total would be less than 1, prevent it
+    if (isSelected && getTotalSelectedInterests() <= 1) {
+      return;
+    }
+
+    // If trying to select and total would be more than 10, prevent it
+    if (!isSelected && getTotalSelectedInterests() >= 10) {
+      return;
+    }
+
+    const selectedInterests = isSelected
       ? prev.filter((item) => item !== interest)
       : [...prev, interest];
     setCaregiverStemInterests(selectedInterests);

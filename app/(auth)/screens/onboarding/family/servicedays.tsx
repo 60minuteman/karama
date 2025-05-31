@@ -88,6 +88,8 @@ export default function ServiceDaysScreen() {
     router.push('/(auth)/screens/onboarding/family/responsibilities');
   };
 
+  const hasActiveDays = family_schedule.some((day) => day.isActive);
+
   return (
     <ThemedView style={styles.container}>
       <Header variant='back' />
@@ -213,7 +215,12 @@ export default function ServiceDaysScreen() {
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonContainer}
         >
-          <Button label='Next' onPress={handleNext} variant='compact' />
+          <Button
+            label='Next'
+            onPress={handleNext}
+            variant='compact'
+            disabled={!hasActiveDays}
+          />
         </LinearGradient>
       </View>
     </ThemedView>

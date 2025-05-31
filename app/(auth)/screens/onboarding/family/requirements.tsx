@@ -6,6 +6,7 @@ import { Pill } from '@/components/ui/Pill';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
@@ -44,6 +45,9 @@ export default function RequirementsScreen() {
   } = caregiver_requirements;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
+  console.log(selected_requirements);
+  console.log(selected_certifications);
+
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -79,23 +83,46 @@ export default function RequirementsScreen() {
       return;
     }
 
-    const newRequirements = selected_requirements.includes(req)
-      ? selected_requirements.filter((r) => r !== req)
-      : [...selected_requirements, req];
+    if (selected_requirements.includes(req)) {
+      const newRequirements = selected_requirements.filter((r) => r !== req);
+      setCaregiverRequirements({ selected_requirements: newRequirements });
+      return;
+    }
 
+    const totalSelections =
+      selected_requirements.length + selected_certifications.length;
+    if (totalSelections >= 6) {
+      return;
+    }
+
+    const newRequirements = [...selected_requirements, req];
     setCaregiverRequirements({ selected_requirements: newRequirements });
   };
 
   const toggleCertification = (cert: Certification) => {
     if (cert === '📄 Other') {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherCertification');
+      setOnboardingScreen(
+        '/(auth)/screens/onboarding/family/otherCertification'
+      );
       router.push('/(auth)/screens/onboarding/family/otherCertification');
       return;
     }
-    const newCertifications = selected_certifications.includes(cert)
-      ? selected_certifications.filter((c) => c !== cert)
-      : [...selected_certifications, cert];
 
+    if (selected_certifications.includes(cert)) {
+      const newCertifications = selected_certifications.filter(
+        (c) => c !== cert
+      );
+      setCaregiverRequirements({ selected_certifications: newCertifications });
+      return;
+    }
+
+    const totalSelections =
+      selected_requirements.length + selected_certifications.length;
+    if (totalSelections >= 6) {
+      return;
+    }
+
+    const newCertifications = [...selected_certifications, cert];
     setCaregiverRequirements({ selected_certifications: newCertifications });
   };
 

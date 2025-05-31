@@ -264,26 +264,51 @@ const CaregiverEditProfile = () => {
                                     text: [
                                         ...(caregiverProfile?.language?.languages || []),
                                         caregiverProfile?.language?.other
-                                    ].filter(Boolean).join(', '),
+                                    ].filter(Boolean),
                                     hasEdit: true 
                                 },
                                 { 
                                     label: 'Diet', 
-                                    text: caregiverProfile?.characteristics?.diets?.join(', '),
+                                    text: caregiverProfile?.characteristics?.diets,
                                     hasEdit: true 
                                 },
                             ].map((item, index) => (
-                                <View key={index} style={styles.aboutMeItem}>
-                                    <View style={styles.aboutMeContent}>
-                                        <ThemedText style={styles.promptLabel}>{item.label}</ThemedText>
-                                        <InfoPill label={item.text || ''} />
-                                    </View>
-                                    {item.hasEdit && (
-                                        <TouchableOpacity>
-                                            <ThemedText style={styles.editText}>Edit</ThemedText>
-                                        </TouchableOpacity>
-                                    )}
+                                // <View key={index} style={styles.aboutMeItem}>
+                                //     <View style={styles.aboutMeContent}>
+                                //         <ThemedText style={styles.promptLabel}>{item.label}</ThemedText>
+                                //         <InfoPill label={item.text || ''} />
+                                //     </View>
+                                //     {item.hasEdit && (
+                                //         <TouchableOpacity>
+                                //             <ThemedText style={styles.editText}>Edit</ThemedText>
+                                //         </TouchableOpacity>
+                                //     )}
+                                // </View>
+                                 <View key={index} style={styles.aboutMeItem}>
+                                <View style={styles.aboutMeContent}>
+                                <ThemedText style={styles.promptLabel}>{item.label}</ThemedText>
+
+                                <View style={{display: 'flex', flexWrap: 'wrap', gap: 8, flexDirection: 'row'}}>
+                                    {Array.isArray(item.text) ? (
+                                    item.text.length > 0 ? (
+                                    item.text.map((subItem, subIndex) => (
+                                        <InfoPill key={subIndex} label={subItem} />
+                                    ))
+                                    ) : (
+                                    <ThemedText style={styles.emptyText}>No info</ThemedText>
+                                    )
+                                ) : (
+                                    <InfoPill label={item.text || 'No info'} />
+                                )}
                                 </View>
+                                </View>
+
+                                {item.hasEdit && (
+                                <TouchableOpacity>
+                                    <ThemedText style={styles.editText}>Edit</ThemedText>
+                                </TouchableOpacity>
+                                )}
+                            </View>
                             ))}
                         </View>
                     </View>

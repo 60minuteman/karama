@@ -1,17 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 
 export default function MoreInfo() {
   const router = useRouter();
-  const {caregiverMoreInfo,setCaregiverMoreInfo,setOnboardingScreen}=useUserStore()
+  const { caregiverMoreInfo, setCaregiverMoreInfo, setOnboardingScreen } =
+    useUserStore();
   const [answer, setAnswer] = useState('');
 
   const handleNext = () => {
@@ -20,19 +27,18 @@ export default function MoreInfo() {
   };
 
   useEffect(() => {
-    setCaregiverMoreInfo('')
-  }, [])
-  
+    setCaregiverMoreInfo('');
+  }, []);
 
   return (
-    <KeyboardAvoidingView 
-      style={{flex: 1}} 
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
     >
       <ThemedView style={styles.container}>
-        <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-        
+        <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+
         <View style={styles.content}>
           <View style={styles.spacerTop} />
           <ProgressBar progress={0.9} />
@@ -45,26 +51,18 @@ export default function MoreInfo() {
             <TextInput
               style={styles.input}
               multiline
-              placeholder="Write your answer here..."
-              placeholderTextColor="#A8A3A5"
+              placeholder='Write your answer here...'
+              placeholderTextColor='#A8A3A5'
               value={caregiverMoreInfo}
               onChangeText={setCaregiverMoreInfo}
-              textAlignVertical="top"
+              textAlignVertical='top'
             />
           </View>
         </View>
 
         <View style={styles.bottomNav}>
-          <Button
-            label="Skip"
-            onPress={() => router.back()}
-            variant="skip"
-          />
-          <Button
-            label="Next"
-            onPress={handleNext}
-            variant="compact"
-          />
+          <Button label='Skip' onPress={() => router.back()} variant='skip' />
+          <Button label='Next' onPress={handleNext} variant='compact' />
         </View>
       </ThemedView>
     </KeyboardAvoidingView>
@@ -114,5 +112,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     paddingBottom: 20,
-  }
+  },
 });

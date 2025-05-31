@@ -28,6 +28,8 @@ export default function PaymentScreen() {
     family_payment;
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
+  console.log('family_payment', family_payment);
+
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -105,36 +107,21 @@ export default function PaymentScreen() {
                     <Slider
                       min={15}
                       max={45}
-                      value={hourly_rate}
+                      value={hourly_rate || 15}
                       onValueChange={(value) => {
                         setFamilyPayment({
                           hourly_rate: value,
                           has_interacted: true,
                         });
                       }}
+                      width={300}
+                      height={6}
+                      thumbSize={24}
+                      trackColor='#E5E5E5'
+                      thumbColor='#FFFFFF'
+                      activeTrackColor={Colors.light.primary}
                     />
                   </View>
-                </View>
-                <View
-                  style={[
-                    styles.inputBorder,
-                    hourly_rate > 0 && styles.inputBorderActive,
-                  ]}
-                >
-                  <TextInput
-                    style={styles.input}
-                    placeholder='$20-$30/hr'
-                    placeholderTextColor='#999'
-                    value={has_interacted ? hourly_rate.toString() : ''}
-                    onChangeText={(text) => {
-                      setFamilyPayment({
-                        hourly_rate: Number(text),
-                        has_interacted: true,
-                      });
-                    }}
-                    keyboardType='numeric'
-                    maxLength={3}
-                  />
                 </View>
               </View>
             </>
@@ -216,9 +203,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '100%',
     alignItems: 'center',
+    paddingHorizontal: 20,
   },
   sliderWrapper: {
-    width: '80%',
+    width: '100%',
+    maxWidth: 300,
   },
   inputContainer: {
     marginTop: 20,

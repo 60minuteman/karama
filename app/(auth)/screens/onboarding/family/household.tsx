@@ -78,11 +78,7 @@ export default function HouseholdScreen() {
       { label: '📿 Other' },
     ],
   };
-  const {
-    otherDiet,
-otherRule,
-otherReligion
-  } = useOtherStore()
+  const { otherDiet, otherRule, otherReligion } = useOtherStore();
 
   const toggleSelection = (category: Category, label: string) => {
     const currentSelections = { ...family_selections } as FamilySelections;
@@ -98,10 +94,12 @@ otherReligion
     }
     if (category === 'Religion' && label === '📿 Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherDiet');
-      router.push('/(auth)/screens/onboarding/family/otherDiet?category=religion');
+      router.push(
+        '/(auth)/screens/onboarding/family/otherDiet?category=religion'
+      );
       return;
     }
-   
+
     // Initialize arrays if they don't exist
     if (!currentSelections.diets) currentSelections.diets = [];
     if (!currentSelections.rules) currentSelections.rules = [];
@@ -110,6 +108,13 @@ otherReligion
     if (category === 'Diet') {
       const index = currentSelections.diets.indexOf(label);
       if (index === -1) {
+        const totalSelections =
+          (currentSelections.diets?.length || 0) +
+          (currentSelections.rules?.length || 0) +
+          (currentSelections.religion ? 1 : 0);
+        if (totalSelections >= 10) {
+          return; // Don't add if already at 10 total selections
+        }
         currentSelections.diets.push(label);
       } else {
         currentSelections.diets.splice(index, 1);
@@ -117,11 +122,25 @@ otherReligion
     } else if (category === 'Rules') {
       const index = currentSelections.rules.indexOf(label);
       if (index === -1) {
+        const totalSelections =
+          (currentSelections.diets?.length || 0) +
+          (currentSelections.rules?.length || 0) +
+          (currentSelections.religion ? 1 : 0);
+        if (totalSelections >= 10) {
+          return; // Don't add if already at 10 total selections
+        }
         currentSelections.rules.push(label);
       } else {
         currentSelections.rules.splice(index, 1);
       }
     } else if (category === 'Religion') {
+      const totalSelections =
+        (currentSelections.diets?.length || 0) +
+        (currentSelections.rules?.length || 0) +
+        (currentSelections.religion ? 1 : 0);
+      if (!currentSelections.religion && totalSelections >= 10) {
+        return; // Don't add if already at 10 total selections
+      }
       currentSelections.religion =
         currentSelections.religion === label ? '' : label;
     }
@@ -138,8 +157,12 @@ otherReligion
   };
 
   const handleNext = () => {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/philosophy');
-      router.push('/(auth)/screens/onboarding/family/philosophy');
+    // Check if religion is selected
+    if (!family_selections.religion) {
+      return; // Don't proceed if no religion is selected
+    }
+    setOnboardingScreen('/(auth)/screens/onboarding/family/philosophy');
+    router.push('/(auth)/screens/onboarding/family/philosophy');
   };
 
   return (
@@ -166,7 +189,10 @@ otherReligion
           >
             {(Object.keys(categories) as Category[]).map((category) => (
               <View key={category} style={styles.categoryContainer}>
-                <ThemedText style={styles.categoryTitle}>{category}</ThemedText>
+                <ThemedText style={styles.categoryTitle}>
+                  {category}
+                  {category === 'Religion' && ' *'}
+                </ThemedText>
                 <View style={styles.pillsContainer}>
                   {categories[category].map((item) => (
                     <Pill
@@ -228,7 +254,10 @@ otherReligion
                 label='Next'
                 onPress={handleNext}
                 variant='compact'
-                disabled={Object.keys(family_selections).length === 0}
+                disabled={
+                  Object.keys(family_selections).length === 0 ||
+                  !family_selections.religion
+                }
               />
             </View>
           </LinearGradient>

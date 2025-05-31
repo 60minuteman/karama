@@ -2,6 +2,8 @@ import ProfileCardLoader from '@/components/cards/ProfileCardLoader';
 import EmptyDiscovery from '@/components/discovery/EmptyDiscovery';
 import { CaregiverContainer } from '@/components/home/CaregiverContainer';
 import { Container, ContainerRef } from '@/components/home/Container';
+import { ContainerTwo } from '@/components/home/ContainerTwo';
+// import ContainerTwo from '@/components/home/ContainerTwo';
 import { HomeHeader } from '@/components/home/HomeHeader';
 import { HomeNav } from '@/components/home/HomeNav';
 import { FloatingButton } from '@/components/ui/FloatingButton';
@@ -166,7 +168,7 @@ export default function DiscoverScreen() {
     }
   );
 
-  console.log('currentUser', currentUser?.data?.role, data);
+  // console.log('currentUser', currentUser?.data?.role, data);
 
   // console.log('currentProfilecaregiver see===', data);
 
@@ -176,20 +178,20 @@ export default function DiscoverScreen() {
         currentUser?.data?.role === 'FAMILY' &&
         data?.data?.scored_caregivers
       ) {
-        const caregivers = data.data.scored_caregivers;
+        const caregivers = data?.data?.scored_caregivers;
         setProfiles(caregivers);
 
-        if (caregivers.length > 0 && currentIndex < caregivers.length) {
+        if (caregivers.length > 0 && currentIndex < caregivers?.length) {
           setCurrentProfile(caregivers[currentIndex]);
         }
       } else if (
         currentUser?.data?.role === 'CAREGIVER' &&
         data?.data?.scored_families
       ) {
-        const families = data.data.scored_families;
+        const families = data?.data?.scored_families;
         setProfiles(families);
 
-        if (families.length > 0 && currentIndex < families.length) {
+        if (families.length > 0 && currentIndex < families?.length) {
           setCurrentProfile(families[currentIndex]);
         }
       }
@@ -272,7 +274,7 @@ export default function DiscoverScreen() {
     return age;
   };
 
-  console.log('currentProfile', currentProfile);
+  // console.log('currentProfile', currentProfile);
 
   const profileDataFamily = currentProfile
     ? {
@@ -303,8 +305,8 @@ export default function DiscoverScreen() {
                 .join(', '),
         location: `📍 ${
           currentUser?.data?.role === 'FAMILY'
-            ? currentProfile?.caregiver_profile?.zipcode
-            : currentProfile?.family_profile?.zipcode
+            ? currentProfile?.caregiver_profile?.location
+            : currentProfile?.family_profile?.location
         }`,
         age:
           currentUser?.data?.role === 'FAMILY'
@@ -395,12 +397,14 @@ export default function DiscoverScreen() {
       }
     : null;
 
+  // console.log('profileDataFamily', profileDataFamily);
+
   const profileDataCaregiver: any = {
     image: currentProfile?.family_profile?.pictures, // No image path provided in the data
     name: currentProfile?.family_profile?.name || '', // "Smith Family"
     description: currentProfile?.family_profile?.description?.description || '', // "Mom & Dad"
     children: currentProfile?.family_profile?.children, // "1 Teenager, 1 Pre Schooler"
-    location: `📍 ${currentProfile?.family_profile?.zipcode}`, // "📍 12345"
+    location: `📍 ${currentProfile?.family_profile?.location}`, // "📍 12345"
     rating: currentProfile?.score || '0', // 5.0
     experience: [
       currentProfile?.family_profile?.household_info.rules.join('-') || '', // "1-5 years"
@@ -464,6 +468,9 @@ export default function DiscoverScreen() {
   // Show loading or return early if not authenticated
   if (!token || isLoadingUser) return null;
 
+  // console.log(currentUser, 'check');
+  
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -479,13 +486,16 @@ export default function DiscoverScreen() {
             ) : (
               <>
                 {currentUser?.data?.role === 'FAMILY' ? (
-                  <Container
+                  <>
+                    <ContainerTwo
                     ref={containerRef}
-                    data={data}
-                    onLike={() => handleLike(currentIndex)}
-                    onReject={() => handleReject(currentIndex)}
-                    role={currentUser?.data?.role}
-                  />
+                      data={currentProfile}
+                      profileData={profileDataFamily}
+                      onLike={() => handleLike(currentIndex)}
+                      onReject={() => handleReject(currentIndex)}
+                      role={currentUser?.data?.role === 'FAMILY' ? 'CAREGIVER' : 'FAMILY'}
+                    />
+                  </>
                 ) : (
                   <CaregiverContainer
                     ref={containerRef}

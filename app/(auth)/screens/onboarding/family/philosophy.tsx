@@ -36,18 +36,18 @@ export default function PhilosophyScreen() {
   } = useUserStore();
 
   const philosophies: { type: Philosophy; icon: string }[] = [
-    { type: 'Montessori', icon: '🌈' },
-    { type: 'Waldorf/ Steiner', icon: '🌈' },
-    { type: 'Harkness', icon: '🌈' },
-    { type: 'Sudbury', icon: '🌈' },
-    { type: 'Reggio Emillia', icon: '🌈' },
-    { type: 'Gentle Parenting', icon: '🌈' },
-    { type: 'Permissive Parenting', icon: '🌈' },
-    { type: 'Authoritative Parenting', icon: '🌈' },
-    { type: 'Baby Led-Weaning', icon: '🌈' },
-    { type: 'Authoritarian Parenting', icon: '🌈' },
-    { type: 'Other', icon: '🌈' },
-    { type: 'None', icon: '🚫' },
+    { type: '🌈 Montessori', icon: '🌈' },
+    { type: '🌈 Waldorf/ Steiner', icon: '🌈' },
+    { type: '🌈 Harkness', icon: '🌈' },
+    { type: '🌈 Sudbury', icon: '🌈' },
+    { type: '🌈 Reggio Emillia', icon: '🌈' },
+    { type: '🌈 Gentle Parenting', icon: '🌈' },
+    { type: '🌈 Permissive Parenting', icon: '🌈' },
+    { type: '🌈 Authoritative Parenting', icon: '🌈' },
+    { type: '🌈 Baby Led-Weaning', icon: '🌈' },
+    { type: '🌈 Authoritarian Parenting', icon: '🌈' },
+    { type: '🌈 Other', icon: '🌈' },
+    { type: '🌈 None', icon: '🚫' },
   ];
 
   const togglePhilosophy = (philo: Philosophy) => {
@@ -71,8 +71,8 @@ export default function PhilosophyScreen() {
   };
 
   const handleNext = () => {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/Allergies');
-      router.push('/(auth)/screens/onboarding/family/Allergies');
+    setOnboardingScreen('/(auth)/screens/onboarding/family/Allergies');
+    router.push('/(auth)/screens/onboarding/family/Allergies');
   };
 
   const handleOther = () => {
@@ -107,7 +107,7 @@ export default function PhilosophyScreen() {
                 <Pill
                   key={type}
                   label={type}
-                  icon={icon}
+                  // icon={icon}
                   selected={family_philosophies.includes(type)}
                   onPress={() =>
                     type === 'Other' ? handleOther() : togglePhilosophy(type)
