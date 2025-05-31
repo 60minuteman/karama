@@ -8,9 +8,7 @@
     "icon": "./assets/icons/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/icons/Splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#EB4430"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -49,13 +47,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/icons/Splash.png",
-          "resizeMode": "cover",
-          "backgroundColor": "#F15858",
-          "imageResizeMode": "cover",
-          "androidScaleType": "CENTER_CROP",
-          "splashScreenBackground": "#F15858",
-          "splashScreenAnimation": "fade"
+          "backgroundColor": "#EB4430"
         }
       ],
       "expo-web-browser"

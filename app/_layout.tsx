@@ -1,4 +1,5 @@
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { SplashScreen } from '@/components/SplashScreen';
 import { toastConfig } from '@/components/Toast';
 import { Colors } from '@/constants/Colors';
 import { FontProvider } from '@/providers/FontProvider';
@@ -7,7 +8,7 @@ import { useUserStore } from '@/services/state/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Slot } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
+import * as SplashScreenExpo from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
@@ -57,14 +58,7 @@ export const getSocket = () => {
 };
 
 // Keep splash screen visible while we fetch resources
-SplashScreen.preventAutoHideAsync();
-
-SplashScreen.setOptions({
-  duration: 1000,
-  fade: true,
-});
-
-// console.log('useUserStore.getState().token', useUserStore.getState().token);
+SplashScreenExpo.preventAutoHideAsync();
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -77,49 +71,33 @@ export const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const [isReady, setIsReady] = useState(false);
-  const { hydrated, clearCaregiverData, clearUser } = useUserStore();
+  const [showCustomSplash, setShowCustomSplash] = useState(true);
+  const { hydrated } = useUserStore();
 
   useEffect(() => {
     async function prepare() {
       try {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        // Hide native splash immediately and show custom splash
+        await SplashScreenExpo.hideAsync();
+        
+        // Minimum loading time for app initialization
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setIsReady(true);
       } catch (e) {
         console.warn(e);
+        setIsReady(true); // Ensure we don't get stuck
       }
     }
     prepare();
   }, []);
 
-  // useEffect(() => {
-  //   // clearAllData();
-  //   clearCaregiverData();
-  //   clearUser();
-  //   const clearAsyncStorageData = async () => {
-  //     try {
-  //       await AsyncStorage.removeItem('token');
-  //       await AsyncStorage.removeItem('user-storage');
-  //       await AsyncStorage.clear();
-  //       console.log('Async storage data cleared successfully.');
-  //     } catch (error) {
-  //       console.error('Error clearing async storage data:', error);
-  //     }
-  //   };
+  const handleSplashFinish = () => {
+    setShowCustomSplash(false);
+  };
 
-  //   clearAsyncStorageData();
-  // }, []);
-
-  useEffect(() => {
-    if (isReady && hydrated) {
-      setTimeout(() => {
-        SplashScreen.hideAsync();
-      }, 50);
-      return;
-    }
-  }, [isReady, hydrated]);
-
-  if (!isReady) {
-    return null;
+  // Show custom splash while loading
+  if (showCustomSplash || !isReady || !hydrated) {
+    return <SplashScreen onAnimationFinish={handleSplashFinish} />;
   }
 
   return (
