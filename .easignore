@@ -1,70 +1,116 @@
-# Common VCS directories
-.git
-.github
-.svn
-.hg
-
-# Native folders (since we're using EAS Build)
-android/
-ios/
-
-# Build directories
-node_modules
-web-build
-dist
-.next
-
-# Cache directories
-.cache
-.expo
-.turbo
-
-# Environment files
-.env*
-.envrc
-
-# IDE directories
-.idea
-.vscode
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Test directories
-__tests__
-coverage
-jest
-
-# Debug logs
+# Dependencies and caches
+node_modules/.cache
+.yarn/cache
+.yarn/install-state.gz
+.yarn/build-state.yml
+.pnp.*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 *.log
 
+# Development files
+.expo
+.DS_Store
+*.pem
+.env
+.env.*
+.vscode/
+.idea/
+*.tsbuildinfo
+.eslintcache
+
+# Testing and coverage
+coverage/
+__tests__/
+**/*.test.ts
+**/*.test.tsx
+**/*.test.js
+**/*.test.jsx
+**/*.spec.ts
+**/*.spec.tsx
+**/*.spec.js
+**/*.spec.jsx
+jest.config.*
+.jest/
+
+# Documentation and design
+README.md
+CHANGELOG.md
+LICENSE*
+docs/
+*.md
+*.pdf
+*.sketch
+*.fig
+*.psd
+*.ai
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Build artifacts
+dist/
+build/
+.next/
+.nuxt/
+.vercel/
+.netlify/
+
+# Metro bundler cache
+.metro/
+metro.config.js.bak
+
+# Storybook
+.storybook/
+stories/
+
+# Large asset folders (keep only what's needed)
+assets/design/
+assets/docs/
+assets/screenshots/
+assets/mockups/
+
+# Source maps (development only)
+**/*.map
+**/*.js.map
+**/*.css.map
+
 # Temporary files
+*.tmp
+*.temp
+.tmp/
+.temp/
+
+# OS generated files
+Thumbs.db
 *.swp
 *.swo
 *~
 
-# Documentation
-docs
-*.md
-LICENSE
+# Development tools
+.prettierrc*
+.eslintrc*
+babel.config.js.bak
+webpack.config.js.bak
 
-# Development assets
-assets/**/*.psd
-assets/**/*.ai
-assets/**/*.sketch
+# Expo development
+.expo-shared/
+web-build/
 
-# Source maps
-*.map
+# Android/iOS build folders if present
+android/build/
+android/.gradle/
+ios/build/
+ios/Pods/
+ios/DerivedData/
 
-# TypeScript source
-*.ts.map
-*.tsx.map 
+# Node.js
+.npm/
+.node_repl_history
+
+# Scripts that aren't needed for build
+scripts/dev/
+scripts/test/
