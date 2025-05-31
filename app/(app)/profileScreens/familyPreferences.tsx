@@ -141,7 +141,7 @@ const FamilyPreferences = () => {
                                 </View>
                                 <View style={styles.pillContainer}>
                                     {familyProfileData?.caregiver_preference?.caregiver_types?.map((type: string) => {
-                                        return <InfoPill key={type} label={type} icon={'🧢'} />
+                                        return <InfoPill key={type} label={type}  />
                                     })}
                                     {/* <InfoPill label={familyProfileData?.caregiver_preference?.caregiver_types} icon={'🧢'} /> */}
                                 </View>
@@ -181,7 +181,7 @@ const FamilyPreferences = () => {
                                     {
                                         familyProfileData?.languages?.map((language: string) => {
                                             return <View>
-                                                <InfoPill key={language} label={language} icon={'💬'} />
+                                                <InfoPill key={language} label={language}  />
                                             </View>
                                         })
                                     }

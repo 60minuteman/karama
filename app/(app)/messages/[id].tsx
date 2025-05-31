@@ -1,5 +1,6 @@
 import { getSocket } from '@/app/_layout';
 import { Container } from '@/components/home/Container';
+import { ContainerTwo } from '@/components/home/ContainerTwo';
 import MessageScreenSkeleton from '@/components/matches/MessageSkeleton';
 import { ChatBubble } from '@/components/messages/ChatBubble';
 import { MessageHeader } from '@/components/messages/MessageHeader';
@@ -415,7 +416,11 @@ export default function MessageScreen() {
         </View>
       ) : (
         <View style={{ height: '80%', display: 'flex', alignItems: 'center' }}>
+          {profile?.family_profile ? 
           <Container profileData={profile} data={profile?.family_profile || profile?.cargiver_profile} role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'} />
+          : 
+          <ContainerTwo profileData={profile} data={profile} role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'} />
+          }
         </View>
       )}
     </KeyboardAvoidingView>
