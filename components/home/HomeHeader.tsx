@@ -51,7 +51,7 @@ export const HomeHeader = () => {
         <TouchableOpacity
           style={styles.iconButton}
           activeOpacity={0.7}
-          onPress={handleUndoSwipe}
+          // onPress={handleUndoSwipe}
         >
           <Image
             source={require('@/assets/images/BackIcon.png')}
@@ -62,7 +62,7 @@ export const HomeHeader = () => {
         <TouchableOpacity
           style={styles.iconButton}
           activeOpacity={0.7}
-          onPress={() => router.push('/filter')}
+          // onPress={() => router.push('/filter')}
         >
           <Image
             source={require('@/assets/images/Settings.png')}

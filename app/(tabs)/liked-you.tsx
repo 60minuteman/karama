@@ -33,17 +33,20 @@ interface LikedYouProps {
 
 export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
   const { width, height } = useWindowDimensions();
-  const [cursor, setCursor] = useState('')
-  const [nextPage, setNextPage] = useState(1)
-   const { data: currentUser, isLoading: isLoadingCurrentUser } =
-      useCurrentUser();
+  const [cursor, setCursor] = useState('');
+  const [nextPage, setNextPage] = useState(1);
+  const { data: currentUser, isLoading: isLoadingCurrentUser } =
+    useCurrentUser();
 
-      const { addLikeProfile, setAccountType } = useOtherStore()
+  const { addLikeProfile, setAccountType } = useOtherStore();
 
-      const {data: like_you, isLoading: isLoading} = useFetchLikes(currentUser?.data?.role, cursor, nextPage )
+  const { data: like_you, isLoading: isLoading } = useFetchLikes(
+    currentUser?.data?.role,
+    cursor,
+    nextPage
+  );
 
-      // console.log(like_you, 'like-you');
-      
+  // console.log(like_you, 'like-you');
 
   // Responsive calculations
   const horizontalPadding = width * 0.04; // 4% of screen width
@@ -63,12 +66,11 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
     // Navigate to the caregiver preview screen when a card is presse
     // d
     // console.log(profile, );
-    
-    
-    setAccountType(like_you?.data?.scored_caregivers ? 'CAREGIVER' : 'FAMILY')
-    addLikeProfile(profile)
+
+    setAccountType(like_you?.data?.scored_caregivers ? 'CAREGIVER' : 'FAMILY');
+    addLikeProfile(profile);
     // console.log(profile, 'log');
-    
+
     router.push('/caregiver/profilePreview');
   };
 
@@ -131,41 +133,42 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
         >
           Liked you
         </ThemedText>
-        {like_you?.data?.scored_families?.length  === 0 || like_you?.data?.scored_caregivers?.length === 0 ? (
+        {like_you?.data?.scored_families?.length === 0 ||
+        like_you?.data?.scored_caregivers?.length === 0 ? (
           <EmptyLikes />
         ) : (
-
-        <View style={[styles.content, { padding: horizontalPadding }]}>
-          {isSubscribed ? (
-            <>
-            {currentUser?.data?.role === 'FAMILY' ? (
-            <View style={[styles.profileGrid, { gap: cardGap }]}>
-              {like_you?.data?.scored_caregivers?.map((profile: any) => (
-                <LikedYouCard
-                  key={profile.id}
-                  profile={profile?.caregiver_profile}
-                  isBlurred={false}
-                  onPress={() => handleCardPress(profile?.caregiver_profile)}
-                />
-              ))}
-            </View>
+          <View style={[styles.content, { padding: horizontalPadding }]}>
+            {isSubscribed ? (
+              <>
+                {currentUser?.data?.role === 'FAMILY' ? (
+                  <View style={[styles.profileGrid, { gap: cardGap }]}>
+                    {like_you?.data?.scored_caregivers?.map((profile: any) => (
+                      <LikedYouCard
+                        key={profile.id}
+                        profile={profile?.caregiver_profile}
+                        isBlurred={false}
+                        onPress={() =>
+                          handleCardPress(profile?.caregiver_profile)
+                        }
+                      />
+                    ))}
+                  </View>
+                ) : (
+                  <View style={[styles.profileGrid, { gap: cardGap }]}>
+                    {like_you?.data?.scored_families?.map((profile: any) => (
+                      <LikedYouCard
+                        key={profile.id}
+                        profile={profile?.family_profile}
+                        isBlurred={false}
+                        onPress={() => handleCardPress(profile?.family_profile)}
+                      />
+                    ))}
+                  </View>
+                )}
+              </>
             ) : (
-            <View style={[styles.profileGrid, { gap: cardGap }]}>
-              {like_you?.data?.scored_families?.map((profile: any) => (
-                <LikedYouCard
-                  key={profile.id}
-                  profile={profile?.family_profile}
-                  isBlurred={false}
-                  onPress={() => handleCardPress(profile?.family_profile)}
-                />
-              ))}
-            </View>
-            )}
-            </>
-           
-          ) : (
-            <>
-              {/* <View style={[styles.profileGrid, { gap: cardGap }]}>
+              <>
+                {/* <View style={[styles.profileGrid, { gap: cardGap }]}>
                 {profiles.map((profile) => (
                   <LikedYouCard
                     key={profile.id}
@@ -177,64 +180,66 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
               </View> */}
 
                 {currentUser?.data?.role === 'FAMILY' ? (
-            <View style={[styles.profileGrid, { gap: cardGap }]}>
-              {like_you?.data?.scored_caregivers?.map((profile: any) => (
-                <LikedYouCard
-                  key={profile.id}
-                  profile={profile?.caregiver_profile}
-                  isBlurred={profile.id !== '1'} // Only the first card is unblurred
-                  onPress={() => handleCardPress(profile?.caregiver_profile)}
-                />
-              ))}
-            </View>
-            ) : (
-            <View style={[styles.profileGrid, { gap: cardGap }]}>
-              {like_you?.data?.scored_families?.map((profile: any) => (
-                <LikedYouCard
-                  key={profile.id}
-                  profile={profile?.family_profile}
-                  isBlurred={profile.id !== '1'} // Only the first card is unblurred
-                  onPress={() => handleCardPress(profile?.family_profile)}
-                />
-              ))}
-            </View>
-            )}
-              <View
-                style={[
-                  styles.upgradeContainer,
-                  { bottom: upgradeContainerBottom },
-                ]}
-              >
+                  <View style={[styles.profileGrid, { gap: cardGap }]}>
+                    {like_you?.data?.scored_caregivers?.map((profile: any) => (
+                      <LikedYouCard
+                        key={profile.id}
+                        profile={profile?.caregiver_profile}
+                        isBlurred={profile.id !== '1'} // Only the first card is unblurred
+                        onPress={() =>
+                          handleCardPress(profile?.caregiver_profile)
+                        }
+                      />
+                    ))}
+                  </View>
+                ) : (
+                  <View style={[styles.profileGrid, { gap: cardGap }]}>
+                    {like_you?.data?.scored_families?.map((profile: any) => (
+                      <LikedYouCard
+                        key={profile.id}
+                        profile={profile?.family_profile}
+                        isBlurred={profile.id !== '1'} // Only the first card is unblurred
+                        onPress={() => handleCardPress(profile?.family_profile)}
+                      />
+                    ))}
+                  </View>
+                )}
                 <View
                   style={[
-                    styles.upgradeRow,
-                    {
-                      width: width - horizontalPadding * 2,
-                      height: height * 0.07,
-                    },
+                    styles.upgradeContainer,
+                    { bottom: upgradeContainerBottom },
                   ]}
                 >
-                  <TouchableOpacity
+                  <View
                     style={[
-                      styles.upgradeButton,
+                      styles.upgradeRow,
                       {
-                        paddingHorizontal: upgradeButtonPadding,
+                        width: width - horizontalPadding * 2,
+                        height: height * 0.07,
                       },
                     ]}
-                    onPress={handleUpgradePress}
                   >
-                    <ThemedText
+                    <TouchableOpacity
                       style={[
-                        styles.upgradeButtonText,
+                        styles.upgradeButton,
                         {
-                          fontSize: width * 0.035,
+                          paddingHorizontal: upgradeButtonPadding,
                         },
                       ]}
+                      onPress={handleUpgradePress}
                     >
-                      Upgrade
-                    </ThemedText>
-                  </TouchableOpacity>
-                  <View style={styles.upgradeTextContainer}>
+                      <ThemedText
+                        style={[
+                          styles.upgradeButtonText,
+                          {
+                            fontSize: width * 0.035,
+                          },
+                        ]}
+                      >
+                        Upgrade
+                      </ThemedText>
+                    </TouchableOpacity>
+                    {/* <View style={styles.upgradeTextContainer}>
                     <ThemedText
                       style={[
                         styles.upgradeText,
@@ -245,13 +250,13 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
                     >
                       Upgrade to Karama +{'\n'}to get your profile seen
                     </ThemedText>
+                  </View> */}
                   </View>
                 </View>
-              </View>
-            </>
-          )}
-        </View>
-        ) }
+              </>
+            )}
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

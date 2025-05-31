@@ -1,17 +1,17 @@
-import { StyleSheet, View, ScrollView, Switch } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useOtherStore } from '@/services/state/other';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, Switch, View } from 'react-native';
 
-type Education = 
+type Education =
   | 'High School'
   | 'In College'
   | 'Undergraduate Degree'
@@ -26,16 +26,16 @@ export default function EducationScreen() {
   const { setFamilyEducation, familyEducation } = useOtherStore();
 
   const educationOptions: Array<{ label: Education; icon?: string }> = [
-    { label: 'High School', icon: '🎓' },
-    { label: 'In College', icon: '📓' },
-    { label: 'Undergraduate Degree', icon: '🎓' },
-    { label: 'In Grad School', icon: '📘' },
-    { label: 'Graduate Degree', icon: '🎓' },
-    { label: 'No Preference' },
+    { label: '🎓 High School', icon: '🎓' },
+    { label: '📓 In College', icon: '📓' },
+    { label: '🎓 Undergraduate Degree', icon: '🎓' },
+    { label: '📘 In Grad School', icon: '📘' },
+    { label: '🎓 Graduate Degree', icon: '🎓' },
+    { label: '🤷‍♂️ No Preference', icon: '🤷‍♂️' },
   ];
 
   const handleNext = () => {
-    if (familyEducation === '') return
+    if (familyEducation === '') return;
     router.push('/(auth)/screens/onboarding/family/requirements');
   };
 
@@ -45,8 +45,8 @@ export default function EducationScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" />
-      
+      <Header variant='back' />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.7} />
@@ -58,7 +58,8 @@ export default function EducationScreen() {
         >
           <View style={styles.mainContent}>
             <ThemedText style={styles.title}>
-              What level of{'\n'}education do you{'\n'}require your{'\n'}caregiver to have?
+              What level of{'\n'}education do you{'\n'}require your{'\n'}
+              caregiver to have?
             </ThemedText>
 
             <View style={styles.optionsContainer}>
@@ -68,7 +69,10 @@ export default function EducationScreen() {
                     label={option.label}
                     icon={option.icon}
                     selected={selected === option.label}
-                    onPress={() => {setFamilyEducation(option.label); setSelected(option.label)}}
+                    onPress={() => {
+                      setFamilyEducation(option.label);
+                      setSelected(option.label);
+                    }}
                   />
                 </View>
               ))}
@@ -80,7 +84,7 @@ export default function EducationScreen() {
                 value={showOnProfile}
                 onValueChange={setShowOnProfile}
                 trackColor={{ false: '#E8E8E8', true: Colors.light.primary }}
-                thumbColor="#FFFFFF"
+                thumbColor='#FFFFFF'
               />
             </View>
           </View>
@@ -91,15 +95,11 @@ export default function EducationScreen() {
           style={styles.buttonGradient}
         >
           <View style={styles.buttonContainer}>
+            <Button label='Skip' onPress={handleSkip} variant='skip' />
             <Button
-              label="Skip"
-              onPress={handleSkip}
-              variant="skip"
-            />
-            <Button
-              label="Next"
+              label='Next'
               onPress={handleNext}
-              variant="compact"
+              variant='compact'
               disabled={!selected}
             />
           </View>

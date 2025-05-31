@@ -71,6 +71,8 @@ export function ConversationItem({
     );
   };
 
+  console.log('conversation', conversation);
+
   return (
     <>
       <Swipeable
@@ -81,7 +83,14 @@ export function ConversationItem({
         onSwipeableClose={() => {}}
       >
         <View style={styles.container}>
-          <Image source={{ uri: imageUrl }} style={styles.avatar} />
+          <Image
+            source={
+              imageUrl
+                ? { uri: imageUrl }
+                : require('@/assets/images/default-avatar.png')
+            }
+            style={styles.avatar}
+          />
           <TouchableOpacity
             onPress={onPress}
             style={styles.touchableContent}
@@ -123,9 +132,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   avatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 64.3,
+    height: 63,
+    borderRadius: '100%',
     backgroundColor: '#002333',
   },
   content: {

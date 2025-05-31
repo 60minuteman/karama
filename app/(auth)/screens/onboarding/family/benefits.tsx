@@ -26,13 +26,15 @@ export default function BenefitsScreen() {
   const { family_benefits, setFamilyBenefits, setOnboardingScreen } =
     useUserStore();
 
+  console.log('family_benefits', family_benefits);
+
   const { selected_benefits, show_on_profile } = family_benefits;
 
-  const toggleBenefit = (id: string) => {
+  const toggleBenefit = (label: string) => {
     const currentBenefits = selected_benefits ?? [];
-    const updatedBenefits = currentBenefits.includes(id)
-      ? currentBenefits.filter((benefit) => benefit !== id)
-      : [...currentBenefits, id];
+    const updatedBenefits = currentBenefits.includes(label)
+      ? currentBenefits.filter((benefit) => benefit !== label)
+      : [...currentBenefits, label];
 
     setFamilyBenefits({ selected_benefits: updatedBenefits });
   };
@@ -60,8 +62,8 @@ export default function BenefitsScreen() {
               <View key={benefit.id} style={styles.pillWrapper}>
                 <Pill
                   label={benefit.label}
-                  selected={selected_benefits?.includes(benefit.id)}
-                  onPress={() => toggleBenefit(benefit.id)}
+                  selected={selected_benefits?.includes(benefit.label)}
+                  onPress={() => toggleBenefit(benefit.label)}
                 />
               </View>
             ))}

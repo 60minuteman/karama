@@ -86,15 +86,15 @@ export default function ResponsibilitiesScreen() {
     setSteps,
     steps,
   } = useUserStore();
-  const {  familyEducation } = useOtherStore();
-
+  const { familyEducation } = useOtherStore();
 
   console.log('onboarding_screen', onboarding_screen);
+  console.log('family_responsibilities', family_responsibilities);
 
   const MIN_RESPONSIBILITIES = 3;
   const MAX_RESPONSIBILITIES = 10;
 
-  const toggleResponsibility = (id: string) => {
+  const toggleResponsibility = (id: string, label: string) => {
     if (id === 'other') {
       setOnboardingScreen(
         '/(auth)/screens/onboarding/family/otherChildResponsibilities'
@@ -113,17 +113,17 @@ export default function ResponsibilitiesScreen() {
       return;
     }
 
-    if (family_responsibilities.includes(id)) {
+    if (family_responsibilities.includes(label)) {
       // Allow removing if we have more than minimum
       if (family_responsibilities.length > MIN_RESPONSIBILITIES) {
         setFamilyResponsibilities(
-          family_responsibilities.filter((item) => item !== id)
+          family_responsibilities.filter((item) => item !== label)
         );
       }
     } else {
       // Allow adding if we haven't reached maximum
       if (family_responsibilities.length < MAX_RESPONSIBILITIES) {
-        setFamilyResponsibilities([...family_responsibilities, id]);
+        setFamilyResponsibilities([...family_responsibilities, label]);
       } else {
         Toast.show({
           type: 'info',
@@ -184,11 +184,11 @@ export default function ResponsibilitiesScreen() {
     const householdIds = householdResponsibilities.map((r) => r.id);
 
     const selectedChildcareResponsibilities = family_responsibilities.filter(
-      (id) => childcareIds.includes(id)
+      (label) => childcareResponsibilities.some((r) => r.label === label)
     );
 
     const selectedHouseholdResponsibilities = family_responsibilities.filter(
-      (id) => householdIds.includes(id)
+      (label) => householdResponsibilities.some((r) => r.label === label)
     );
 
     submit.mutate({
@@ -303,10 +303,10 @@ export default function ResponsibilitiesScreen() {
                 <Pill
                   key={item.id}
                   label={item.label}
-                  selected={family_responsibilities.includes(item.id)}
-                  onPress={() => toggleResponsibility(item.id)}
+                  selected={family_responsibilities.includes(item.label)}
+                  onPress={() => toggleResponsibility(item.id, item.label)}
                   disabled={
-                    !family_responsibilities.includes(item.id) &&
+                    !family_responsibilities.includes(item.label) &&
                     family_responsibilities.length >= MAX_RESPONSIBILITIES
                   }
                 />
@@ -323,10 +323,10 @@ export default function ResponsibilitiesScreen() {
                 <Pill
                   key={item.id}
                   label={item.label}
-                  selected={family_responsibilities.includes(item.id)}
-                  onPress={() => toggleResponsibility(item.id)}
+                  selected={family_responsibilities.includes(item.label)}
+                  onPress={() => toggleResponsibility(item.id, item.label)}
                   disabled={
-                    !family_responsibilities.includes(item.id) &&
+                    !family_responsibilities.includes(item.label) &&
                     family_responsibilities.length >= MAX_RESPONSIBILITIES
                   }
                 />

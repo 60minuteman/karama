@@ -64,8 +64,7 @@ const ContainerTwo = forwardRef<ContainerRef, ContainerProps>(
 
     // console.log(data, 'new val');
 
-    const data = newVal?.caregiver_profile
-    
+    const data = newVal?.caregiver_profile;
 
     // console.log(data, 'show');
     // return
@@ -114,7 +113,6 @@ const ContainerTwo = forwardRef<ContainerRef, ContainerProps>(
 
     // Add debug log
     // console.log(data, 'prompts');
-    
 
     if (!profileData || !data) {
       return (
@@ -179,44 +177,45 @@ const ContainerTwo = forwardRef<ContainerRef, ContainerProps>(
             data={data}
           />
         </View>
-        {role === 'CAREGIVER' &&  (
-         <>
-          <View style={styles.spacer} />
-        <View style={dynamicStyles.componentContainer}>
-          <ExperienceAndLanguages
-            yearsOfExperience={caregiverProfile?.years_of_experience}
-            languages={profileData.languages}
-            data={data}
-            role
-          />
-        </View>
-        </>
-
-        
-
+        {role === 'CAREGIVER' && (
+          <>
+            <View style={styles.spacer} />
+            <View style={dynamicStyles.componentContainer}>
+              <ExperienceAndLanguages
+                yearsOfExperience={caregiverProfile?.years_of_experience}
+                languages={profileData.languages}
+                data={data}
+                role
+              />
+            </View>
+          </>
         )}
 
         {role === 'CAREGIVER' && (
-           <>
-           {data?.prompts?.[0]?.title && (
+          <>
+            {data?.prompts?.[0]?.title && (
               <View style={styles.section}>
-            <View style={styles.subSection} >
-              <ThemedText>
-                {data?.prompts?.[0]?.title}
-              </ThemedText>
-              <View style={styles.pillContainer}>
-                <Text style={{fontSize: 22}}>{data?.prompts?.[0]?.answer}</Text>
+                <View style={styles.subSection}>
+                  <ThemedText>{data?.prompts?.[0]?.title}</ThemedText>
+                  <View style={styles.pillContainer}>
+                    <Text style={{ fontSize: 22 }}>
+                      {data?.prompts?.[0]?.answer}
+                    </Text>
+                  </View>
+                </View>
               </View>
-            </View>
-          </View>
-          )}
-           </>
+            )}
+          </>
         )}
         <View style={styles.spacer} />
 
         <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>
-          <Interests data={data} role={role} interests={profileData.interests} />
+          <Interests
+            data={data}
+            role={role}
+            interests={profileData.interests}
+          />
         </View>
 
         <View style={styles.spacer} />
@@ -277,44 +276,44 @@ const ContainerTwo = forwardRef<ContainerRef, ContainerProps>(
           </>
         )}
 
-       {role === 'CAREGIVER' && (
-      <>
-        <View style={styles.spacer} />
-        <View style={dynamicStyles.componentContainer}>
-          <Work
-            animals={[
-              ...(experienceWithDisabilities?.disabilities || []),
-              ...(experienceWithPets?.pets || []),
-            ]?.filter(Boolean)}
-            data={data}
-          />
-        </View>
-         {role === 'CAREGIVER' && (
-           <>
-           {data?.prompts?.[1]?.title && (
-              <View style={styles.section}>
-            <View style={styles.subSection} >
-              <ThemedText>
-                {data?.prompts?.[1]?.title}
-              </ThemedText>
-              <View style={styles.pillContainer}>
-                <Text style={{fontSize: 22}}>{data?.prompts?.[1]?.answer}</Text>
-              </View>
+        {role === 'CAREGIVER' && (
+          <>
+            <View style={styles.spacer} />
+            <View style={dynamicStyles.componentContainer}>
+              <Work
+                animals={[
+                  ...(experienceWithDisabilities?.disabilities || []),
+                  ...(experienceWithPets?.pets || []),
+                ]?.filter(Boolean)}
+                data={data}
+              />
             </View>
-          </View>
-          )}
-           </>
+            {role === 'CAREGIVER' && (
+              <>
+                {data?.prompts?.[1]?.title && (
+                  <View style={styles.section}>
+                    <View style={styles.subSection}>
+                      <ThemedText>{data?.prompts?.[1]?.title}</ThemedText>
+                      <View style={styles.pillContainer}>
+                        <Text style={{ fontSize: 22 }}>
+                          {data?.prompts?.[1]?.answer}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                )}
+              </>
+            )}
+            <View style={styles.spacer} />
+            <View style={dynamicStyles.componentContainer}>
+              <Position
+                positions={caregiverProfile?.past_positions || []}
+                data={data}
+              />
+            </View>
+            <View style={styles.bottomSpacer} />
+          </>
         )}
-        <View style={styles.spacer} />
-        <View style={dynamicStyles.componentContainer}>
-          <Position
-            positions={caregiverProfile?.past_positions || []}
-            data={data}
-          />
-        </View>
-        <View style={styles.bottomSpacer} />
-      </>
-    )} 
         {/* 
        
         
@@ -361,7 +360,7 @@ const ContainerTwo = forwardRef<ContainerRef, ContainerProps>(
             <View style={dynamicStyles.profileCardContainer}>
               <ProfileCard data={data} {...profileData} />
             </View>
-              {/* <Text>sss</Text> */}
+            {/* <Text>sss</Text> */}
 
             {content}
           </ScrollView>

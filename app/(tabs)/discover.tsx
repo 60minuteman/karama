@@ -469,7 +469,6 @@ export default function DiscoverScreen() {
   if (!token || isLoadingUser) return null;
 
   // console.log(currentUser, 'check');
-  
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -488,12 +487,16 @@ export default function DiscoverScreen() {
                 {currentUser?.data?.role === 'FAMILY' ? (
                   <>
                     <ContainerTwo
-                    ref={containerRef}
+                      ref={containerRef}
                       data={currentProfile}
                       profileData={profileDataFamily}
                       onLike={() => handleLike(currentIndex)}
                       onReject={() => handleReject(currentIndex)}
-                      role={currentUser?.data?.role === 'FAMILY' ? 'CAREGIVER' : 'FAMILY'}
+                      role={
+                        currentUser?.data?.role === 'FAMILY'
+                          ? 'CAREGIVER'
+                          : 'FAMILY'
+                      }
                     />
                   </>
                 ) : (

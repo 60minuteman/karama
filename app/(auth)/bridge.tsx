@@ -9,10 +9,12 @@ import { useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 export default function BridgeScreen() {
   const router = useRouter();
-  const { selectedType, setSelectedType, setOnboardingScreen } = useUserStore();
+  const { selectedType, setSelectedType, setOnboardingScreen, setSteps } =
+    useUserStore();
 
   const handleSelection = (type: 'family' | 'caregiver') => {
     setSelectedType(type);
+    setSteps('');
     setTimeout(() => {
       if (type === 'family') {
         setOnboardingScreen('/(auth)/screens/onboarding/family/name');
