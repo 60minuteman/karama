@@ -60,8 +60,12 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
   };
 
   const handleCardPress = (profile: any) => {
-    // Navigate to the caregiver preview screen when a card is pressed
-    setAccountType(like_you?.data?.scored_families ? 'FAMILY' : 'CAREGIVER')
+    // Navigate to the caregiver preview screen when a card is presse
+    // d
+    // console.log(profile, );
+    
+    
+    setAccountType(like_you?.data?.scored_caregivers ? 'CAREGIVER' : 'FAMILY')
     addLikeProfile(profile)
     // console.log(profile, 'log');
     

@@ -56,11 +56,16 @@ export interface ContainerRef {
 }
 
 // Properly type the forwardRef
-const Container = forwardRef<ContainerRef, ContainerProps>(
-  ({ profileData, data, onLike, onReject, role }, ref) => {
+const ContainerTwo = forwardRef<ContainerRef, ContainerProps>(
+  ({ profileData, data: newVal, onLike, onReject, role }, ref) => {
     const { width: windowWidth } = useWindowDimensions();
     const isLargeScreen = windowWidth > 768;
     const containerWidth = Math.min(windowWidth * 0.9, 500);
+
+    // console.log(data, 'new val');
+
+    const data = newVal?.caregiver_profile
+    
 
     // console.log(data, 'show');
     // return
@@ -345,6 +350,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
               contentContainerStyle={styles.scrollContent}
             >
               {content}
+              {/* <Text>sss</Text> */}
             </ScrollView>
           </View>
         ) : (
@@ -355,6 +361,8 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
             <View style={dynamicStyles.profileCardContainer}>
               <ProfileCard data={data} {...profileData} />
             </View>
+              {/* <Text>sss</Text> */}
+
             {content}
           </ScrollView>
         )}
@@ -364,7 +372,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
 );
 
 // Export the component
-export { Container };
+export { ContainerTwo };
 
 const styles = StyleSheet.create({
   container: {

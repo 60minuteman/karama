@@ -167,7 +167,7 @@ const FamilyProfileView = () => {
                   <View style={styles.pillContainer}>
                     {(familyProfile?.family_profile?.languages || []).map(
                       (language: string) => (
-                        <InfoPill key={language} label={language} icon={'💬'} />
+                        <InfoPill key={language} label={language}  />
                       )
                     )}
                   </View>
@@ -262,7 +262,7 @@ const FamilyProfileView = () => {
                       familyProfile?.family_profile?.children_interests
                         ?.stem_interests || []
                     ).map((interest: string) => (
-                      <InfoPill key={interest} label={interest} icon='🔬' />
+                      <InfoPill key={interest} label={interest}  />
                     ))}
                     {familyProfile?.family_profile?.children_interests
                       ?.other_stem_interests && (
