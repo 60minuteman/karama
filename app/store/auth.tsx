@@ -24,7 +24,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isNavigationReady, setIsNavigationReady] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
-  const { user, clearUser, onboarding_screen, logout, hydrated } =
+  const { user, clearUser, onboarding_screen, logout, hydrated, token } =
     useUserStore();
   const rootSegments = useSegments();
   const rootNavigation = useRootNavigation();

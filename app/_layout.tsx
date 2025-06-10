@@ -17,6 +17,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { io, Socket } from 'socket.io-client';
 import AuthProvider, { useAuth } from './store/auth';
+// import * as SplashScreen from 'expo-splash-screen';
 
 let socketInstance: Socket | null = null;
 
@@ -57,9 +58,6 @@ export const getSocket = () => {
   return socketInstance;
 };
 
-// Keep splash screen visible while we fetch resources
-SplashScreenExpo.preventAutoHideAsync();
-
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -67,6 +65,14 @@ export const queryClient = new QueryClient({
       retryDelay: 1000,
     },
   },
+});
+
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreenExpo.preventAutoHideAsync();
+
+SplashScreenExpo.setOptions({
+  duration: 1000,
+  fade: true,
 });
 
 export default function RootLayout() {
@@ -125,7 +131,10 @@ export default function RootLayout() {
 function RootLayoutNav() {
   // const { authInitialized, user } = useAuth();
   // const { isLoading, isLoggedIn } = useAuth();
-  const { hydrated } = useUserStore();
+  const { hydrated, user, token } = useUserStore();
+
+  console.log('user', user);
+  console.log('token', token);
 
   if (!hydrated) return null;
 

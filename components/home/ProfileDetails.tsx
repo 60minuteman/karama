@@ -9,7 +9,7 @@ interface ProfileDetailsProps {
   experience: string[];
   lookingFor: string[];
   hourlyRate: string;
-  data?: any
+  data?: any;
 }
 
 export const ProfileDetails = ({
@@ -17,7 +17,7 @@ export const ProfileDetails = ({
   experience,
   lookingFor,
   hourlyRate,
-  data
+  data,
 }: ProfileDetailsProps) => {
   const [fontsLoaded] = useFonts({
     'Poppins-Regular': Poppins_400Regular,
@@ -29,96 +29,123 @@ export const ProfileDetails = ({
   }
 
   console.log(data, 'profile');
-  
-
 
   return (
     <View style={styles.container}>
       {role === 'CAREGIVER' && (
         <Section title='I am'>
-        <Pill2 label={data?.caregiver_type}  style={styles.pill} />
-      </Section>
+          <Pill2 label={data?.caregiver_type} style={styles.pill} />
+        </Section>
       )}
       {role === 'FAMILY' && (
         <Section title='We have'>
-          <View style={{display: 'flex', gap: 2, flexDirection: 'row', flexWrap: 'wrap'}}>
+          <View
+            style={{
+              display: 'flex',
+              gap: 2,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+            }}
+          >
             {data?.children?.map((item: any) => (
-            <Pill2 label={item.age_group} icon='👩' style={styles.pill} />
-          ))}
+              <Pill2 label={item.age_group} icon='👩' style={styles.pill} />
+            ))}
           </View>
-      </Section>
+        </Section>
       )}
       {role === 'FAMILY' && (
         <Section title='We have a'>
-          <View style={{display: 'flex', gap: 2, flexDirection: 'row', flexWrap: 'wrap'}}>
+          <View
+            style={{
+              display: 'flex',
+              gap: 2,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+            }}
+          >
             {data?.pets?.map((item: any) => (
-            <Pill2 label={item}  style={styles.pill} />
-          ))}
+              <Pill2 label={item} style={styles.pill} />
+            ))}
           </View>
-      </Section>
+        </Section>
       )}
       {role === 'FAMILY' && (
         <Section title='We speak'>
-          <View style={{display: 'flex', gap: 2, flexDirection: 'row', flexWrap: 'wrap'}}>
+          <View
+            style={{
+              display: 'flex',
+              gap: 2,
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+            }}
+          >
             {data?.languages?.map((item: any) => (
-            <Pill2 label={item}  style={styles.pill} />
-          ))}
+              <Pill2 label={item} style={styles.pill} />
+            ))}
           </View>
-      </Section>
+        </Section>
       )}
 
       {role === 'CAREGIVER' && (
         <>
-        <Section title='I have experience with'>
-        <View style={styles.pillsContainer}>
-          {data?.ages_best_with?.map((exp, index) => {
-            const icons = {
-              'School Age': '🛴',
-              Toddler: '🧸',
-              'Pre Schooler': '✏️',
-            };
-            return (
+          <Section title='I have experience with'>
+            <View style={styles.pillsContainer}>
+              {data?.ages_best_with?.map((exp, index) => {
+                const icons = {
+                  'School Age': '🛴',
+                  Toddler: '🧸',
+                  'Pre Schooler': '✏️',
+                };
+                return (
+                  <Pill2
+                    key={index}
+                    label={exp}
+                    // icon={icons[exp as keyof typeof icons]}
+                    style={styles.pill}
+                  />
+                );
+              })}
+            </View>
+          </Section>
+
+          <Section title="I'm Looking For">
+            <View style={styles.pillsContainer}>
+              {data?.availability?.map((item, index) => {
+                const icons = {
+                  'Full Time': '⏰',
+                  'Long Term': '📋',
+                  'Live In': '💤',
+                };
+                return (
+                  <Pill2
+                    key={index}
+                    label={item}
+                    // icon={icons[item as keyof typeof icons]}
+                    style={styles.pill}
+                  />
+                );
+              })}
+            </View>
+          </Section>
+
+          {data?.payment_info?.type === 'Salary Base' ? (
+            <Section title='My Salary Rate'>
               <Pill2
-                key={index}
-                label={exp}
-                // icon={icons[exp as keyof typeof icons]}
+                label={`$${data?.payment_info?.salary}/Year`}
                 style={styles.pill}
               />
-            );
-          })}
-        </View>
-      </Section>
-
-      <Section title="I'm Looking For">
-        <View style={styles.pillsContainer}>
-          {data?.availability?.map((item, index) => {
-            const icons = {
-              'Full Time': '⏰',
-              'Long Term': '📋',
-              'Live In': '💤',
-            };
-            return (
+            </Section>
+          ) : (
+            <Section title='My Hourly Rate'>
               <Pill2
-                key={index}
-                label={item}
-                // icon={icons[item as keyof typeof icons]}
+                label={`$${data?.payment_info?.hourly_min * 15} - $${
+                  data?.payment_info?.hourly_max
+                }`}
+                icon='⌛'
                 style={styles.pill}
               />
-            );
-          })}
-        </View>
-      </Section>
-
-      {data?.payment_info?.type === 'Salary Base' ? (
-        <Section title='My Salary Rate'>
-        <Pill2 label={`${data?.payment_info?.salary}/Year`}  style={styles.pill} />
-      </Section>
-      ) :(
-      <Section title='My Hourly Rate'>
-        <Pill2 label={`${data?.payment_info?.hourly_min} - ${data?.payment_info?.hourly_max}`} icon='⌛' style={styles.pill} />
-      </Section>
-      )}
-
+            </Section>
+          )}
         </>
       )}
     </View>

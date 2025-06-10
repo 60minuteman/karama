@@ -84,11 +84,11 @@ export default function Allergies() {
   };
 
   const handleAllergyToggle = (
-    id: string,
+    label: string,
     category: 'food' | 'environmental' | 'other'
   ) => {
     const newSelected = [...localAllergies[category]];
-    const index = newSelected.indexOf(id);
+    const index = newSelected.indexOf(label);
 
     // If trying to add a new allergy and already at max limit
     if (index === -1 && getTotalSelectedCount() >= 10) {
@@ -98,7 +98,7 @@ export default function Allergies() {
     if (index > -1) {
       newSelected.splice(index, 1);
     } else {
-      newSelected.push(id);
+      newSelected.push(label);
     }
 
     setFamilyAllergies({
@@ -116,25 +116,25 @@ export default function Allergies() {
     const foodAllergiesSelected = foodAllergies
       .filter(
         (allergy) =>
-          localAllergies.food.includes(allergy.id) &&
+          localAllergies.food.includes(allergy.label) &&
           allergy.id !== 'other_food'
       )
-      .map((allergy) => allergy.id);
+      .map((allergy) => allergy.label);
 
     const environmentalAllergiesSelected = environmentalAllergies
       .filter(
         (allergy) =>
-          localAllergies.environmental.includes(allergy.id) &&
+          localAllergies.environmental.includes(allergy.label) &&
           allergy.id !== 'other_environmental'
       )
-      .map((allergy) => allergy.id);
+      .map((allergy) => allergy.label);
 
     const otherAllergiesSelected = otherAllergies
       .filter(
         (allergy) =>
-          localAllergies.other.includes(allergy.id) && allergy.id !== 'other'
+          localAllergies.other.includes(allergy.label) && allergy.id !== 'other'
       )
-      .map((allergy) => allergy.id);
+      .map((allergy) => allergy.label);
 
     setFamilyAllergies({
       food: foodAllergiesSelected,
@@ -152,7 +152,7 @@ export default function Allergies() {
     category: 'food' | 'environmental' | 'other'
   ) => {
     return allergyList.filter((allergy) =>
-      localAllergies[category].includes(allergy.id)
+      localAllergies[category].includes(allergy.label)
     );
   };
 
@@ -229,11 +229,11 @@ export default function Allergies() {
                   <Pill
                     key={allergy.id}
                     label={allergy.label}
-                    selected={localAllergies.food.includes(allergy.id)}
+                    selected={localAllergies.food.includes(allergy.label)}
                     onPress={() =>
                       allergy.id === 'other_food'
                         ? handleOtherPress('food')
-                        : handleAllergyToggle(allergy.id, 'food')
+                        : handleAllergyToggle(allergy.label, 'food')
                     }
                   />
                 ))}
@@ -249,11 +249,13 @@ export default function Allergies() {
                   <Pill
                     key={allergy.id}
                     label={allergy.label}
-                    selected={localAllergies.environmental.includes(allergy.id)}
+                    selected={localAllergies.environmental.includes(
+                      allergy.label
+                    )}
                     onPress={() =>
                       allergy.id === 'other_environmental'
                         ? handleOtherPress('environmental')
-                        : handleAllergyToggle(allergy.id, 'environmental')
+                        : handleAllergyToggle(allergy.label, 'environmental')
                     }
                   />
                 ))}
@@ -269,11 +271,11 @@ export default function Allergies() {
                   <Pill
                     key={allergy.id}
                     label={allergy.label}
-                    selected={localAllergies.other.includes(allergy.id)}
+                    selected={localAllergies.other.includes(allergy.label)}
                     onPress={() =>
                       allergy.id === 'other'
                         ? handleOtherPress('other')
-                        : handleAllergyToggle(allergy.id, 'other')
+                        : handleAllergyToggle(allergy.label, 'other')
                     }
                   />
                 ))}

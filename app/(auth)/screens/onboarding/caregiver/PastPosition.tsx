@@ -187,6 +187,67 @@ const PastPosition: React.FC = () => {
     }
   };
 
+  const handleResponsibilitySelection = (
+    responsibilityId: string,
+    type: 'childcare' | 'household'
+  ) => {
+    const currentPosition =
+      selectedPositionNumber === 'first'
+        ? caregiverFirstPosition
+        : selectedPositionNumber === 'second'
+        ? caregiverSecondPosition
+        : caregiverThirdPosition;
+
+    const currentResponsibilities: string[] =
+      type === 'childcare'
+        ? Array.isArray(currentPosition?.childCare)
+          ? currentPosition.childCare
+          : []
+        : Array.isArray(currentPosition?.household)
+        ? currentPosition.household
+        : [];
+
+    let updatedResponsibilities: string[];
+
+    if (currentResponsibilities.includes(responsibilityId)) {
+      // Remove if already selected
+      updatedResponsibilities = currentResponsibilities.filter(
+        (id: string) => id !== responsibilityId
+      );
+    } else {
+      // Add if not selected and under limit
+      if (currentResponsibilities.length < 10) {
+        updatedResponsibilities = [
+          ...currentResponsibilities,
+          responsibilityId,
+        ];
+      } else {
+        // Show alert or handle max selection reached
+        return;
+      }
+    }
+
+    if (selectedPositionNumber === 'first') {
+      setCaregiverFirstPosition({
+        ...caregiverFirstPosition,
+        [type === 'childcare' ? 'childCare' : 'household']:
+          updatedResponsibilities,
+      });
+    } else if (selectedPositionNumber === 'second') {
+      setCaregiverSecondPosition({
+        ...caregiverSecondPosition,
+        [type === 'childcare' ? 'childCare' : 'household']:
+          updatedResponsibilities,
+      });
+    } else {
+      setCaregiverThirdPosition({
+        ...caregiverThirdPosition,
+        [type === 'childcare' ? 'childCare' : 'household']:
+          updatedResponsibilities,
+      });
+    }
+  };
+
   useEffect(() => {
     console.log(caregiverFirstPosition);
     console.log(caregiverSecondPosition);
@@ -462,6 +523,15 @@ const PastPosition: React.FC = () => {
               <View style={styles.section}>
                 <ThemedText style={styles.sectionTitle}>
                   What were your childcare responsibilities{' '}
+                  <ThemedText style={styles.selectionCount}>
+                    (
+                    {selectedPositionNumber === 'first'
+                      ? caregiverFirstPosition?.childCare?.length || 0
+                      : selectedPositionNumber === 'second'
+                      ? caregiverSecondPosition?.childCare?.length || 0
+                      : caregiverThirdPosition?.childCare?.length || 0}
+                    /10)
+                  </ThemedText>
                 </ThemedText>
                 <View style={styles.pillsContainer}>
                   {childcareResponsibilities.map((responsibility) => (
@@ -470,27 +540,23 @@ const PastPosition: React.FC = () => {
                       label={responsibility.label}
                       selected={
                         selectedPositionNumber === 'first'
-                          ? caregiverFirstPosition?.childCare === responsibility.id
-                          : selectedPositionNumber === 'third'
-                          ? caregiverThirdPosition?.childCare === responsibility.id
-                          : caregiverSecondPosition?.childCare === responsibility.id
+                          ? caregiverFirstPosition?.childCare?.includes(
+                              responsibility.id
+                            )
+                          : selectedPositionNumber === 'second'
+                          ? caregiverSecondPosition?.childCare?.includes(
+                              responsibility.id
+                            )
+                          : caregiverThirdPosition?.childCare?.includes(
+                              responsibility.id
+                            )
                       }
-                      onPress={() => {
-                        selectedPositionNumber === 'first'
-                          ? setCaregiverFirstPosition({
-                              ...caregiverFirstPosition,
-                              childCare: responsibility.id,
-                            })
-                          : selectedPositionNumber === 'third'
-                          ? setCaregiverThirdPosition({
-                              ...caregiverThirdPosition,
-                              childCare: responsibility.id,
-                            })
-                          : setCaregiverSecondPosition({
-                              ...caregiverSecondPosition,
-                              childCare: responsibility.id,
-                            });
-                      }}
+                      onPress={() =>
+                        handleResponsibilitySelection(
+                          responsibility.id,
+                          'childcare'
+                        )
+                      }
                     />
                   ))}
                 </View>
@@ -499,35 +565,40 @@ const PastPosition: React.FC = () => {
               <View style={[styles.section, { marginBottom: 120 }]}>
                 <ThemedText style={styles.sectionTitle}>
                   What were your household responsibilities{' '}
+                  <ThemedText style={styles.selectionCount}>
+                    (
+                    {selectedPositionNumber === 'first'
+                      ? caregiverFirstPosition?.household?.length || 0
+                      : selectedPositionNumber === 'second'
+                      ? caregiverSecondPosition?.household?.length || 0
+                      : caregiverThirdPosition?.household?.length || 0}
+                    /10)
+                  </ThemedText>
                 </ThemedText>
                 <View style={styles.pillsContainer}>
                   {householdResponsibilities.map((responsibility) => (
                     <Pill
                       key={responsibility.id}
                       label={responsibility.label}
-                       selected={
+                      selected={
                         selectedPositionNumber === 'first'
-                          ? caregiverFirstPosition?.household === responsibility.id
-                          : selectedPositionNumber === 'third'
-                          ? caregiverThirdPosition?.household === responsibility.id
-                          : caregiverSecondPosition?.household === responsibility.id
+                          ? caregiverFirstPosition?.household?.includes(
+                              responsibility.id
+                            )
+                          : selectedPositionNumber === 'second'
+                          ? caregiverSecondPosition?.household?.includes(
+                              responsibility.id
+                            )
+                          : caregiverThirdPosition?.household?.includes(
+                              responsibility.id
+                            )
                       }
-                      onPress={() => {
-                        selectedPositionNumber === 'first'
-                          ? setCaregiverFirstPosition({
-                              ...caregiverFirstPosition,
-                              household: responsibility.id,
-                            })
-                          : selectedPositionNumber === 'third'
-                          ? setCaregiverThirdPosition({
-                              ...caregiverThirdPosition,
-                              household: responsibility.id,
-                            })
-                          : setCaregiverSecondPosition({
-                              ...caregiverSecondPosition,
-                              household: responsibility.id,
-                            });
-                      }}
+                      onPress={() =>
+                        handleResponsibilitySelection(
+                          responsibility.id,
+                          'household'
+                        )
+                      }
                     />
                   ))}
                 </View>
@@ -668,6 +739,10 @@ const styles = StyleSheet.create({
   inputBorderActive: {
     borderWidth: 1,
     borderColor: Colors.light.primary,
+  },
+  selectionCount: {
+    fontSize: 14,
+    color: Colors.light.primary,
   },
 });
 

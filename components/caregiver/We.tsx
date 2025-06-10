@@ -46,15 +46,15 @@ export const We: React.FC<WeProps> = ({
             <Pill2
               key={index}
               label={pet}
-              icon={
-                pet.toLowerCase().split(' ').includes('cat')
-                  ? '😺'
-                  : pet.toLowerCase().split(' ').includes('chicken')
-                  ? '🐔'
-                  : pet.toLowerCase().split(' ').includes('dog')
-                  ? '🐕'
-                  : '🐾'
-              }
+              // icon={
+              //   pet.toLowerCase().split(' ').includes('cat')
+              //     ? '😺'
+              //     : pet.toLowerCase().split(' ').includes('chicken')
+              //     ? '🐔'
+              //     : pet.toLowerCase().split(' ').includes('dog')
+              //     ? '🐕'
+              //     : '🐾'
+              // }
               style={pets.cat ? styles.selectedPill : undefined}
               onPress={
                 onToggle ? () => onToggle('pets', 'cat', !pets.cat) : undefined
@@ -72,7 +72,7 @@ export const We: React.FC<WeProps> = ({
             <Pill2
               key={index}
               label={language}
-              icon='💬'
+              // icon='💬'
               // style={languages.hausa ? styles.selectedPill : undefined}
               // onPress={
               //   onToggle

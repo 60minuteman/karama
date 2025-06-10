@@ -500,13 +500,15 @@ export default function DiscoverScreen() {
                     />
                   </>
                 ) : (
-                  <CaregiverContainer
-                    ref={containerRef}
-                    profileData={profileDataCaregiver}
-                    data={currentProfile}
-                    onLike={() => handleLike(currentIndex)}
-                    onReject={() => handleReject(currentIndex)}
-                  />
+                  <>
+                    <CaregiverContainer
+                      ref={containerRef}
+                      profileData={profileDataCaregiver}
+                      data={currentProfile}
+                      onLike={() => handleLike(currentIndex)}
+                      onReject={() => handleReject(currentIndex)}
+                    />
+                  </>
                 )}
               </>
             )}

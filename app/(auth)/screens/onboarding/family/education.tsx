@@ -67,7 +67,7 @@ export default function EducationScreen() {
                 <View key={option.label} style={styles.pillWrapper}>
                   <Pill
                     label={option.label}
-                    icon={option.icon}
+                    // icon={option.icon}
                     selected={selected === option.label}
                     onPress={() => {
                       setFamilyEducation(option.label);

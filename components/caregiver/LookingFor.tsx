@@ -20,13 +20,14 @@ export const LookingFor: React.FC<LookingForProps> = ({
   education = { label: 'Bachelors Degree', icon: '🎓' },
   otherEducation,
 }) => {
+  console.log('education', education);
   return (
     <View style={styles.container}>
       <ThemedText style={styles.title}>{title}</ThemedText>
 
       <View style={[styles.section, styles.lookingForContainer]}>
         {jobType.map((type: any, index: number) => (
-          <Pill2 key={index} label={type} icon='👨‍⚕️' style={styles.pill} />
+          <Pill2 key={index} label={type} style={styles.pill} />
         ))}
       </View>
 
@@ -49,14 +50,12 @@ export const LookingFor: React.FC<LookingForProps> = ({
                 <Pill2
                   key={index}
                   label={otherEducation}
-                  icon='🎓'
+                  // icon='🎓'
                   style={styles.pill}
                 />
               );
             }
-            return (
-              <Pill2 key={index} label={cert} icon='🎓' style={styles.pill} />
-            );
+            return <Pill2 key={index} label={cert} style={styles.pill} />;
           })}
         </View>
       </View>

@@ -5,20 +5,15 @@ interface CaregiverImageProps {
   data?: string;
 }
 
-export const CaregiverImage: React.FC<CaregiverImageProps> = ({ 
-  data
-}) => {
+export const CaregiverImage: React.FC<CaregiverImageProps> = ({ data }) => {
+  console.log('data', data);
   const imageSource = data
     ? { uri: data }
     : require('@/assets/icons/fallback.png');
 
   return (
     <View style={styles.container}>
-      <Image 
-        source={imageSource} 
-        style={styles.image} 
-        resizeMode='cover' 
-      />
+      <Image source={imageSource} style={styles.image} resizeMode='cover' />
     </View>
   );
 };

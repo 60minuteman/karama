@@ -15,7 +15,7 @@ interface ResponsibilitiesProps {
     label: string;
   }>;
   data: any;
-  role?: any
+  role?: any;
 }
 
 export const Responsibilities = ({
@@ -39,7 +39,7 @@ export const Responsibilities = ({
     { icon: '🏠', label: 'Vendor/ Services Management' },
   ],
   data,
-  role
+  role,
 }: ResponsibilitiesProps) => {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -68,63 +68,64 @@ export const Responsibilities = ({
 
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>
-          {role === 'FAMILY'  ?'Household Rules' : 'Childcare Responsibilities'}
+          {role === 'FAMILY' ? 'Household Rules' : 'Childcare Responsibilities'}
         </ThemedText>
-       {role === 'CAREGIVER' ? (
-
-        <View style={styles.pillsContainer}>
-          {data?.responsibilities?.childcare_responsibilities?.map((item: any, index: number) => (
-            <Pill2
-              key={index}
-              // icon={item.icon || '👶'}
-              label={item}
-              style={styles.pill}
-            />
-          ))}
-          
-        </View>
-       ) : (
-         <View style={styles.pillsContainer}>
-          {data?.household_info?.rules?.map((item: any, index: number) => (
-            <Pill2
-              key={index}
-              // icon={item.icon || '👶'}
-              label={item}
-              style={styles.pill}
-            />
-          ))}
-          {data?.responsibilities?.household_responsibilities && (
-            <Pill2
-              // icon={item.icon || '👶'}
-              label={data?.responsibilities?.household_responsibilities}
-              style={styles.pill}
-            />
-          )}
-        </View>
-       )}
+        {role === 'CAREGIVER' ? (
+          <View style={styles.pillsContainer}>
+            {data?.responsibilities?.childcare_responsibilities?.map(
+              (item: any, index: number) => (
+                <Pill2
+                  key={index}
+                  // icon={item.icon || '👶'}
+                  label={item}
+                  style={styles.pill}
+                />
+              )
+            )}
+          </View>
+        ) : (
+          <View style={styles.pillsContainer}>
+            {data?.household_info?.rules?.map((item: any, index: number) => (
+              <Pill2
+                key={index}
+                // icon={item.icon || '👶'}
+                label={item}
+                style={styles.pill}
+              />
+            ))}
+            {data?.responsibilities?.household_responsibilities && (
+              <Pill2
+                // icon={item.icon || '👶'}
+                label={data?.responsibilities?.household_responsibilities}
+                style={styles.pill}
+              />
+            )}
+          </View>
+        )}
       </View>
-       {role === 'CAREGIVER' && (
-
-      <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>
-          Household Responsibilities
-        </ThemedText>
-        <View style={styles.pillsContainer}>
-          {data?.responsibilities?.household_responsibilities && (
-           <>
-            {data?.responsibilities?.household_responsibilities.map((item: any, index: number) => (
-            <Pill2
-              key={index}
-              // icon={item.icon || '👶'}
-              label={item}
-              style={styles.pill}
-            />
-          ))}
-           </>
-          )}
+      {role === 'CAREGIVER' && (
+        <View style={styles.section}>
+          <ThemedText style={styles.sectionTitle}>
+            Household Responsibilities
+          </ThemedText>
+          <View style={styles.pillsContainer}>
+            {data?.responsibilities?.household_responsibilities && (
+              <>
+                {data?.responsibilities?.household_responsibilities.map(
+                  (item: any, index: number) => (
+                    <Pill2
+                      key={index}
+                      // icon={item.icon || '👶'}
+                      label={item}
+                      style={styles.pill}
+                    />
+                  )
+                )}
+              </>
+            )}
+          </View>
         </View>
-      </View>
-       )}
+      )}
     </View>
   );
 };

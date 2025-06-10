@@ -9,7 +9,7 @@ interface WorkProps {
     icon: string;
     label: string;
   }>;
-  data: any
+  data: any;
 }
 
 export const Work = ({
@@ -18,7 +18,7 @@ export const Work = ({
     { icon: '🐸', label: 'Frog' },
     { icon: '🐮', label: 'Cow' },
   ],
-  data
+  data,
 }: WorkProps) => {
   let [fontsLoaded] = useFonts({
     'Bogart-Regular': require('../../assets/fonts/bogart/Bogart-Regular-trial.ttf'),
@@ -29,7 +29,7 @@ export const Work = ({
   }
   // console.log(data.disabilities, 'data.disabilities');
   const animalsData = data?.experience_with_pets?.pets || [];
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.section}>
@@ -46,7 +46,7 @@ export const Work = ({
           ))}
 
           {data?.experience_with_pets?.other && (
-            <View  style={styles.pillWrapper}>
+            <View style={styles.pillWrapper}>
               <Pill2
                 //  icon={animal.icon}
                 label={data?.experience_with_pets?.other}
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     marginHorizontal: -4, // Compensate for pillWrapper margin
   },
   pillWrapper: {
-    width: '33.33%', // 3 columns
+    // width: '33.33%', // 3 columns
     padding: 4,
   },
   pill: {

@@ -33,12 +33,15 @@ interface CaregiverProfile {
 
 const CaregiverProfileView = () => {
   const router = useRouter();
-    const { data: currentUser, isLoading: isLoadingCurrentUser } =
-      useCurrentUser();
-  
-    const { data: caregiverProfile, isLoading: caregiverProfileLoading }: any =
-      useProfile(currentUser?.data?.role);
-  console.log('Caregiver profile data:', caregiverProfile);
+  const { data: currentUser, isLoading: isLoadingCurrentUser } =
+    useCurrentUser();
+
+  const { data: caregiverProfile, isLoading: caregiverProfileLoading }: any =
+    useProfile(currentUser?.data?.role);
+  console.log(
+    'Caregiver profile data:',
+    caregiverProfile?.caregiverProfile?.past_positions?.length
+  );
 
   // Add debug logs
   // console.log('Raw caregiver profile data:', caregiverProfile);

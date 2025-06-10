@@ -1,50 +1,50 @@
-import { useOnboarding } from '@/hooks/useOnboarding';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Redirect } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+// import { useOnboarding } from '@/hooks/useOnboarding';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+// import { Redirect } from 'expo-router';
+// import * as SplashScreen from 'expo-splash-screen';
+// import { useEffect, useState } from 'react';
+// import { StyleSheet, View } from 'react-native';
 
-export default function InitialScreen() {
-  const { isFirstLaunch } = useOnboarding();
-  const [initialRoute, setInitialRoute] = useState<string | null>(null);
+// export default function InitialScreen() {
+//   const { isFirstLaunch } = useOnboarding();
+//   const [initialRoute, setInitialRoute] = useState<string | null>(null);
 
-  useEffect(() => {
-    const checkInitialRoute = async () => {
-      try {
-        await SplashScreen.preventAutoHideAsync();
-        const token = await AsyncStorage.getItem('userToken');
+//   useEffect(() => {
+//     const checkInitialRoute = async () => {
+//       try {
+//         await SplashScreen.preventAutoHideAsync();
+//         const token = await AsyncStorage.getItem('userToken');
 
-        if (token) {
-          setInitialRoute('/(tabs)/discover');
-        } else if (isFirstLaunch) {
-          setInitialRoute('/(auth)/onboarding');
-        } else {
-          setInitialRoute('/(auth)/auth');
-        }
-      } catch (error) {
-        console.error('Initial route check error:', error);
-        setInitialRoute('/(auth)/auth');
-      }
-    };
+//         if (token) {
+//           setInitialRoute('/(tabs)/discover');
+//         } else if (isFirstLaunch) {
+//           setInitialRoute('/(auth)/onboarding');
+//         } else {
+//           setInitialRoute('/(auth)/auth');
+//         }
+//       } catch (error) {
+//         console.error('Initial route check error:', error);
+//         setInitialRoute('/(auth)/onboarding');
+//       }
+//     };
 
-    checkInitialRoute();
-  }, [isFirstLaunch]);
+//     checkInitialRoute();
+//   }, [isFirstLaunch]);
 
-  if (!initialRoute) {
-    return <View style={styles.container} />;
-  }
+//   if (!initialRoute) {
+//     return <View style={styles.container} />;
+//   }
 
-  return (
-    <View style={styles.container}>
-      <Redirect href={initialRoute} />
-    </View>
-  );
-}
+//   return (
+//     <View style={styles.container}>
+//       <Redirect href={initialRoute} />
+//     </View>
+//   );
+// }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F6F6F6',
-  },
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#F6F6F6',
+//   },
+// });
