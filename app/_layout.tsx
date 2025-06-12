@@ -8,6 +8,7 @@ import { useUserStore } from '@/services/state/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Slot } from 'expo-router';
+import { usePreventScreenCapture } from 'expo-screen-capture';
 import * as SplashScreenExpo from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
@@ -71,14 +72,14 @@ export const queryClient = new QueryClient({
 SplashScreenExpo.preventAutoHideAsync();
 
 SplashScreenExpo.setOptions({
-  duration: 1000,
+  duration: 2000,
   fade: true,
 });
 
 export default function RootLayout() {
   const [isReady, setIsReady] = useState(false);
-  const { hydrated, clearCaregiverData, clearUser, setSteps } = useUserStore();
-  const [showCustomSplash, setShowCustomSplash] = useState(true);
+  // const { hydrated, clearCaregiverData, clearUser, setSteps } = useUserStore();
+  // const [showCustomSplash, setShowCustomSplash] = useState(true);
 
   useEffect(() => {
     async function prepare() {
@@ -112,14 +113,14 @@ export default function RootLayout() {
   //       console.error('Error clearing async storage data:', error);
   //     }
   //   };
-  const handleSplashFinish = () => {
-    setShowCustomSplash(false);
-  };
+  // const handleSplashFinish = () => {
+  //   setShowCustomSplash(false);
+  // };
 
   // Show custom splash while loading
-  if (showCustomSplash || !isReady || !hydrated) {
-    return <SplashScreen onAnimationFinish={handleSplashFinish} />;
-  }
+  // if (showCustomSplash || !isReady || !hydrated) {
+  //   return <SplashScreen onAnimationFinish={handleSplashFinish} />;
+  // }
 
   return (
     <AuthProvider>
@@ -131,6 +132,7 @@ export default function RootLayout() {
 function RootLayoutNav() {
   // const { authInitialized, user } = useAuth();
   // const { isLoading, isLoggedIn } = useAuth();
+  usePreventScreenCapture();
   const { hydrated, user, token } = useUserStore();
 
   console.log('user', user);

@@ -51,7 +51,7 @@ export const MatchCircle = ({
     },
     onSuccess: async (response: any) => {
       handleImageLoad();
-      router.push(
+      router.replace(
         `/messages/${response?.data?.data?.id}?name=${match?.caregiver_profile?.name}`
       );
     },

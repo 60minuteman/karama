@@ -1,6 +1,12 @@
-import React from 'react';
-import { StyleSheet, TouchableOpacity, ViewStyle, Platform, useWindowDimensions } from 'react-native';
 import { BlurView } from 'expo-blur';
+import React from 'react';
+import {
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+  ViewStyle,
+} from 'react-native';
 
 interface FloatingButtonProps {
   icon: React.ReactNode;
@@ -9,23 +15,23 @@ interface FloatingButtonProps {
   index?: number; // Add index prop to determine button position
 }
 
-export const FloatingButton = ({ 
-  icon, 
-  onPress, 
+export const FloatingButton = ({
+  icon,
+  onPress,
   style,
-  index = 0 // Default to 0 if not provided
+  index = 0, // Default to 0 if not provided
 }: FloatingButtonProps) => {
   const { width: windowWidth } = useWindowDimensions();
   const buttonWidth = windowWidth - 48; // Full width minus left and right padding
 
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[
         styles.button,
         { width: buttonWidth },
-        { bottom: 24 + (index * (60 + 10)) }, // Add spacing based on index
-        style
-      ]} 
+        { bottom: 24 + index * (60 + 10) }, // Add spacing based on index
+        style,
+      ]}
       onPress={onPress}
       activeOpacity={0.8}
     >
@@ -55,8 +61,8 @@ const styles = StyleSheet.create({
   blur: {
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: 'rgba(255,255,255,0.37)',
     alignItems: 'center',
     justifyContent: 'center',
-  }
-}); 
+  },
+});

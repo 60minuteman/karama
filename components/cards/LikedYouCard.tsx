@@ -1,8 +1,15 @@
-import React from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, ImageBackground, Dimensions } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import { useFonts, Poppins_400Regular } from '@expo-google-fonts/poppins';
+import { Poppins_400Regular, useFonts } from '@expo-google-fonts/poppins';
 import { BlurView } from 'expo-blur';
+import React from 'react';
+import {
+  Dimensions,
+  Image,
+  ImageBackground,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 interface LikedYouCardProps {
   profile: {
@@ -14,50 +21,56 @@ interface LikedYouCardProps {
     rating: number;
     gender: 'She / Her' | 'He / Him';
     image: string | number; // Allow both URI strings and require() image numbers
-    score: number
+    score: number;
   };
   isBlurred?: boolean;
   onPress?: () => void;
-  key: any
+  key: any;
 }
 
-export const LikedYouCard = ({ 
-  profile, 
+export const LikedYouCard = ({
+  profile,
   isBlurred = false,
   onPress,
-  key
+  key,
 }: LikedYouCardProps) => {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
-    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf')
+    'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
   });
 
   if (!fontsLoaded) {
     return null;
   }
 
-  
-
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.9}
       style={styles.card}
       key={key}
     >
-      <ImageBackground 
-        source={typeof profile.pictures?.[0]?.path === 'string' ? { uri: profile.pictures?.[0]?.path } : profile.image}
+      <ImageBackground
+        source={
+          typeof profile.pictures?.[0]?.path === 'string'
+            ? { uri: profile.pictures?.[0]?.path }
+            : profile.image
+        }
         style={styles.imageBackground}
-        resizeMode="cover"
+        resizeMode='cover'
       >
         <View style={styles.overlay}>
           <View style={styles.header}>
             <BlurView intensity={20} style={styles.genderPill}>
-              <ThemedText style={styles.genderText}>{profile?.description?.description || profile?.pronounce}</ThemedText>
+              <ThemedText style={styles.genderText}>
+                {profile?.description?.description || profile?.pronounce}
+              </ThemedText>
             </BlurView>
             <View style={styles.ratingPill}>
-              <ThemedText style={styles.rating}>{profile.rating_count}</ThemedText>
-              <ThemedText style={styles.starIcon}>⭐</ThemedText> 
+              <ThemedText style={styles.rating}>
+                {profile.rating_count}
+              </ThemedText>
+              <ThemedText style={styles.starIcon}>⭐</ThemedText>
             </View>
           </View>
 
@@ -65,19 +78,17 @@ export const LikedYouCard = ({
             <ThemedText style={styles.name}>
               {profile.name}, {profile.age}
             </ThemedText>
-            <ThemedText style={[styles.location, styles.truncate]} numberOfLines={1}>
+            <ThemedText
+              style={[styles.location, styles.truncate]}
+              numberOfLines={1}
+            >
               {profile.location}
             </ThemedText>
-            <ThemedText style={styles.salary}>
-              {profile.salary}
-            </ThemedText>
+            <ThemedText style={styles.salary}>{profile.salary}</ThemedText>
           </View>
         </View>
         {isBlurred && (
-          <BlurView 
-            intensity={20}
-            style={StyleSheet.absoluteFill}
-          />
+          <BlurView intensity={20} style={StyleSheet.absoluteFill} />
         )}
       </ImageBackground>
     </TouchableOpacity>
@@ -117,7 +128,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     paddingHorizontal: 6,
     paddingVertical: 4,
-    overflow: 'hidden'
+    overflow: 'hidden',
   },
   genderText: {
     fontSize: 12,
@@ -163,4 +174,4 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontFamily: 'Poppins_400Regular',
   },
-}); 
+});

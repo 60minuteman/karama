@@ -79,7 +79,7 @@ const childcareResponsibilities = [
   { id: 'childcareErrands', label: '🛍️ Childcare Errands' },
   { id: 'feeding', label: '🧑‍🍼 Feeding' },
   { id: 'pottyTraining2', label: '🚽 Potty Training' },
-  { id: 'other', label: '🧒🏽 Other' },
+  // { id: 'other', label: '🧒🏽 Other' },
 ];
 
 const householdResponsibilities = [
@@ -98,7 +98,7 @@ const householdResponsibilities = [
   { id: 'hiringStaff', label: '🗒️ Hiring & Supervising Staff' },
   { id: 'propertyManagement', label: '🏘️ Property Management' },
   { id: 'dishwasher', label: '🍽️ Loading/Unloading Dishwasher' },
-  { id: 'other2', label: '🏙️ Other' },
+  // { id: 'other2', label: '🏙️ Other' },
 ];
 
 const positionTabs = [
@@ -118,6 +118,7 @@ const PastPosition: React.FC = () => {
     caregiverThirdPosition,
     setOnboardingScreen,
   } = useUserStore();
+  console.log('caregiverFirstPosition', caregiverFirstPosition);
   const [selectedPositionNumber, setSelectedPositionNumber] = useState<
     'first' | 'second' | 'third'
   >('first');
@@ -188,7 +189,7 @@ const PastPosition: React.FC = () => {
   };
 
   const handleResponsibilitySelection = (
-    responsibilityId: string,
+    responsibilityLabel: string,
     type: 'childcare' | 'household'
   ) => {
     const currentPosition =
@@ -209,17 +210,17 @@ const PastPosition: React.FC = () => {
 
     let updatedResponsibilities: string[];
 
-    if (currentResponsibilities.includes(responsibilityId)) {
+    if (currentResponsibilities.includes(responsibilityLabel)) {
       // Remove if already selected
       updatedResponsibilities = currentResponsibilities.filter(
-        (id: string) => id !== responsibilityId
+        (label: string) => label !== responsibilityLabel
       );
     } else {
       // Add if not selected and under limit
       if (currentResponsibilities.length < 10) {
         updatedResponsibilities = [
           ...currentResponsibilities,
-          responsibilityId,
+          responsibilityLabel,
         ];
       } else {
         // Show alert or handle max selection reached
@@ -457,25 +458,25 @@ const PastPosition: React.FC = () => {
                       label={age.label}
                       selected={
                         selectedPositionNumber === 'first'
-                          ? caregiverFirstPosition?.ageGroup === age.id
+                          ? caregiverFirstPosition?.ageGroup === age.label
                           : selectedPositionNumber === 'third'
-                          ? caregiverThirdPosition?.ageGroup === age.id
-                          : caregiverSecondPosition?.ageGroup === age.id
+                          ? caregiverThirdPosition?.ageGroup === age.label
+                          : caregiverSecondPosition?.ageGroup === age.label
                       }
                       onPress={() => {
                         selectedPositionNumber === 'first'
                           ? setCaregiverFirstPosition({
                               ...caregiverFirstPosition,
-                              ageGroup: age.id,
+                              ageGroup: age.label,
                             })
                           : selectedPositionNumber === 'third'
                           ? setCaregiverThirdPosition({
                               ...caregiverThirdPosition,
-                              ageGroup: age.id,
+                              ageGroup: age.label,
                             })
                           : setCaregiverSecondPosition({
                               ...caregiverSecondPosition,
-                              ageGroup: age.id,
+                              ageGroup: age.label,
                             });
                       }}
                     />
@@ -494,25 +495,28 @@ const PastPosition: React.FC = () => {
                       label={type.label}
                       selected={
                         selectedPositionNumber === 'first'
-                          ? caregiverFirstPosition?.employmentType === type.id
+                          ? caregiverFirstPosition?.employmentType ===
+                            type.label
                           : selectedPositionNumber === 'third'
-                          ? caregiverThirdPosition?.employmentType === type.id
-                          : caregiverSecondPosition?.employmentType === type.id
+                          ? caregiverThirdPosition?.employmentType ===
+                            type.label
+                          : caregiverSecondPosition?.employmentType ===
+                            type.label
                       }
                       onPress={() => {
                         selectedPositionNumber === 'first'
                           ? setCaregiverFirstPosition({
                               ...caregiverFirstPosition,
-                              employmentType: type.id,
+                              employmentType: type.label,
                             })
                           : selectedPositionNumber === 'third'
                           ? setCaregiverThirdPosition({
                               ...caregiverThirdPosition,
-                              employmentType: type.id,
+                              employmentType: type.label,
                             })
                           : setCaregiverSecondPosition({
                               ...caregiverSecondPosition,
-                              employmentType: type.id,
+                              employmentType: type.label,
                             });
                       }}
                     />
@@ -541,19 +545,19 @@ const PastPosition: React.FC = () => {
                       selected={
                         selectedPositionNumber === 'first'
                           ? caregiverFirstPosition?.childCare?.includes(
-                              responsibility.id
+                              responsibility.label
                             )
                           : selectedPositionNumber === 'second'
                           ? caregiverSecondPosition?.childCare?.includes(
-                              responsibility.id
+                              responsibility.label
                             )
                           : caregiverThirdPosition?.childCare?.includes(
-                              responsibility.id
+                              responsibility.label
                             )
                       }
                       onPress={() =>
                         handleResponsibilitySelection(
-                          responsibility.id,
+                          responsibility.label,
                           'childcare'
                         )
                       }
@@ -583,19 +587,19 @@ const PastPosition: React.FC = () => {
                       selected={
                         selectedPositionNumber === 'first'
                           ? caregiverFirstPosition?.household?.includes(
-                              responsibility.id
+                              responsibility.label
                             )
                           : selectedPositionNumber === 'second'
                           ? caregiverSecondPosition?.household?.includes(
-                              responsibility.id
+                              responsibility.label
                             )
                           : caregiverThirdPosition?.household?.includes(
-                              responsibility.id
+                              responsibility.label
                             )
                       }
                       onPress={() =>
                         handleResponsibilitySelection(
-                          responsibility.id,
+                          responsibility.label,
                           'household'
                         )
                       }

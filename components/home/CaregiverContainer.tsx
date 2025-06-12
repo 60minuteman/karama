@@ -143,17 +143,21 @@ const CaregiverContainer = forwardRef<
   const profileCardProps = {
     familyName: profileData.name || 'Family',
     location: profileData.location || 'Location not provided',
-    salary: profileData.hourlyRate
-      ? `${profileData.hourlyRate}/year`
-      : '75,000/year',
+    salary:
+      profileData?.extra_info?.payment_info?.type === '🤑 Hourly'
+        ? `$${profileData?.extra_info?.payment_info?.hourly_min * 15} - $${
+            profileData?.extra_info?.payment_info?.hourly_max
+          }/hour`
+        : `${profileData?.extra_info?.payment_info?.salary}/year`,
     familyType: profileData?.description, // This could be made dynamic based on data
     rating: profileData.rating || 4.5,
     image:
       profileData?.image[0]?.path ||
       'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2920&auto=format&fit=crop',
+    profileData: profileData,
   };
 
-  console.log('images', profileData?.image);
+  console.log('images', profileData?.extra_info?.payment_info);
 
   return (
     <ScrollView>

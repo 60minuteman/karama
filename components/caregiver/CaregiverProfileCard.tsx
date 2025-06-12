@@ -21,15 +21,17 @@ interface CaregiverProfileCardProps {
   familyType?: string;
   rating?: number;
   image?: string;
+  profileData?: any;
 }
 
 export const CaregiverProfileCard = ({
-  familyName = 'Millers',
-  location = 'Manhattan, New York',
-  salary = '75,000/year',
-  familyType = 'Dads',
-  rating = 4.5,
+  familyName,
+  location,
+  salary,
+  familyType,
+  rating,
   image = 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2920&auto=format&fit=crop',
+  profileData,
 }: CaregiverProfileCardProps) => {
   const { height: windowHeight } = useWindowDimensions();
   const [fadeAnim] = React.useState(new Animated.Value(0));
@@ -39,6 +41,8 @@ export const CaregiverProfileCard = ({
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
     'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
   });
+
+  console.log('familyName', profileData?.extra_info?.payment_info?.hourly_max);
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -71,22 +75,30 @@ export const CaregiverProfileCard = ({
                 {familyType}
               </ThemedText>
             </View>
-            <View style={styles.ratingContainer}>
+            {/* <View style={styles.ratingContainer}>
               <ThemedText style={styles.ratingText}>{rating}</ThemedText>
               <ThemedText style={styles.starIcon}>⭐</ThemedText>
-            </View>
+            </View> */}
           </View>
 
           <View style={styles.infoContainer}>
             <ThemedText style={styles.familyName}>{familyName}</ThemedText>
             <View style={styles.locationContainer}>
               {/* <ThemedText style={styles.locationIcon}>📍</ThemedText> */}
-              <ThemedText style={styles.locationText}>{location}</ThemedText>
+              <ThemedText style={styles.locationText}>{location} </ThemedText>
             </View>
-            {/* <View style={styles.salaryContainer}>
+            <View style={styles.salaryContainer}>
               <ThemedText style={styles.salaryIcon}>💰</ThemedText>
-              <ThemedText style={styles.salaryText}>{salary}</ThemedText>
-            </View> */}
+              <ThemedText style={styles.salaryText}>
+                {profileData?.extra_info?.payment_info?.type === '🤑 Hourly'
+                  ? `$${
+                      profileData?.extra_info?.payment_info?.hourly_min * 15
+                    } - $${
+                      profileData?.extra_info?.payment_info?.hourly_max
+                    }/hour`
+                  : `${profileData?.extra_info?.payment_info?.salary}/year`}
+              </ThemedText>
+            </View>
           </View>
         </LinearGradient>
       </Animated.View>
@@ -177,7 +189,7 @@ const styles = StyleSheet.create({
   },
   salaryText: {
     fontSize: 16,
-    fontFamily: 'Bogart-Regular',
+    fontFamily: 'Poppins-Regular',
     color: '#FFFFFF',
   },
 });

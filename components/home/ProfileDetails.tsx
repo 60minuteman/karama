@@ -28,15 +28,21 @@ export const ProfileDetails = ({
     return null;
   }
 
+  function calculateAge(birthDate: string) {
+    const birth = new Date(birthDate);
+    const today = new Date();
+    return today.getFullYear() - birth.getFullYear();
+  }
+
   console.log(data, 'profile');
 
   return (
     <View style={styles.container}>
-      {role === 'CAREGIVER' && (
+      {/* {role === 'CAREGIVER' && (
         <Section title='I am'>
           <Pill2 label={data?.caregiver_type} style={styles.pill} />
         </Section>
-      )}
+      )} */}
       {role === 'FAMILY' && (
         <Section title='We have'>
           <View

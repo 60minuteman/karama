@@ -8,7 +8,7 @@ import { Image } from './Image';
 interface InterestsProps {
   interests?: string[];
   data?: any;
-  role?: any
+  role?: any;
 }
 
 export const Interests = ({ interests, data, role }: InterestsProps) => {
@@ -36,8 +36,8 @@ export const Interests = ({ interests, data, role }: InterestsProps) => {
   // console.log('Image path:', data?.pictures?.[0]?.path);
 
   const allInterests = Object.entries(data?.children_interests || data?.hobbies)
-  .filter(([key]) => key !== "id")
-  .flatMap(([, value]) => value);
+    .filter(([key]) => key !== 'id')
+    .flatMap(([, value]) => value);
 
   return (
     <View style={styles.container}>
@@ -50,20 +50,21 @@ export const Interests = ({ interests, data, role }: InterestsProps) => {
         />
       </View>
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>{role === 'FAMILY' ? 'Children\'s interest' : 'My Interests'}</ThemedText>
+        <ThemedText style={styles.sectionTitle}>
+          {role === 'FAMILY' ? "Children's interest" : 'My Interests'}
+        </ThemedText>
         <View style={styles.interestsContainer}>
           {allInterests?.map((interest: any, index: any) => {
             if (interest === '' || interest === null) return;
             return (
               <Pill2
-              key={index}
-              // icon={interestIcons[interest] || '✨'}
-              label={interest}
-              style={styles.interestPill}
+                key={index}
+                // icon={interestIcons[interest] || '✨'}
+                label={interest}
+                style={styles.interestPill}
               />
-            )
-          }
-        )}
+            );
+          })}
         </View>
       </View>
     </View>
@@ -83,7 +84,7 @@ const styles = StyleSheet.create({
   },
   imagePlaceholder: {
     width: '100%',
-    height: 325,
+    height: 358,
     backgroundColor: '#FFE5E5', // Pastel pink as placeholder
   },
   section: {

@@ -219,7 +219,7 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
                       },
                     ]}
                   >
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                       style={[
                         styles.upgradeButton,
                         {
@@ -238,7 +238,7 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
                       >
                         Upgrade
                       </ThemedText>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                     {/* <View style={styles.upgradeTextContainer}>
                     <ThemedText
                       style={[

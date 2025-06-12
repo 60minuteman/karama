@@ -236,8 +236,8 @@ export default function PromptAnswer() {
         position_type: caregiverFirstPosition.position,
         children_age_group: [caregiverFirstPosition.ageGroup],
         availability: caregiverFirstPosition.employmentType,
-        childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
-        household_responsibilities: ['Property Management', 'Meal Prep'],
+        childcare_responsibilities: caregiverFirstPosition.childCare,
+        household_responsibilities: caregiverFirstPosition.household,
       },
       caregiverSecondPosition?.familyName && {
         family_or_business_name: caregiverSecondPosition.familyName,
@@ -250,8 +250,8 @@ export default function PromptAnswer() {
         position_type: caregiverSecondPosition.position,
         children_age_group: [caregiverSecondPosition.ageGroup],
         availability: caregiverSecondPosition.employmentType,
-        childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
-        household_responsibilities: ['Property Management', 'Meal Prep'],
+        childcare_responsibilities: caregiverSecondPosition.childCare,
+        household_responsibilities: caregiverSecondPosition.household,
       },
       caregiverThirdPosition?.familyName && {
         family_or_business_name: caregiverSecondPosition.familyName,
@@ -264,8 +264,8 @@ export default function PromptAnswer() {
         position_type: caregiverSecondPosition.position,
         children_age_group: [caregiverSecondPosition.ageGroup],
         availability: caregiverSecondPosition.employmentType,
-        childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
-        household_responsibilities: ['Property Management', 'Meal Prep'],
+        childcare_responsibilities: caregiverThirdPosition.childCare,
+        household_responsibilities: caregiverThirdPosition.household,
       },
     ]
       .filter(Boolean)

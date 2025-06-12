@@ -24,10 +24,7 @@ export default function CommunityScreen() {
           problems
         </ThemedText>
 
-        {/* <Button
-          onPress={handleNavigateToDiscover}
-          label='Start Matching'
-        /> */}
+        {/* <Button onPress={handleNavigateToDiscover} label='Start Matching' /> */}
       </View>
       <View style={styles.phoneContainer}>
         <Image

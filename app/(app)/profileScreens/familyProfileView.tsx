@@ -42,6 +42,8 @@ const FamilyProfileView = () => {
   const { data: familyProfile, isLoading: familyProfileLoading }: any =
     useProfile(currentUser?.data?.role);
 
+  console.log('familyProfile=====', currentUser);
+
   const handleEdit = () => {
     Alert.alert(
       'Feature Not Available',

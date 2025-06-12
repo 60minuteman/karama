@@ -1,5 +1,6 @@
 import ProfileCardLoader from '@/components/cards/ProfileCardLoader';
 import EmptyDiscovery from '@/components/discovery/EmptyDiscovery';
+import Skip from '@/components/discovery/Skip';
 import { CaregiverContainer } from '@/components/home/CaregiverContainer';
 import { Container, ContainerRef } from '@/components/home/Container';
 import { ContainerTwo } from '@/components/home/ContainerTwo';
@@ -15,6 +16,7 @@ import {
   useMatchingCaregivers,
 } from '@/services/api/api';
 import customAxios from '@/services/api/envConfig';
+import { useStore } from '@/services/state/State';
 import { useUserStore } from '@/services/state/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
@@ -123,6 +125,7 @@ export default function DiscoverScreen() {
   const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
   const [nextCursor, setNextCursor] = useState('');
   const containerRef = useRef<ContainerRef>(null);
+  const { setMatchComplete, match_complete } = useStore();
   const { data: currentUser, isLoading: isLoadingCurrentUser } =
     useCurrentUser();
 
@@ -216,6 +219,15 @@ export default function DiscoverScreen() {
       return customAxios.patch(endpoint, data);
     },
     onSuccess: (data: any) => {
+      console.log('like data', data?.data);
+      if (
+        currentUser?.data?.role === 'FAMILY' &&
+        data?.data?.match.match_status === 'COMPLETED'
+      ) {
+        setMatchComplete(data?.data);
+        router.push('/(app)/itsAmatch');
+        return;
+      }
       moveToNextProfile();
     },
     onError: (error: any) => {
@@ -498,6 +510,7 @@ export default function DiscoverScreen() {
                           : 'FAMILY'
                       }
                     />
+                    {/* <Skip /> */}
                   </>
                 ) : (
                   <>

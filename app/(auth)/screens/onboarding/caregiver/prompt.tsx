@@ -168,11 +168,11 @@ export default function Prompt() {
     caregiverThirdPosition,
   } = useOtherStore();
 
-  console.log(
-    'carePosition',
-    caregiverFirstPosition,
-    caregiverFirstPosition.startDate
-  );
+  // console.log(
+  //   'carePosition',
+  //   caregiverFirstPosition,
+  //   caregiverFirstPosition.startDate
+  // );
 
   const payment_info =
     caregiverPaymentType === 'Salary Base'
@@ -277,8 +277,8 @@ export default function Prompt() {
         position_type: caregiverFirstPosition.position,
         children_age_group: [caregiverFirstPosition.ageGroup],
         availability: caregiverFirstPosition.employmentType,
-        childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
-        household_responsibilities: ['Property Management', 'Meal Prep'],
+        childcare_responsibilities: caregiverFirstPosition.childCare,
+        household_responsibilities: caregiverFirstPosition.household,
       },
       caregiverSecondPosition?.familyName && {
         family_or_business_name: caregiverSecondPosition.familyName,
@@ -291,8 +291,8 @@ export default function Prompt() {
         position_type: caregiverSecondPosition.position,
         children_age_group: [caregiverSecondPosition.ageGroup],
         availability: caregiverSecondPosition.employmentType,
-        childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
-        household_responsibilities: ['Property Management', 'Meal Prep'],
+        childcare_responsibilities: caregiverSecondPosition.childCare,
+        household_responsibilities: caregiverSecondPosition.household,
       },
       caregiverThirdPosition?.familyName && {
         family_or_business_name: caregiverSecondPosition.familyName,
@@ -305,14 +305,16 @@ export default function Prompt() {
         position_type: caregiverSecondPosition.position,
         children_age_group: [caregiverSecondPosition.ageGroup],
         availability: caregiverSecondPosition.employmentType,
-        childcare_responsibilities: ['Packing Lunch', 'Play Dates'],
-        household_responsibilities: ['Property Management', 'Meal Prep'],
+        childcare_responsibilities: caregiverThirdPosition.childCare,
+        household_responsibilities: caregiverThirdPosition.household,
       },
     ]
       .filter(Boolean)
       .filter((position) => position.start_date && position.end_date),
     prompts: promptsData?.slice(-2) || [],
   };
+
+  console.log('onboadingInfo', onboadingInfo?.past_positions);
 
   // const handleNext = () => {
   //   setOnboardingScreen('/(auth)/screens/onboarding/caregiver/moreInfo');

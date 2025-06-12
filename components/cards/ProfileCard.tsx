@@ -21,12 +21,11 @@ interface ProfileCardProps {
   pronouns: string;
   rating: number;
   role: string;
-  data: any
+  data: any;
 }
 
 export const ProfileCard = ({
   name,
-  age,
   address = '123 Lain St, New York, NY',
   pronouns,
   rating,
@@ -42,6 +41,25 @@ export const ProfileCard = ({
     'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
   });
 
+  function getAge(dobString: any) {
+    const dob = new Date(dobString);
+    const today = new Date();
+    let age = today.getFullYear() - dob.getFullYear();
+    const m = today.getMonth() - dob.getMonth();
+
+    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+      age--;
+    }
+
+    return age;
+  }
+
+  const dateOfBirth =
+    data?.user?.caregiver_profile?.date_of_birth || data?.date_of_birth;
+  const age = getAge(dateOfBirth);
+
+  console.log('age', age, dateOfBirth, data);
+
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
@@ -54,12 +72,13 @@ export const ProfileCard = ({
     return null;
   }
   // console.log(data, 'show items');
-  
 
   // Get profile picture with fallback
   const imageSource = data?.pictures?.[0]?.path
     ? { uri: data?.pictures?.[0]?.path }
     : require('@/assets/icons/fallback.png');
+
+  console.log('data', data?.user);
 
   return (
     <View style={styles.container}>
@@ -76,22 +95,31 @@ export const ProfileCard = ({
         >
           <View style={styles.header}>
             <View style={styles.pronounsContainer}>
-              <ThemedText style={styles.pronouns}>{data?.description?.description || data?.pronouns}</ThemedText>
+              <ThemedText style={styles.pronouns}>
+                {data?.description?.description || data?.pronouns}
+              </ThemedText>
             </View>
-            <View style={styles.ratingContainer}>
-              <ThemedText style={styles.rating}>{data?.rating_count || rating || 0}</ThemedText>
+            {/* <View style={styles.ratingContainer}>
+              <ThemedText style={styles.rating}>
+                {data?.rating_count || rating || 0}
+              </ThemedText>
               <ThemedText style={styles.star}>⭐</ThemedText>
-            </View>
+            </View> */}
           </View>
           <View style={styles.infoOverlay}>
             <View style={styles.infoContainer}>
               <ThemedText style={styles.nameAge}>
                 {data?.name || 'Anonymous'}
+                {`${age && ','}`} {age || ''}
               </ThemedText>
-              <ThemedText style={styles.role}>
-                {data?.location || 'Role not specified'}
+              {data?.caregiver_type && (
+                <ThemedText style={styles.address}>
+                  {data?.caregiver_type}
+                </ThemedText>
+              )}
+              <ThemedText style={styles.address}>
+                📍{data?.location || 'Role not specified'}
               </ThemedText>
-              {/* <ThemedText style={styles.address}>{address}</ThemedText> */}
             </View>
           </View>
         </LinearGradient>
@@ -172,5 +200,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#FFFFFF',
     fontFamily: 'Bogart-Regular',
+    fontWeight: '400',
   },
 });

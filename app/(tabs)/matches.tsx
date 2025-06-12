@@ -134,10 +134,10 @@ export default function Matches() {
         }
       });
 
-      // socket.on('conversationUpdated', (data: any) => {
-      //   setIsLoading(false);
-      //   // setMessages(data);
-      // });
+      socket.on('conversationUpdated', (data: any) => {
+        setIsLoading(false);
+        // setMessages(data);
+      });
 
       socket.on('newMessage conversationUpdated', (data: any) => {
         setIsLoading(false);

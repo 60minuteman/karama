@@ -60,7 +60,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         console.error('Navigation error:', error);
       }
-    }, 50); // Increased delay to 100ms
+    }, 0); // Increased delay to 100ms
 
     return () => clearTimeout(timer);
   }, [

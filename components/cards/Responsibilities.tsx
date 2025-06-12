@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
   },
   imagePlaceholder: {
     width: '100%',
-    height: 325,
+    height: 358,
     backgroundColor: '#E8F3F3', // Pastel blue-green color
   },
   section: {
