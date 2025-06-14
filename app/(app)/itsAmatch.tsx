@@ -1,5 +1,6 @@
 import { ThemedText } from '@/components/ThemedText';
 import useAuthMutation from '@/hooks/useAuthMutation';
+import { useCurrentUser } from '@/services/api/api';
 import customAxios from '@/services/api/envConfig';
 import { useStore } from '@/services/state/State';
 import { Ionicons } from '@expo/vector-icons';
@@ -19,7 +20,10 @@ import Toast from 'react-native-toast-message';
 
 const ItsAmatch = () => {
   const { match_complete } = useStore();
+  const { data: currentUser } = useCurrentUser();
   const [isLoading, setIsLoading] = useState(false);
+
+  console.log('currentUser', currentUser?.data?.profile_picture?.path);
 
   const createMessage: any = useAuthMutation({
     mutationFn: (data: any) => {
@@ -69,14 +73,64 @@ const ItsAmatch = () => {
       {/* Centered Images */}
       <View style={styles.centerImagesContainer}>
         <View style={styles.matchPhotosWrapper}>
-          <Image
-            source={require('@/assets/images/matchpic.png')}
-            style={styles.matchPhoto}
-          />
-          <Image
-            source={require('@/assets/images/downlogoicon.png')}
-            style={styles.rightPhoto}
-          />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'relative',
+              height: 259.16,
+            }}
+          >
+            {/* Right (underneath) placeholder */}
+            <Image
+              source={{
+                uri: match_complete?.match?.caregiver_profile?.pictures[0]
+                  ?.path,
+              }}
+              style={{
+                position: 'absolute',
+                left: '35%',
+                zIndex: 1,
+                width: 172.77,
+                height: 259.16,
+                backgroundColor: '#D3D3D3', // light gray
+                borderRadius: 24,
+                transform: [{ rotate: '14.79deg' }],
+                top: '-5%',
+              }}
+            />
+            {/* Left (top) placeholder */}
+            <Image
+              source={{
+                uri: currentUser?.data?.profile_picture?.path,
+              }}
+              style={{
+                zIndex: 2,
+                width: 172.77,
+                height: 259.16,
+                backgroundColor: '#fff',
+                borderRadius: 24,
+                transform: [{ rotate: '-10deg' }],
+                marginRight: '35%',
+                marginTop: '30%',
+              }}
+            />
+            {/* Absolutely positioned downlogoicon image at the right end */}
+            <Image
+              source={require('@/assets/images/downlogoicon.png')}
+              style={[
+                styles.rightPhoto,
+                {
+                  position: 'absolute',
+                  right: '-15%',
+                  top: '40%',
+                  transform: [{ translateY: -50 }],
+                  zIndex: 3,
+                },
+              ]}
+            />
+          </View>
         </View>
       </View>
 
@@ -260,6 +314,44 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontFamily: 'Poppins',
     fontWeight: '600',
+  },
+  skewedImagesContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  skewedImageWrapperLeft: {
+    transform: [{ rotate: '-10deg' }],
+    marginRight: -30,
+    zIndex: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  skewedImageWrapperRight: {
+    transform: [{ rotate: '10deg' }],
+    marginLeft: -30,
+    zIndex: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  skewedImage: {
+    width: 120,
+    height: 150,
+    borderRadius: 20,
+    resizeMode: 'cover',
   },
 });
 

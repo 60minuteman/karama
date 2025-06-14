@@ -42,7 +42,7 @@ export const CaregiverProfileCard = ({
     'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
   });
 
-  console.log('familyName', profileData?.extra_info?.payment_info?.hourly_max);
+  console.log('familyName', profileData?.extra_info?.payment_info);
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -90,7 +90,8 @@ export const CaregiverProfileCard = ({
             <View style={styles.salaryContainer}>
               <ThemedText style={styles.salaryIcon}>💰</ThemedText>
               <ThemedText style={styles.salaryText}>
-                {profileData?.extra_info?.payment_info?.type === '🤑 Hourly'
+                {profileData?.extra_info?.payment_info?.type === '🤑 Hourly' ||
+                profileData?.extra_info?.payment_info?.type === 'Hourly'
                   ? `$${
                       profileData?.extra_info?.payment_info?.hourly_min * 15
                     } - $${

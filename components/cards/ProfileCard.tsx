@@ -78,7 +78,7 @@ export const ProfileCard = ({
     ? { uri: data?.pictures?.[0]?.path }
     : require('@/assets/icons/fallback.png');
 
-  console.log('data', data?.user);
+  console.log('data', data?.extra_info?.payment_info);
 
   return (
     <View style={styles.container}>
@@ -110,7 +110,7 @@ export const ProfileCard = ({
             <View style={styles.infoContainer}>
               <ThemedText style={styles.nameAge}>
                 {data?.name || 'Anonymous'}
-                {`${age && ','}`} {age || ''}
+                {`${age ? ',' : ''}`} {age || ''}
               </ThemedText>
               {data?.caregiver_type && (
                 <ThemedText style={styles.address}>
@@ -120,6 +120,13 @@ export const ProfileCard = ({
               <ThemedText style={styles.address}>
                 📍{data?.location || 'Role not specified'}
               </ThemedText>
+              {data?.extra_info?.payment_info && (
+                <ThemedText style={styles.address}>
+                  {data?.extra_info?.payment_info?.type === 'Hourly'
+                    ? `💰 $${data?.extra_info?.payment_info?.hourly_min} - $${data?.extra_info?.payment_info?.hourly_max}/ Hour`
+                    : `$${data?.extra_info?.payment_info?.salary}/ Month`}
+                </ThemedText>
+              )}
             </View>
           </View>
         </LinearGradient>
@@ -199,7 +206,7 @@ const styles = StyleSheet.create({
   address: {
     fontSize: 16,
     color: '#FFFFFF',
-    fontFamily: 'Bogart-Regular',
+    fontFamily: 'Poppins-Regular',
     fontWeight: '400',
   },
 });

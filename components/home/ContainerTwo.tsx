@@ -89,8 +89,8 @@ const ContainerTwo = forwardRef<ContainerRef, ContainerProps>(
         duration: 300,
         useNativeDriver: true,
       }).start(() => {
-        slideAnim.setValue(0);
         onLike?.();
+        slideAnim.setValue(0);
       });
     };
 
@@ -100,8 +100,8 @@ const ContainerTwo = forwardRef<ContainerRef, ContainerProps>(
         duration: 300,
         useNativeDriver: true,
       }).start(() => {
-        slideAnim.setValue(0);
         onReject?.();
+        slideAnim.setValue(0);
       });
     };
 

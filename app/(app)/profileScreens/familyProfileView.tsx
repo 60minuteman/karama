@@ -42,7 +42,10 @@ const FamilyProfileView = () => {
   const { data: familyProfile, isLoading: familyProfileLoading }: any =
     useProfile(currentUser?.data?.role);
 
-  console.log('familyProfile=====', currentUser);
+  console.log(
+    'familyProfile=====',
+    familyProfile?.family_profile?.extra_info?.payment_info
+  );
 
   const handleEdit = () => {
     Alert.alert(

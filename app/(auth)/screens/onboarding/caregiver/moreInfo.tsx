@@ -44,7 +44,7 @@ export default function MoreInfo() {
           <ProgressBar progress={0.9} />
 
           <ThemedText style={styles.title}>
-            Is there anything{'\n'}else you'd like{'\n'}caregivers to know?
+            Is there anything{'\n'}else you'd like{'\n'}Families to know?
           </ThemedText>
 
           <View style={styles.inputContainer}>

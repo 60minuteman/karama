@@ -136,7 +136,12 @@ export default function Matches() {
 
       socket.on('conversationUpdated', (data: any) => {
         setIsLoading(false);
-        // setMessages(data);
+        setConversations((prevConversations: any[]) => {
+          const updatedConversations = prevConversations.map((conv) =>
+            conv.id === data.id ? data : conv
+          );
+          return updatedConversations;
+        });
       });
 
       socket.on('newMessage conversationUpdated', (data: any) => {
@@ -198,6 +203,8 @@ export default function Matches() {
     Keyboard.dismiss();
   };
 
+  // console.log('filteredConversations', filteredConversations);
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -257,7 +264,12 @@ export default function Matches() {
                             key={conversation.id}
                             handleDeleteConversation={handleDeleteConversation}
                             setDeletedConversationId={setDeletedConversationId}
-                            imageUrl={conversation?.recipient?.image}
+                            imageUrl={
+                              currentUser?.data?.id ===
+                              conversation?.recipient?.id
+                                ? conversation?.creator?.image
+                                : conversation?.recipient?.image
+                            }
                             name={conversation?.recipient?.name}
                             otherUser={conversation?.recipient?.name}
                             lastMessage={conversation?.last_message?.text}
