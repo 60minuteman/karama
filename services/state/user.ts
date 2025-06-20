@@ -219,7 +219,7 @@ export interface CaregiverDaySchedule {
 export interface CaregiverPositionHistory {
   position: string;
   positionNumber: 'first' | 'second' | 'Third' | null;
-  ageGroup: string;
+  ageGroups: string[];
   familyName: string;
   employmentType: string;
   startDate: string;
@@ -896,7 +896,7 @@ export const useUserStore = create<UserState>()(
       caregiverFirstPosition: {
         positionNumber: null,
         position: '',
-        ageGroup: '',
+        ageGroups: [],
         familyName: '',
         employmentType: '',
         startDate: '',
@@ -907,7 +907,7 @@ export const useUserStore = create<UserState>()(
       caregiverSecondPosition: {
         positionNumber: null,
         position: '',
-        ageGroup: '',
+        ageGroups: [],
         familyName: '',
         employmentType: '',
         startDate: '',
@@ -918,7 +918,7 @@ export const useUserStore = create<UserState>()(
       caregiverThirdPosition: {
         positionNumber: null,
         position: '',
-        ageGroup: '',
+        ageGroups: [],
         familyName: '',
         employmentType: '',
         startDate: '',
@@ -1523,29 +1523,35 @@ export const useUserStore = create<UserState>()(
           caregiverFirstPosition: {
             positionNumber: null,
             position: '',
-            ageGroup: '',
+            ageGroups: [],
             familyName: '',
             employmentType: '',
             startDate: '',
             endDate: '',
+            childCare: '',
+            household: '',
           },
           caregiverSecondPosition: {
             positionNumber: null,
             position: '',
-            ageGroup: '',
+            ageGroups: [],
             familyName: '',
             employmentType: '',
             startDate: '',
             endDate: '',
+            childCare: '',
+            household: '',
           },
           caregiverThirdPosition: {
             positionNumber: null,
             position: '',
-            ageGroup: '',
+            ageGroups: [],
             familyName: '',
             employmentType: '',
             startDate: '',
             endDate: '',
+            childCare: '',
+            household: '',
           },
           caregiverPromptCategory: '',
           caregiverFirstPrompt: '',

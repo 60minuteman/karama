@@ -1,64 +1,76 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
-import { useEffect, useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
+import { ThemedView } from '@/components/ThemedView';
+import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { ProgressBar } from '@/components/ui/ProgressBar';
-import { Button } from '@/components/ui/Button';
+import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 
 export default function CaregiverNameScreen() {
   const router = useRouter();
-  const { caregiverName, setCaregiverName,setOnboardingScreen } = useUserStore();
+  const { caregiverName, setCaregiverName, setOnboardingScreen } =
+    useUserStore();
   const handleNext = () => {
     if (caregiverName?.trim()) {
       // Navigate to next screen in caregiver flow
-      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/dob')
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/dob');
       router.push('/(auth)/screens/onboarding/caregiver/dob'); // Update with actual next screen
-      console.log(caregiverName)
-
+      console.log(caregiverName);
     }
   };
-useEffect(()=>{
-  console.log(caregiverName)
-},[caregiverName])
+  useEffect(() => {
+    console.log(caregiverName);
+  }, [caregiverName]);
   return (
     <ThemedView style={styles.container}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingView}
       >
-        <Header variant="back" />
+        <Header variant='back' />
 
         <View style={styles.content}>
           <View style={styles.spacer} />
           <ProgressBar progress={0.4} />
-          
+
           <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
             What's your{'\n'}name?
           </ThemedText>
 
           <View style={styles.inputContainer}>
-            <View style={[styles.inputBorder, (caregiverName?.trim() || '').length> 0 && styles.inputBorderActive]}>
+            <View
+              style={[
+                styles.inputBorder,
+                (caregiverName?.trim() || '').length > 0 &&
+                  styles.inputBorderActive,
+              ]}
+            >
               <TextInput
                 style={styles.input}
-                placeholder="Your name"
-                placeholderTextColor="#999"
+                placeholder='First name'
+                placeholderTextColor='#999'
                 value={caregiverName || ''}
                 onChangeText={setCaregiverName}
                 autoFocus
-                autoCapitalize="words"
+                autoCapitalize='words'
               />
             </View>
           </View>
 
           <View style={styles.buttonContainer}>
             <Button
-              label="Next"
+              label='Next'
               onPress={handleNext}
-              variant={caregiverName?.trim() ? "primary" : undefined}
+              variant={caregiverName?.trim() ? 'primary' : undefined}
               disabled={!caregiverName?.trim()}
             />
           </View>

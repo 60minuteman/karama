@@ -208,6 +208,8 @@ export default function DiscoverScreen() {
       setCursor(nextCursor);
       setCurrentIndex(0);
     }
+    // Reset scroll position for next profile
+    containerRef.current?.scrollToTop?.();
   }, [currentIndex, profiles.length, nextCursor, userData?.plan]);
 
   const submitLike: any = useAuthMutation({
@@ -510,7 +512,6 @@ export default function DiscoverScreen() {
                           : 'FAMILY'
                       }
                     />
-                    {/* <Skip /> */}
                   </>
                 ) : (
                   <>

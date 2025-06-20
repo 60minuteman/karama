@@ -133,7 +133,7 @@ const FamilySettings = () => {
                     Show Last Active Status
                   </ThemedText>
                   <Switch
-                    trackColor={{ false: '#D7D7DC', true: '#EB4430' }}
+                    // trackColor={{ false: '#D7D7DC', true: '#EB4430' }}
                     thumbColor={'#ffffff'}
                     ios_backgroundColor='#D7D7DC'
                     onValueChange={toggleSwitch}

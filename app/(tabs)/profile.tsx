@@ -46,6 +46,8 @@ export default function Profile() {
     ? { uri: profilePicture }
     : require('@/assets/images/profile-placeholder.jpg');
 
+  console.log('currentUser?.data', currentUser?.data);
+
   const menuItems = [
     {
       icon: require('@/assets/icons/edit-profile.png'),
@@ -83,7 +85,6 @@ export default function Profile() {
   };
 
   // console.log('Current user data:', currentUser);
-  
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -94,14 +95,16 @@ export default function Profile() {
           <View style={styles.profileSection}>
             <View style={styles.profileImageContainer}>
               <Image source={imageSource} style={styles.profileImage} />
-              <View style={styles.percentageContainer}>
+              {/* <View style={styles.percentageContainer}>
                 <ThemedText style={styles.percentageText}>90%</ThemedText>
-              </View>
+              </View> */}
             </View>
 
             <View style={styles.profileInfo}>
               <ThemedText style={styles.name}>
-                {currentUser?.data?.name || 'User'}
+                {currentUser?.data?.role === 'FAMILY' && currentUser?.data?.name
+                  ? `${currentUser?.data?.name}s`
+                  : 'User'}
               </ThemedText>
               <TouchableOpacity
                 onPress={() =>

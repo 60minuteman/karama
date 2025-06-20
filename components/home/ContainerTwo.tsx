@@ -11,7 +11,7 @@ import { Responsibilities } from '@/components/cards/Responsibilities';
 import { Work } from '@/components/cards/Work';
 import { ProfileDetails } from '@/components/home/ProfileDetails';
 import { ThemedText } from '@/components/ThemedText';
-import React, { forwardRef, useImperativeHandle } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import {
   Animated,
   PanResponder,
@@ -53,6 +53,7 @@ interface ContainerProps {
 export interface ContainerRef {
   swipeRight: () => void;
   swipeLeft: () => void;
+  scrollToTop: () => void;
 }
 
 // Properly type the forwardRef
@@ -105,10 +106,15 @@ const ContainerTwo = forwardRef<ContainerRef, ContainerProps>(
       });
     };
 
+    const scrollViewRef = useRef<ScrollView>(null);
+
     // Expose animation functions to parent
     useImperativeHandle(ref, () => ({
       swipeRight,
       swipeLeft,
+      scrollToTop: () => {
+        scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+      },
     }));
 
     // Add debug log
@@ -345,6 +351,7 @@ const ContainerTwo = forwardRef<ContainerRef, ContainerProps>(
               <ProfileCard data={data} {...profileData} />
             </View>
             <ScrollView
+              ref={scrollViewRef}
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.scrollContent}
             >
@@ -354,6 +361,7 @@ const ContainerTwo = forwardRef<ContainerRef, ContainerProps>(
           </View>
         ) : (
           <ScrollView
+            ref={scrollViewRef}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollContent}
           >

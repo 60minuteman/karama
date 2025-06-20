@@ -275,7 +275,7 @@ export default function Prompt() {
           ? formatDate(caregiverFirstPosition.endDate)
           : undefined,
         position_type: caregiverFirstPosition.position,
-        children_age_group: [caregiverFirstPosition.ageGroup],
+        children_age_group: caregiverFirstPosition.ageGroups || [],
         availability: caregiverFirstPosition.employmentType,
         childcare_responsibilities: caregiverFirstPosition.childCare,
         household_responsibilities: caregiverFirstPosition.household,
@@ -289,7 +289,7 @@ export default function Prompt() {
           ? formatDate(caregiverSecondPosition.endDate)
           : undefined,
         position_type: caregiverSecondPosition.position,
-        children_age_group: [caregiverSecondPosition.ageGroup],
+        children_age_group: caregiverSecondPosition.ageGroups || [],
         availability: caregiverSecondPosition.employmentType,
         childcare_responsibilities: caregiverSecondPosition.childCare,
         household_responsibilities: caregiverSecondPosition.household,
@@ -303,7 +303,7 @@ export default function Prompt() {
           ? formatDate(caregiverSecondPosition.endDate)
           : undefined,
         position_type: caregiverSecondPosition.position,
-        children_age_group: [caregiverSecondPosition.ageGroup],
+        children_age_group: caregiverSecondPosition.ageGroups || [],
         availability: caregiverSecondPosition.employmentType,
         childcare_responsibilities: caregiverThirdPosition.childCare,
         household_responsibilities: caregiverThirdPosition.household,

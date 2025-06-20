@@ -449,7 +449,16 @@ const PastPosition: React.FC = () => {
 
               <View style={styles.section}>
                 <ThemedText style={styles.sectionTitle}>
-                  What age were the children
+                  What age were the children{' '}
+                  <ThemedText style={styles.selectionCount}>
+                    (
+                    {selectedPositionNumber === 'first'
+                      ? caregiverFirstPosition?.ageGroups?.length || 0
+                      : selectedPositionNumber === 'second'
+                      ? caregiverSecondPosition?.ageGroups?.length || 0
+                      : caregiverThirdPosition?.ageGroups?.length || 0}
+                    /10)
+                  </ThemedText>
                 </ThemedText>
                 <View style={styles.pillsContainer}>
                   {childAgeGroups.map((age) => (
@@ -458,26 +467,64 @@ const PastPosition: React.FC = () => {
                       label={age.label}
                       selected={
                         selectedPositionNumber === 'first'
-                          ? caregiverFirstPosition?.ageGroup === age.label
-                          : selectedPositionNumber === 'third'
-                          ? caregiverThirdPosition?.ageGroup === age.label
-                          : caregiverSecondPosition?.ageGroup === age.label
+                          ? caregiverFirstPosition?.ageGroups?.includes(
+                              age.label
+                            )
+                          : selectedPositionNumber === 'second'
+                          ? caregiverSecondPosition?.ageGroups?.includes(
+                              age.label
+                            )
+                          : caregiverThirdPosition?.ageGroups?.includes(
+                              age.label
+                            )
                       }
                       onPress={() => {
-                        selectedPositionNumber === 'first'
-                          ? setCaregiverFirstPosition({
-                              ...caregiverFirstPosition,
-                              ageGroup: age.label,
-                            })
-                          : selectedPositionNumber === 'third'
-                          ? setCaregiverThirdPosition({
-                              ...caregiverThirdPosition,
-                              ageGroup: age.label,
-                            })
-                          : setCaregiverSecondPosition({
-                              ...caregiverSecondPosition,
-                              ageGroup: age.label,
-                            });
+                        const currentPosition =
+                          selectedPositionNumber === 'first'
+                            ? caregiverFirstPosition
+                            : selectedPositionNumber === 'second'
+                            ? caregiverSecondPosition
+                            : caregiverThirdPosition;
+
+                        const currentAgeGroups: string[] = Array.isArray(
+                          currentPosition?.ageGroups
+                        )
+                          ? currentPosition.ageGroups
+                          : [];
+
+                        let updatedAgeGroups: string[];
+
+                        if (currentAgeGroups.includes(age.label)) {
+                          // Remove if already selected
+                          updatedAgeGroups = currentAgeGroups.filter(
+                            (label: string) => label !== age.label
+                          );
+                        } else {
+                          // Add if not selected and under limit
+                          if (currentAgeGroups.length < 10) {
+                            updatedAgeGroups = [...currentAgeGroups, age.label];
+                          } else {
+                            // Show alert or handle max selection reached
+                            return;
+                          }
+                        }
+
+                        if (selectedPositionNumber === 'first') {
+                          setCaregiverFirstPosition({
+                            ...caregiverFirstPosition,
+                            ageGroups: updatedAgeGroups,
+                          });
+                        } else if (selectedPositionNumber === 'second') {
+                          setCaregiverSecondPosition({
+                            ...caregiverSecondPosition,
+                            ageGroups: updatedAgeGroups,
+                          });
+                        } else {
+                          setCaregiverThirdPosition({
+                            ...caregiverThirdPosition,
+                            ageGroups: updatedAgeGroups,
+                          });
+                        }
                       }}
                     />
                   ))}

@@ -189,7 +189,9 @@ const FamilyProfileView = () => {
                       }
                     </ThemedText>
                     <View style={styles.pillContainer}>
-                      <Text style={{ fontSize: 22 }}>
+                      <Text
+                        style={{ fontSize: 22, fontFamily: 'Bogart-Regular' }}
+                      >
                         {
                           familyProfile?.family_profile?.extra_info
                             ?.prompts?.[0]?.answer
@@ -801,6 +803,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     color: '#261D2A',
     opacity: 0.4,
+    fontFamily: 'Bogart-Regular',
   },
   pillSubHeading: {
     fontFamily: 'Poppins',
@@ -814,6 +817,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
     flexWrap: 'wrap',
+    fontFamily: '',
   },
   sectionText: {
     fontFamily: 'Poppins',

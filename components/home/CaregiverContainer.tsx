@@ -13,7 +13,7 @@ import { Schedule } from '@/components/caregiver/Schedule';
 import { We } from '@/components/caregiver/We';
 import { WorkType } from '@/components/caregiver/WorkType';
 import { ThemedText } from '@/components/ThemedText';
-import React, { forwardRef, useImperativeHandle } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import {
   Animated,
   PanResponder,
@@ -51,6 +51,7 @@ interface CaregiverContainerProps {
 export interface CaregiverContainerRef {
   swipeRight: () => void;
   swipeLeft: () => void;
+  scrollToTop: () => void;
 }
 
 const CaregiverContainer = forwardRef<
@@ -119,9 +120,14 @@ const CaregiverContainer = forwardRef<
     });
   };
 
+  const scrollViewRef = useRef<ScrollView>(null);
+
   useImperativeHandle(ref, () => ({
     swipeRight,
     swipeLeft,
+    scrollToTop: () => {
+      scrollViewRef.current?.scrollTo({ y: 0, animated: false });
+    },
   }));
 
   if (!profileData || !data) {
@@ -160,7 +166,7 @@ const CaregiverContainer = forwardRef<
   console.log('images', profileData?.extra_info?.payment_info);
 
   return (
-    <ScrollView>
+    <ScrollView ref={scrollViewRef}>
       <Animated.View
         {...panResponder.panHandlers}
         style={[

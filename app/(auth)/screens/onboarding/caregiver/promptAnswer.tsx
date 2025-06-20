@@ -234,7 +234,7 @@ export default function PromptAnswer() {
           ? formatDate(caregiverFirstPosition.endDate)
           : undefined,
         position_type: caregiverFirstPosition.position,
-        children_age_group: [caregiverFirstPosition.ageGroup],
+        children_age_group: caregiverFirstPosition.ageGroups || [],
         availability: caregiverFirstPosition.employmentType,
         childcare_responsibilities: caregiverFirstPosition.childCare,
         household_responsibilities: caregiverFirstPosition.household,
@@ -248,7 +248,7 @@ export default function PromptAnswer() {
           ? formatDate(caregiverSecondPosition.endDate)
           : undefined,
         position_type: caregiverSecondPosition.position,
-        children_age_group: [caregiverSecondPosition.ageGroup],
+        children_age_group: caregiverSecondPosition.ageGroups || [],
         availability: caregiverSecondPosition.employmentType,
         childcare_responsibilities: caregiverSecondPosition.childCare,
         household_responsibilities: caregiverSecondPosition.household,
@@ -262,7 +262,7 @@ export default function PromptAnswer() {
           ? formatDate(caregiverSecondPosition.endDate)
           : undefined,
         position_type: caregiverSecondPosition.position,
-        children_age_group: [caregiverSecondPosition.ageGroup],
+        children_age_group: caregiverSecondPosition.ageGroups || [],
         availability: caregiverSecondPosition.employmentType,
         childcare_responsibilities: caregiverThirdPosition.childCare,
         household_responsibilities: caregiverThirdPosition.household,
@@ -355,18 +355,19 @@ export default function PromptAnswer() {
             />
           </View>
 
-          {prompts?.length < 1 && (
-            <View style={styles.addButtonContainer}>
-              <Button
-                label='Add Another Prompt'
-                onPress={() => handleAddPrompt(caregiverFirstPromptAnswer)}
-                variant='compact'
-                // style={styles.addButton}
-              />
-            </View>
-          )}
+          {prompts?.length === 1 ||
+            (prompts?.length === 2 && (
+              <View style={styles.addButtonContainer}>
+                <Button
+                  label='Add Another Prompt'
+                  onPress={() => handleAddPrompt(caregiverFirstPromptAnswer)}
+                  variant='compact'
+                  // style={styles.addButton}
+                />
+              </View>
+            ))}
         </View>
-        {prompts?.length > 0 && (
+        {prompts?.length >= 2 && (
           <View style={styles.bottomNav}>
             <Button
               label='Next'
