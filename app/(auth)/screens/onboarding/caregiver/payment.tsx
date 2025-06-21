@@ -6,7 +6,7 @@ import { Pill } from '@/components/ui/Pill';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
-import Slider from '@react-native-community/slider';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -47,12 +47,20 @@ export default function PaymentScreen() {
     setCaregiverPaymentType,
   } = useUserStore();
 
-  // Initialize hourly rate if not set
+  console.log('caregiverHourlyRate', caregiverHourlyRate);
+
+  // Initialize hourly rate range if not set
   useEffect(() => {
     if (caregiverPaymentType === 'Hourly' && !caregiverHourlyRate) {
-      setCaregiverHourlyRate(20); // Default value
+      setCaregiverHourlyRate([20, 30]); // Default range
     }
   }, [caregiverPaymentType]);
+
+  // Ensure we have valid values for the slider
+  const sliderValues =
+    caregiverHourlyRate && Array.isArray(caregiverHourlyRate)
+      ? caregiverHourlyRate
+      : [20, 30];
 
   const paymentOptions: Array<{ label: PaymentType; icon: string }> = [
     { label: 'Hourly', icon: '🤑' },
@@ -67,22 +75,24 @@ export default function PaymentScreen() {
         type: caregiverPaymentType,
         rate:
           caregiverPaymentType === 'Hourly'
-            ? caregiverHourlyRate || 0
+            ? caregiverHourlyRate?.[0] || 0
             : parseInt(caregiverSalaryAmount?.replace(/,/g, '') || '0'),
+        minRate: caregiverHourlyRate?.[0],
+        maxRate: caregiverHourlyRate?.[1],
       },
     });
   };
 
-  const handleSliderChange = (value: number) => {
+  const handleSliderChange = (values: number[]) => {
     setHasInteracted(true);
-    setCaregiverHourlyRate(value);
+    setCaregiverHourlyRate(values);
   };
 
   const handleTextInputChange = (text: string) => {
     const numValue = parseInt(text) || 0;
     if (numValue >= 15 && numValue <= 45) {
       setHasInteracted(true);
-      setCaregiverHourlyRate(numValue);
+      setCaregiverHourlyRate([numValue, numValue]);
     }
   };
 
@@ -97,7 +107,7 @@ export default function PaymentScreen() {
     const cleanText = text.replace(/[^0-9,]/g, '');
     // Format with commas
     const formattedText = cleanText.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    setCaregiverSalaryAmount(Number(formattedText));
+    setCaregiverSalaryAmount(formattedText);
   };
 
   return (
@@ -129,49 +139,41 @@ export default function PaymentScreen() {
             {caregiverPaymentType === 'Hourly' && (
               <View style={styles.inputContainer}>
                 <View style={styles.sliderContainer}>
-                  <View
-                    style={[
-                      styles.valueContainer,
-                      {
-                        left: `${
-                          (((caregiverHourlyRate || 20) - 15) / (45 - 15)) * 100
-                        }%`,
-                        transform: [{ translateX: -30 }],
-                      },
-                    ]}
-                  >
-                    <ThemedText style={styles.valueText}>
-                      ${(caregiverHourlyRate || 20).toString()}
-                    </ThemedText>
+                  <View style={styles.sliderLabels}>
+                    <ThemedText>$15</ThemedText>
+                    <ThemedText>$20</ThemedText>
+                    <ThemedText>$25</ThemedText>
+                    <ThemedText>$30</ThemedText>
+                    <ThemedText>$35</ThemedText>
+                    <ThemedText>$40</ThemedText>
+                    <ThemedText>$45+</ThemedText>
                   </View>
-                  <Slider
-                    style={{ width: '100%', height: 40 }}
-                    minimumValue={15}
-                    maximumValue={45}
-                    value={caregiverHourlyRate || 20}
+                  <MultiSlider
+                    values={sliderValues}
+                    min={15}
+                    max={45}
                     step={1}
-                    onValueChange={handleSliderChange}
-                    minimumTrackTintColor={Colors.light.primary}
-                    maximumTrackTintColor='#E5E5E5'
-                    thumbTintColor={Colors.light.primary}
+                    sliderLength={318}
+                    selectedStyle={{
+                      backgroundColor: Colors.light.primary,
+                    }}
+                    unselectedStyle={{
+                      backgroundColor: '#E8E8E8',
+                    }}
+                    containerStyle={{
+                      height: 40,
+                    }}
+                    trackStyle={{
+                      height: 4,
+                    }}
+                    markerStyle={{
+                      backgroundColor: Colors.light.primary,
+                      height: 20,
+                      width: 20,
+                    }}
+                    onValuesChange={handleSliderChange}
                   />
                 </View>
-                {/* <View
-                  style={[
-                    styles.inputBorder,
-                    (caregiverHourlyRate || 0) > 0 && styles.inputBorderActive,
-                  ]}
-                >
-                  <TextInput
-                    style={styles.input}
-                    placeholder='$20-$30/hr'
-                    placeholderTextColor='#999'
-                    value={caregiverHourlyRate?.toString() || ''}
-                    onChangeText={handleTextInputChange}
-                    keyboardType='numeric'
-                    maxLength={2}
-                  />
-                </View> */}
               </View>
             )}
 
@@ -206,7 +208,8 @@ export default function PaymentScreen() {
               variant='compact'
               disabled={
                 !caregiverPaymentType ||
-                (caregiverPaymentType === 'Hourly' && !caregiverHourlyRate) ||
+                (caregiverPaymentType === 'Hourly' &&
+                  (!caregiverHourlyRate?.[0] || !caregiverHourlyRate?.[1])) ||
                 (caregiverPaymentType === 'Salary Base' &&
                   !caregiverSalaryAmount)
               }
@@ -260,19 +263,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     position: 'relative',
   },
-  valueContainer: {
-    position: 'absolute',
-    top: -30,
-    backgroundColor: Colors.light.primary,
+  sliderLabels: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    zIndex: 1,
-  },
-  valueText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '600',
+    width: '100%',
   },
   inputBorder: {
     borderBottomWidth: 2,

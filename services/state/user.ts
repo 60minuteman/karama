@@ -486,7 +486,7 @@ interface UserState {
   caregiverSchedule: CaregiverDaySchedule[] | undefined;
   caregiverChildcareResponsibilities: string[] | null;
   caregiverHouseholdResponsibilities: string[] | null;
-  caregiverHourlyRate: number | null;
+  caregiverHourlyRate: number[] | null;
   caregiverSalaryAmount: string | null;
   caregiverPaymentType: 'Hourly' | 'Salary Base' | null;
   caregiverPaymentMethod: string;
@@ -604,7 +604,7 @@ interface UserState {
   setCaregiverHouseholdResponsibilities: (type: string[] | null) => void;
 
   setCaregiverPaymentType: (type: 'Hourly' | 'Salary Base' | null) => void;
-  setCaregiverHourlyRate: (type: number | null) => void;
+  setCaregiverHourlyRate: (type: number[] | null) => void;
   setCaregiverSalaryAmount: (type: string | null) => void;
   setCaregiverPaymentMethod: (type: string) => void;
   setShowCaregiverPaymentMethod: (type: boolean | undefined) => void;
@@ -886,7 +886,7 @@ export const useUserStore = create<UserState>()(
       ],
       caregiverChildcareResponsibilities: [],
       caregiverHouseholdResponsibilities: [],
-      caregiverHourlyRate: 15,
+      caregiverHourlyRate: [15, 15],
       caregiverSalaryAmount: '50,000',
       caregiverPaymentType: null,
       caregiverPaymentMethod: '',
@@ -1513,7 +1513,7 @@ export const useUserStore = create<UserState>()(
           ],
           caregiverChildcareResponsibilities: [],
           caregiverHouseholdResponsibilities: [],
-          caregiverHourlyRate: 15,
+          caregiverHourlyRate: [15, 15],
           caregiverSalaryAmount: '50,000',
           caregiverPaymentType: null,
           caregiverPaymentMethod: '',

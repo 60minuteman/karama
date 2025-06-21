@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
-import { router } from 'expo-router';
-import Slider from '@react-native-community/slider';
-import { Image } from 'react-native';
-import { useFonts, Poppins_400Regular, Poppins_600SemiBold } from '@expo-google-fonts/poppins';
+import {
+  Poppins_400Regular,
+  Poppins_600SemiBold,
+  useFonts,
+} from '@expo-google-fonts/poppins';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import Slider from '@react-native-community/slider';
+import { router } from 'expo-router';
+import React, { useState } from 'react';
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 interface FilterOption {
   label: string;
@@ -15,7 +25,7 @@ interface FilterOption {
 export default function Filter() {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
-    Poppins_600SemiBold
+    Poppins_600SemiBold,
   });
 
   const [ageRange, setAgeRange] = useState([20, 25]);
@@ -25,8 +35,9 @@ export default function Filter() {
   const [payRange, setPayRange] = useState([20, 30]);
 
   const handleBack = () => {
-    router.push('/(tabs)/discover');
-  };  
+    // router.push('/(tabs)/discover');
+    router.push('/(tabs)/profile');
+  };
 
   if (!fontsLoaded) {
     return null;
@@ -59,7 +70,7 @@ export default function Filter() {
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack}>
-          <Image 
+          <Image
             source={require('@/assets/icons/back.png')}
             style={styles.backIcon}
           />
@@ -73,7 +84,9 @@ export default function Filter() {
       <ScrollView style={styles.container}>
         <View style={styles.section}>
           <View style={styles.sliderContainer}>
-            <ThemedText style={[styles.sectionTitle, { marginLeft: 0 }]}>Age</ThemedText>
+            <ThemedText style={[styles.sectionTitle, { marginLeft: 0 }]}>
+              Age
+            </ThemedText>
             <MultiSlider
               values={[ageRange[0], ageRange[1]]}
               min={15}
@@ -120,14 +133,16 @@ export default function Filter() {
               style={styles.genderOption}
               onPress={() => setSelectedGender(option.value)}
             >
-              <ThemedText style={[
-                styles.genderText,
-                selectedGender === option.value && styles.selectedGenderText
-              ]}>
+              <ThemedText
+                style={[
+                  styles.genderText,
+                  selectedGender === option.value && styles.selectedGenderText,
+                ]}
+              >
                 {option.label}
               </ThemedText>
               {selectedGender === option.value && (
-                <Image 
+                <Image
                   source={require('@/assets/icons/check.png')}
                   style={styles.checkIcon}
                 />
@@ -137,17 +152,23 @@ export default function Filter() {
         </View>
 
         <TouchableOpacity style={styles.languageSection}>
-          <ThemedText style={styles.sectionTitle}>Languages we speak</ThemedText>
+          <ThemedText style={styles.sectionTitle}>
+            Languages we speak
+          </ThemedText>
           <View style={styles.languageRow}>
-            <ThemedText style={styles.languageText}>English (United Kingdom)</ThemedText>
-            <Image 
+            <ThemedText style={styles.languageText}>
+              English (United Kingdom)
+            </ThemedText>
+            <Image
               source={require('@/assets/icons/chevron-right.png')}
               style={styles.chevronIcon}
             />
           </View>
         </TouchableOpacity>
 
-        <ThemedText style={styles.sectionTitle}>Subscriber Preference</ThemedText>
+        <ThemedText style={styles.sectionTitle}>
+          Subscriber Preference
+        </ThemedText>
         <View style={styles.section}>
           <View style={styles.subscriptionHeader}>
             <TouchableOpacity style={styles.upgradeButton}>
@@ -167,25 +188,45 @@ export default function Filter() {
         <View style={styles.section}>
           <ThemedText style={styles.sectionTitle}>Pay</ThemedText>
           <View style={styles.payTypeContainer}>
-            <TouchableOpacity 
-              style={[styles.payTypeButton, payType === 'Hourly' && styles.selectedPayType]}
+            <TouchableOpacity
+              style={[
+                styles.payTypeButton,
+                payType === 'Hourly' && styles.selectedPayType,
+              ]}
               onPress={() => setPayType('Hourly')}
             >
-              <Image 
+              <Image
                 source={require('@/assets/icons/hourly.png')}
                 style={styles.payTypeIcon}
               />
-              <ThemedText style={[styles.payTypeText, payType === 'Hourly' && styles.selectedPayTypeText]}>Hourly</ThemedText>
+              <ThemedText
+                style={[
+                  styles.payTypeText,
+                  payType === 'Hourly' && styles.selectedPayTypeText,
+                ]}
+              >
+                Hourly
+              </ThemedText>
             </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.payTypeButton, payType === 'Salary' && styles.selectedPayType]}
+            <TouchableOpacity
+              style={[
+                styles.payTypeButton,
+                payType === 'Salary' && styles.selectedPayType,
+              ]}
               onPress={() => setPayType('Salary')}
             >
-              <Image 
+              <Image
                 source={require('@/assets/icons/salary.png')}
                 style={styles.payTypeIcon}
               />
-              <ThemedText style={[styles.payTypeText, payType === 'Salary' && styles.selectedPayTypeText]}>Salary Base</ThemedText>
+              <ThemedText
+                style={[
+                  styles.payTypeText,
+                  payType === 'Salary' && styles.selectedPayTypeText,
+                ]}
+              >
+                Salary Base
+              </ThemedText>
             </TouchableOpacity>
           </View>
           <View style={styles.sliderContainer}>
@@ -235,8 +276,8 @@ export default function Filter() {
               minimumValue={0.5}
               maximumValue={3.5}
               value={distance}
-              minimumTrackTintColor="#EB4430"
-              maximumTrackTintColor="#E8E8E8"
+              minimumTrackTintColor='#EB4430'
+              maximumTrackTintColor='#E8E8E8'
               onValueChange={setDistance}
             />
             <View style={styles.sliderLabels}>
@@ -252,15 +293,14 @@ export default function Filter() {
         </View>
 
         {lockedSections.map((section, index) => (
-          <TouchableOpacity 
-            key={index}
-            style={styles.lockedSection}
-          >
+          <TouchableOpacity key={index} style={styles.lockedSection}>
             <View>
-              <ThemedText style={styles.sectionTitle}>{section.title}</ThemedText>
+              <ThemedText style={styles.sectionTitle}>
+                {section.title}
+              </ThemedText>
               <ThemedText style={styles.lockedText}>{section.label}</ThemedText>
             </View>
-            <Image 
+            <Image
               source={require('@/assets/icons/lock.png')}
               style={styles.lockIcon}
             />

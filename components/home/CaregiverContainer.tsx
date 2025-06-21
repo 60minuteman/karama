@@ -62,6 +62,8 @@ const CaregiverContainer = forwardRef<
   const isLargeScreen = windowWidth > 768;
   const containerWidth = Math.min(windowWidth * 0.9, 500);
 
+  console.log('profileData==========', profileData);
+
   // Add animation values
   const slideAnim = new Animated.Value(0);
   const rotateAnim = slideAnim.interpolate({
@@ -122,6 +124,8 @@ const CaregiverContainer = forwardRef<
 
   const scrollViewRef = useRef<ScrollView>(null);
 
+  console.log('profileData=====', profileData?.experience);
+
   useImperativeHandle(ref, () => ({
     swipeRight,
     swipeLeft,
@@ -151,9 +155,7 @@ const CaregiverContainer = forwardRef<
     location: profileData.location || 'Location not provided',
     salary:
       profileData?.extra_info?.payment_info?.type === '🤑 Hourly'
-        ? `$${profileData?.extra_info?.payment_info?.hourly_min * 15} - $${
-            profileData?.extra_info?.payment_info?.hourly_max
-          }/hour`
+        ? `$${profileData?.extra_info?.payment_info?.hourly_min} - $${profileData?.extra_info?.payment_info?.hourly_max}/hour`
         : `${profileData?.extra_info?.payment_info?.salary}/year`,
     familyType: profileData?.description, // This could be made dynamic based on data
     rating: profileData.rating || 4.5,
@@ -163,7 +165,13 @@ const CaregiverContainer = forwardRef<
     profileData: profileData,
   };
 
-  console.log('images', profileData?.extra_info?.payment_info);
+  console.log(
+    'images======',
+    profileData?.allergies?.food_allergies,
+    profileData?.allergies?.environmental_allergies,
+    profileData?.allergies?.other_allergies,
+    profileData?.allergies?.other_other_allergies
+  );
 
   return (
     <ScrollView ref={scrollViewRef}>

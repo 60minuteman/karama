@@ -1,6 +1,7 @@
 // components/ErrorBoundary.tsx
 import React, { Component, ReactNode } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import NotFound from '../assets/icons/NotFound.svg';
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -41,9 +42,14 @@ export default class ErrorBoundary extends Component<
     if (this.state.hasError) {
       return (
         <View style={styles.container}>
-          <Text style={styles.errorText}>Something went wrong:</Text>
-          <Text style={styles.errorMessage}>{this.state.errorMessage}</Text>
-          <Button title='Try Again' onPress={this.handleReset} />
+          <NotFound width={200} height={200} />
+          <Text style={styles.title}>Page not found</Text>
+          <Text style={styles.subtitle}>
+            The screen you're looking for is not available at the moment
+          </Text>
+          <TouchableOpacity style={styles.button} onPress={this.handleReset}>
+            <Text style={styles.buttonText}>Go back</Text>
+          </TouchableOpacity>
         </View>
       );
     }
@@ -58,16 +64,31 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+    backgroundColor: '#FFFFFF',
   },
-  errorText: {
-    fontSize: 18,
+  title: {
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#D8000C',
+    color: '#333333',
+    marginTop: 24,
+    marginBottom: 8,
   },
-  errorMessage: {
-    fontSize: 14,
-    color: '#D8000C',
-    marginVertical: 8,
+  subtitle: {
+    fontSize: 16,
+    color: '#666666',
     textAlign: 'center',
+    marginBottom: 24,
+    paddingHorizontal: 32,
+  },
+  button: {
+    backgroundColor: '#ED5E4A',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 25,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

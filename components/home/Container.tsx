@@ -192,9 +192,13 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
             {data?.prompts?.[0]?.title && (
               <View style={styles.section}>
                 <View style={styles.subSection}>
-                  <ThemedText>{data?.prompts?.[0]?.title}</ThemedText>
+                  <ThemedText style={{ fontFamily: 'Bogart-Regular' }}>
+                    {data?.prompts?.[0]?.title}
+                  </ThemedText>
                   <View style={styles.pillContainer}>
-                    <Text style={{ fontSize: 22 }}>
+                    <Text
+                      style={{ fontSize: 22, fontFamily: 'Bogart-Regular' }}
+                    >
                       {data?.prompts?.[0]?.answer}
                     </Text>
                   </View>
@@ -293,9 +297,13 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
                 {data?.prompts?.[1]?.title && (
                   <View style={styles.section}>
                     <View style={styles.subSection}>
-                      <ThemedText>{data?.prompts?.[1]?.title}</ThemedText>
+                      <ThemedText style={{ fontFamily: 'Bogart-Regular' }}>
+                        {data?.prompts?.[1]?.title}
+                      </ThemedText>
                       <View style={styles.pillContainer}>
-                        <Text style={{ fontSize: 22 }}>
+                        <Text
+                          style={{ fontSize: 22, fontFamily: 'Bogart-Regular' }}
+                        >
                           {data?.prompts?.[1]?.answer}
                         </Text>
                       </View>

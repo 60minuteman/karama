@@ -7,8 +7,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
+  Animated,
   Image,
   SafeAreaView,
   StyleSheet,
@@ -23,7 +24,43 @@ const ItsAmatch = () => {
   const { data: currentUser } = useCurrentUser();
   const [isLoading, setIsLoading] = useState(false);
 
+  // Animation values
+  const leftImagePosition = useRef(new Animated.Value(-100)).current;
+  const rightImagePosition = useRef(new Animated.Value(100)).current;
+  const bounceValue = useRef(new Animated.Value(0)).current;
+
   console.log('currentUser', currentUser?.data?.profile_picture?.path);
+
+  // Animation effect
+  useEffect(() => {
+    // First animation: images come together
+    Animated.parallel([
+      Animated.timing(leftImagePosition, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+      Animated.timing(rightImagePosition, {
+        toValue: 0,
+        duration: 800,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      // Second animation: bounce effect
+      Animated.sequence([
+        Animated.timing(bounceValue, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bounceValue, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    });
+  }, []);
 
   const createMessage: any = useAuthMutation({
     mutationFn: (data: any) => {
@@ -82,11 +119,10 @@ const ItsAmatch = () => {
               height: 259.16,
             }}
           >
-            {/* Right (underneath) placeholder */}
-            <Image
+            {/* Right (underneath) placeholder - Current User */}
+            <Animated.Image
               source={{
-                uri: match_complete?.match?.caregiver_profile?.pictures[0]
-                  ?.path,
+                uri: currentUser?.data?.profile_picture?.path,
               }}
               style={{
                 position: 'absolute',
@@ -96,14 +132,24 @@ const ItsAmatch = () => {
                 height: 259.16,
                 backgroundColor: '#D3D3D3', // light gray
                 borderRadius: 24,
-                transform: [{ rotate: '14.79deg' }],
+                transform: [
+                  { rotate: '14.79deg' },
+                  { translateX: leftImagePosition },
+                  {
+                    scale: bounceValue.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [1, 1.1],
+                    }),
+                  },
+                ],
                 top: '-5%',
               }}
             />
-            {/* Left (top) placeholder */}
-            <Image
+            {/* Left (top) placeholder - Matched User */}
+            <Animated.Image
               source={{
-                uri: currentUser?.data?.profile_picture?.path,
+                uri: match_complete?.match?.caregiver_profile?.pictures[0]
+                  ?.path,
               }}
               style={{
                 zIndex: 2,
@@ -111,7 +157,16 @@ const ItsAmatch = () => {
                 height: 259.16,
                 backgroundColor: '#fff',
                 borderRadius: 24,
-                transform: [{ rotate: '-10deg' }],
+                transform: [
+                  { rotate: '-10deg' },
+                  { translateX: rightImagePosition },
+                  {
+                    scale: bounceValue.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [1, 1.1],
+                    }),
+                  },
+                ],
                 marginRight: '35%',
                 marginTop: '30%',
               }}
@@ -254,7 +309,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#222',
     marginBottom: 8,
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Bold',
   },
   subText: {
     color: '#261D2ACC',

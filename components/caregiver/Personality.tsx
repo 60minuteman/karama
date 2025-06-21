@@ -67,11 +67,24 @@ export const Personality: React.FC<PersonalityProps> = ({
     </View>
   );
 
+  console.log('personalityTraits', personalityTraits);
+  console.log('allergies', allergies);
+  console.log('experiences', experiences);
+
   return (
     <View style={styles.container}>
-      {renderSection(personalityTitle, personalityTraits)}
-      {renderSection(allergiesTitle, allergies)}
-      {renderSection(experienceTitle, experiences)}
+      {personalityTraits &&
+        personalityTraits.length > 0 &&
+        personalityTraits.some((item) => item !== null) &&
+        renderSection(personalityTitle, personalityTraits)}
+      {allergies &&
+        allergies.length > 0 &&
+        allergies.some((item) => item !== null) &&
+        renderSection(allergiesTitle, allergies)}
+      {experiences &&
+        experiences.length > 0 &&
+        experiences.some((item) => item !== null) &&
+        renderSection(experienceTitle, experiences)}
     </View>
   );
 };

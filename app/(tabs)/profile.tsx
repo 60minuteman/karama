@@ -104,6 +104,9 @@ export default function Profile() {
               <ThemedText style={styles.name}>
                 {currentUser?.data?.role === 'FAMILY' && currentUser?.data?.name
                   ? `${currentUser?.data?.name}s`
+                  : currentUser?.data?.role === 'CAREGIVER' &&
+                    currentUser?.data?.caregiver_profile?.name
+                  ? `${currentUser?.data?.caregiver_profile?.name}`
                   : 'User'}
               </ThemedText>
               <TouchableOpacity

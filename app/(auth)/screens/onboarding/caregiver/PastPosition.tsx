@@ -134,6 +134,43 @@ const PastPosition: React.FC = () => {
     router.push('/(auth)/screens/onboarding/caregiver/prompt');
   };
 
+  // Validation function to check if a position has all necessary fields
+  const isPositionValid = (position: any) => {
+    // Handle the type mismatch where childCare and household are defined as strings but used as arrays
+    const childCareArray = Array.isArray(position?.childCare)
+      ? position.childCare
+      : typeof position?.childCare === 'string' && position.childCare !== ''
+      ? [position.childCare]
+      : [];
+
+    const householdArray = Array.isArray(position?.household)
+      ? position.household
+      : typeof position?.household === 'string' && position.household !== ''
+      ? [position.household]
+      : [];
+
+    return (
+      position?.familyName?.trim() !== '' &&
+      position?.position?.trim() !== '' &&
+      position?.employmentType?.trim() !== '' &&
+      position?.startDate?.trim() !== '' &&
+      position?.endDate?.trim() !== '' &&
+      Array.isArray(position?.ageGroups) &&
+      position.ageGroups.length > 0 &&
+      childCareArray.length > 0 &&
+      householdArray.length > 0
+    );
+  };
+
+  // Check if all positions are valid
+  const isAllPositionsValid = () => {
+    return (
+      isPositionValid(caregiverFirstPosition) ||
+      isPositionValid(caregiverSecondPosition) ||
+      isPositionValid(caregiverThirdPosition)
+    );
+  };
+
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
       month: '2-digit',
@@ -450,7 +487,7 @@ const PastPosition: React.FC = () => {
               <View style={styles.section}>
                 <ThemedText style={styles.sectionTitle}>
                   What age were the children{' '}
-                  <ThemedText style={styles.selectionCount}>
+                  {/* <ThemedText style={styles.selectionCount}>
                     (
                     {selectedPositionNumber === 'first'
                       ? caregiverFirstPosition?.ageGroups?.length || 0
@@ -458,7 +495,7 @@ const PastPosition: React.FC = () => {
                       ? caregiverSecondPosition?.ageGroups?.length || 0
                       : caregiverThirdPosition?.ageGroups?.length || 0}
                     /10)
-                  </ThemedText>
+                  </ThemedText> */}
                 </ThemedText>
                 <View style={styles.pillsContainer}>
                   {childAgeGroups.map((age) => (
@@ -670,11 +707,7 @@ const PastPosition: React.FC = () => {
                   label='Next'
                   onPress={handleNext}
                   variant='compact'
-                  disabled={
-                    !caregiverFirstPosition ||
-                    !caregiverSecondPosition ||
-                    !caregiverThirdPosition
-                  }
+                  disabled={!isAllPositionsValid()}
                 />
               </View>
             </LinearGradient>

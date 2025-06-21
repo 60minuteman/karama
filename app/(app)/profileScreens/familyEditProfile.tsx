@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 // import { api } from '@/services/api/api'
+import ComingSoonModal from '@/components/ui/ComingSoonModal';
 import InfoPill from '@/components/ui/InfoPill';
 import Skeleton from '@/components/ui/Skeleton';
 import customAxios from '@/services/api/envConfig';
@@ -79,6 +80,7 @@ import customAxios from '@/services/api/envConfig';
 const FamilyEditProfile = () => {
   const router = useRouter();
   const [images, setImages] = useState<string[]>([]);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   const { data: profileData, isLoading } = useQuery<any>({
     queryKey: ['familyProfile'],
@@ -110,6 +112,10 @@ const FamilyEditProfile = () => {
       // Here you would typically upload the image to your server
       setImages((prev) => [...prev, result.assets[0].uri]);
     }
+  };
+
+  const handleEditPress = () => {
+    setModalVisible(true);
   };
 
   const handleEditField = (route: string) => {
@@ -177,6 +183,10 @@ const FamilyEditProfile = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <ComingSoonModal
+        visible={isModalVisible}
+        onClose={() => setModalVisible(false)}
+      />
       <ThemedView style={styles.container}>
         <ProfileHeader
           heading='Edit profile'
@@ -235,7 +245,7 @@ const FamilyEditProfile = () => {
                 Written Prompts (
                 {caregiverProfile?.extra_info?.prompts?.length || 0})
               </ThemedText>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={handleEditPress}>
                 <ThemedText style={styles.editText}>Edit</ThemedText>
               </TouchableOpacity>
             </View>
@@ -346,7 +356,7 @@ const FamilyEditProfile = () => {
                   </View>
 
                   {item.hasEdit && (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handleEditPress}>
                       <ThemedText style={styles.editText}>Edit</ThemedText>
                     </TouchableOpacity>
                   )}

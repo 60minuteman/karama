@@ -413,6 +413,8 @@ export default function DiscoverScreen() {
 
   // console.log('profileDataFamily', profileDataFamily);
 
+  console.log('currentProfile', currentProfile);
+
   const profileDataCaregiver: any = {
     image: currentProfile?.family_profile?.pictures, // No image path provided in the data
     name: currentProfile?.family_profile?.name || '', // "Smith Family"
@@ -421,34 +423,34 @@ export default function DiscoverScreen() {
     location: `📍 ${currentProfile?.family_profile?.location}`, // "📍 12345"
     rating: currentProfile?.score || '0', // 5.0
     experience: [
-      currentProfile?.family_profile?.household_info.rules.join('-') || '', // "1-5 years"
-      ...(currentProfile?.family_profile?.household_info.diets || []), // ["Nanny", "Babysitter"]
+      currentProfile?.family_profile?.household_info?.rules?.join('-') || '', // "1-5 years"
+      ...(currentProfile?.family_profile?.household_info?.diets || []), // ["Nanny", "Babysitter"]
     ],
     lookingFor: [
-      currentProfile?.family_profile?.household_info.rules.join(', ') || '',
+      currentProfile?.family_profile?.household_info?.rules?.join(', ') || '',
     ], // ["Full Time"]
     hourlyRate:
       currentProfile?.family_profile?.extra_info?.payment_info?.type ===
       'Hourly'
-        ? `$${currentProfile?.family_profile?.extra_info?.payment_info.hourly_min} - $${currentProfile?.family_profile?.extra_info.payment_info.hourly_max}`
-        : `$${currentProfile?.family_profile?.extra_info?.payment_info.salary}/year`, // "$20 - $45"
+        ? `$${currentProfile?.family_profile?.extra_info?.payment_info?.hourly_min} - $${currentProfile?.family_profile?.extra_info?.payment_info?.hourly_max}`
+        : `$${currentProfile?.family_profile?.extra_info?.payment_info?.salary}/year`, // "$20 - $45"
     languages: [
       ...(currentProfile?.family_profile?.languages || []), // ["English", "Spanish"]
       currentProfile?.family_profile?.other_languages || '',
     ].filter(Boolean),
     interests: [
       ...(currentProfile?.family_profile?.children_interests
-        .creative_interests || []), // ["Painting", "Singing"]
+        ?.creative_interests || []), // ["Painting", "Singing"]
       ...(currentProfile?.family_profile?.children_interests
-        .instrument_interests || []), // ["Piano", "Guitar"]
-      ...(currentProfile?.family_profile?.children_interests.sport_interests ||
+        ?.instrument_interests || []), // ["Piano", "Guitar"]
+      ...(currentProfile?.family_profile?.children_interests?.sport_interests ||
         []), // ["Soccer", "Basketball"]
-      ...(currentProfile?.family_profile?.children_interests.stem_interests ||
+      ...(currentProfile?.family_profile?.children_interests?.stem_interests ||
         []), // ["Coding", "Robotics"]
     ].filter(Boolean),
-    religion: currentProfile?.family_profile?.household_info.religion || '', // "Christianity"
+    religion: currentProfile?.family_profile?.household_info?.religion || '', // "Christianity"
     personality:
-      currentProfile?.family_profile?.caregiver_preference.personalities || [], // ["Bubbly", "Patient"]
+      currentProfile?.family_profile?.caregiver_preference?.personalities || [], // ["Bubbly", "Patient"]
     disabilities: currentProfile?.family_profile?.behavioural_differences || [], // ["Dyslexia", "ADHD", "Schizophrenia", "Misophonia"]
     pets: currentProfile?.family_profile?.pets,
     diets: currentProfile?.family_profile?.household_info?.diets,

@@ -70,11 +70,11 @@ export const CaregiverProfileCard = ({
           style={styles.gradient}
         >
           <View style={styles.header}>
-            <View style={styles.familyTypeTag}>
+            {/* <View style={styles.familyTypeTag}>
               <ThemedText style={styles.familyTypeText}>
                 {familyType}
               </ThemedText>
-            </View>
+            </View> */}
             {/* <View style={styles.ratingContainer}>
               <ThemedText style={styles.ratingText}>{rating}</ThemedText>
               <ThemedText style={styles.starIcon}>⭐</ThemedText>
@@ -92,11 +92,7 @@ export const CaregiverProfileCard = ({
               <ThemedText style={styles.salaryText}>
                 {profileData?.extra_info?.payment_info?.type === '🤑 Hourly' ||
                 profileData?.extra_info?.payment_info?.type === 'Hourly'
-                  ? `$${
-                      profileData?.extra_info?.payment_info?.hourly_min * 15
-                    } - $${
-                      profileData?.extra_info?.payment_info?.hourly_max
-                    }/hour`
+                  ? `$${profileData?.extra_info?.payment_info?.hourly_min} - $${profileData?.extra_info?.payment_info?.hourly_max}/hour`
                   : `${profileData?.extra_info?.payment_info?.salary}/year`}
               </ThemedText>
             </View>

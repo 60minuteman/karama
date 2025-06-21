@@ -142,8 +142,8 @@ export default function PromptAnswer() {
         }
       : {
           type: caregiverPaymentType,
-          hourly_min: 1,
-          hourly_max: caregiverHourlyRate,
+          hourly_min: caregiverHourlyRate?.[0],
+          hourly_max: caregiverHourlyRate?.[1],
           method: caregiverPaymentMethod,
           show_method_on_profile: showCaregiverPaymentMethod,
         };
@@ -355,19 +355,18 @@ export default function PromptAnswer() {
             />
           </View>
 
-          {prompts?.length === 1 ||
-            (prompts?.length === 2 && (
-              <View style={styles.addButtonContainer}>
-                <Button
-                  label='Add Another Prompt'
-                  onPress={() => handleAddPrompt(caregiverFirstPromptAnswer)}
-                  variant='compact'
-                  // style={styles.addButton}
-                />
-              </View>
-            ))}
+          {prompts?.length < 2 && (
+            <View style={styles.addButtonContainer}>
+              <Button
+                label='Add Another Prompt'
+                onPress={() => handleAddPrompt(caregiverFirstPromptAnswer)}
+                variant='compact'
+                // style={styles.addButton}
+              />
+            </View>
+          )}
         </View>
-        {prompts?.length >= 2 && (
+        {prompts?.length === 2 && (
           <View style={styles.bottomNav}>
             <Button
               label='Next'
