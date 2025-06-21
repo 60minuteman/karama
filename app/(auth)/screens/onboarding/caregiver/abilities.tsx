@@ -148,7 +148,7 @@ export default function Page() {
                 (caregiverCertifications?.length ?? 0);
               const isDisabled =
                 !caregiverCertifications?.includes(option.label) &&
-                totalSelections >= 6;
+                totalSelections >= 10;
               return (
                 <Pill
                   key={option.label}

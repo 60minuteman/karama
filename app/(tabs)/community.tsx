@@ -7,7 +7,9 @@ import { Image, StyleSheet, View } from 'react-native';
 
 export default function CommunityScreen() {
   const handleNavigateToDiscover = () => {
-    router.push('itsAmatch');
+    // caregiverItsAmatch
+    // router.push('itsAmatch');
+    router.push('/(app)/profileScreens/caregiverItsAmatch');
   };
 
   return (

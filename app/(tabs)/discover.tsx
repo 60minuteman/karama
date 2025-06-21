@@ -230,6 +230,15 @@ export default function DiscoverScreen() {
         router.push('/(app)/itsAmatch');
         return;
       }
+
+      if (
+        currentUser?.data?.role === 'CAREGIVER' &&
+        data?.data?.match.match_status === 'COMPLETED'
+      ) {
+        setMatchComplete(data?.data);
+        router.push('/(app)/profileScreens/caregiverItsAmatch');
+        return;
+      }
       moveToNextProfile();
     },
     onError: (error: any) => {

@@ -72,6 +72,9 @@ export default function EducationScreen() {
                     onPress={() => {
                       setFamilyEducation(option.label);
                       setSelected(option.label);
+                      router.push(
+                        '/(auth)/screens/onboarding/family/requirements'
+                      );
                     }}
                   />
                 </View>

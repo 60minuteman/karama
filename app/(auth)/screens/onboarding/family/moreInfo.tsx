@@ -103,8 +103,8 @@ export default function MoreInfo() {
         }
       : {
           type: family_payment?.selected_type,
-          hourly_min: 1,
-          hourly_max: family_payment?.hourly_rate,
+          hourly_min: family_payment?.hourly_rate[0],
+          hourly_max: family_payment?.hourly_rate[1],
           method: family_payment_method?.selected_method,
           show_method_on_profile: family_payment_method?.show_on_profile,
         };

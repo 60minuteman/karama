@@ -196,7 +196,7 @@ export default function PhoneNumberScreen() {
         </View>
 
         <View style={styles.bottomContainer}>
-          <ThemedText style={styles.redText}>Forgot Password ?</ThemedText>
+          {/* <ThemedText style={styles.redText}>Forgot Password ?</ThemedText> */}
           <Button
             label='Login'
             onPress={handleSignIn}

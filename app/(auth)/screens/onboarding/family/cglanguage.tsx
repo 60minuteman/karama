@@ -60,7 +60,15 @@ export default function CGLanguageScreen() {
                     key={option}
                     label={option}
                     selected={caregiver_language_required === option}
-                    onPress={() => setCaregiverLanguageRequired(option)}
+                    onPress={() => {
+                      setCaregiverLanguageRequired(option);
+                      setOnboardingScreen(
+                        '/(auth)/screens/onboarding/family/education'
+                      );
+                      router.push(
+                        '/(auth)/screens/onboarding/family/education'
+                      );
+                    }}
                   />
                 ))}
               </View>

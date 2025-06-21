@@ -42,10 +42,7 @@ const FamilyProfileView = () => {
   const { data: familyProfile, isLoading: familyProfileLoading }: any =
     useProfile(currentUser?.data?.role);
 
-  console.log(
-    'familyProfile=====',
-    familyProfile?.family_profile?.extra_info?.payment_info
-  );
+  console.log('familyProfile=====', currentUser);
 
   const handleEdit = () => {
     Alert.alert(
@@ -54,11 +51,6 @@ const FamilyProfileView = () => {
       [{ text: 'OK' }]
     );
   };
-
-  console.log(
-    'familyProfile Data',
-    familyProfile?.family_profile?.extra_info?.prompts
-  );
 
   const formatTime = (timeStr: any) => {
     if (!timeStr || timeStr === '00:00:00') return '12:00AM';
@@ -83,7 +75,7 @@ const FamilyProfileView = () => {
           heading='Profile'
           edit
           onEdit={handleEdit}
-          onBack={() => router.back()}
+          onBack={() => router.push('/(tabs)/profile')}
         />
         <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
           {familyProfileLoading ? (
@@ -709,22 +701,24 @@ const FamilyProfileView = () => {
                   </View>
                 </View>
               </View>
-              <View style={styles.section}>
-                {familyProfile?.family_profile?.extra_info
-                  ?.more_information && (
-                  <View style={styles.subSection}>
-                    <ThemedText style={{ color: 'red' }}>
-                      You Should Know
-                    </ThemedText>
-                    <ThemedText style={styles.sectionText}>
-                      {
-                        familyProfile?.family_profile?.extra_info
-                          ?.more_information
-                      }
-                    </ThemedText>
-                  </View>
-                )}
-              </View>
+              {familyProfile?.family_profile?.extra_info?.more_information && (
+                <View style={styles.section}>
+                  {familyProfile?.family_profile?.extra_info
+                    ?.more_information && (
+                    <View style={styles.subSection}>
+                      <ThemedText style={{ color: 'red' }}>
+                        You Should Know
+                      </ThemedText>
+                      <ThemedText style={styles.sectionText}>
+                        {
+                          familyProfile?.family_profile?.extra_info
+                            ?.more_information
+                        }
+                      </ThemedText>
+                    </View>
+                  )}
+                </View>
+              )}
             </View>
           )}
         </ScrollView>

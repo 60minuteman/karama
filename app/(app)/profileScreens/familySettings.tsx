@@ -2,6 +2,7 @@ import ProfileHeader from '@/components/Profile/ProfileHeader';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import useAuthMutation from '@/hooks/useAuthMutation';
+import { useCurrentUser } from '@/services/api/api';
 import customAxios from '@/services/api/envConfig';
 import { queryClient } from '@/services/api/queryClient';
 import { useUserStore } from '@/services/state/user';
@@ -25,6 +26,10 @@ const FamilySettings = () => {
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   const { clearUser, logout } = useUserStore();
   const [deviceId, setDeviceId] = useState(null);
+  const { data: currentUser, isLoading: isLoadingCurrentUser } =
+    useCurrentUser();
+
+  console.log('number=====', currentUser?.data?.phone_number);
 
   const deleteUserMutation = useAuthMutation({
     mutationFn: async () => {
@@ -150,10 +155,12 @@ const FamilySettings = () => {
             <View style={styles.section}>
               <ThemedText style={styles.text}>Phone & Email</ThemedText>
               <View style={styles.subSection}>
-                <ThemedText style={styles.heading}>+2348028276612</ThemedText>
                 <ThemedText style={styles.heading}>
-                  sakoaminat@gmail.com
+                  {currentUser?.data?.phone_number}
                 </ThemedText>
+                {/* <ThemedText style={styles.heading}>
+                  sakoaminat@gmail.com
+                </ThemedText> */}
               </View>
             </View>
             {/* <View style={styles.section}>
@@ -221,7 +228,7 @@ const FamilySettings = () => {
                 For Support Please Email{' '}
               </ThemedText>
               <ThemedText style={styles.heading}>
-                support@karamacare.com
+                hello@karamacare.com
               </ThemedText>
             </View>
             <View style={styles.section2}>

@@ -423,7 +423,7 @@ interface UserState {
   family_responsibilities: string[];
   family_payment: {
     selected_type: PaymentType | null;
-    hourly_rate: number;
+    hourly_rate: number[];
     salary_amount: string;
     has_interacted: boolean;
   };
@@ -783,7 +783,7 @@ export const useUserStore = create<UserState>()(
       family_responsibilities: [],
       family_payment: {
         selected_type: null,
-        hourly_rate: 15,
+        hourly_rate: [15, 15],
         salary_amount: '50,000',
         has_interacted: false,
       },
@@ -1301,7 +1301,7 @@ export const useUserStore = create<UserState>()(
           family_responsibilities: [],
           family_payment: {
             selected_type: null,
-            hourly_rate: 15,
+            hourly_rate: [15, 15],
             salary_amount: '50,000',
             has_interacted: false,
           },
