@@ -267,8 +267,8 @@ export default function Matches() {
                             imageUrl={
                               currentUser?.data?.id ===
                               conversation?.recipient?.id
-                                ? conversation?.creator?.image
-                                : conversation?.recipient?.image
+                                ? conversation?.recipient?.image
+                                : conversation?.creator?.image
                             }
                             name={conversation?.recipient?.name}
                             otherUser={conversation?.recipient?.name}

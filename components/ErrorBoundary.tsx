@@ -1,4 +1,5 @@
 // components/ErrorBoundary.tsx
+import { router } from 'expo-router';
 import React, { Component, ReactNode } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import NotFound from '../assets/icons/NotFound.svg';
@@ -35,7 +36,9 @@ export default class ErrorBoundary extends Component<
   }
 
   handleReset = () => {
-    this.setState({ hasError: false, errorMessage: '' });
+    // this.setState({ hasError: false, errorMessage: '' });
+    router.push('/(tabs)/discover');
+    // router.push('/(home)/settings');
   };
 
   render() {
@@ -43,7 +46,7 @@ export default class ErrorBoundary extends Component<
       return (
         <View style={styles.container}>
           <NotFound width={200} height={200} />
-          <Text style={styles.title}>Page not found</Text>
+          {/* <Text style={styles.title}>Page not found</Text> */}
           <Text style={styles.subtitle}>
             The screen you're looking for is not available at the moment
           </Text>

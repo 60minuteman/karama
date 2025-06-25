@@ -196,7 +196,12 @@ export default function PhoneNumberScreen() {
         </View>
 
         <View style={styles.bottomContainer}>
-          {/* <ThemedText style={styles.redText}>Forgot Password ?</ThemedText> */}
+          <TouchableOpacity
+            style={styles.textContainer}
+            onPress={() => router.push('/(auth)/ForgotPassword')}
+          >
+            <ThemedText style={styles.redText}>Forgot Password ?</ThemedText>
+          </TouchableOpacity>
           <Button
             label='Login'
             onPress={handleSignIn}

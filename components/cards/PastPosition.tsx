@@ -10,9 +10,10 @@ import { StyleSheet, View } from 'react-native';
 
 interface PastPositionProps {
   positionName: any;
+  position: any;
 }
 
-export const PastPosition = ({ positionName }: PastPositionProps) => {
+export const PastPosition = ({ positionName, position }: PastPositionProps) => {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
@@ -39,9 +40,18 @@ export const PastPosition = ({ positionName }: PastPositionProps) => {
     householdResponsibilities: positionName?.household_responsibilities,
   };
 
+  console.log('positionData', positionData);
+
   return (
     <View style={styles.container}>
-      <ThemedText style={styles.title}>{positionData.title}</ThemedText>
+      {position === 0 ? (
+        <ThemedText style={styles.title}>First Position</ThemedText>
+      ) : position === 1 ? (
+        <ThemedText style={styles.title}>Second Position</ThemedText>
+      ) : (
+        <ThemedText style={styles.title}>Third Position</ThemedText>
+      )}
+
       <ThemedText style={styles.familyName}>
         {positionData.familyName}
       </ThemedText>

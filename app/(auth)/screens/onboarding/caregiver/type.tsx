@@ -50,7 +50,10 @@ export default function Page() {
             <Pill
               key={index}
               label={type.label}
-              onPress={() => setCaregiverPositionType(type.label)}
+              onPress={() => {
+                setCaregiverPositionType(type.label);
+                handleNext();
+              }}
               selected={caregiverPositionType === type.label}
               style={styles.option}
             />

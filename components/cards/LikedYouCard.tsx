@@ -87,9 +87,9 @@ export const LikedYouCard = ({
             <ThemedText style={styles.salary}>{profile.salary}</ThemedText>
           </View>
         </View>
-        {isBlurred && (
+        {/* {isBlurred && (
           <BlurView intensity={20} style={StyleSheet.absoluteFill} />
-        )}
+        )} */}
       </ImageBackground>
     </TouchableOpacity>
   );

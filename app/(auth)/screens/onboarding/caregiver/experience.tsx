@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
+import { router } from 'expo-router';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 const experienceOptions = [
   ['1-11 months', '1-5 years'],
@@ -17,15 +17,19 @@ const experienceOptions = [
 ] as const;
 
 export default function Page() {
-  const { caregiverExperienceDuration, setCaregiverExperienceDuration, setOnboardingScreen } = useUserStore()
+  const {
+    caregiverExperienceDuration,
+    setCaregiverExperienceDuration,
+    setOnboardingScreen,
+  } = useUserStore();
   // const [selectedExperience, setSelectedExperience] = useState<string | null>(null);
   const handleNext = () => {
-    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/education')
-    router.push('/(auth)/screens/onboarding/caregiver/education')
-  }
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/education');
+    router.push('/(auth)/screens/onboarding/caregiver/education');
+  };
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+      <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -46,7 +50,10 @@ export default function Page() {
                 <Pill
                   key={option}
                   label={option}
-                  onPress={() => setCaregiverExperienceDuration(option)}
+                  onPress={() => {
+                    setCaregiverExperienceDuration(option);
+                    handleNext();
+                  }}
                   selected={caregiverExperienceDuration === option}
                   style={styles.option}
                 />
@@ -58,9 +65,9 @@ export default function Page() {
 
       <View style={styles.bottomNav}>
         <Button
-          label="Next"
+          label='Next'
           onPress={handleNext}
-          variant="compact"
+          variant='compact'
           style={styles.nextButton}
           disabled={!caregiverExperienceDuration}
         />
@@ -115,5 +122,5 @@ const styles = StyleSheet.create({
   nextButton: {
     backgroundColor: '#F45B69',
     borderRadius: 100,
-  }
-}); 
+  },
+});

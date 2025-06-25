@@ -163,9 +163,7 @@ const caregiverItsAmatch = () => {
             {/* Left (top) placeholder - Matched User */}
             <Animated.Image
               source={{
-                uri: isMatchComplete(match_complete)
-                  ? match_complete.match?.caregiver_profile?.pictures?.[0]?.path
-                  : undefined,
+                uri: match_complete?.match?.family_profile?.pictures[0]?.path,
               }}
               style={{
                 zIndex: 2,

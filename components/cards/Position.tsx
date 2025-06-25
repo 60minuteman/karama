@@ -31,6 +31,7 @@ export const Position = ({
   const { width: windowWidth } = useWindowDimensions();
   const isLargeScreen = windowWidth > 768;
   const containerWidth = Math.min(windowWidth * 0.9, 500);
+  const [position, setPosition] = useState(null);
 
   if (!fontsLoaded) {
     return null;
@@ -79,6 +80,7 @@ export const Position = ({
               style={styles.positionButton}
               onPress={() => {
                 setSelectedPosition(position);
+                setPosition(index);
                 // position.onPress();
               }}
             >
@@ -92,7 +94,7 @@ export const Position = ({
 
         {selectedPosition && (
           <View style={styles.pastPositionContainer}>
-            <PastPosition positionName={selectedPosition} />
+            <PastPosition positionName={selectedPosition} position={position} />
           </View>
         )}
       </View>

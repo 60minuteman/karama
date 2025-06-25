@@ -124,7 +124,7 @@ export default function Profile() {
             </View>
           </View>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.karamaPlus}
             onPress={() => handleNavigation('/profileScreens/subscribe')}
             activeOpacity={0.7}
@@ -143,7 +143,7 @@ export default function Profile() {
               source={require('@/assets/icons/chevron-right.png')}
               style={styles.chevronIcon}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View style={styles.menuSection}>
             <ThemedText style={styles.menuTitle}>General</ThemedText>
