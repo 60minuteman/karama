@@ -78,27 +78,27 @@ const CaregiverContainer = forwardRef<
   const swipeThreshold = windowWidth * 0.25;
 
   // Setup PanResponder for swipe gestures
-  const panResponder = PanResponder.create({
-    onStartShouldSetPanResponder: () => true,
-    onPanResponderMove: (_, gesture) => {
-      slideAnim.setValue(gesture.dx);
-    },
-    onPanResponderRelease: (_, gesture) => {
-      if (gesture.dx > swipeThreshold) {
-        // Swiped right - like
-        swipeRight();
-      } else if (gesture.dx < -swipeThreshold) {
-        // Swiped left - reject
-        swipeLeft();
-      } else {
-        // Reset position
-        Animated.spring(slideAnim, {
-          toValue: 0,
-          useNativeDriver: true,
-        }).start();
-      }
-    },
-  });
+  // const panResponder = PanResponder.create({
+  //   onStartShouldSetPanResponder: () => true,
+  //   onPanResponderMove: (_, gesture) => {
+  //     slideAnim.setValue(gesture.dx);
+  //   },
+  //   onPanResponderRelease: (_, gesture) => {
+  //     if (gesture.dx > swipeThreshold) {
+  //       // Swiped right - like
+  //       swipeRight();
+  //     } else if (gesture.dx < -swipeThreshold) {
+  //       // Swiped left - reject
+  //       swipeLeft();
+  //     } else {
+  //       // Reset position
+  //       Animated.spring(slideAnim, {
+  //         toValue: 0,
+  //         useNativeDriver: true,
+  //       }).start();
+  //     }
+  //   },
+  // });
 
   const swipeRight = () => {
     Animated.timing(slideAnim, {
@@ -170,7 +170,7 @@ const CaregiverContainer = forwardRef<
   return (
     <ScrollView ref={scrollViewRef}>
       <Animated.View
-        {...panResponder.panHandlers}
+        // {...panResponder.panHandlers}
         style={[
           styles.container,
           {
