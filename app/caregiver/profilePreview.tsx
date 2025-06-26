@@ -114,9 +114,18 @@ const profilePreview = () => {
     },
   });
 
-  console.log('profileData', {
+  console.log(
+    'profileData*****',
+    {
+      family_profile_id: `${profileData?.id}`,
+      score: `${profileData?.score}`,
+    },
+    profileData
+  );
+
+  console.log('likeProfile++++++++', {
     family_profile_id: `${profileData?.id}`,
-    score: `${profileData?.score}`,
+    score: `${profileData?.score || 5.0}`,
   });
 
   const handleLike = () => {
@@ -124,11 +133,11 @@ const profilePreview = () => {
       accountType === 'FAMILY'
         ? {
             caregiver_profile_id: `${profileData?.id}`,
-            score: `${profileData?.score}`,
+            score: `${profileData?.score || 5.0}`,
           }
         : {
             family_profile_id: `${profileData?.id}`,
-            score: `${profileData?.score}`,
+            score: `${profileData?.score || 5.0}`,
           }
     );
   };

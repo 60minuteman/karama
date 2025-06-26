@@ -46,14 +46,14 @@ export default function Matches() {
   const [deletedConversationId, setDeletedConversationId] = useState<any>(null);
   const queryClient = useQueryClient();
 
-  console.log('filteredMatches', filteredMatches[0]?.match_made_at);
+  // console.log('filteredMatches', filteredMatches[0]?.match_made_at);
 
-  console.log(
-    'conversations',
-    currentUser?.data?.role,
-    completeMatches?.data?.matches?.length
-    // filteredMatches
-  );
+  // console.log(
+  //   'conversations',
+  //   currentUser?.data?.role,
+  //   completeMatches?.data?.matches?.length
+  //   // filteredMatches
+  // );
 
   // Load cached data on mount
   useEffect(() => {
@@ -116,7 +116,8 @@ export default function Matches() {
 
   useEffect(() => {
     if (socket) {
-      socket.emit('getAllConversations');
+      console.log('socket', socket);
+      // socket.emit('getAllConversations');
 
       socket.on('allConversations', (data) => {
         setIsLoading(false);
@@ -136,11 +137,17 @@ export default function Matches() {
 
       socket.on('conversationUpdated', (data: any) => {
         setIsLoading(false);
+        console.log('conversationUpdated=======', data);
         setConversations((prevConversations: any[]) => {
-          const updatedConversations = prevConversations.map((conv) =>
-            conv.id === data.id ? data : conv
-          );
-          return updatedConversations;
+          // Handle both single conversation and array of conversations
+          const conversationsToUpdate = Array.isArray(data) ? data : [data];
+
+          return prevConversations.map((conv) => {
+            const updatedConv = conversationsToUpdate.find(
+              (update: any) => update.id === conv.id
+            );
+            return updatedConv || conv;
+          });
         });
       });
 
@@ -267,17 +274,29 @@ export default function Matches() {
                             imageUrl={(() => {
                               // Determine which user is the "other" user
                               // Use user_id for current user comparison since that's the field name in the user object
-                              const currentUserId = currentUser?.data?.user_id || currentUser?.data?.id;
-                              const otherUser = currentUserId === conversation?.recipient?.id 
-                                ? conversation?.creator 
-                                : conversation?.recipient;
-                              
+                              const currentUserId =
+                                currentUser?.data?.user_id ||
+                                currentUser?.data?.id;
+                              const otherUser =
+                                currentUserId === conversation?.recipient?.id
+                                  ? conversation?.creator
+                                  : conversation?.recipient;
+
                               // For caregiver users, check if they have pictures array with profile picture
-                              if (otherUser?.pictures && Array.isArray(otherUser.pictures)) {
-                                const profilePicture = otherUser.pictures.find((pic: any) => pic.type === 'PROFILE_PICTURE');
-                                return profilePicture?.path || otherUser?.image || null;
+                              if (
+                                otherUser?.pictures &&
+                                Array.isArray(otherUser.pictures)
+                              ) {
+                                const profilePicture = otherUser.pictures.find(
+                                  (pic: any) => pic.type === 'PROFILE_PICTURE'
+                                );
+                                return (
+                                  profilePicture?.path ||
+                                  otherUser?.image ||
+                                  null
+                                );
                               }
-                              
+
                               // For family users or users with direct image field
                               return otherUser?.image || null;
                             })()}

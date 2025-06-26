@@ -165,13 +165,7 @@ const CaregiverContainer = forwardRef<
     profileData: profileData,
   };
 
-  console.log(
-    'images======',
-    profileData?.allergies?.food_allergies,
-    profileData?.allergies?.environmental_allergies,
-    profileData?.allergies?.other_allergies,
-    profileData?.allergies?.other_other_allergies
-  );
+  console.log('images======', profileData);
 
   return (
     <ScrollView ref={scrollViewRef}>
@@ -277,7 +271,7 @@ const CaregiverContainer = forwardRef<
         />
       </View>
 
-      <View
+      {/* <View
         style={[styles.container, { width: containerWidth, marginTop: 16 }]}
       >
         <ChildCare
@@ -300,7 +294,7 @@ const CaregiverContainer = forwardRef<
         style={[styles.container, { width: containerWidth, marginTop: 16 }]}
       >
         <Benefits benefits={profileData?.extra_info?.benefits?.benefits} />
-      </View>
+      </View> */}
     </ScrollView>
   );
 });
