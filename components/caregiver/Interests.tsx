@@ -43,7 +43,7 @@ export const Interests: React.FC<InterestsProps> = ({
       <ThemedText style={styles.title}>{title}</ThemedText>
 
       <View style={styles.interestsContainer}>
-        {interests.map((interest, index) => {
+        {Array.isArray(interests) && interests.map((interest, index) => {
           let icon = '🎯'; // Default icon
 
           // Match interest with appropriate icon from array

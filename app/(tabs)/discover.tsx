@@ -122,8 +122,13 @@ export default function DiscoverScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cursor, setCursor] = useState('');
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [filteredProfiles, setFilteredProfiles] = useState<Profile[]>([]);
   const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
   const [nextCursor, setNextCursor] = useState('');
+  const [swipedProfileIds, setSwipedProfileIds] = useState<Set<string>>(new Set());
+  const [showingSkippedProfiles, setShowingSkippedProfiles] = useState(false);
+  const [skippedProfiles, setSkippedProfiles] = useState<Profile[]>([]);
+  const [hasCheckedSkippedProfiles, setHasCheckedSkippedProfiles] = useState(false);
   const containerRef = useRef<ContainerRef>(null);
   const { setMatchComplete, match_complete } = useStore();
   const { data: currentUser, isLoading: isLoadingCurrentUser } =
@@ -171,21 +176,83 @@ export default function DiscoverScreen() {
     }
   );
 
+  // Function to filter out already swiped profiles
+  const filterAvailableProfiles = (profileList: Profile[]) => {
+    return profileList.filter((profile) => {
+      const profileId = currentUser?.data?.role === 'FAMILY' 
+        ? profile?.caregiver_profile?.id 
+        : profile?.family_profile?.id;
+      return profileId && !swipedProfileIds.has(profileId);
+    });
+  };
+
+  // Function to fetch skipped profiles
+  const fetchSkippedProfiles = useAuthMutation({
+    mutationFn: () => {
+      const endpoint = currentUser?.data?.role === 'FAMILY'
+        ? '/family-discovery/get-skipped-profiles'
+        : '/caregiver-discovery/get-skipped-profiles';
+      return customAxios.get(endpoint);
+    },
+    onSuccess: (response: any) => {
+      const skippedData = currentUser?.data?.role === 'FAMILY'
+        ? response.data?.scored_caregivers || []
+        : response.data?.scored_families || [];
+      
+      setSkippedProfiles(skippedData);
+      setShowingSkippedProfiles(true);
+      setHasCheckedSkippedProfiles(true);
+      setCurrentIndex(0);
+      
+      if (skippedData.length > 0) {
+        setCurrentProfile(skippedData[0]);
+      } else {
+        setCurrentProfile(null); // No skipped profiles, will show empty state
+      }
+    },
+    onError: (error: any) => {
+      console.error('Error fetching skipped profiles:', error);
+      
+      // For 504 timeout errors or any error, show empty state
+      if (error.response?.status === 504 || error.code === 'ECONNABORTED') {
+        console.log('Server timeout - showing empty state');
+      }
+      
+      setHasCheckedSkippedProfiles(true);
+      setShowingSkippedProfiles(false); // Reset skipped profiles mode
+      setCurrentProfile(null); // Show empty state on error
+    },
+  });
+
   // console.log('currentUser', currentUser?.data?.role, data);
 
   // console.log('currentProfilecaregiver see===', data);
 
   useEffect(() => {
-    if (currentUser?.data?.role) {
+    if (showingSkippedProfiles) {
+      // Handle skipped profiles
+      if (skippedProfiles.length > 0 && currentIndex < skippedProfiles.length) {
+        setCurrentProfile(skippedProfiles[currentIndex]);
+      } else {
+        setCurrentProfile(null); // No more skipped profiles
+      }
+    } else if (currentUser?.data?.role) {
+      // Handle regular profiles
       if (
         currentUser?.data?.role === 'FAMILY' &&
         data?.data?.scored_caregivers
       ) {
         const caregivers = data?.data?.scored_caregivers;
         setProfiles(caregivers);
+        
+        // Filter out already swiped profiles
+        const availableCaregivers = filterAvailableProfiles(caregivers);
+        setFilteredProfiles(availableCaregivers);
 
-        if (caregivers.length > 0 && currentIndex < caregivers?.length) {
-          setCurrentProfile(caregivers[currentIndex]);
+        if (availableCaregivers.length > 0 && currentIndex < availableCaregivers?.length) {
+          setCurrentProfile(availableCaregivers[currentIndex]);
+        } else {
+          setCurrentProfile(null); // No more available profiles
         }
       } else if (
         currentUser?.data?.role === 'CAREGIVER' &&
@@ -193,24 +260,44 @@ export default function DiscoverScreen() {
       ) {
         const families = data?.data?.scored_families;
         setProfiles(families);
+        
+        // Filter out already swiped profiles
+        const availableFamilies = filterAvailableProfiles(families);
+        setFilteredProfiles(availableFamilies);
 
-        if (families.length > 0 && currentIndex < families?.length) {
-          setCurrentProfile(families[currentIndex]);
+        if (availableFamilies.length > 0 && currentIndex < availableFamilies?.length) {
+          setCurrentProfile(availableFamilies[currentIndex]);
+        } else {
+          setCurrentProfile(null); // No more available profiles
         }
       }
     }
-  }, [data, currentIndex, currentUser?.data?.role]);
+  }, [data, currentIndex, currentUser?.data?.role, swipedProfileIds, showingSkippedProfiles, skippedProfiles]);
 
   const moveToNextProfile = useCallback(() => {
-    if (currentIndex < profiles.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else if (nextCursor && userData?.plan === 'STANDARD') {
-      setCursor(nextCursor);
-      setCurrentIndex(0);
+    if (showingSkippedProfiles) {
+      // Handle skipped profiles navigation
+      if (currentIndex < skippedProfiles.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+      } else {
+        // No more skipped profiles - show empty state
+        setCurrentProfile(null);
+      }
+    } else {
+      // Handle regular profiles navigation
+      if (currentIndex < filteredProfiles.length - 1) {
+        setCurrentIndex(currentIndex + 1);
+      } else if (nextCursor && userData?.plan === 'STANDARD') {
+        setCursor(nextCursor);
+        setCurrentIndex(0);
+      } else {
+        // No more profiles available - set current profile to null to show empty state
+        setCurrentProfile(null);
+      }
     }
     // Reset scroll position for next profile
     containerRef.current?.scrollToTop?.();
-  }, [currentIndex, profiles.length, nextCursor, userData?.plan]);
+  }, [currentIndex, filteredProfiles.length, nextCursor, userData?.plan, showingSkippedProfiles, skippedProfiles.length]);
 
   const submitLike: any = useAuthMutation({
     mutationFn: (data: any) => {
@@ -473,6 +560,15 @@ export default function DiscoverScreen() {
   // console.log('profiledata', currentProfile?.family_profile?.pictures);
 
   const handleLike = () => {
+    // Track this profile as swiped
+    const profileId = currentUser?.data?.role === 'FAMILY'
+      ? currentProfile?.caregiver_profile?.id
+      : currentProfile?.family_profile?.id;
+    
+    if (profileId) {
+      setSwipedProfileIds(prev => new Set([...prev, profileId]));
+    }
+
     submitLike.mutate(
       currentUser?.data?.role === 'FAMILY'
         ? {
@@ -487,6 +583,15 @@ export default function DiscoverScreen() {
   };
 
   const handleReject = (index: number) => {
+    // Track this profile as swiped
+    const profileId = currentUser?.data?.role === 'FAMILY'
+      ? currentProfile?.caregiver_profile?.id
+      : currentProfile?.family_profile?.id;
+    
+    if (profileId) {
+      setSwipedProfileIds(prev => new Set([...prev, profileId]));
+    }
+
     submitReject.mutate();
   };
 
@@ -503,6 +608,10 @@ export default function DiscoverScreen() {
           <View style={[styles.containerWrapper, { height: '80%' }]}>
             {isLoadingUser || isLoading ? (
               <ProfileCardLoader />
+            ) : !currentProfile && !hasCheckedSkippedProfiles ? (
+              <View style={styles.emptyStateContainer}>
+                <Skip onReviewSkipped={() => fetchSkippedProfiles.mutate()} />
+              </View>
             ) : !currentProfile ? (
               <View style={styles.emptyStateContainer}>
                 <EmptyDiscovery role={currentUser?.data?.role} />

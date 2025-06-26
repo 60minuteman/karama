@@ -3,7 +3,7 @@
     "name": "Karama",
     "slug": "karama",
     "scheme": "karama",
-    "version": "1.0.3",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
     "userInterfaceStyle": "light",
@@ -64,7 +64,7 @@
         "projectId": "439c483b-7ef1-4a7b-b7ca-eaa6937c6ed3"
       }
     },
-    "runtimeVersion": "1.0.3",
+    "runtimeVersion": "1.0.5",
     "updates": {
       "enabled": true,
       "fallbackToCacheTimeout": 0,

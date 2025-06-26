@@ -2,7 +2,11 @@ import SkipIcon from '@/assets/icons/Skip.svg';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const Skip = () => {
+interface SkipProps {
+  onReviewSkipped: () => void;
+}
+
+const Skip = ({ onReviewSkipped }: SkipProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.iconWrapper}>
@@ -12,7 +16,7 @@ const Skip = () => {
         You've seen everyone who fits your preference, but new people join
         everyday
       </Text>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={onReviewSkipped}>
         <Text style={styles.buttonText}>Review skipped profiles</Text>
       </TouchableOpacity>
     </View>

@@ -49,13 +49,33 @@ export default function OTPInputScreen() {
 
   const phoneVerification = useMutation({
     mutationFn: (data: any) => {
+      console.log('🔄 RESEND OTP REQUEST - Sending to server:', {
+        endpoint: '/auth/phone/start-verification',
+        payload: data
+      });
+      
       return customAxios.post(`/auth/phone/start-verification`, data);
     },
     onSuccess: async (data: any) => {
-      // console.log('OTP resent successfully');
+      console.log('✅ RESEND OTP SUCCESS - Response from server:', {
+        status: data.status,
+        data: data.data
+      });
+      
+      Toast.show({
+        type: 'success',
+        text1: 'Code resent',
+        text2: 'New verification code sent to your phone',
+      });
     },
     onError: (error: any) => {
-      // console.log('error', error['response'].data);
+      console.log('❌ RESEND OTP ERROR - Error from server:', {
+        status: error.response?.status,
+        message: error.response?.data?.message,
+        data: error.response?.data,
+        error: error.message
+      });
+      
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
@@ -70,6 +90,7 @@ export default function OTPInputScreen() {
 
       phoneVerification.mutate({
         phone_number: `+1${phoneNumber}`,
+        strategy: 'SIGN_UP',
       });
       setTimeLeft(50);
       setCanResend(false);
@@ -79,19 +100,36 @@ export default function OTPInputScreen() {
 
   const verify = useMutation({
     mutationFn: (data: any) => {
+      console.log('🔐 OTP VERIFICATION REQUEST - Sending to server:', {
+        endpoint: '/auth/phone/confirm-otp',
+        payload: {
+          phone_number: `+1${phoneNumber}`,
+          code: data.code,
+        }
+      });
+      
       return customAxios.post(`/auth/phone/confirm-otp`, {
         phone_number: `+1${phoneNumber}`,
         code: data.code,
       });
     },
     onSuccess: async (response: any) => {
+      console.log('✅ OTP VERIFICATION SUCCESS - Response from server:', {
+        status: response.status,
+        data: response.data,
+        hasToken: !!response?.data?.token,
+        isSuccess: response?.data?.success
+      });
+      
       try {
         // console.log('Verification response:', response?.data);
 
         if (response?.data?.token) {
+          console.log('🎯 Existing user detected - signing in with token');
           // Existing user - sign in and go to discover
           await signIn({ token: response.data.token });
         } else if (response?.data?.success) {
+          console.log('👤 New user detected - redirecting to password creation');
           // New user - go to password creation first
           router.push({
             pathname: '/(auth)/createPassword',
@@ -104,7 +142,7 @@ export default function OTPInputScreen() {
           throw new Error('Invalid response from server');
         }
       } catch (error) {
-        console.error('Error in verification:', error);
+        console.error('❌ Error in verification flow:', error);
         Toast.show({
           type: 'error',
           text1: 'Error in verification',
@@ -113,6 +151,13 @@ export default function OTPInputScreen() {
       }
     },
     onError: (error: any) => {
+      console.log('❌ OTP VERIFICATION ERROR - Error from server:', {
+        status: error.response?.status,
+        message: error.response?.data?.message,
+        data: error.response?.data,
+        error: error.message
+      });
+      
       Toast.show({
         type: 'error',
         text1: 'Verification failed',

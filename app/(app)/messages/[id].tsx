@@ -417,7 +417,7 @@ export default function MessageScreen() {
       ) : (
         <View style={{ height: '80%', display: 'flex', alignItems: 'center' }}>
           {profile?.family_profile ? 
-          <Container profileData={profile} data={profile?.family_profile || profile?.cargiver_profile} role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'} />
+          <Container profileData={profile} data={profile?.family_profile || profile?.caregiver_profile} role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'} />
           : 
           <ContainerTwo profileData={profile} data={profile} role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'} />
           }

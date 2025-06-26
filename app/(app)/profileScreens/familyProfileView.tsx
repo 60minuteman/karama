@@ -791,6 +791,7 @@ const styles = StyleSheet.create({
   subSection: {
     gap: 24,
     marginBottom: 25,
+    fontFamily: 'Bogart-Regular'
   },
   pillHeading: {
     fontFamily: 'Poppins',
@@ -816,14 +817,14 @@ const styles = StyleSheet.create({
     fontFamily: '',
   },
   sectionText: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Regular',
     fontWeight: 400,
     fontSize: 20,
     lineHeight: 25,
     color: '#261D2A',
   },
   sectionText2: {
-    fontFamily: 'Poppins',
+    fontFamily: 'Bogart-Regular',
     fontWeight: 400,
     fontSize: 16,
     lineHeight: 20,
