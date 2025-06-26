@@ -9,7 +9,7 @@ const api = axios.create({
 });
 
 // Test phone number (you can modify this)
-const TEST_PHONE_NUMBER = '+17759865200'; // User provided number
+const TEST_PHONE_NUMBER = '+16045491015'; // User provided number
 
 console.log('🚀 Starting OTP Endpoints Test');
 console.log('Base URL:', api.defaults.baseURL);

@@ -264,12 +264,23 @@ export default function Matches() {
                             key={conversation.id}
                             handleDeleteConversation={handleDeleteConversation}
                             setDeletedConversationId={setDeletedConversationId}
-                            imageUrl={
-                              currentUser?.data?.id ===
-                              conversation?.recipient?.id
-                                ? conversation?.recipient?.image
-                                : conversation?.creator?.image
-                            }
+                            imageUrl={(() => {
+                              // Determine which user is the "other" user
+                              // Use user_id for current user comparison since that's the field name in the user object
+                              const currentUserId = currentUser?.data?.user_id || currentUser?.data?.id;
+                              const otherUser = currentUserId === conversation?.recipient?.id 
+                                ? conversation?.creator 
+                                : conversation?.recipient;
+                              
+                              // For caregiver users, check if they have pictures array with profile picture
+                              if (otherUser?.pictures && Array.isArray(otherUser.pictures)) {
+                                const profilePicture = otherUser.pictures.find((pic: any) => pic.type === 'PROFILE_PICTURE');
+                                return profilePicture?.path || otherUser?.image || null;
+                              }
+                              
+                              // For family users or users with direct image field
+                              return otherUser?.image || null;
+                            })()}
                             name={conversation?.recipient?.name}
                             otherUser={conversation?.recipient?.name}
                             lastMessage={conversation?.last_message?.text}
