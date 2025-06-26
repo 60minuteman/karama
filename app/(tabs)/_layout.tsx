@@ -11,6 +11,7 @@ import { usePushNotifications } from '@/services/usePushNotifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Device from 'expo-device';
 import { Tabs } from 'expo-router';
+import * as Updates from 'expo-updates';
 import { useEffect, useState } from 'react';
 import {
   AppState,
@@ -56,8 +57,54 @@ export default function TabsLayout() {
   const { data: currentUser } = useCurrentUser();
   const { expoPushToken } = usePushNotifications();
   const { data: userDevice } = useUserDevice(deviceId);
+  const [isCheckingForUpdate, setIsCheckingForUpdate] = useState(false);
+  const [updateAvailable, setUpdateAvailable] = useState(false);
 
-  console.log('user devices', userDevice);
+  const checkForUpdates = async () => {
+    try {
+      setIsCheckingForUpdate(true);
+      const update = await Updates.checkForUpdateAsync();
+
+      if (update.isAvailable) {
+        setUpdateAvailable(true);
+        await fetchAndApplyUpdate();
+      }
+    } catch (error) {
+      console.log('Error checking for updates:', error);
+    } finally {
+      setIsCheckingForUpdate(false);
+    }
+  };
+
+  const fetchAndApplyUpdate = async () => {
+    try {
+      const result = await Updates.fetchUpdateAsync();
+
+      if (result.isNew) {
+        // Apply the update without exiting the app
+        await Updates.reloadAsync(); // This reloads the app with the new update
+      }
+    } catch (error) {
+      console.log('Error applying updates:', error);
+    }
+  };
+
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        checkForUpdates(); // Check for updates only when the app becomes active
+      }
+    };
+
+    const subscription = AppState.addEventListener(
+      'change',
+      handleAppStateChange
+    );
+
+    return () => {
+      subscription.remove(); // Cleanup the event listener
+    };
+  }, []);
 
   async function getDeviceId() {
     let deviceId: any = await AsyncStorage.getItem('karama_id_device');
@@ -137,7 +184,6 @@ export default function TabsLayout() {
           flexWrap: 'nowrap',
         },
         headerShown: false,
-        
       }}
     >
       <Tabs.Screen
