@@ -6,8 +6,9 @@ import { useOnboarding } from '@/hooks/useOnboarding';
 import { useUserStore } from '@/services/state/user';
 import { Video } from 'expo-av';
 import { useRouter } from 'expo-router';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View, TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
+import Constants from 'expo-constants';
 
 export default function OnboardingScreen() {
   const router = useRouter();
@@ -25,18 +26,32 @@ export default function OnboardingScreen() {
     router.push('/(auth)/signInPhone');
   };
 
+  const handlePreview = () => {
+    router.push('/preview');
+  };
+
+  const isDev = __DEV__ || Constants.expoConfig?.extra?.development;
+
   return (
     <ThemedView style={styles.container}>
       <View style={styles.pageContainer}>
         <Video
           source={require('../../assets/videos/onboarding.mp4')}
           style={styles.backgroundVideo}
-          resizeMode='cover'
+          resizeMode="cover"
           shouldPlay
           isLooping
           isMuted
         />
         <View style={styles.overlay} />
+        
+        {/* Dev Only Preview Button */}
+        {isDev && (
+          <TouchableOpacity style={styles.devButton} onPress={handlePreview}>
+            <ThemedText style={styles.devButtonText}>DEV: Preview</ThemedText>
+          </TouchableOpacity>
+        )}
+
         <View style={styles.content}>
           <View style={styles.textContainer}>
             <Image
@@ -125,6 +140,21 @@ const styles = StyleSheet.create({
     color: Colors.light.white,
     marginTop: 16,
     opacity: 0.9,
+    fontWeight: 'bold',
+  },
+  devButton: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    backgroundColor: 'rgba(235, 68, 48, 0.8)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    zIndex: 10,
+  },
+  devButtonText: {
+    color: 'white',
+    fontSize: 12,
     fontWeight: 'bold',
   },
 });

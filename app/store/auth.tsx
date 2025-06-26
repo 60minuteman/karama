@@ -41,12 +41,19 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!rootNavigation.isReady) return;
 
       const inAuthGroup = rootSegments[0] === '(auth)';
+      const inPreviewGroup = rootSegments[0] === 'preview';
 
       console.log('user', user);
       console.log('onboarding_screen', !onboarding_screen);
       console.log('inAuthGroup', inAuthGroup);
+      console.log('inPreviewGroup', inPreviewGroup);
 
       try {
+        // Skip auth protection for preview screens (dev only)
+        if (inPreviewGroup) {
+          return;
+        }
+
         if (user && !onboarding_screen && inAuthGroup) {
           // Redirect away from auth group if authenticated
           router.replace('/(tabs)/discover');
