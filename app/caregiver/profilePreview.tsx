@@ -42,8 +42,9 @@ const profilePreview = () => {
 
   const submitLike: any = useAuthMutation({
     mutationFn: (data: any) => {
+      console.log('data=====', data);
       const endpoint =
-        accountType === 'FAMILY'
+        currentUser?.data?.role === 'FAMILY'
           ? `/family-discovery/like-caregiver`
           : `/caregiver-discovery/like-family`;
       return customAxios.patch(endpoint, data);
@@ -52,7 +53,7 @@ const profilePreview = () => {
       console.log('like data', data?.data);
       queryClient.invalidateQueries({ queryKey: ['like-you', accountType] });
       if (
-        accountType === 'FAMILY' &&
+        currentUser?.data?.role === 'FAMILY' &&
         data?.data?.match.match_status === 'COMPLETED'
       ) {
         setMatchComplete(data?.data);
@@ -95,7 +96,7 @@ const profilePreview = () => {
   const submitReject: any = useAuthMutation({
     mutationFn: (data: any) => {
       const endpoint =
-        accountType === 'FAMILY'
+        currentUser?.data?.role === 'FAMILY'
           ? `/family-discovery/reject-caregiver/${profileData?.id}`
           : `/caregiver-discovery/reject-families/${profileData?.id}`;
       return customAxios.patch(endpoint);
@@ -130,7 +131,7 @@ const profilePreview = () => {
 
   const handleLike = () => {
     submitLike.mutate(
-      accountType === 'FAMILY'
+      currentUser?.data?.role === 'FAMILY'
         ? {
             caregiver_profile_id: `${profileData?.id}`,
             score: `${profileData?.score || 5.0}`,
