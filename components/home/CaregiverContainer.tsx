@@ -151,16 +151,16 @@ const CaregiverContainer = forwardRef<
 
   // Prepare profile card props to ensure required props are provided
   const profileCardProps = {
-    familyName: profileData.name || 'Family',
-    location: profileData.location || 'Location not provided',
+    familyName: profileData?.name || 'Family',
+    location: profileData?.location || 'Location not provided',
     salary:
       profileData?.extra_info?.payment_info?.type === '🤑 Hourly'
         ? `$${profileData?.extra_info?.payment_info?.hourly_min} - $${profileData?.extra_info?.payment_info?.hourly_max}/hour`
         : `${profileData?.extra_info?.payment_info?.salary}/year`,
     familyType: profileData?.description, // This could be made dynamic based on data
-    rating: profileData.rating || 4.5,
+    rating: profileData?.rating || 4.5,
     image:
-      profileData?.image[0]?.path ||
+      profileData?.image?.[0]?.path ||
       'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2920&auto=format&fit=crop',
     profileData: profileData,
   };
@@ -209,13 +209,13 @@ const CaregiverContainer = forwardRef<
           personalityTraits={profileData?.personality}
           experiences={profileData?.experience}
           allergies={[
-            ...profileData?.allergies?.food_allergies,
+            ...(profileData?.allergies?.food_allergies || []),
             profileData?.allergies?.other_food_allergies,
-            ...profileData?.allergies?.environmental_allergies,
+            ...(profileData?.allergies?.environmental_allergies || []),
             profileData?.allergies?.other_environtal_allergies,
-            ...profileData?.allergies?.other_allergies,
+            ...(profileData?.allergies?.other_allergies || []),
             profileData?.allergies?.other_other_allergies,
-          ]}
+          ].filter(Boolean)}
         />
       </View>
 
@@ -232,7 +232,7 @@ const CaregiverContainer = forwardRef<
       <View
         style={[styles.container, { width: containerWidth, marginTop: 16 }]}
       >
-        <CaregiverImage data={profileData?.image[3]?.path} />
+        <CaregiverImage data={profileData?.image?.[3]?.path} />
       </View>
 
       <View
@@ -240,13 +240,13 @@ const CaregiverContainer = forwardRef<
       >
         <LookingFor
           title='We are looking for ..'
-          jobType={profileData?.caregiver_preference?.caregiver_types}
+          jobType={profileData?.caregiver_preference?.caregiver_types || []}
           startDate={
             profileData?.caregiver_preference?.job_commitment?.start_date
           }
           hourlyRate={`$${profileData?.extra_info?.payment_info?.hourly_min} - $${profileData?.extra_info?.payment_info?.hourly_max}`}
           education={
-            profileData?.caregiver_preference?.requirements?.certifications
+            profileData?.caregiver_preference?.requirements?.certifications || []
           }
           otherEducation={
             profileData?.caregiver_preference?.requirements?.other_certification
@@ -264,9 +264,9 @@ const CaregiverContainer = forwardRef<
             profileData?.caregiver_preference?.job_commitment?.commitment,
           ]}
           requirements={[
-            ...profileData?.caregiver_preference?.requirements?.requirements,
+            ...(profileData?.caregiver_preference?.requirements?.requirements || []),
             profileData?.caregiver_preference?.requirements?.other_requirement,
-          ]}
+          ].filter(Boolean)}
           // OtherRequirements={}
         />
       </View>
@@ -276,17 +276,17 @@ const CaregiverContainer = forwardRef<
       >
         <ChildCare
           childcareResponsibilities={[
-            ...profileData?.caregiver_preference?.responsibilities
-              ?.childcare_responsibilities,
+            ...(profileData?.caregiver_preference?.responsibilities
+              ?.childcare_responsibilities || []),
             profileData?.caregiver_preference?.responsibilities
               ?.other_childcare_responsibilities,
-          ]}
+          ].filter(Boolean)}
           householdResponsibilities={[
-            ...profileData?.caregiver_preference?.responsibilities
-              ?.household_responsibilities,
+            ...(profileData?.caregiver_preference?.responsibilities
+              ?.household_responsibilities || []),
             profileData?.caregiver_preference?.responsibilities
               ?.other_household_responsibilities,
-          ]}
+          ].filter(Boolean)}
         />
       </View>
 

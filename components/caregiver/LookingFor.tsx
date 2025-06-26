@@ -14,10 +14,10 @@ interface LookingForProps {
 
 export const LookingFor: React.FC<LookingForProps> = ({
   title = 'We are looking for ..',
-  jobType = { label: 'Nanny', icon: '👨‍⚕️' },
+  jobType = [],
   startDate = '06/26/2024',
   hourlyRate = '$20 - $35',
-  education = { label: 'Bachelors Degree', icon: '🎓' },
+  education = [],
   otherEducation,
 }) => {
   console.log('education', education);
@@ -26,7 +26,7 @@ export const LookingFor: React.FC<LookingForProps> = ({
       <ThemedText style={styles.title}>{title}</ThemedText>
 
       <View style={[styles.section, styles.lookingForContainer]}>
-        {jobType.map((type: any, index: number) => (
+        {Array.isArray(jobType) && jobType.map((type: any, index: number) => (
           <Pill2 key={index} label={type} style={styles.pill} />
         ))}
       </View>
@@ -44,7 +44,7 @@ export const LookingFor: React.FC<LookingForProps> = ({
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>Education Level</ThemedText>
         <View style={styles.lookingForContainer}>
-          {education?.map((cert: any, index: number) => {
+          {Array.isArray(education) && education?.map((cert: any, index: number) => {
             if (cert === 'Other' && otherEducation) {
               return (
                 <Pill2
