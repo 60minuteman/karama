@@ -168,6 +168,7 @@ const ContainerTwo = forwardRef<ContainerRef, ContainerProps>(
         backgroundColor: '#ECEBEC',
         borderRadius: 10,
         marginBottom: containerWidth * 0.03,
+        overflow: 'hidden',
       },
     });
 

@@ -246,7 +246,8 @@ const CaregiverContainer = forwardRef<
           }
           hourlyRate={`$${profileData?.extra_info?.payment_info?.hourly_min} - $${profileData?.extra_info?.payment_info?.hourly_max}`}
           education={
-            profileData?.caregiver_preference?.requirements?.certifications || []
+            profileData?.caregiver_preference?.requirements?.certifications ||
+            []
           }
           otherEducation={
             profileData?.caregiver_preference?.requirements?.other_certification
@@ -264,7 +265,8 @@ const CaregiverContainer = forwardRef<
             profileData?.caregiver_preference?.job_commitment?.commitment,
           ]}
           requirements={[
-            ...(profileData?.caregiver_preference?.requirements?.requirements || []),
+            ...(profileData?.caregiver_preference?.requirements?.requirements ||
+              []),
             profileData?.caregiver_preference?.requirements?.other_requirement,
           ].filter(Boolean)}
           // OtherRequirements={}
