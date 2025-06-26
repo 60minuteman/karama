@@ -55,6 +55,11 @@ export const Responsibilities = ({
   const householdResp =
     data?.responsibilities?.household_responsibilities || [];
 
+  console.log(
+    '[data?.caregiver_profile?.education_level]*********************',
+    [data?.caregiver_profile?.education_level]
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
@@ -124,6 +129,16 @@ export const Responsibilities = ({
               </>
             )}
           </View>
+
+          <View style={styles.spacer} />
+          <ThemedText style={styles.sectionTitle}>Certifications</ThemedText>
+          <View style={styles.pillsContainer}>
+            {data?.abilities_and_certifications?.certifications?.map(
+              (item: any, index: number) => (
+                <Pill2 key={index} label={item} style={styles.pill} />
+              )
+            )}
+          </View>
         </View>
       )}
     </View>
@@ -166,5 +181,9 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     paddingVertical: 8,
     paddingHorizontal: 20,
+  },
+  spacer: {
+    marginBottom: 14,
+    marginTop: 24,
   },
 });

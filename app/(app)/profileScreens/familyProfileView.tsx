@@ -292,8 +292,10 @@ const FamilyProfileView = () => {
                   <View style={styles.pillContainer}>
                     <InfoPill
                       label={
-                        familyProfile?.family_profile?.household_info
-                          ?.religion || 'Not specified'
+                        familyProfile?.family_profile?.household_info?.religion.replace(
+                          /["{}]/g,
+                          ''
+                        ) || 'Not specified'
                       }
                     />
                   </View>

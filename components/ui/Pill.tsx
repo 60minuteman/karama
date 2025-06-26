@@ -1,6 +1,6 @@
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 type PillProps = {
   icon?: string;
@@ -10,7 +10,13 @@ type PillProps = {
   disabled?: boolean;
 };
 
-export function Pill({ icon, label, selected = false, onPress, disabled = false }: PillProps) {
+export function Pill({
+  icon,
+  label,
+  selected = false,
+  onPress,
+  disabled = false,
+}: PillProps) {
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -21,17 +27,12 @@ export function Pill({ icon, label, selected = false, onPress, disabled = false 
         disabled && styles.pillDisabled,
       ]}
     >
-      {icon && (
-        <ThemedText style={styles.icon}>{icon}</ThemedText>
-      )}
-      <ThemedText 
-        style={[
-          styles.label,
-          selected && styles.labelSelected,
-        ]}
+      {icon && <ThemedText style={styles.icon}>{icon}</ThemedText>}
+      <ThemedText
+        style={[styles.label, selected && styles.labelSelected]}
         numberOfLines={2}
       >
-        {label}
+        {label.replace(/["{}]/g, '')}
       </ThemedText>
     </TouchableOpacity>
   );

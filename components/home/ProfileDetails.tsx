@@ -54,7 +54,7 @@ export const ProfileDetails = ({
             }}
           >
             {data?.children?.map((item: any) => (
-              <Pill2 label={item.age_group} icon='👩' style={styles.pill} />
+              <Pill2 label={item.age_group} style={styles.pill} />
             ))}
           </View>
         </Section>

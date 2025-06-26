@@ -137,7 +137,7 @@ const profilePreview = () => {
   //  console.log(accountType, 'name');
 
   const handleGoBack = () => {
-    router.back();
+    router.push('/(tabs)/liked-you');
   };
 
   return (
@@ -145,7 +145,15 @@ const profilePreview = () => {
       <View style={styles.container}>
         <Pressable onPress={handleGoBack} style={styles.backButton}>
           <Ionicons name='arrow-back' size={24} color='#002140' />
-          <Text>{profileData?.name}</Text>
+          <Text
+            style={{
+              fontFamily: 'Poppins-SemiBold',
+              fontSize: 16,
+              marginLeft: 16,
+            }}
+          >
+            {profileData?.name}
+          </Text>
         </Pressable>
         <ThemedView style={styles.container}>
           <View style={styles.contentContainer}>

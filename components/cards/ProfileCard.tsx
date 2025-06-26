@@ -96,7 +96,10 @@ export const ProfileCard = ({
           <View style={styles.header}>
             <View style={styles.pronounsContainer}>
               <ThemedText style={styles.pronouns}>
-                {data?.description?.description || data?.pronouns}
+                {data?.description?.description.replace(
+                  /[^a-zA-Z0-9\s/]/g,
+                  ''
+                ) || data?.pronouns.replace(/[^a-zA-Z0-9\s/]/g, '')}
               </ThemedText>
             </View>
             {/* <View style={styles.ratingContainer}>

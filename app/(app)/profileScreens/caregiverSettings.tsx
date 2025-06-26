@@ -95,6 +95,9 @@ const CaregiverSettings = () => {
     removeDevice.mutate({ device_id: deviceId });
     logout();
     queryClient.clear();
+    // Clear matches cache
+    AsyncStorage.removeItem('@matches_conversations');
+    AsyncStorage.removeItem('@matches_data');
   };
 
   const handleBack = () => {

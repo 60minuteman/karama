@@ -1,7 +1,7 @@
-import React from 'react';
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { Pill } from '@/components/ui/Pill';
+import React from 'react';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 interface ProfileCardProps {
   image: string;
@@ -43,7 +43,7 @@ export const ProfileCard = ({
   return (
     <View style={styles.container}>
       <Image source={{ uri: image }} style={styles.image} />
-      
+
       <View style={styles.overlay}>
         <View style={styles.header}>
           <View style={styles.pronounsContainer}>
@@ -57,7 +57,9 @@ export const ProfileCard = ({
 
         <View style={styles.footer}>
           <View style={styles.info}>
-            <ThemedText style={styles.name}>{name}, {age}</ThemedText>
+            <ThemedText style={styles.name}>
+              {name}, {age}
+            </ThemedText>
             <ThemedText style={styles.location}>{location}</ThemedText>
           </View>
 
@@ -73,56 +75,56 @@ export const ProfileCard = ({
       </View>
 
       <View style={styles.details}>
-        <Section title="I am">
-          <Pill label={role} icon="👩‍⚕️" />
+        <Section title='I am'>
+          <Pill label={role} icon='👩‍⚕️' />
         </Section>
 
-        <Section title="I have experience with">
+        <Section title='I have experience with'>
           {experience.map((exp, i) => (
-            <Pill key={i} label={exp} icon="👶" />
+            <Pill key={i} label={exp} icon='👶' />
           ))}
         </Section>
 
         <Section title="I'm Looking For">
           {lookingFor.map((item, i) => (
-            <Pill key={i} label={item} icon="⏰" />
+            <Pill key={i} label={item} icon='⏰' />
           ))}
         </Section>
 
-        <Section title="My Hourly Rate">
-          <Pill label={hourlyRate} icon="⌛" />
+        <Section title='My Hourly Rate'>
+          <Pill label={hourlyRate} icon='⌛' />
         </Section>
 
-        <Section title="I speak">
+        <Section title='I speak'>
           {languages.map((lang, i) => (
-            <Pill key={i} label={lang} icon="💬" />
+            <Pill key={i} label={lang} icon='💬' />
           ))}
         </Section>
 
-        <Section title="My Interests">
+        <Section title='My Interests'>
           {interests.map((interest, i) => (
-            <Pill key={i} label={interest} icon="🎨" />
+            <Pill key={i} label={interest} icon='🎨' />
           ))}
         </Section>
 
-        <Section title="My current obsession is">
+        <Section title='My current obsession is'>
           <ThemedText style={styles.obsession}>{obsession}</ThemedText>
         </Section>
 
         {religion && (
-          <Section title="Our religion">
-            <Pill label={religion} icon="🕉️" />
+          <Section title='Our religion'>
+            <Pill label={religion} icon='🕉️' />
           </Section>
         )}
 
-        <Section title="Personality">
+        <Section title='Personality'>
           {personality.map((trait, i) => (
-            <Pill key={i} label={trait} icon="😊" />
+            <Pill key={i} label={trait} icon='😊' />
           ))}
         </Section>
 
         {disabilities && disabilities.length > 0 && (
-          <Section title="Disability experience">
+          <Section title='Disability experience'>
             {disabilities.map((disability, i) => (
               <Pill key={i} label={disability} />
             ))}
@@ -133,12 +135,16 @@ export const ProfileCard = ({
   );
 };
 
-const Section = ({ title, children }: { title: string, children: React.ReactNode }) => (
+const Section = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) => (
   <View style={styles.section}>
     <ThemedText style={styles.sectionTitle}>{title}</ThemedText>
-    <View style={styles.sectionContent}>
-      {children}
-    </View>
+    <View style={styles.sectionContent}>{children}</View>
   </View>
 );
 
@@ -249,4 +255,4 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '600',
   },
-}); 
+});

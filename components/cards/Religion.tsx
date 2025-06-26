@@ -9,7 +9,7 @@ interface ReligionProps {
   personality?: string[];
   disabilities?: string[];
   data?: any;
-  role?: any
+  role?: any;
 }
 
 export const Religion = ({
@@ -17,7 +17,7 @@ export const Religion = ({
   personality = ['Caring', 'Patient', 'Creative'],
   disabilities = ['Dyslexia', 'ADHD'],
   data,
-  role
+  role,
 }: ReligionProps) => {
   let [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -55,54 +55,63 @@ export const Religion = ({
   return (
     <View style={styles.container}>
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>{role === 'CAREGIVER' ? 'My' : 'Our'} Religion</ThemedText>
+        <ThemedText style={styles.sectionTitle}>
+          {role === 'CAREGIVER' ? 'My' : 'Our'} Religion
+        </ThemedText>
         <View style={styles.pillContainer}>
-            <Pill2
-              // icon={religionIcons[religion] || religionIcons['Other']}
-              label={data?.household_info?.religion  || data?.characteristics?.religion}
-              style={styles.pill}
-            />
+          <Pill2
+            // icon={religionIcons[religion] || religionIcons['Other']}
+            label={
+              data?.household_info?.religion.replace(/["{}]/g, '') ||
+              data?.characteristics?.religion.replace(/["{}]/g, '')
+            }
+            style={styles.pill}
+          />
         </View>
       </View>
 
       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>{role === 'CAREGIVER' ? 'My' : ''} Personality</ThemedText>
+        <ThemedText style={styles.sectionTitle}>
+          {role === 'CAREGIVER' ? 'My' : ''} Personality
+        </ThemedText>
         {role === 'CAREGIVER' ? (
           <View style={styles.pillContainer}>
-          {data?.characteristics?.personalities?.map(item => (
-            <Pill2
-              // icon={personalityIcons[trait] || '✨'}
-              label={item}
-              style={styles.pill}
-            />
-          ))}
-        </View>
+            {data?.characteristics?.personalities?.map((item) => (
+              <Pill2
+                // icon={personalityIcons[trait] || '✨'}
+                label={item}
+                style={styles.pill}
+              />
+            ))}
+          </View>
         ) : (
-        <View style={styles.pillContainer}>
-          {data?.caregiver_preference?.personalities?.map((trait, index) => (
-            <Pill2
-              key={index}
-              // icon={personalityIcons[trait] || '✨'}
-              label={trait}
-              style={styles.pill}
-            />
-          ))}
-        </View>
+          <View style={styles.pillContainer}>
+            {data?.caregiver_preference?.personalities?.map((trait, index) => (
+              <Pill2
+                key={index}
+                // icon={personalityIcons[trait] || '✨'}
+                label={trait}
+                style={styles.pill}
+              />
+            ))}
+          </View>
         )}
       </View>
 
-     {role === 'CAREGIVER' && (
-       <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>
-          Disability Experience
-        </ThemedText>
-        <View style={styles.pillContainer}>
-          {data?.experience_with_disabilities?.disabilities?.map((disability, index) => (
-            <Pill2 key={index} label={disability} style={styles.pill} />
-          ))}
+      {role === 'CAREGIVER' && (
+        <View style={styles.section}>
+          <ThemedText style={styles.sectionTitle}>
+            Disability Experience
+          </ThemedText>
+          <View style={styles.pillContainer}>
+            {data?.experience_with_disabilities?.disabilities?.map(
+              (disability, index) => (
+                <Pill2 key={index} label={disability} style={styles.pill} />
+              )
+            )}
+          </View>
         </View>
-      </View>
-     )}
+      )}
     </View>
   );
 };

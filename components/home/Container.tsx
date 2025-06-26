@@ -161,6 +161,8 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
       },
     });
 
+    console.log('data*********************', data);
+
     const content = (
       <>
         <View style={styles.spacer} />

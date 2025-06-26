@@ -174,9 +174,14 @@ const CaregiverEditProfile = () => {
 
   const getReligion = () => {
     try {
-      return JSON.parse(caregiverProfile?.characteristics?.religion || '[]')[0];
+      return JSON.parse(
+        caregiverProfile?.characteristics?.religion.replace(/["{}]/g, '') ||
+          '[]'
+      )[0];
     } catch {
-      return caregiverProfile?.characteristics?.religion || '';
+      return (
+        caregiverProfile?.characteristics?.religion.replace(/["{}]/g, '') || ''
+      );
     }
   };
 

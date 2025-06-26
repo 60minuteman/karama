@@ -297,7 +297,10 @@ const FamilyEditProfile = () => {
                 },
                 {
                   label: 'Our religion',
-                  text: caregiverProfile?.household_info?.religion,
+                  text: caregiverProfile?.household_info?.religion.replace(
+                    /["{}]/g,
+                    ''
+                  ),
                   hasEdit: true,
                 },
                 {
