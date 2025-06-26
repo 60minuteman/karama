@@ -14,7 +14,7 @@ import { useUserStore } from '@/services/state/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Keyboard,
   SafeAreaView,
@@ -41,10 +41,15 @@ export default function Matches() {
     useCompleteMatches(currentUser?.data?.role);
   const { token, user } = useUserStore();
   const [isLoading, setIsLoading] = useState(true);
+  const [socketConnected, setSocketConnected] = useState(false);
   const [filteredMatches, setFilteredMatches] = useState<any>([]);
-  const socket: any = getSocket();
   const [deletedConversationId, setDeletedConversationId] = useState<any>(null);
   const queryClient = useQueryClient();
+  
+  // Get socket instance dynamically
+  const getSocketInstance = useCallback(() => {
+    return getSocket();
+  }, [token, user?.user_id]);
 
   // console.log('filteredMatches', filteredMatches[0]?.match_made_at);
 
@@ -65,14 +70,19 @@ export default function Matches() {
         const cachedMatches = await AsyncStorage.getItem(CACHE_KEYS.MATCHES);
 
         if (cachedConversations) {
-          setConversations(JSON.parse(cachedConversations));
-          setIsLoading(false); // Show cached data immediately
+          const parsedConversations = JSON.parse(cachedConversations);
+          setConversations(parsedConversations);
+          // If we have cached conversations, set loading to false immediately
+          if (parsedConversations.length > 0) {
+            setIsLoading(false);
+          }
         }
         if (cachedMatches) {
           setFilteredMatches(JSON.parse(cachedMatches));
         }
       } catch (error) {
         console.error('Error loading cached data:', error);
+        setIsLoading(false); // Don't stay loading forever on cache error
       }
     };
 
@@ -102,6 +112,12 @@ export default function Matches() {
   }, [conversations, filteredMatches]);
 
   const handleDeleteConversation: any = (id: any) => {
+    const socket = getSocketInstance();
+    if (!socket) {
+      console.error('Socket not available for delete operation');
+      return;
+    }
+
     // Optimistic update
     const updatedConversations = conversations.filter(
       (conv: any) => conv.id !== id
@@ -115,18 +131,34 @@ export default function Matches() {
   };
 
   useEffect(() => {
-    if (socket) {
-      console.log('socket', socket);
-      // socket.emit('getAllConversations');
+    const socket = getSocketInstance();
+    
+    if (socket && token && user?.user_id) {
+      console.log('🔌 Setting up socket listeners for matches');
+      
+      // Set socket connected state
+      socket.on('connect', () => {
+        console.log('✅ Socket connected in matches');
+        setSocketConnected(true);
+        // Request conversations when socket connects
+        socket.emit('getAllConversations');
+      });
 
-      socket.on('allConversations', (data) => {
+      socket.on('disconnect', () => {
+        console.log('❌ Socket disconnected in matches');
+        setSocketConnected(false);
+      });
+
+      socket.on('allConversations', (data: any) => {
+        console.log('📥 Received all conversations:', data?.length);
         setIsLoading(false);
-        setConversations(data);
+        setConversations(data || []);
         // Update React Query cache
         queryClient.setQueryData(['conversations'], data);
       });
 
-      socket.on('exception', (data) => {
+      socket.on('exception', (data: any) => {
+        console.error('❌ Socket exception:', data);
         setIsLoading(false);
         // Revert optimistic update on error
         if (deletedConversationId) {
@@ -136,8 +168,8 @@ export default function Matches() {
       });
 
       socket.on('conversationUpdated', (data: any) => {
+        console.log('🔄 Conversation updated:', data);
         setIsLoading(false);
-        console.log('conversationUpdated=======', data);
         setConversations((prevConversations: any[]) => {
           // Handle both single conversation and array of conversations
           const conversationsToUpdate = Array.isArray(data) ? data : [data];
@@ -151,20 +183,33 @@ export default function Matches() {
         });
       });
 
-      socket.on('newMessage conversationUpdated', (data: any) => {
-        setIsLoading(false);
-        // Update React Query cache with new message
-        queryClient.setQueryData(['conversations'], (oldData: any) => {
-          if (!oldData) return data;
-          return oldData.map((conv: any) =>
-            conv.id === data.id
-              ? { ...conv, last_message: data.last_message }
-              : conv
-          );
-        });
-      });
+      // If socket is already connected, request conversations immediately
+      if (socket.connected) {
+        console.log('🚀 Socket already connected, requesting conversations');
+        setSocketConnected(true);
+        socket.emit('getAllConversations');
+      }
+
+      // Cleanup listeners on unmount
+      return () => {
+        socket.off('connect');
+        socket.off('disconnect');
+        socket.off('allConversations');
+        socket.off('exception');
+        socket.off('conversationUpdated');
+      };
+    } else {
+      console.warn('⚠️ Socket not available or user not authenticated');
+      // If no socket available after reasonable time, stop loading
+      const timeout = setTimeout(() => {
+        if (conversations.length === 0) {
+          setIsLoading(false);
+        }
+      }, 5000);
+      
+      return () => clearTimeout(timeout);
     }
-  }, [user?.user_id, token, socket, queryClient]);
+  }, [user?.user_id, token, queryClient, getSocketInstance]);
 
   useEffect(() => {
     if (completeMatches?.data?.matches && conversations) {
@@ -180,13 +225,20 @@ export default function Matches() {
   }, [completeMatches?.data?.matches, conversations]);
 
   useEffect(() => {
-    socket.on('conversationDeleted', () => {
-      setConversations(
-        conversations.filter((conv: any) => conv.id !== deletedConversationId)
-      );
-      setDeletedConversationId(null);
-    });
-  }, [socket]);
+    const socket = getSocketInstance();
+    if (socket) {
+      socket.on('conversationDeleted', () => {
+        setConversations(
+          conversations.filter((conv: any) => conv.id !== deletedConversationId)
+        );
+        setDeletedConversationId(null);
+      });
+
+      return () => {
+        socket.off('conversationDeleted');
+      };
+    }
+  }, [conversations, deletedConversationId, getSocketInstance]);
 
   // Add search effect
   useEffect(() => {
