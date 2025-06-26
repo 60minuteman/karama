@@ -222,6 +222,7 @@ export default function DiscoverScreen() {
     },
     onSuccess: (data: any) => {
       console.log('like data', data?.data);
+      moveToNextProfile();
       if (
         currentUser?.data?.role === 'FAMILY' &&
         data?.data?.match.match_status === 'COMPLETED'
@@ -239,7 +240,6 @@ export default function DiscoverScreen() {
         router.push('/(app)/profileScreens/caregiverItsAmatch');
         return;
       }
-      moveToNextProfile();
     },
     onError: (error: any) => {
       if (

@@ -114,6 +114,11 @@ const profilePreview = () => {
     },
   });
 
+  console.log('profileData', {
+    family_profile_id: `${profileData?.id}`,
+    score: `${profileData?.score}`,
+  });
+
   const handleLike = () => {
     submitLike.mutate(
       accountType === 'FAMILY'
