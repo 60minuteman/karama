@@ -179,6 +179,12 @@ export default function DiscoverScreen() {
     }
   );
 
+  console.log(
+    'currentUser&&&&&&&&&&&',
+    profiles?.length,
+    data?.data?.next_cursor
+  );
+
   // Function to filter out already swiped profiles
   const filterAvailableProfiles = (profileList: Profile[]) => {
     return profileList.filter((profile) => {
@@ -641,7 +647,9 @@ export default function DiscoverScreen() {
           >
             {isLoadingUser || isLoading ? (
               <ProfileCardLoader />
-            ) : !currentProfile && !hasCheckedSkippedProfiles ? (
+            ) : !currentProfile &&
+              !hasCheckedSkippedProfiles &&
+              !data?.data?.next_cursor ? (
               <View style={styles.emptyStateContainer}>
                 <Skip onReviewSkipped={() => fetchSkippedProfiles.mutate()} />
               </View>

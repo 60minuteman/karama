@@ -42,18 +42,18 @@ export default function PhoneNumberScreen() {
 
   const signIn = useMutation({
     mutationFn: (data: any) => {
-      console.log('🚀 OTP REQUEST - Sending to server:', {
-        endpoint: '/auth/phone/start-verification',
-        payload: {
-          phone_number: `+1${phoneNumber}`,
-          //phone_number: `+234${phoneNumber}`,
-          strategy: 'SIGN_UP',
-        }
-      });
-      
+      // console.log('🚀 OTP REQUEST - Sending to server:', {
+      //   endpoint: '/auth/phone/start-verification',
+      //   payload: {
+      //     // phone_number: `+1${phoneNumber}`,
+      //     phone_number: `+234${phoneNumber}`,
+      //     strategy: 'SIGN_UP',
+      //   },
+      // });
+
       return customAxios.post(`/auth/phone/start-verification`, {
         phone_number: `+1${phoneNumber}`,
-        //phone_number: `+234${phoneNumber}`,
+        // phone_number: `+234${phoneNumber}`,
         strategy: 'SIGN_UP',
       });
     },
@@ -61,9 +61,9 @@ export default function PhoneNumberScreen() {
       console.log('✅ OTP REQUEST SUCCESS - Response from server:', {
         status: data.status,
         data: data.data,
-        headers: data.headers
+        headers: data.headers,
       });
-      
+
       // Always proceed to verification, whether user exists or not
       router.push({
         pathname: '/(auth)/verification',
@@ -78,19 +78,19 @@ export default function PhoneNumberScreen() {
         status: error.response?.status,
         message: error.response?.data?.message,
         data: error.response?.data,
-        error: error.message
+        error: error.message,
       });
-      
+
       // If user exists, show friendly message and stay on same screen
       if (error.response?.status === 409) {
         console.log('📱 User exists (409) - Staying on same screen');
-        
+
         Toast.show({
           type: 'info',
           text1: 'Hey buddy!',
           text2: 'User with this phone number already exists',
         });
-        
+
         return; // Stay on current screen
       }
 

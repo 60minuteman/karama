@@ -8,6 +8,7 @@ import useAuthMutation from '@/hooks/useAuthMutation';
 import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
 import { useMutation } from '@tanstack/react-query';
+import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -29,10 +30,60 @@ export default function Page() {
     console.log('Phone Number:', user?.phone_number);
   }, [user]);
 
+  const compressImage = async (uri: string): Promise<string> => {
+    try {
+      // Start with quality 0.8 and reduce if needed
+      let quality = 0.8;
+      let compressedUri = uri;
+
+      while (quality > 0.1) {
+        const result = await ImageManipulator.manipulateAsync(
+          compressedUri,
+          [{ resize: { width: 1024 } }], // Resize to max 1024px width
+          {
+            compress: quality,
+            format: ImageManipulator.SaveFormat.JPEG,
+          }
+        );
+
+        // Check file size (approximate calculation)
+        const response = await fetch(result.uri);
+        const blob = await response.blob();
+        const fileSizeInMB = blob.size / (1024 * 1024);
+
+        console.log(
+          `Compressed image size: ${fileSizeInMB.toFixed(
+            2
+          )}MB with quality: ${quality}`
+        );
+
+        if (fileSizeInMB <= 5) {
+          return result.uri;
+        }
+
+        // Reduce quality and try again
+        quality -= 0.1;
+        compressedUri = result.uri;
+      }
+
+      // If we still can't get under 5MB, return the last compressed version
+      return compressedUri;
+    } catch (error) {
+      console.error('Error compressing image:', error);
+      return uri; // Return original if compression fails
+    }
+  };
+
   const uploadImages = useAuthMutation({
     mutationFn: async () => {
       const formData = new FormData();
-      caregiverImages?.forEach((uri, index) => {
+
+      // Compress all images before uploading
+      const compressedImages = await Promise.all(
+        caregiverImages?.map(async (uri) => await compressImage(uri)) || []
+      );
+
+      compressedImages.forEach((uri, index) => {
         const fileName = uri.split('/').pop() || `image${index}.jpg`;
 
         formData.append('files', {
@@ -44,7 +95,7 @@ export default function Page() {
         formData.append('indices', index.toString());
       });
 
-      console.log('Uploading images:', caregiverImages);
+      console.log('Uploading compressed images:', compressedImages);
 
       return customAxios.post('/caregiver-profile/add-photos', formData, {
         headers: {
@@ -85,8 +136,8 @@ export default function Page() {
 
   const removeImage = (index: number) => {
     const newImages = [...(caregiverImages || [])];
-    newImages[index] = undefined;
-    setCaregiverImages(newImages.filter(Boolean));
+    newImages.splice(index, 1); // Use splice instead of setting to undefined
+    setCaregiverImages(newImages);
   };
 
   return (

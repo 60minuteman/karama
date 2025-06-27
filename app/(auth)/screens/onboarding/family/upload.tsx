@@ -7,6 +7,7 @@ import { Colors } from '@/constants/Colors';
 import useAuthMutation from '@/hooks/useAuthMutation';
 import customAxios from '@/services/api/envConfig';
 import { useUserStore } from '@/services/state/user';
+import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import React from 'react';
@@ -22,10 +23,55 @@ import Toast from 'react-native-toast-message';
 export default function Page() {
   const { family_images, setFamilyImages, setSteps } = useUserStore();
 
+  // Function to compress image to ensure it's under 5MB
+  const compressImage = async (imageUri: string): Promise<string> => {
+    try {
+      // Start with quality 0.8 and reduce if needed
+      let quality = 0.8;
+      let compressedUri = imageUri;
+
+      while (quality > 0.1) {
+        const result = await ImageManipulator.manipulateAsync(
+          compressedUri,
+          [], // no operations, just compression
+          {
+            compress: quality,
+            format: ImageManipulator.SaveFormat.JPEG,
+          }
+        );
+
+        // Check file size (approximate calculation)
+        // For JPEG, we can estimate size based on quality and dimensions
+        const response = await fetch(result.uri);
+        const blob = await response.blob();
+        const fileSizeInMB = blob.size / (1024 * 1024);
+
+        if (fileSizeInMB <= 5) {
+          return result.uri;
+        }
+
+        // Reduce quality and try again
+        quality -= 0.1;
+        compressedUri = result.uri;
+      }
+
+      // If we still can't get under 5MB, return the last compressed version
+      return compressedUri;
+    } catch (error) {
+      console.error('Error compressing image:', error);
+      return imageUri; // Return original if compression fails
+    }
+  };
+
   const uploadMutation = useAuthMutation({
     mutationFn: async () => {
+      // Compress all images before uploading
+      const compressedImages = await Promise.all(
+        family_images.map((imageUri) => compressImage(imageUri))
+      );
+
       const formData = new FormData();
-      family_images.forEach((uri, index) => {
+      compressedImages.forEach((uri, index) => {
         const fileName = uri.split('/').pop() || `image${index}.jpg`;
 
         formData.append('files', {
