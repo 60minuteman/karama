@@ -45,7 +45,7 @@ export default function Matches() {
   const [filteredMatches, setFilteredMatches] = useState<any>([]);
   const [deletedConversationId, setDeletedConversationId] = useState<any>(null);
   const queryClient = useQueryClient();
-  
+
   // Get socket instance dynamically
   const getSocketInstance = useCallback(() => {
     return getSocket();
@@ -141,7 +141,7 @@ export default function Matches() {
         console.log('✅ Socket connected in matches');
         setSocketConnected(true);
         // Request conversations when socket connects
-        socket.emit('getAllConversations');
+      socket.emit('getAllConversations');
       });
 
       socket.on('disconnect', () => {
@@ -177,7 +177,7 @@ export default function Matches() {
           return prevConversations.map((conv) => {
             const updatedConv = conversationsToUpdate.find(
               (update: any) => update.id === conv.id
-            );
+          );
             return updatedConv || conv;
           });
         });
@@ -203,7 +203,7 @@ export default function Matches() {
       // If no socket available after reasonable time, stop loading
       const timeout = setTimeout(() => {
         if (conversations.length === 0) {
-          setIsLoading(false);
+        setIsLoading(false);
         }
       }, 5000);
       
@@ -227,12 +227,12 @@ export default function Matches() {
   useEffect(() => {
     const socket = getSocketInstance();
     if (socket) {
-      socket.on('conversationDeleted', () => {
-        setConversations(
-          conversations.filter((conv: any) => conv.id !== deletedConversationId)
-        );
-        setDeletedConversationId(null);
-      });
+    socket.on('conversationDeleted', () => {
+      setConversations(
+        conversations.filter((conv: any) => conv.id !== deletedConversationId)
+      );
+      setDeletedConversationId(null);
+    });
 
       return () => {
         socket.off('conversationDeleted');
