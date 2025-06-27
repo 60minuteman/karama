@@ -53,7 +53,7 @@ export default function PhoneNumberScreen() {
 
       return customAxios.post(`/auth/phone/start-verification`, {
         phone_number: `+1${phoneNumber}`,
-        // phone_number: `+234${phoneNumber}`,
+        // phone_number: `+4${phoneNumber}`,
         strategy: 'SIGN_UP',
       });
     },
