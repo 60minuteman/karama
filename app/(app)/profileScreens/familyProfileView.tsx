@@ -68,6 +68,11 @@ const FamilyProfileView = () => {
     },
   });
 
+  console.log(
+    'familyProfile=====',
+    familyProfile?.family_profile?.behavioural_differences
+  );
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ThemedView>
@@ -174,7 +179,12 @@ const FamilyProfileView = () => {
                 ?.title && (
                 <View style={styles.section}>
                   <View style={styles.subSection}>
-                    <ThemedText style={styles.pillHeading}>
+                    <ThemedText
+                      style={[
+                        styles.pillHeading,
+                        { fontFamily: 'Bogart-Regular' },
+                      ]}
+                    >
                       {
                         familyProfile?.family_profile?.extra_info?.prompts?.[0]
                           ?.title
@@ -313,19 +323,22 @@ const FamilyProfileView = () => {
                     ))}
                   </View>
                 </View>
-                <View style={styles.subSection}>
-                  <ThemedText style={styles.pillHeading}>
-                    Disability experience
-                  </ThemedText>
-                  <View style={styles.pillContainer}>
-                    {(
-                      familyProfile?.family_profile?.behavioural_differences ||
-                      []
-                    ).map((disability: string) => (
-                      <InfoPill key={disability} label={disability} />
-                    ))}
+                {familyProfile?.family_profile?.behavioural_differences
+                  ?.length > 0 && (
+                  <View style={styles.subSection}>
+                    <ThemedText style={styles.pillHeading}>
+                      Disability experience
+                    </ThemedText>
+                    <View style={styles.pillContainer}>
+                      {(
+                        familyProfile?.family_profile
+                          ?.behavioural_differences || []
+                      ).map((disability: string) => (
+                        <InfoPill key={disability} label={disability} />
+                      ))}
+                    </View>
                   </View>
-                </View>
+                )}
               </View>
               <View style={styles.section}>
                 <View
@@ -449,14 +462,21 @@ const FamilyProfileView = () => {
                 ?.title && (
                 <View style={styles.section}>
                   <View style={styles.subSection}>
-                    <ThemedText style={styles.pillHeading}>
+                    <ThemedText
+                      style={[
+                        styles.pillHeading,
+                        { fontFamily: 'Bogart-Regular' },
+                      ]}
+                    >
                       {
                         familyProfile?.family_profile?.extra_info?.prompts?.[1]
                           ?.title
                       }
                     </ThemedText>
                     <View style={styles.pillContainer}>
-                      <Text style={{ fontSize: 22 }}>
+                      <Text
+                        style={{ fontSize: 22, fontFamily: 'Bogart-Regular' }}
+                      >
                         {
                           familyProfile?.family_profile?.extra_info
                             ?.prompts?.[1]?.answer
@@ -791,16 +811,15 @@ const styles = StyleSheet.create({
   subSection: {
     gap: 24,
     marginBottom: 25,
-    fontFamily: 'Bogart-Regular'
+    fontFamily: 'Bogart-Regular',
   },
   pillHeading: {
-    fontFamily: 'Poppins',
     fontWeight: 400,
     fontSize: 16,
     lineHeight: 20,
     color: '#261D2A',
     opacity: 0.4,
-    fontFamily: 'Bogart-Regular',
+    fontFamily: 'Poppins',
   },
   pillSubHeading: {
     fontFamily: 'Poppins',

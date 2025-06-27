@@ -72,7 +72,7 @@ export const MatchCircle = ({
     setIsLoading(true);
     createMessage.mutate({
       recipientId: match?.caregiver_profile?.user?.user_id,
-      text: 'Hello',
+      // text: 'Hello',
     });
   };
 

@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     gap: 4,
-    marginBottom: 10,
+    marginBottom: 40,
   },
   nameAge: {
     fontSize: 32,

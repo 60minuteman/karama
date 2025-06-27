@@ -57,6 +57,8 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
   const upgradeButtonPadding = width * 0.06;
   const upgradeContainerBottom = height * 0.03;
 
+  console.log('like_you', like_you?.data?.scored_families);
+
   const handleUpgradePress = () => {
     // Navigate to the caregiver preview screen
     // router.push('/caregiver/preview');

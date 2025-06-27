@@ -1,6 +1,9 @@
 import ProfileHeader from '@/components/Profile/ProfileHeader';
 import { ThemedView } from '@/components/ThemedView';
+import { CaregiverContainer } from '@/components/home/CaregiverContainer';
 import { Container } from '@/components/home/Container';
+import { ContainerTwo } from '@/components/home/ContainerTwo';
+import NewFamilyContainer from '@/components/home/ui/NewFamilyContainer';
 import { FloatingButton } from '@/components/ui/FloatingButton';
 import useAuthMutation from '@/hooks/useAuthMutation';
 import { useCurrentUser } from '@/services/api/api';
@@ -32,7 +35,7 @@ const profilePreview = () => {
     useCurrentUser();
   const queryClient = useQueryClient();
 
-  console.log('profileData', profileData);
+  console.log('profileData******', profileData);
 
   useEffect(() => {
     if (likeProfile?.length) {
@@ -124,10 +127,7 @@ const profilePreview = () => {
     profileData
   );
 
-  console.log('likeProfile++++++++', {
-    family_profile_id: `${profileData?.id}`,
-    score: `${profileData?.score || 5.0}`,
-  });
+  console.log('likeProfile++++++++', profileData?.family_profile);
 
   const handleLike = () => {
     submitLike.mutate(
@@ -172,11 +172,29 @@ const profilePreview = () => {
         </Pressable>
         <ThemedView style={styles.container}>
           <View style={styles.contentContainer}>
-            <Container
+            {/* <Container
               profileData={profileData}
               data={profileData}
               role={accountType}
-            />
+            /> */}
+
+            {currentUser?.data?.role === 'FAMILY' ? (
+              <>
+                <Container
+                  profileData={profileData}
+                  data={profileData}
+                  role={accountType}
+                />
+              </>
+            ) : (
+              <>
+                <NewFamilyContainer
+                  familyProfile={profileData}
+                  familyProfileLoading={false}
+                  // role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'}
+                />
+              </>
+            )}
           </View>
         </ThemedView>
 

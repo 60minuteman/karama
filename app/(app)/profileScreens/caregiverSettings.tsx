@@ -186,17 +186,17 @@ const CaregiverSettings = () => {
               </View>
             </View>
 
-            {/* <View style={styles.section}>
+            <View style={styles.section}>
               <ThemedText style={styles.text}>Phone & Email</ThemedText>
               <View style={styles.subSection}>
                 <ThemedText style={styles.heading}>
-                  {currentUser?.phone_number || ''}
+                  {currentUser?.data?.phone_number}
                 </ThemedText>
-                <ThemedText style={styles.heading}>
+                {/* <ThemedText style={styles.heading}>
                   {currentUser?.email || ''}
-                </ThemedText>
+                </ThemedText> */}
               </View>
-            </View> */}
+            </View>
 
             {/* <View style={styles.section}>
               <ThemedText style={styles.text}>Notifications</ThemedText>
@@ -232,6 +232,14 @@ const CaregiverSettings = () => {
               </View>
             </View> */}
 
+            <View style={styles.section}>
+              <ThemedText style={styles.text}>
+                For Support Please Email{' '}
+              </ThemedText>
+              <ThemedText style={styles.heading}>
+                hello@karamacare.com
+              </ThemedText>
+            </View>
             <View style={styles.section2}>
               <TouchableOpacity
                 style={[styles.button, styles.deleteButton]}

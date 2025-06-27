@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     backgroundColor: '#FFFFFF',
+    borderRadius: 20,
   },
   lookingForContainer: {
     flexDirection: 'row',

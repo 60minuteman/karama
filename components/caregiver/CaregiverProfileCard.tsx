@@ -30,7 +30,7 @@ export const CaregiverProfileCard = ({
   salary,
   familyType,
   rating,
-  image = 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2920&auto=format&fit=crop',
+  image,
   profileData,
 }: CaregiverProfileCardProps) => {
   const { height: windowHeight } = useWindowDimensions();
@@ -70,11 +70,13 @@ export const CaregiverProfileCard = ({
           style={styles.gradient}
         >
           <View style={styles.header}>
-            {/* <View style={styles.familyTypeTag}>
-              <ThemedText style={styles.familyTypeText}>
-                {familyType}
-              </ThemedText>
-            </View> */}
+            {familyType && (
+              <View style={styles.familyTypeTag}>
+                <ThemedText style={styles.familyTypeText}>
+                  {familyType.replace(/[^\w\s]/g, '')}
+                </ThemedText>
+              </View>
+            )}
             {/* <View style={styles.ratingContainer}>
               <ThemedText style={styles.ratingText}>{rating}</ThemedText>
               <ThemedText style={styles.starIcon}>⭐</ThemedText>
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     overflow: 'hidden',
-    height: 560, // Increased from 460 to 560
+    height: 660, // Increased from 460 to 560
   },
   image: {
     width: '100%',
@@ -129,7 +131,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   familyTypeTag: {
-    backgroundColor: 'rgba(200, 200, 200, 0.7)',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
@@ -154,6 +156,7 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     marginTop: 'auto',
+    marginBottom: 180,
   },
   familyName: {
     fontSize: 28,

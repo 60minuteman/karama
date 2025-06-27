@@ -2,6 +2,7 @@ import { getSocket } from '@/app/_layout';
 import { CaregiverContainer } from '@/components/home/CaregiverContainer';
 import { Container } from '@/components/home/Container';
 import { ContainerTwo } from '@/components/home/ContainerTwo';
+import NewFamilyContainer from '@/components/home/ui/NewFamilyContainer';
 import MessageScreenSkeleton from '@/components/matches/MessageSkeleton';
 import { ChatBubble } from '@/components/messages/ChatBubble';
 import { MessageHeader } from '@/components/messages/MessageHeader';
@@ -60,7 +61,7 @@ export default function MessageScreen() {
   );
 
   // console.log('messages', messages);
-  console.log('profile', profile);
+  console.log('profile********', profile);
 
   // Load cached messages on mount
   useEffect(() => {
@@ -418,15 +419,22 @@ export default function MessageScreen() {
       ) : (
         <View style={{ height: '80%', display: 'flex', alignItems: 'center' }}>
           {profile?.family_profile ? (
-            <>
-              <CaregiverContainer
-                profileData={profile?.family_profile}
-                data={profile?.family_profile}
+            <View style={{ width: '100%', paddingHorizontal: 16 }}>
+              <NewFamilyContainer
+                // profileData={profile?.family_profile}
+                // data={profile?.family_profile}
+                familyProfile={profile?.family_profile}
+                familyProfileLoading={false}
                 // role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'}
               />
-            </>
+            </View>
           ) : (
             <>
+              {/* <Container
+                profileData={profileData}
+                data={profileData}
+                role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'}
+              /> */}
               <ContainerTwo
                 profileData={profile}
                 data={profile}

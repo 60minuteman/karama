@@ -19,6 +19,7 @@ import {
   PanResponder,
   ScrollView,
   StyleSheet,
+  Text,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -124,7 +125,7 @@ const CaregiverContainer = forwardRef<
 
   const scrollViewRef = useRef<ScrollView>(null);
 
-  console.log('profileData=====', profileData);
+  console.log('profileData like u =================', profileData);
 
   useImperativeHandle(ref, () => ({
     swipeRight,
@@ -154,38 +155,50 @@ const CaregiverContainer = forwardRef<
     familyName: profileData?.name || 'Family',
     location: profileData?.location || 'Location not provided',
     salary:
-      profileData?.extra_info?.payment_info?.type === '🤑 Hourly'
-        ? `$${profileData?.extra_info?.payment_info?.hourly_min} - $${profileData?.extra_info?.payment_info?.hourly_max}/hour`
-        : `${profileData?.extra_info?.payment_info?.salary}/year`,
-    familyType: profileData?.description, // This could be made dynamic based on data
+      (profileData as any)?.extra_info?.payment_info?.type === '🤑 Hourly'
+        ? `$${(profileData as any)?.extra_info?.payment_info?.hourly_min} - $${
+            (profileData as any)?.extra_info?.payment_info?.hourly_max
+          }/hour`
+        : `${(profileData as any)?.extra_info?.payment_info?.salary}/year`,
+    familyType: (profileData as any)?.description, // This could be made dynamic based on data
     rating: profileData?.rating || 4.5,
     image:
-      profileData?.image?.[0]?.path ||
+      (Array.isArray(profileData?.image) && profileData?.image?.[0]?.path) ||
       'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=2920&auto=format&fit=crop',
     profileData: profileData,
   };
 
-  console.log('images======', profileData);
+  console.log('images======', profileData?.extra_info);
 
-  return (
-    <ScrollView ref={scrollViewRef}>
-      <Animated.View
-        // {...panResponder.panHandlers}
-        style={[
-          styles.container,
-          {
-            width: containerWidth,
-            transform: [{ translateX: slideAnim }, { rotate: rotateAnim }],
-            opacity: opacityAnim,
-          },
-        ]}
-      >
-        <CaregiverProfileCard {...profileCardProps} />
-      </Animated.View>
+  // Dynamic styles similar to ContainerTwo
+  const dynamicStyles = StyleSheet.create({
+    container: {
+      alignSelf: 'center',
+      backgroundColor: '#F6F6F6',
+      borderRadius: 20,
+      overflow: 'hidden',
+      width: containerWidth,
+      height: isLargeScreen ? windowWidth * 0.8 : 'auto',
+    },
+    profileCardContainer: {
+      width: containerWidth,
+      height: isLargeScreen ? '100%' : 'auto',
+    },
+    componentContainer: {
+      width: containerWidth,
+      padding: containerWidth * 0.02,
+      backgroundColor: '#F6F6F6',
+      borderRadius: 20,
+      marginBottom: containerWidth * 0.03,
+      overflow: 'hidden',
+    },
+  });
 
-      <View
-        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
-      >
+  // Prepare content to be scrolled within the container
+  const content = (
+    <>
+      <View style={styles.spacer} />
+      <View style={dynamicStyles.componentContainer}>
         <We
           children={profileData?.children}
           pets={profileData?.pets}
@@ -193,18 +206,31 @@ const CaregiverContainer = forwardRef<
         />
       </View>
 
-      <View
-        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
-      >
+      {profileData?.extra_info?.prompts?.[0]?.title && (
+        <View style={styles.section}>
+          <View style={styles.subSection}>
+            <ThemedText style={styles.pillHeading}>
+              {profileData?.extra_info?.prompts?.[0]?.title}
+            </ThemedText>
+            <View style={styles.pillContainer}>
+              <Text style={{ fontSize: 22, fontFamily: 'Bogart-Regular' }}>
+                {profileData?.extra_info?.prompts?.[0]?.answer}
+              </Text>
+            </View>
+          </View>
+        </View>
+      )}
+
+      <View style={styles.spacer} />
+      <View style={dynamicStyles.componentContainer}>
         <Interests
           interests={profileData?.interests}
           images={profileData?.image}
         />
       </View>
 
-      <View
-        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
-      >
+      <View style={styles.spacer} />
+      <View style={dynamicStyles.componentContainer}>
         <Personality
           personalityTraits={profileData?.personality}
           experiences={profileData?.experience}
@@ -219,9 +245,8 @@ const CaregiverContainer = forwardRef<
         />
       </View>
 
-      <View
-        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
-      >
+      <View style={styles.spacer} />
+      <View style={dynamicStyles.componentContainer}>
         <Diets
           diets={profileData?.diets}
           householdRules={profileData?.rules}
@@ -229,15 +254,30 @@ const CaregiverContainer = forwardRef<
         />
       </View>
 
-      <View
-        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
-      >
-        <CaregiverImage data={profileData?.image?.[3]?.path} />
-      </View>
+      <View style={styles.spacer} />
+      {profileData?.image?.[3]?.path && (
+        <View style={dynamicStyles.componentContainer}>
+          <CaregiverImage data={profileData?.image?.[3]?.path} />
+        </View>
+      )}
 
-      <View
-        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
-      >
+      {profileData?.extra_info?.prompts?.[1]?.title && (
+        <View style={styles.section}>
+          <View style={styles.subSection}>
+            <ThemedText style={styles.pillHeading}>
+              {profileData?.extra_info?.prompts?.[1]?.title}
+            </ThemedText>
+            <View style={styles.pillContainer}>
+              <Text style={{ fontSize: 22, fontFamily: 'Bogart-Regular' }}>
+                {profileData?.extra_info?.prompts?.[1]?.answer}
+              </Text>
+            </View>
+          </View>
+        </View>
+      )}
+
+      <View style={styles.spacer} />
+      <View style={dynamicStyles.componentContainer}>
         <LookingFor
           title='We are looking for ..'
           jobType={profileData?.caregiver_preference?.caregiver_types || []}
@@ -255,9 +295,8 @@ const CaregiverContainer = forwardRef<
         />
       </View>
 
-      <View
-        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
-      >
+      <View style={styles.spacer} />
+      <View style={dynamicStyles.componentContainer}>
         <WorkType
           workType={[profileData?.caregiver_preference?.arrangement_type]}
           workOptions={[profileData?.caregiver_preference?.availability]}
@@ -269,13 +308,27 @@ const CaregiverContainer = forwardRef<
               []),
             profileData?.caregiver_preference?.requirements?.other_requirement,
           ].filter(Boolean)}
-          // OtherRequirements={}
         />
       </View>
 
-      <View
-        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
-      >
+      <View style={styles.spacer} />
+      {profileData?.extra_info?.more_information && (
+        <View style={styles.section}>
+          {profileData?.extra_info?.more_information && (
+            <View style={styles.subSection}>
+              <ThemedText style={{ color: 'red' }}>You Should Know</ThemedText>
+              <ThemedText style={styles.sectionText}>
+                {profileData?.extra_info?.more_information}
+              </ThemedText>
+            </View>
+          )}
+        </View>
+      )}
+
+      <View style={styles.bottomSpacer} />
+
+      {/* <View style={styles.spacer} />
+      <View style={dynamicStyles.componentContainer}>
         <ChildCare
           childcareResponsibilities={[
             ...(profileData?.caregiver_preference?.responsibilities
@@ -292,12 +345,50 @@ const CaregiverContainer = forwardRef<
         />
       </View>
 
-      <View
-        style={[styles.container, { width: containerWidth, marginTop: 16 }]}
-      >
+      <View style={styles.spacer} />
+      <View style={dynamicStyles.componentContainer}>
         <Benefits benefits={profileData?.extra_info?.benefits?.benefits} />
-      </View>
-    </ScrollView>
+      </View> */}
+    </>
+  );
+
+  return (
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          width: containerWidth,
+          transform: [{ translateX: slideAnim }, { rotate: rotateAnim }],
+          opacity: opacityAnim,
+        },
+      ]}
+    >
+      {isLargeScreen ? (
+        <View style={styles.largeScreenLayout}>
+          <View style={dynamicStyles.profileCardContainer}>
+            <CaregiverProfileCard {...profileCardProps} />
+          </View>
+          <ScrollView
+            ref={scrollViewRef}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContent}
+          >
+            {content}
+          </ScrollView>
+        </View>
+      ) : (
+        <ScrollView
+          ref={scrollViewRef}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={dynamicStyles.profileCardContainer}>
+            <CaregiverProfileCard {...profileCardProps} />
+          </View>
+          {content}
+        </ScrollView>
+      )}
+    </Animated.View>
   );
 });
 
@@ -308,6 +399,51 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6F6F6',
     borderRadius: 20,
     overflow: 'hidden',
+  },
+  section: {
+    backgroundColor: 'white',
+    paddingTop: 25,
+    paddingHorizontal: 25,
+    marginTop: 6,
+    borderRadius: 10,
+    overflow: 'hidden',
+    flex: 1,
+  },
+  subSection: {
+    gap: 24,
+    marginBottom: 25,
+    fontFamily: 'Bogart-Regular',
+  },
+  containers: {
+    padding: 12,
+  },
+  largeScreenLayout: {
+    flexDirection: 'row',
+    height: '120%',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    width: '100%',
+  },
+  pillContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    flexWrap: 'wrap',
+    fontFamily: '',
+  },
+  pillHeading: {
+    fontWeight: 400,
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A',
+    opacity: 0.4,
+    fontFamily: 'Bogart-Regular',
+  },
+  spacer: {
+    height: 8,
+  },
+  bottomSpacer: {
+    height: 80,
   },
   emptyStateContainer: {
     flex: 1,
@@ -327,5 +463,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_400Regular',
     color: '#666666',
     textAlign: 'center',
+  },
+  sectionText: {
+    fontFamily: 'Bogart-Regular',
+    fontWeight: 400,
+    fontSize: 20,
+    lineHeight: 25,
+    color: '#261D2A',
   },
 });
