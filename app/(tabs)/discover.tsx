@@ -233,6 +233,8 @@ export default function DiscoverScreen() {
     }
   );
 
+  console.log('dataprofile&&&&&&&&&&&&&', profiles);
+
   // Removed profile filtering for simplicity
 
   // Function to check if skipped profiles exist
