@@ -152,6 +152,10 @@ interface FamilyProfile {
 }
 
 interface UserData {
+  data?: {
+    role?: 'FAMILY' | 'CAREGIVER';
+    plan?: string;
+  };
   role?: 'FAMILY' | 'CAREGIVER';
   plan?: string;
   // Add other properties that you use from userData
@@ -174,8 +178,10 @@ export default function DiscoverScreen() {
   const [hasCheckedSkippedProfiles, setHasCheckedSkippedProfiles] =
     useState(false);
   const [hasSkippedProfiles, setHasSkippedProfiles] = useState(false);
+  const [isRefetchingProfiles, setIsRefetchingProfiles] = useState(false);
   const containerTwoRef = useRef<ContainerTwoRef>(null);
   const caregiverContainerRef = useRef<CaregiverContainerRef>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const { setMatchComplete, match_complete } = useStore();
   const { data: currentUser, isLoading: isLoadingCurrentUser } =
     useCurrentUser() as {
@@ -198,21 +204,21 @@ export default function DiscoverScreen() {
     retry: false,
   });
 
-  const { data, isLoading, error, refetch } = useMatchingCaregivers(
+    const { data, isLoading, error, refetch } = useMatchingCaregivers(
     cursor,
-    currentUser?.data?.role === 'FAMILY'
+    userData?.data?.role === 'FAMILY'
       ? '/family-discovery/get-matching-caregivers'
       : '/caregiver-discovery/get-matching-families',
     {
-      enabled: !!token && !!currentUser,
+      enabled: !!token && !!userData?.data?.role,
       onSuccess: (response: any) => {
         console.log('=== Discovery API Success ===');
         console.log('Response:', response);
-        console.log('User role:', currentUser?.data?.role);
-
+        console.log('User role:', userData?.data?.role);
+        
         // Handle both caregiver and family data
         const profiles =
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? response.data?.scored_caregivers
             : response.data?.scored_families;
 
@@ -220,18 +226,52 @@ export default function DiscoverScreen() {
         console.log('Profiles length:', profiles?.length);
 
         if (profiles) {
+          // If cursor is empty, it's the first batch - replace profiles
+          // If cursor exists, it's a new batch - replace profiles with new batch
           setProfiles(profiles);
-          if (profiles.length > 0 && currentIndex < profiles.length) {
-            console.log('Setting currentProfile:', profiles[currentIndex]);
-            setCurrentProfile(profiles[currentIndex]);
+          
+          if (profiles.length > 0) {
+            // Set current profile to first profile of the batch
+            console.log('Setting currentProfile:', profiles[0]);
+            setCurrentProfile(profiles[0]);
+            setCurrentIndex(0); // Always start from first profile of new batch
+          } else {
+            // Empty batch returned - no more profiles available
+            setCurrentProfile(null);
           }
         }
+        
+        // Reset refetching state
+        setIsRefetchingProfiles(false);
       },
       onError: (error: any) => {
         console.error('Discovery fetch error:', error);
+        setIsRefetchingProfiles(false);
       },
     }
   );
+
+  // Periodic profile checking
+  useEffect(() => {
+    if (!token || !userData?.data?.role) return;
+
+    // Set up interval to check for new profiles every 3 minutes
+    const REFETCH_INTERVAL = 3 * 60 * 1000; // 3 minutes
+
+    intervalRef.current = setInterval(() => {
+      console.log('=== Periodic Profile Check ===');
+      setIsRefetchingProfiles(true);
+      refetch();
+    }, REFETCH_INTERVAL);
+
+    // Cleanup interval on unmount
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [token, userData?.role, refetch]);
 
   // Removed profile filtering for simplicity
 
@@ -239,7 +279,7 @@ export default function DiscoverScreen() {
   const checkSkippedProfiles = useAuthMutation({
     mutationFn: () => {
       const endpoint =
-        currentUser?.data?.role === 'FAMILY'
+        userData?.data?.role === 'FAMILY'
           ? '/family-discovery/skipped-profiles-enquiry'
           : '/caregiver-discovery/skipped-profiles-enquiry';
       return customAxios.get(endpoint);
@@ -247,7 +287,7 @@ export default function DiscoverScreen() {
     onSuccess: (response: any) => {
       console.log('Skipped profiles enquiry:', response.data);
       setHasCheckedSkippedProfiles(true);
-      const hasSkipped = response.data?.hasSkippedProfiles || false;
+      const hasSkipped = response.data?.data?.hasSkippedProfiles || false;
       setHasSkippedProfiles(hasSkipped);
 
       // If user has skipped profiles, automatically fetch them
@@ -267,16 +307,27 @@ export default function DiscoverScreen() {
   const fetchSkippedProfiles = useAuthMutation({
     mutationFn: () => {
       const endpoint =
-        currentUser?.data?.role === 'FAMILY'
+        userData?.data?.role === 'FAMILY'
           ? '/family-discovery/get-skipped-profiles'
           : '/caregiver-discovery/get-skipped-profiles';
       return customAxios.get(endpoint);
     },
     onSuccess: (response: any) => {
+      console.log('=== Skipped Profiles Fetch Success ===');
+      console.log('Response structure:', {
+        statusCode: response.data.statusCode,
+        hasData: !!response.data.data,
+        dataKeys: response.data.data ? Object.keys(response.data.data) : [],
+      });
+      
       const skippedData =
-        currentUser?.data?.role === 'FAMILY'
-          ? response.data?.scored_caregivers || []
-          : response.data?.scored_families || [];
+        userData?.data?.role === 'FAMILY'
+          ? response.data?.data?.scored_caregivers || []
+          : response.data?.data?.scored_families || [];
+
+      console.log('Extracted skipped profiles:', skippedData.length, 'profiles');
+      console.log('User role:', userData?.data?.role);
+      console.log('Looking for:', userData?.data?.role === 'FAMILY' ? 'scored_caregivers' : 'scored_families');
 
       setSkippedProfiles(skippedData);
       setShowingSkippedProfiles(true);
@@ -284,8 +335,15 @@ export default function DiscoverScreen() {
       setCurrentIndex(0);
 
       if (skippedData.length > 0) {
+        console.log('Setting first skipped profile:', {
+          name: userData?.data?.role === 'FAMILY' 
+            ? skippedData[0].caregiver_profile?.name 
+            : skippedData[0].family_profile?.name,
+          score: skippedData[0].score
+        });
         setCurrentProfile(skippedData[0]);
       } else {
+        console.log('No skipped profiles found - showing empty state');
         setCurrentProfile(null); // No skipped profiles, will show empty state
       }
     },
@@ -310,7 +368,13 @@ export default function DiscoverScreen() {
   useEffect(() => {
     console.log('=== Discovery useEffect ===');
     console.log('showingSkippedProfiles:', showingSkippedProfiles);
+    console.log('currentUser:', currentUser);
     console.log('currentUser role:', currentUser?.data?.role);
+    console.log('userData:', userData);
+    console.log('userData role:', userData?.role);
+    console.log('userData.data.role:', userData?.data?.role);
+    console.log('token:', !!token);
+    console.log('isLoading:', isLoading);
     console.log('data available:', !!data);
     console.log('data structure:', data);
 
@@ -321,10 +385,10 @@ export default function DiscoverScreen() {
       } else {
         setCurrentProfile(null); // No more skipped profiles
       }
-    } else if (currentUser?.data?.role) {
+    } else if (userData?.data?.role) {
       // Handle regular profiles
       if (
-        currentUser?.data?.role === 'FAMILY' &&
+        userData?.data?.role === 'FAMILY' &&
         (data as any)?.data?.scored_caregivers
       ) {
         console.log('Processing FAMILY user with caregivers');
@@ -338,12 +402,12 @@ export default function DiscoverScreen() {
             caregivers[currentIndex]
           );
           setCurrentProfile(caregivers[currentIndex]);
-        } else {
-          // No more profiles in current array - show skip state
+        } else if (caregivers.length === 0) {
+          // Empty batch returned - check for skipped profiles
           setCurrentProfile(null);
         }
       } else if (
-        currentUser?.data?.role === 'CAREGIVER' &&
+        userData?.data?.role === 'CAREGIVER' &&
         (data as any)?.data?.scored_families
       ) {
         console.log('Processing CAREGIVER user with families');
@@ -357,14 +421,14 @@ export default function DiscoverScreen() {
             families[currentIndex]
           );
           setCurrentProfile(families[currentIndex]);
-        } else {
-          // No more profiles in current array - show skip state
+        } else if (families.length === 0) {
+          // Empty batch returned - check for skipped profiles
           setCurrentProfile(null);
         }
       } else {
         console.log(
           'No matching condition - Role:',
-          currentUser?.data?.role,
+          userData?.data?.role,
           'Data keys:',
           Object.keys(data || {})
         );
@@ -373,14 +437,14 @@ export default function DiscoverScreen() {
   }, [
     data,
     currentIndex,
-    currentUser?.data?.role,
+    userData?.data?.role,
     showingSkippedProfiles,
     skippedProfiles,
   ]);
 
   const moveToNextProfile = useCallback(() => {
     // Reset scroll position to top based on user role
-    if (currentUser?.data?.role === 'FAMILY') {
+    if (userData?.data?.role === 'FAMILY') {
       containerTwoRef.current?.scrollToTop();
     } else {
       caregiverContainerRef.current?.scrollToTop();
@@ -395,31 +459,39 @@ export default function DiscoverScreen() {
         setCurrentProfile(null);
       }
     } else {
-      // Handle regular profiles navigation - just move to next index
-      if (currentIndex < filteredProfiles.length - 1) {
+      // Handle regular profiles navigation
+      if (currentIndex < profiles.length - 1) {
+        // Move to next profile in current batch
         setCurrentIndex(currentIndex + 1);
-      } else if (nextCursor && userData?.plan === 'STANDARD') {
-        setCursor(nextCursor);
-        setCurrentIndex(0);
       } else {
-        // Reached the end of current profiles - show skip state (don't automatically check skipped profiles)
-        setCurrentProfile(null);
+        // Reached end of current batch - check if we can fetch more
+        const nextCursorFromData = (data as any)?.data?.next_cursor;
+        
+        if (nextCursorFromData) {
+          // There are more profiles available - fetch next batch
+          console.log('Fetching next batch with cursor:', nextCursorFromData);
+          setIsRefetchingProfiles(true);
+          setCursor(nextCursorFromData);
+          setCurrentIndex(0); // Reset index for new batch
+        } else {
+          // No more profiles available from backend - show skip state
+          setCurrentProfile(null);
+        }
       }
     }
   }, [
     currentIndex,
-    filteredProfiles.length,
-    nextCursor,
-    userData?.plan,
+    profiles.length,
+    data,
     showingSkippedProfiles,
     skippedProfiles.length,
-    currentUser?.data?.role,
+    userData?.data?.role,
   ]);
 
   const submitLike: any = useAuthMutation({
     mutationFn: (data: any) => {
       const endpoint =
-        currentUser?.data?.role === 'FAMILY'
+        userData?.data?.role === 'FAMILY'
           ? `/family-discovery/like-caregiver`
           : `/caregiver-discovery/like-family`;
       return customAxios.patch(endpoint, data);
@@ -428,7 +500,7 @@ export default function DiscoverScreen() {
       console.log('like data', data?.data);
       moveToNextProfile();
       if (
-        currentUser?.data?.role === 'FAMILY' &&
+        userData?.data?.role === 'FAMILY' &&
         data?.data?.match.match_status === 'COMPLETED'
       ) {
         setMatchComplete(data?.data);
@@ -437,7 +509,7 @@ export default function DiscoverScreen() {
       }
 
       if (
-        currentUser?.data?.role === 'CAREGIVER' &&
+        userData?.data?.role === 'CAREGIVER' &&
         data?.data?.match.match_status === 'COMPLETED'
       ) {
         setMatchComplete(data?.data);
@@ -468,7 +540,7 @@ export default function DiscoverScreen() {
   const submitReject: any = useAuthMutation({
     mutationFn: (data: any) => {
       const endpoint =
-        currentUser?.data?.role === 'FAMILY'
+        userData?.data?.role === 'FAMILY'
           ? `/family-discovery/reject-caregiver/${currentProfile?.caregiver_profile?.id}`
           : `/caregiver-discovery/reject-families/${currentProfile?.family_profile?.id}`;
       return customAxios.patch(endpoint);
@@ -506,21 +578,21 @@ export default function DiscoverScreen() {
   const profileDataFamily = currentProfile
     ? {
         image:
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.pictures?.[0]?.path || ''
             : currentProfile?.family_profile?.pictures?.find(
                 (pic) => pic.type === 'PROFILE_PICTURE'
               )?.path || '',
         name:
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.name || ''
             : currentProfile?.family_profile?.name || '',
         description:
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? ''
             : currentProfile?.family_profile?.description?.description || '',
         children:
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? ''
             : currentProfile?.family_profile?.children
                 ?.map(
@@ -531,42 +603,42 @@ export default function DiscoverScreen() {
                 )
                 .join(', ') || '',
         location: `📍 ${
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.location
             : currentProfile?.family_profile?.location
         }`,
         age:
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.date_of_birth
               ? calculateAge(currentProfile.caregiver_profile.date_of_birth)
               : 0
             : 0,
         role:
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.caregiver_type
               ? `🧢 ${currentProfile.caregiver_profile.caregiver_type}`
               : ''
             : '',
         address: '📍 ',
         pronouns:
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.pronouns || ''
             : '',
         rating: parseFloat(currentProfile?.score || '0'),
         experience: [
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.years_of_experience || ''
             : '',
-          ...(currentUser?.data?.role === 'FAMILY'
+          ...(userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.ages_best_with || []
             : []),
         ].filter(Boolean),
         lookingFor:
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.availability || []
             : [],
         hourlyRate:
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.payment_info?.type === 'Hourly'
               ? `$${
                   currentProfile?.caregiver_profile?.payment_info?.hourly_min ||
@@ -580,44 +652,44 @@ export default function DiscoverScreen() {
                 }/year`
             : '',
         languages: [
-          ...(currentUser?.data?.role === 'FAMILY'
+          ...(userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.language?.languages || []
             : []),
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.language?.other || ''
             : '',
         ].filter((lang): lang is string => Boolean(lang)),
         interests: [
-          ...(currentUser?.data?.role === 'FAMILY'
+          ...(userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.hobbies?.creative_interests ||
               []
             : []),
-          ...(currentUser?.data?.role === 'FAMILY'
+          ...(userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.hobbies?.sport_interests || []
             : []),
-          ...(currentUser?.data?.role === 'FAMILY'
+          ...(userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.hobbies
                 ?.instrument_interests || []
             : []),
-          ...(currentUser?.data?.role === 'FAMILY'
+          ...(userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.hobbies?.stem_interests || []
             : []),
         ].filter(Boolean),
         obsession:
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.prompts?.[0]?.answer || '-'
             : '',
         religion:
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.characteristics?.religion || ''
             : '',
         personality:
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.characteristics
                 ?.personalities || []
             : [],
         disabilities:
-          currentUser?.data?.role === 'FAMILY'
+          userData?.data?.role === 'FAMILY'
             ? currentProfile?.caregiver_profile?.experience_with_disabilities
                 ?.disabilities || []
             : [],
@@ -678,7 +750,7 @@ export default function DiscoverScreen() {
 
   const handleLike = () => {
     submitLike.mutate(
-      currentUser?.data?.role === 'FAMILY'
+      userData?.data?.role === 'FAMILY'
         ? {
             caregiver_profile_id: `${currentProfile?.caregiver_profile?.id}`,
             score: `${currentProfile?.score}`,
@@ -710,13 +782,16 @@ export default function DiscoverScreen() {
               { height: '80%', alignItems: 'center' },
             ]}
           >
-            {isLoadingUser || isLoading ? (
+            {isLoadingUser || isLoading || isRefetchingProfiles ? (
               <ProfileCardLoader />
             ) : !currentProfile &&
               !hasCheckedSkippedProfiles &&
-              !data?.data?.next_cursor ? (
+              !(data as any)?.data?.next_cursor ? (
               <View style={styles.emptyStateContainer}>
-                <Skip onReviewSkipped={() => checkSkippedProfiles.mutate()} />
+                <Skip onReviewSkipped={() => {
+                  console.log('=== User clicked Review Skipped Profiles ===');
+                  checkSkippedProfiles.mutate();
+                }} />
               </View>
             ) : !currentProfile &&
               hasCheckedSkippedProfiles &&
@@ -734,7 +809,7 @@ export default function DiscoverScreen() {
               <ProfileCardLoader />
             ) : (
               <>
-                {currentUser?.data?.role === 'FAMILY' ? (
+                {userData?.data?.role === 'FAMILY' ? (
                   <>
                     <ContainerTwo
                       ref={containerTwoRef}
@@ -743,7 +818,7 @@ export default function DiscoverScreen() {
                       onLike={() => handleLike()}
                       onReject={() => handleReject()}
                       role={
-                        currentUser?.data?.role === 'FAMILY'
+                        userData?.data?.role === 'FAMILY'
                           ? 'CAREGIVER'
                           : 'FAMILY'
                       }
@@ -774,7 +849,7 @@ export default function DiscoverScreen() {
                 }
                 style={[styles.rejectButton, { width: buttonWidth }] as any}
                 onPress={() => {
-                  if (currentUser?.data?.role === 'FAMILY') {
+                  if (userData?.data?.role === 'FAMILY') {
                     containerTwoRef.current?.swipeLeft();
                   } else {
                     caregiverContainerRef.current?.swipeLeft();
@@ -790,7 +865,7 @@ export default function DiscoverScreen() {
                 }
                 style={[styles.likeButton, { width: buttonWidth }] as any}
                 onPress={() => {
-                  if (currentUser?.data?.role === 'FAMILY') {
+                  if (userData?.data?.role === 'FAMILY') {
                     containerTwoRef.current?.swipeRight();
                   } else {
                     caregiverContainerRef.current?.swipeRight();
