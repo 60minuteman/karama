@@ -72,6 +72,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     backgroundColor: '#FFFFFF',
+    borderRadius: 20,
   },
   section: {
     marginBottom: 24,
