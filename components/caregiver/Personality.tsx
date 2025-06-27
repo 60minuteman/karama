@@ -19,19 +19,11 @@ interface PersonalityProps {
 
 export const Personality: React.FC<PersonalityProps> = ({
   personalityTitle = 'Our personality is',
-  personalityTraits = [
-    { label: 'Wacky', icon: '😀' },
-    { label: 'Animated', icon: '🤩' },
-    { label: 'Chill', icon: '🧘' },
-  ],
+  personalityTraits,
   allergiesTitle = 'Our child(ren) are allergic to',
-  allergies = [
-    { label: 'Nuts', icon: '🥜' },
-    { label: 'Mold', icon: '🍄' },
-    { label: 'Perfume', icon: '🌹' },
-  ],
+  allergies,
   experienceTitle = 'Caregiver experienced with',
-  experiences = [{ label: 'Dyslexia' }, { label: 'ADHD' }],
+  experiences,
 }) => {
   const renderSection = (title: string, items: TraitItem[]) => (
     <View style={styles.section}>

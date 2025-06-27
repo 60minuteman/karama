@@ -19,16 +19,9 @@ interface DietsProps {
 export const Diets: React.FC<DietsProps> = ({
   familyImage = 'https://images.unsplash.com/photo-1609220136736-443140cffec6?q=80&w=2940&auto=format&fit=crop',
   images,
-  diets = [
-    { label: 'Sugar Free', icon: '🍉' },
-    { label: 'Meat Eater', icon: '🍗' },
-  ],
-  householdRules = [
-    { label: 'No Screens', icon: '🚫' },
-    { label: 'No Hitting', icon: '👋' },
-    { label: 'No Bullying', icon: '🐂' },
-  ],
-  childcarePhilosophy = [{ label: 'Montesiori', icon: '🌈' }],
+  diets,
+  householdRules,
+  childcarePhilosophy,
 }) => {
   const renderSection = (title: string, items: CategoryItem[]) => (
     <View style={styles.section}>
@@ -60,14 +53,14 @@ export const Diets: React.FC<DietsProps> = ({
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
-          source={{ uri: images[2]?.path }}
+          source={{ uri: images?.[2]?.path }}
           style={styles.image}
           resizeMode='cover'
         />
       </View>
 
-      {renderSection('Diets', diets)}
-      {renderSection('Household Rules', householdRules)}
+      {renderSection('Diets', diets || [])}
+      {renderSection('Household Rules', householdRules || [])}
       {/* {renderSection("Childcare Philosophy", childcarePhilosophy)} */}
     </View>
   );

@@ -17,23 +17,14 @@ interface InterestsProps {
 export const Interests: React.FC<InterestsProps> = ({
   title = "Children's Interests",
   images,
-  interests = [
-    { name: 'DIY', icon: '🧩' },
-    { name: 'Dance', icon: '🩰' },
-    { name: 'Painting', icon: '🎨' },
-    { name: 'Bowling', icon: '🎳' },
-    { name: 'Ice skating', icon: '⛸️' },
-    { name: 'Drama', icon: '🎭' },
-    { name: 'Hiking', icon: '👟' },
-    { name: 'Polo', icon: '🐴' },
-  ],
+  interests,
 }) => {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
           source={{
-            uri: images[1]?.path,
+            uri: images?.[1]?.path,
           }}
           style={styles.image}
           resizeMode='cover'
@@ -43,27 +34,28 @@ export const Interests: React.FC<InterestsProps> = ({
       <ThemedText style={styles.title}>{title}</ThemedText>
 
       <View style={styles.interestsContainer}>
-        {Array.isArray(interests) && interests.map((interest, index) => {
-          let icon = '🎯'; // Default icon
+        {Array.isArray(interests) &&
+          interests.map((interest, index) => {
+            let icon = '🎯'; // Default icon
 
-          // Match interest with appropriate icon from array
-          if (interest === 'Painting') icon = '🎨';
-          else if (interest === 'Singing') icon = '🎭';
-          else if (interest === 'Piano' || interest === 'Guitar') icon = '🎵';
-          else if (interest === 'Soccer' || interest === 'Basketball')
-            icon = '⚽';
-          else if (interest === 'Coding' || interest === 'Robotics')
-            icon = '🤖';
+            // Match interest with appropriate icon from array
+            if (interest === 'Painting') icon = '🎨';
+            else if (interest === 'Singing') icon = '🎭';
+            else if (interest === 'Piano' || interest === 'Guitar') icon = '🎵';
+            else if (interest === 'Soccer' || interest === 'Basketball')
+              icon = '⚽';
+            else if (interest === 'Coding' || interest === 'Robotics')
+              icon = '🤖';
 
-          return (
-            <Pill2
-              key={index}
-              label={interest}
-              // icon={icon}
-              style={styles.interestPill}
-            />
-          );
-        })}
+            return (
+              <Pill2
+                key={index}
+                label={interest}
+                // icon={icon}
+                style={styles.interestPill}
+              />
+            );
+          })}
       </View>
     </View>
   );

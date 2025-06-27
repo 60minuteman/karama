@@ -31,7 +31,7 @@ interface CaregiverContainerProps {
     location?: string;
     pronouns?: string;
     rating?: number;
-    role?: string;
+    role?: any;
     experience?: string[];
     availability?: string[];
     hourlyRate?: string;
@@ -124,7 +124,7 @@ const CaregiverContainer = forwardRef<
 
   const scrollViewRef = useRef<ScrollView>(null);
 
-  console.log('profileData=====', profileData?.experience);
+  console.log('profileData=====', profileData);
 
   useImperativeHandle(ref, () => ({
     swipeRight,
@@ -273,7 +273,7 @@ const CaregiverContainer = forwardRef<
         />
       </View>
 
-      {/* <View
+      <View
         style={[styles.container, { width: containerWidth, marginTop: 16 }]}
       >
         <ChildCare
@@ -296,7 +296,7 @@ const CaregiverContainer = forwardRef<
         style={[styles.container, { width: containerWidth, marginTop: 16 }]}
       >
         <Benefits benefits={profileData?.extra_info?.benefits?.benefits} />
-      </View> */}
+      </View>
     </ScrollView>
   );
 });

@@ -14,26 +14,10 @@ interface ChildCareProps {
 }
 
 export const ChildCare: React.FC<ChildCareProps> = ({
-  childcareResponsibilities = [
-    { label: 'Bathing', icon: '🛁' },
-    { label: 'Tutoring', icon: '👨‍🏫' },
-    { label: 'Play Dates', icon: '📈' },
-    { label: 'Commuting', icon: '🚆' },
-    { label: 'Packing Lunch', icon: '🍕' },
-    { label: 'Bottle Feeding', icon: '🍼' },
-    { label: 'Diaper Change', icon: '📎' },
-    { label: 'Homework Help', icon: '📖' },
-  ],
-  householdResponsibilities = [
-    { label: 'Cooking', icon: '🔍' },
-    { label: 'Pet Care', icon: '🐾' },
-    { label: 'Meal Prep', icon: '🥣' },
-    { label: 'Laundry', icon: '🧺' },
-    { label: 'Deep Housekeeping', icon: '💦' },
-    { label: 'Household Budgeting', icon: '📊' },
-    { label: 'Vendor/ Services Management', icon: '👨‍💼' },
-  ],
+  childcareResponsibilities,
+  householdResponsibilities,
 }) => {
+  console.log('householdResponsibilities', householdResponsibilities);
   const renderSection = (title: string, items: ResponsibilityItem[]) => (
     <View style={styles.section}>
       <ThemedText style={styles.sectionTitle}>{title}</ThemedText>
@@ -70,8 +54,10 @@ export const ChildCare: React.FC<ChildCareProps> = ({
 
   return (
     <View style={styles.container}>
-      {renderSection('Childcare Responsibilities', childcareResponsibilities)}
-      {renderSection('Household Responsibilities', householdResponsibilities)}
+      {childcareResponsibilities?.length > 0 &&
+        renderSection('Childcare Responsibilities', childcareResponsibilities)}
+      {householdResponsibilities?.length > 0 &&
+        renderSection('Household Responsibilities', householdResponsibilities)}
     </View>
   );
 };

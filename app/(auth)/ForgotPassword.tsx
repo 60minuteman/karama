@@ -44,7 +44,7 @@ const ForgotPassword = () => {
     mutationFn: (data: any) => {
       return customAxios.post(`/auth/password/forgot-password`, {
         phone_number: `+1${phoneNumber}`,
-        strategy: 'SIGN_UP',
+        // strategy: 'SIGN_UP',
       });
     },
     onSuccess: async (data: any) => {

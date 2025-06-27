@@ -1,4 +1,5 @@
 import { getSocket } from '@/app/_layout';
+import { CaregiverContainer } from '@/components/home/CaregiverContainer';
 import { Container } from '@/components/home/Container';
 import { ContainerTwo } from '@/components/home/ContainerTwo';
 import MessageScreenSkeleton from '@/components/matches/MessageSkeleton';
@@ -416,11 +417,23 @@ export default function MessageScreen() {
         </View>
       ) : (
         <View style={{ height: '80%', display: 'flex', alignItems: 'center' }}>
-          {profile?.family_profile ? 
-          <Container profileData={profile} data={profile?.family_profile || profile?.caregiver_profile} role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'} />
-          : 
-          <ContainerTwo profileData={profile} data={profile} role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'} />
-          }
+          {profile?.family_profile ? (
+            <>
+              <CaregiverContainer
+                profileData={profile?.family_profile}
+                data={profile?.family_profile}
+                // role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'}
+              />
+            </>
+          ) : (
+            <>
+              <ContainerTwo
+                profileData={profile}
+                data={profile}
+                role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'}
+              />
+            </>
+          )}
         </View>
       )}
     </KeyboardAvoidingView>
