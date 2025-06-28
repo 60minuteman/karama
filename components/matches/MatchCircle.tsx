@@ -1,4 +1,5 @@
 import useAuthMutation from '@/hooks/useAuthMutation';
+import { useCurrentUser } from '@/services/api/api';
 import customAxios from '@/services/api/envConfig';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -28,6 +29,7 @@ export const MatchCircle = ({
   const [progress, setProgress] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
+  const { data: currentUser } = useCurrentUser();
 
   useEffect(() => {
     if (match?.match_made_at) {
@@ -66,7 +68,7 @@ export const MatchCircle = ({
     },
   });
 
-  console.log('recipientId', match?.caregiver_profile?.user?.user_id);
+  // console.log('recipientId', match?.caregiver_profile?.user?.user_id);
 
   const handleCreateRoom = async () => {
     setIsLoading(true);
@@ -106,8 +108,12 @@ export const MatchCircle = ({
         </Svg>
         <Image
           source={
-            match?.caregiver_profile?.pictures[0]?.path
-              ? { uri: match.caregiver_profile.pictures[0].path }
+            currentUser?.data?.role === 'FAMILY'
+              ? match?.caregiver_profile?.pictures[0]?.path
+                ? { uri: match.caregiver_profile.pictures[0].path }
+                : require('@/assets/images/img.png')
+              : match?.family_profile?.pictures[0]?.path
+              ? { uri: match.family_profile.pictures[0].path }
               : require('@/assets/images/img.png')
           }
           style={styles.image}

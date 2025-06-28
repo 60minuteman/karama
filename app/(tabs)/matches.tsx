@@ -46,6 +46,8 @@ export default function Matches() {
   const [deletedConversationId, setDeletedConversationId] = useState<any>(null);
   const queryClient = useQueryClient();
 
+  // console.log('completeMatches', completeMatches?.data?.matches);
+
   // Get socket instance dynamically
   const getSocketInstance = useCallback(() => {
     return getSocket();
@@ -132,16 +134,16 @@ export default function Matches() {
 
   useEffect(() => {
     const socket = getSocketInstance();
-    
+
     if (socket && token && user?.user_id) {
       console.log('🔌 Setting up socket listeners for matches');
-      
+
       // Set socket connected state
       socket.on('connect', () => {
         console.log('✅ Socket connected in matches');
         setSocketConnected(true);
         // Request conversations when socket connects
-      socket.emit('getAllConversations');
+        socket.emit('getAllConversations');
       });
 
       socket.on('disconnect', () => {
@@ -177,7 +179,7 @@ export default function Matches() {
           return prevConversations.map((conv) => {
             const updatedConv = conversationsToUpdate.find(
               (update: any) => update.id === conv.id
-          );
+            );
             return updatedConv || conv;
           });
         });
@@ -203,23 +205,21 @@ export default function Matches() {
       // If no socket available after reasonable time, stop loading
       const timeout = setTimeout(() => {
         if (conversations.length === 0) {
-        setIsLoading(false);
+          setIsLoading(false);
         }
       }, 5000);
-      
+
       return () => clearTimeout(timeout);
     }
   }, [user?.user_id, token, queryClient, getSocketInstance]);
 
   useEffect(() => {
     if (completeMatches?.data?.matches && conversations) {
-      const conversationIds = conversations.map(
-        (conv: any) => conv?.recipient?.id
-      );
+      const conversationIds = conversations.map((conv: any) => conv?.match_id);
       const filtered = completeMatches?.data?.matches?.filter(
-        (match: any) =>
-          !conversationIds.includes(match?.caregiver_profile?.user?.user_id)
+        (match: any) => !conversationIds.includes(match?.id)
       );
+      console.log('filtered====', filtered);
       setFilteredMatches(filtered);
     }
   }, [completeMatches?.data?.matches, conversations]);
@@ -227,12 +227,12 @@ export default function Matches() {
   useEffect(() => {
     const socket = getSocketInstance();
     if (socket) {
-    socket.on('conversationDeleted', () => {
-      setConversations(
-        conversations.filter((conv: any) => conv.id !== deletedConversationId)
-      );
-      setDeletedConversationId(null);
-    });
+      socket.on('conversationDeleted', () => {
+        setConversations(
+          conversations.filter((conv: any) => conv.id !== deletedConversationId)
+        );
+        setDeletedConversationId(null);
+      });
 
       return () => {
         socket.off('conversationDeleted');
