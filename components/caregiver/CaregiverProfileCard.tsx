@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     marginTop: 'auto',
-    marginBottom: 180,
+    marginBottom: 130,
   },
   familyName: {
     fontSize: 28,
