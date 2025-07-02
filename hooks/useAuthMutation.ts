@@ -1,6 +1,6 @@
 import { useUserStore } from '@/services/state/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Redirect, router, useRouter } from 'expo-router';
 import { useAuth } from '../app/store/auth';
 import UserService from '../services/api/UserService';
@@ -8,8 +8,8 @@ import UserService from '../services/api/UserService';
 const useAuthMutation = (...options: any) => {
   const mutation = useMutation(...options);
   const router = useRouter();
-  // const { setUser, token, clear } = useAuth();
-  const { token } = useUserStore();
+  const queryClient = useQueryClient();
+  const { token, logout, clearUser } = useUserStore();
 
   if (token) {
     if (
@@ -17,19 +17,56 @@ const useAuthMutation = (...options: any) => {
       mutation?.error?.response?.status === 403 ||
       mutation?.error?.response?.data?.message === 'invalid credentials'
     ) {
-      // Insert custom access-token refresh logic here. For now, we are
-      // just refreshing the page here, so as to redirect them to the
-      // login page since their token is now expired.
-      // (async () => {
-      //   try {
-      //     await clear();
-      //     return;
-      //   } catch (error) {
-      //     // console.log('useAuthQuery', error);
-      //     await clear();
-      //     return;
-      //   }
-      // })();
+      // Token is expired - clear session and redirect to login
+      (async () => {
+        try {
+          console.log(
+            'Token expired - clearing session and redirecting to login'
+          );
+
+          // Clear user data
+          clearUser();
+
+          // Remove device (if deviceId is available)
+          // Note: removeDevice mutation would need to be imported/defined
+          // removeDevice.mutate({ device_id: deviceId });
+
+          // Logout from store
+          await logout();
+
+          // Clear query cache
+          queryClient.clear();
+
+          // Clear matches cache
+          await AsyncStorage.removeItem('@matches_conversations');
+          await AsyncStorage.removeItem('@matches_data');
+
+          // Redirect to login screen
+          // router.replace('/(auth)/signInPhone');
+        } catch (error) {
+          console.error('Error during logout:', error);
+
+          // Clear user data
+          clearUser();
+
+          // Remove device (if deviceId is available)
+          // Note: removeDevice mutation would need to be imported/defined
+          // removeDevice.mutate({ device_id: deviceId });
+
+          // Logout from store
+          await logout();
+
+          // Clear query cache
+          queryClient.clear();
+
+          // Clear matches cache
+          await AsyncStorage.removeItem('@matches_conversations');
+          await AsyncStorage.removeItem('@matches_data');
+
+          // Fallback - still try to redirect
+          // router.replace('/(auth)/signInPhone');
+        }
+      })();
     }
     return mutation;
   }

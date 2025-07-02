@@ -1,6 +1,7 @@
 import useAuthMutation from '@/hooks/useAuthMutation';
 import { useCurrentUser } from '@/services/api/api';
 import customAxios from '@/services/api/envConfig';
+import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -30,6 +31,7 @@ export const MatchCircle = ({
   const [isLoading, setIsLoading] = useState(false);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const { data: currentUser } = useCurrentUser();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (match?.match_made_at) {
@@ -75,6 +77,9 @@ export const MatchCircle = ({
     createMessage.mutate({
       recipientId: match?.caregiver_profile?.user?.user_id,
       // text: 'Hello',
+    });
+    queryClient.invalidateQueries({
+      queryKey: ['like-you', currentUser?.data?.role],
     });
   };
 

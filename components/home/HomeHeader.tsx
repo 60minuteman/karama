@@ -29,7 +29,7 @@ export const HomeHeader = () => {
 
   const imageSource = profilePicture
     ? { uri: profilePicture }
-    : require('@/assets/images/profile-placeholder.jpg');
+    : require('@/assets/images/icon.png');
 
   const handleUndoSwipe = () => {
     // This would trigger the undo action to bring back the last unliked profile card

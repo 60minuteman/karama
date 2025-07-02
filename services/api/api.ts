@@ -244,6 +244,7 @@ export const fetchLikes = async (
   cursor: string,
   page_size: number
 ) => {
+  console.log('cursor', cursor, page_size);
   const endpoint =
     role === 'FAMILY'
       ? `/family-likes?cursor=${cursor}&page_size=${page_size}`
