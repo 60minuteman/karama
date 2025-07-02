@@ -1,5 +1,6 @@
 import { ThemedText } from '@/components/ThemedText';
 import { LikedYouCard } from '@/components/cards/LikedYouCard';
+import ProfileCardLoader from '@/components/cards/ProfileCardLoader';
 import EmptyLikes from '@/components/discovery/EmptyLike';
 import { HomeNav } from '@/components/home/HomeNav';
 import { useCurrentUser, useFetchLikes } from '@/services/api/api';
@@ -55,15 +56,15 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
   const cardWidth = (width - horizontalPadding * 2 - cardGap) / 2;
   const titleSize = width * 0.08; // 8% of screen width
   const titleLineHeight = titleSize * 1.2;
-  const upgradeButtonPadding = width * 0.06;
-  const upgradeContainerBottom = height * 0.03;
+  // const upgradeButtonPadding = width * 0.06;
+  // const upgradeContainerBottom = height * 0.03;
 
   console.log('like_you', (like_you as any)?.data?.scored_families);
 
-  const handleUpgradePress = () => {
-    // Navigate to the caregiver preview screen
-    // router.push('/caregiver/preview');
-  };
+  // const handleUpgradePress = () => {
+  //   // Navigate to the caregiver preview screen
+  //   // router.push('/caregiver/preview');
+  // };
 
   const handleCardPress = (profile: any) => {
     // Navigate to the caregiver preview screen when a card is presse
@@ -145,8 +146,12 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          {(like_you as any)?.data?.scored_families?.length === 0 ||
-          (like_you as any)?.data?.scored_caregivers?.length === 0 ? (
+          {isLoading ? (
+            <View style={styles.loaderContainer}>
+              <ProfileCardLoader />
+            </View>
+          ) : (like_you as any)?.data?.scored_families?.length === 0 ||
+            (like_you as any)?.data?.scored_caregivers?.length === 0 ? (
             <EmptyLikes />
           ) : (
             <View style={[styles.content, { padding: horizontalPadding }]}>
@@ -262,17 +267,18 @@ export default function LikedYou({ isSubscribed = false }: LikedYouProps) {
                         </ThemedText>
                       </TouchableOpacity>
                       <View style={styles.upgradeTextContainer}>
-                        <ThemedText
-                          style={[
-                            styles.upgradeText,
-                            {
-                              fontSize: width * 0.035,
-                            },
-                          ]}
-                        >
-                          Upgrade to Karama +{'\n'}to get your profile seen
-                        </ThemedText>
-                      </View>
+                      <ThemedText
+                        style={[
+                          styles.upgradeText,
+                          {
+                            paddingHorizontal: upgradeButtonPadding,
+                          },
+                        ]}
+                        onPress={handleUpgradePress}
+                      >
+                        Upgrade to Karama +{'\n'}to get your profile seen
+                      </ThemedText>
+                    </View>
                     </View>
                   </View> */}
                 </>

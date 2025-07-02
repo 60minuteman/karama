@@ -222,12 +222,14 @@ const CaregiverContainer = forwardRef<
       )}
 
       <View style={styles.spacer} />
-      <View style={dynamicStyles.componentContainer}>
-        <Interests
-          interests={profileData?.interests}
-          images={profileData?.image}
-        />
-      </View>
+      {profileData?.extra_info?.prompts?.[0]?.title && (
+        <View style={dynamicStyles.componentContainer}>
+          <Interests
+            interests={profileData?.interests}
+            images={profileData?.image}
+          />
+        </View>
+      )}
 
       <View style={styles.spacer} />
       <View style={dynamicStyles.componentContainer}>
@@ -316,7 +318,15 @@ const CaregiverContainer = forwardRef<
         <View style={styles.section}>
           {profileData?.extra_info?.more_information && (
             <View style={styles.subSection}>
-              <ThemedText style={{ color: 'red' }}>You Should Know</ThemedText>
+              <ThemedText
+                style={{
+                  color: 'red',
+                  fontFamily: 'Bogart-Regular',
+                  fontSize: 16,
+                }}
+              >
+                You Should Know
+              </ThemedText>
               <ThemedText style={styles.sectionText}>
                 {profileData?.extra_info?.more_information}
               </ThemedText>

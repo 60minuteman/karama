@@ -100,16 +100,20 @@ export const Religion = ({
 
       {role === 'CAREGIVER' && (
         <View style={styles.section}>
-          <ThemedText style={styles.sectionTitle}>
-            Disability Experience
-          </ThemedText>
-          <View style={styles.pillContainer}>
-            {data?.experience_with_disabilities?.disabilities?.map(
-              (disability, index) => (
-                <Pill2 key={index} label={disability} style={styles.pill} />
-              )
-            )}
-          </View>
+          {data?.experience_with_disabilities?.disabilities?.length > 0 && (
+            <>
+              <ThemedText style={styles.sectionTitle}>
+                Disability Experience
+              </ThemedText>
+              <View style={styles.pillContainer}>
+                {data?.experience_with_disabilities?.disabilities?.map(
+                  (disability: any, index: any) => (
+                    <Pill2 key={index} label={disability} style={styles.pill} />
+                  )
+                )}
+              </View>
+            </>
+          )}
         </View>
       )}
     </View>

@@ -126,8 +126,8 @@ export const ProfileCard = ({
               {data?.extra_info?.payment_info && (
                 <ThemedText style={styles.address}>
                   {data?.extra_info?.payment_info?.type === 'Hourly'
-                    ? ` $${data?.extra_info?.payment_info?.hourly_min} - $${data?.extra_info?.payment_info?.hourly_max}/ Hour`
-                    : `$${data?.extra_info?.payment_info?.salary}/ Month`}
+                    ? `🤑 $${data?.extra_info?.payment_info?.hourly_min} - $${data?.extra_info?.payment_info?.hourly_max}/ Hour`
+                    : `💰 $${data?.extra_info?.payment_info?.salary}/ Month`}
                 </ThemedText>
               )}
             </View>

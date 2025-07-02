@@ -132,7 +132,7 @@ export default function RootLayout() {
 function RootLayoutNav() {
   // const { authInitialized, user } = useAuth();
   // const { isLoading, isLoggedIn } = useAuth();
-  usePreventScreenCapture();
+  // usePreventScreenCapture();
   const { hydrated, user, token } = useUserStore();
 
   console.log('user', user);

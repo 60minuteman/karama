@@ -173,7 +173,8 @@ export default function PromptAnswer() {
       disabilities: caregiverConditionExperience,
     },
     experience_with_pets: {
-      pets: caregiverPetExperience,
+      pets:
+        caregiverPetExperience?.filter((pet: any) => pet !== '🚫 None') || [],
       other: otherPet || '',
     },
     hobbies: {
@@ -188,7 +189,7 @@ export default function PromptAnswer() {
     },
     characteristics: {
       personalities: caregiverPersonality,
-      diets: caregiverDiet,
+      diets: caregiverDiet?.filter((diet: any) => diet !== '🚫 None') || [],
       show_diet_on_profile: showCaregiverDiet,
       rules: caregiverRules,
       religion: caregiverReligion,
@@ -197,7 +198,10 @@ export default function PromptAnswer() {
       other_rules: otherRule || '',
       other_religion: otherReligion || '',
     },
-    childcare_philosophies: caregiverPhilosophyExperience,
+    childcare_philosophies:
+      caregiverPhilosophyExperience?.filter(
+        (philosophy: any) => philosophy !== '🚫 None'
+      ) || [],
     family_must_speak_same_language: caregiverLanguageMatch,
     availability: (caregiverPreferredPositions || []).slice(0, 2),
     arrangement_type: caregiverPreferredArrangement,

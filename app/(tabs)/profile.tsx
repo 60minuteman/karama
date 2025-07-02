@@ -44,7 +44,7 @@ export default function Profile() {
 
   const imageSource = profilePicture
     ? { uri: profilePicture }
-    : require('@/assets/images/profile-placeholder.jpg');
+    : require('@/assets/avatar.png');
 
   console.log('currentUser?.data', currentUser?.data);
 

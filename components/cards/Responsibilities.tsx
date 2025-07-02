@@ -55,10 +55,7 @@ export const Responsibilities = ({
   const householdResp =
     data?.responsibilities?.household_responsibilities || [];
 
-  console.log(
-    '[data?.caregiver_profile?.education_level]*********************',
-    [data?.caregiver_profile?.education_level]
-  );
+  console.log('data?.household_info?.rules', data?.household_info?.rules);
 
   return (
     <View style={styles.container}>
@@ -131,14 +128,20 @@ export const Responsibilities = ({
           </View>
 
           <View style={styles.spacer} />
-          <ThemedText style={styles.sectionTitle}>Certifications</ThemedText>
-          <View style={styles.pillsContainer}>
-            {data?.abilities_and_certifications?.certifications?.map(
-              (item: any, index: number) => (
-                <Pill2 key={index} label={item} style={styles.pill} />
-              )
-            )}
-          </View>
+          {data?.abilities_and_certifications?.certifications?.length > 0 && (
+            <>
+              <ThemedText style={styles.sectionTitle}>
+                Certifications
+              </ThemedText>
+              <View style={styles.pillsContainer}>
+                {data?.abilities_and_certifications?.certifications?.map(
+                  (item: any, index: number) => (
+                    <Pill2 key={index} label={item} style={styles.pill} />
+                  )
+                )}
+              </View>
+            </>
+          )}
         </View>
       )}
     </View>

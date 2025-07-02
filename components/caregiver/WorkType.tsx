@@ -27,6 +27,8 @@ export const WorkType: React.FC<WorkTypeProps> = ({
     { label: 'COVID Vaccination', icon: '💉' },
   ],
 }) => {
+  console.log('workType==========', workType);
+
   const renderSection = (title: string, options: WorkTypeOption[]) => (
     <View style={styles.section}>
       <ThemedText style={styles.sectionTitle}>{title}</ThemedText>
@@ -60,10 +62,14 @@ export const WorkType: React.FC<WorkTypeProps> = ({
 
   return (
     <View style={styles.container}>
-      {renderSection('Work Type', workType)}
-      {renderSection('Work Options', workOptions)}
-      {renderSection('Duration', duration)}
-      {renderSection('Requirements', requirements)}
+      {workType && workType?.length > 0 && renderSection('Work Type', workType)}
+      {workOptions &&
+        workOptions?.length > 0 &&
+        renderSection('Work Options', workOptions)}
+      {duration && duration?.length > 0 && renderSection('Duration', duration)}
+      {requirements &&
+        requirements?.length > 0 &&
+        renderSection('Requirements', requirements)}
     </View>
   );
 };

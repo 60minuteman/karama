@@ -2,23 +2,28 @@ import { useUserStore } from '@/services/state/user';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Redirect, router, useRouter } from 'expo-router';
+import { useEffect } from 'react';
 import { useAuth } from '../app/store/auth';
 import UserService from '../services/api/UserService';
 
-const useAuthMutation = (...options: any) => {
-  const mutation = useMutation(...options);
+const useAuthMutation = (options: any) => {
+  const mutation = useMutation(options);
   const router = useRouter();
   const queryClient = useQueryClient();
   const { token, logout, clearUser } = useUserStore();
 
-  if (token) {
+  // Handle authentication errors with useEffect to prevent infinite re-renders
+  useEffect(() => {
     if (
-      mutation?.error?.response?.status === 401 ||
-      mutation?.error?.response?.status === 403 ||
-      mutation?.error?.response?.data?.message === 'invalid credentials'
+      token &&
+      mutation.error &&
+      ((mutation.error as any)?.response?.status === 401 ||
+        (mutation.error as any)?.response?.status === 403 ||
+        (mutation.error as any)?.response?.data?.message ===
+          'invalid credentials')
     ) {
       // Token is expired - clear session and redirect to login
-      (async () => {
+      const handleLogout = async () => {
         try {
           console.log(
             'Token expired - clearing session and redirecting to login'
@@ -26,10 +31,6 @@ const useAuthMutation = (...options: any) => {
 
           // Clear user data
           clearUser();
-
-          // Remove device (if deviceId is available)
-          // Note: removeDevice mutation would need to be imported/defined
-          // removeDevice.mutate({ device_id: deviceId });
 
           // Logout from store
           await logout();
@@ -42,34 +43,18 @@ const useAuthMutation = (...options: any) => {
           await AsyncStorage.removeItem('@matches_data');
 
           // Redirect to login screen
-          // router.replace('/(auth)/signInPhone');
+          router.replace('/(auth)/signInPhone');
         } catch (error) {
           console.error('Error during logout:', error);
 
-          // Clear user data
-          clearUser();
-
-          // Remove device (if deviceId is available)
-          // Note: removeDevice mutation would need to be imported/defined
-          // removeDevice.mutate({ device_id: deviceId });
-
-          // Logout from store
-          await logout();
-
-          // Clear query cache
-          queryClient.clear();
-
-          // Clear matches cache
-          await AsyncStorage.removeItem('@matches_conversations');
-          await AsyncStorage.removeItem('@matches_data');
-
-          // Fallback - still try to redirect
-          // router.replace('/(auth)/signInPhone');
+          // Fallback - just redirect (cleanup may have partially failed)
+          router.replace('/(auth)/signInPhone');
         }
-      })();
+      };
+
+      handleLogout();
     }
-    return mutation;
-  }
+  }, [mutation.error, token, clearUser, logout, queryClient, router]);
 
   return mutation;
 };

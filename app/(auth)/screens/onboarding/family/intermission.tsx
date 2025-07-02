@@ -117,7 +117,7 @@ export default function IntermissionScreen() {
         languages: family_languages || [],
       },
       pets: {
-        pets: family_pets || [],
+        pets: family_pets?.filter((pet: any) => pet !== '🚫 None') || [],
         other: otherPet || '',
       },
       allergies: {
@@ -136,7 +136,9 @@ export default function IntermissionScreen() {
         // other_stem_interest: otherStem || '',
       },
       household_info: {
-        diets: family_selections?.diets,
+        diets: family_selections?.diets?.filter(
+          (diet: any) => diet !== '🚫 None'
+        ),
         show_diet_on_profile: family_show_diet,
         rules: family_selections?.rules,
         show_rules_on_profile: family_show_rules,
@@ -147,7 +149,10 @@ export default function IntermissionScreen() {
         other_religion: otherReligion || '',
       },
       philosophies: {
-        philosophies: family_philosophies,
+        philosophies:
+          family_philosophies?.filter(
+            (philosophy: any) => philosophy !== '🚫 None'
+          ) || [],
         show_on_profile: family_show_philosophy,
         other: otherPhilosophy || '',
       },

@@ -73,6 +73,10 @@ export const MatchCircle = ({
   // console.log('recipientId', match?.caregiver_profile?.user?.user_id);
 
   const handleCreateRoom = async () => {
+    if (currentUser?.data?.role === 'CAREGIVER') {
+      return;
+    }
+
     setIsLoading(true);
     createMessage.mutate({
       recipientId: match?.caregiver_profile?.user?.user_id,

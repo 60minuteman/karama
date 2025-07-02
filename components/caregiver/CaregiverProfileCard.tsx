@@ -42,7 +42,7 @@ export const CaregiverProfileCard = ({
     'Bogart-Regular': require('@/assets/fonts/bogart/Bogart-Regular-trial.ttf'),
   });
 
-  console.log('familyName', profileData?.extra_info?.payment_info);
+  console.log('familyName', profileData?.extra_info);
 
   React.useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     marginTop: 'auto',
-    marginBottom: 180,
+    marginBottom: 130,
   },
   familyName: {
     fontSize: 28,

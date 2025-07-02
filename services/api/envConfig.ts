@@ -1,12 +1,17 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import Constants from 'expo-constants';
 
 // axios.defaults.baseURL = 'https://api.usemelon.co/api/v1';
 // const customAxios = axios.create();
 // https://api.staging.usemelon.co/api/v1
 
+const isDev = __DEV__ || Constants.expoConfig?.extra?.development;
+
 const customAxios = axios.create({
-  baseURL: 'https://starfish-app-7pbch.ondigitalocean.app',
+  baseURL: isDev
+    ? 'https://karama-dev-kny6i.ondigitalocean.app'
+    : 'https://starfish-app-7pbch.ondigitalocean.app',
   headers: {},
 });
 

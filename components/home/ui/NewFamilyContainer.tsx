@@ -180,6 +180,7 @@ const NewFamilyContainer = ({
                 <Image
                   style={styles.sectionImage}
                   resizeMode='cover'
+                  resizeMethod='scale'
                   source={{
                     uri:
                       familyProfile?.pictures?.[1]?.path ||
@@ -187,7 +188,7 @@ const NewFamilyContainer = ({
                   }}
                 />
               </View>
-              <View style={[styles.subSection, { marginTop: 325 }]}>
+              <View style={[styles.subSection, { marginTop: 400 }]}>
                 <ThemedText style={styles.pillHeading}>
                   Children's Interests
                 </ThemedText>
@@ -299,6 +300,7 @@ const NewFamilyContainer = ({
                   minWidth: '100%',
                   left: 0,
                   right: 0,
+                  backgroundColor: 'red',
                 }}
               >
                 <Image
@@ -312,7 +314,7 @@ const NewFamilyContainer = ({
                   }}
                 />
               </View>
-              <View style={[styles.subSection, { marginTop: 325 }]}>
+              <View style={[styles.subSection, { marginTop: 400 }]}>
                 <ThemedText style={styles.pillHeading}>
                   Household Rules
                 </ThemedText>
@@ -350,31 +352,33 @@ const NewFamilyContainer = ({
               </View>
             </View>
 
-            <View style={[styles.section, { height: 325 }]}>
-              <View
-                style={{
-                  position: 'absolute',
-                  minWidth: '100%',
-                  left: 0,
-                  right: 0,
-                  top: 0,
-                }}
-              >
-                <Image
-                  style={styles.sectionImage}
-                  resizeMode='cover'
-                  resizeMethod='scale'
-                  source={{
-                    uri:
-                      familyProfile?.pictures?.[3]?.path ||
-                      familyProfile?.pictures?.[0]?.path,
+            {familyProfile?.pictures?.[3]?.path && (
+              <View style={[styles.section, { height: 400 }]}>
+                <View
+                  style={{
+                    position: 'absolute',
+                    minWidth: '100%',
+                    left: 0,
+                    right: 0,
+                    top: 0,
                   }}
-                />
+                >
+                  <Image
+                    style={styles.sectionImage}
+                    resizeMode='cover'
+                    resizeMethod='scale'
+                    source={{
+                      uri:
+                        familyProfile?.pictures?.[3]?.path ||
+                        familyProfile?.pictures?.[0]?.path,
+                    }}
+                  />
+                </View>
               </View>
-            </View>
+            )}
 
             {familyProfile?.pictures?.[4]?.path && (
-              <View style={[styles.section, { height: 325 }]}>
+              <View style={[styles.section, { height: 400 }]}>
                 <View
                   style={{
                     position: 'absolute',
@@ -419,7 +423,7 @@ const NewFamilyContainer = ({
             )}
 
             {familyProfile?.pictures?.[5]?.path && (
-              <View style={[styles.section, { height: 325 }]}>
+              <View style={[styles.section, { height: 400 }]}>
                 <View
                   style={{
                     position: 'absolute',
@@ -718,7 +722,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#261D2A0D',
     paddingTop: 25,
     paddingHorizontal: 25,
-    marginTop: 6,
+    marginTop: 10,
     borderRadius: 10,
     overflow: 'hidden',
     flex: 1,
@@ -766,7 +770,7 @@ const styles = StyleSheet.create({
   },
   sectionImage: {
     width: '100%',
-    height: 325,
+    height: 400,
     left: 0,
     right: 0,
   },

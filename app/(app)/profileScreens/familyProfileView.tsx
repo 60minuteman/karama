@@ -154,16 +154,21 @@ const FamilyProfileView = () => {
                     )}
                   </View>
                 </View>
-                <View style={styles.subSection}>
-                  <ThemedText style={styles.pillHeading}>We have a</ThemedText>
-                  <View style={styles.pillContainer}>
-                    {(familyProfile?.family_profile?.pets || []).map(
-                      (pet: string) => (
-                        <InfoPill key={pet} label={pet} />
-                      )
-                    )}
+                {familyProfile?.family_profile?.pets?.length > 0 && (
+                  <View style={styles.subSection}>
+                    <ThemedText style={styles.pillHeading}>
+                      We have a
+                    </ThemedText>
+                    <View style={styles.pillContainer}>
+                      {(familyProfile?.family_profile?.pets || []).map(
+                        (pet: string) => (
+                          <InfoPill key={pet} label={pet} />
+                        )
+                      )}
+                    </View>
                   </View>
-                </View>
+                )}
+
                 <View style={styles.subSection}>
                   <ThemedText style={styles.pillHeading}>We speak</ThemedText>
                   <View style={styles.pillContainer}>
@@ -223,7 +228,7 @@ const FamilyProfileView = () => {
                     }}
                   />
                 </View>
-                <View style={[styles.subSection, { marginTop: 325 }]}>
+                <View style={[styles.subSection, { marginTop: 400 }]}>
                   <ThemedText style={styles.pillHeading}>
                     Children's Interests
                   </ThemedText>
@@ -360,7 +365,7 @@ const FamilyProfileView = () => {
                     }}
                   />
                 </View>
-                <View style={[styles.subSection, { marginTop: 325 }]}>
+                <View style={[styles.subSection, { marginTop: 400 }]}>
                   <ThemedText style={styles.pillHeading}>
                     Household Rules
                   </ThemedText>
@@ -411,7 +416,7 @@ const FamilyProfileView = () => {
                 </View>
               </View>
 
-              <View style={[styles.section, { height: 325 }]}>
+              <View style={[styles.section, { height: 400 }]}>
                 <View
                   style={{
                     position: 'absolute',
@@ -435,7 +440,7 @@ const FamilyProfileView = () => {
               </View>
 
               {familyProfile?.family_profile?.pictures?.[4]?.path && (
-                <View style={[styles.section, { height: 325 }]}>
+                <View style={[styles.section, { height: 400 }]}>
                   <View
                     style={{
                       position: 'absolute',
@@ -488,7 +493,7 @@ const FamilyProfileView = () => {
               )}
 
               {familyProfile?.family_profile?.pictures?.[5]?.path && (
-                <View style={[styles.section, { height: 325 }]}>
+                <View style={[styles.section, { height: 400 }]}>
                   <View
                     style={{
                       position: 'absolute',
@@ -803,7 +808,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#261D2A0D',
     paddingTop: 25,
     paddingHorizontal: 25,
-    marginTop: 6,
+    marginTop: 10,
     borderRadius: 10,
     overflow: 'hidden',
     flex: 1,
@@ -851,7 +856,7 @@ const styles = StyleSheet.create({
   },
   sectionImage: {
     width: '100%',
-    height: 325,
+    height: 400,
     left: 0,
     right: 0,
   },

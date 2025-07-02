@@ -83,7 +83,7 @@ export default function BenefitsScreen() {
         </ScrollView>
 
         <View style={styles.buttonContainer}>
-          <Button label='Skip' onPress={() => router.back()} variant='skip' />
+          <Button label='Skip' onPress={handleNext} variant='skip' />
           <Button
             label='Next'
             onPress={handleNext}

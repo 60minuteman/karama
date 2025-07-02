@@ -26,9 +26,10 @@ export const LookingFor: React.FC<LookingForProps> = ({
       <ThemedText style={styles.title}>{title}</ThemedText>
 
       <View style={[styles.section, styles.lookingForContainer]}>
-        {Array.isArray(jobType) && jobType.map((type: any, index: number) => (
-          <Pill2 key={index} label={type} style={styles.pill} />
-        ))}
+        {Array.isArray(jobType) &&
+          jobType.map((type: any, index: number) => (
+            <Pill2 key={index} label={type} style={styles.pill} />
+          ))}
       </View>
 
       <View style={styles.section}>
@@ -41,24 +42,27 @@ export const LookingFor: React.FC<LookingForProps> = ({
         <Pill2 label={hourlyRate} icon='💰' style={styles.pill} />
       </View>
 
-      <View style={styles.section}>
-        <ThemedText style={styles.sectionTitle}>Education Level</ThemedText>
-        <View style={styles.lookingForContainer}>
-          {Array.isArray(education) && education?.map((cert: any, index: number) => {
-            if (cert === 'Other' && otherEducation) {
-              return (
-                <Pill2
-                  key={index}
-                  label={otherEducation}
-                  // icon='🎓'
-                  style={styles.pill}
-                />
-              );
-            }
-            return <Pill2 key={index} label={cert} style={styles.pill} />;
-          })}
+      {education && education?.length > 0 && (
+        <View style={styles.section}>
+          <ThemedText style={styles.sectionTitle}>Education Level</ThemedText>
+          <View style={styles.lookingForContainer}>
+            {Array.isArray(education) &&
+              education?.map((cert: any, index: number) => {
+                if (cert === 'Other' && otherEducation) {
+                  return (
+                    <Pill2
+                      key={index}
+                      label={otherEducation}
+                      // icon='🎓'
+                      style={styles.pill}
+                    />
+                  );
+                }
+                return <Pill2 key={index} label={cert} style={styles.pill} />;
+              })}
+          </View>
         </View>
-      </View>
+      )}
     </View>
   );
 };

@@ -309,11 +309,22 @@ export default function MessageScreen() {
       conversationId: id,
     });
   }, []);
+
   useEffect(() => {
     socket.emit('getProfile', {
       conversationId: id,
     });
+
+    socket.emit('joinConversation', {
+      conversationId: id,
+    });
   }, []);
+
+  useEffect(() => {
+    socket.on('userJoined ', (data: any) => {
+      // console.log('exception', data);
+    });
+  }, [socket]);
 
   useEffect(() => {
     socket.on('newMessage conversationUpdated', (data: any) => {

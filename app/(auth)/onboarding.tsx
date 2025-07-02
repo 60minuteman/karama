@@ -5,10 +5,10 @@ import { Colors } from '@/constants/Colors';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { useUserStore } from '@/services/state/user';
 import { Video } from 'expo-av';
-import { useRouter } from 'expo-router';
-import { Image, StyleSheet, View, TouchableOpacity } from 'react-native';
-import Toast from 'react-native-toast-message';
 import Constants from 'expo-constants';
+import { useRouter } from 'expo-router';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 export default function OnboardingScreen() {
   const router = useRouter();
@@ -38,13 +38,13 @@ export default function OnboardingScreen() {
         <Video
           source={require('../../assets/videos/onboarding.mp4')}
           style={styles.backgroundVideo}
-          resizeMode="cover"
+          resizeMode='cover'
           shouldPlay
           isLooping
           isMuted
         />
         <View style={styles.overlay} />
-        
+
         {/* Dev Only Preview Button */}
         {isDev && (
           <TouchableOpacity style={styles.devButton} onPress={handlePreview}>

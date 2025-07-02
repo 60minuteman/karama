@@ -59,8 +59,10 @@ export const Diets: React.FC<DietsProps> = ({
         />
       </View>
 
-      {renderSection('Diets', diets || [])}
-      {renderSection('Household Rules', householdRules || [])}
+      {diets && diets?.length > 0 && renderSection('Diets', diets || [])}
+      {householdRules &&
+        householdRules?.length > 0 &&
+        renderSection('Household Rules', householdRules || [])}
       {/* {renderSection("Childcare Philosophy", childcarePhilosophy)} */}
     </View>
   );
