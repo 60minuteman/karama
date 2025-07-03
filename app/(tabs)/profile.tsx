@@ -15,6 +15,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 
 export default function Profile() {
@@ -52,18 +53,30 @@ export default function Profile() {
     {
       icon: require('@/assets/icons/edit-profile.png'),
       label: 'Edit profile',
-      route:
-        currentUser?.data?.role === 'FAMILY'
-          ? '/(app)/profileScreens/familyEditProfile'
-          : '/(app)/profileScreens/caregiverEditProfile',
+      route: () => {
+        Alert.alert(
+          'Feature Not Available',
+          'This feature is not available yet. You will be notified when it is ready.'
+        );
+      },
+      // route:
+      //   currentUser?.data?.role === 'FAMILY'
+      //     ? '/(app)/profileScreens/familyEditProfile'
+      //     : '/(app)/profileScreens/caregiverEditProfile',
     },
     {
       icon: require('@/assets/icons/preferences.png'),
       label: 'Preferences',
-      route:
-        currentUser?.data?.role === 'FAMILY'
-          ? '/(app)/profileScreens/familyPreferences'
-          : '/(app)/profileScreens/caregiverPreferences',
+      route: () => {
+        Alert.alert(
+          'Feature Not Available',
+          'This feature is not available yet. You will be notified when it is ready.'
+        );
+      },
+      // route:
+      //   currentUser?.data?.role === 'FAMILY'
+      //     ? '/(app)/profileScreens/familyPreferences'
+      //     : '/(app)/profileScreens/caregiverPreferences',
     },
     {
       icon: require('@/assets/icons/settings.png'),
@@ -80,8 +93,12 @@ export default function Profile() {
     },
   ];
 
-  const handleNavigation = (route: string) => {
-    router.push(route);
+  const handleNavigation = (route: string | (() => void)) => {
+    if (typeof route === 'string') {
+      router.push(route);
+    } else {
+      route();
+    }
   };
 
   // console.log('Current user data:', currentUser);

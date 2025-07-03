@@ -45,7 +45,7 @@ export const Interests = ({ interests, data, role }: InterestsProps) => {
         <Image
           data={data?.pictures?.[1]?.path}
           style={styles.imagePlaceholder}
-          resizeMode='cover'
+          resizeMode='contain'
           resizeMethod='scale'
         />
       </View>
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   },
   imagePlaceholder: {
     width: '100%',
-    height: 358,
+    height: 480, // Increased from 420 to 480
     backgroundColor: '#FFE5E5', // Pastel pink as placeholder
   },
   section: {

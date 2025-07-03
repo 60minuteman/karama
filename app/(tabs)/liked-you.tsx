@@ -322,6 +322,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     // borderWidth: 1
   },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100%',
+  },
   upgradeContainer: {
     position: 'absolute',
     left: 0,
