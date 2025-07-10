@@ -85,6 +85,9 @@ export const MatchCircle = ({
     queryClient.invalidateQueries({
       queryKey: ['like-you', currentUser?.data?.role],
     });
+    queryClient.invalidateQueries({
+      queryKey: ['complete-matches', currentUser?.data?.role],
+    });
   };
 
   const handleImageLoad = () => {

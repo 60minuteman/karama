@@ -115,7 +115,7 @@ export default function Benefits() {
           style={styles.buttonGradient}
         >
           <View style={styles.buttonContainer}>
-            <Button label='Skip' onPress={() => router.back()} variant='skip' />
+            <Button label='Skip' onPress={handleNext} variant='skip' />
             <Button
               label='Next'
               onPress={handleNext}

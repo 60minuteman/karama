@@ -14,6 +14,6 @@ export const Image = ({ data }: any) => {
 const styles = StyleSheet.create({
   image: {
     width: '100%',
-    height: 325,
+    height: 400,
   },
 });

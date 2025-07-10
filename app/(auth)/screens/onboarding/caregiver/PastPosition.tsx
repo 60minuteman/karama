@@ -344,150 +344,159 @@ const PastPosition: React.FC = () => {
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps='handled'
             >
-              <View style={[styles.section, { marginTop: -20 }]}>
-                <ThemedText style={styles.sectionTitle}>
-                  Name of Family or Business
-                </ThemedText>
-                <View style={styles.inputContainer}>
-                  <View style={styles.inputCursor} />
-                  <TextInput
-                    style={styles.input}
-                    placeholder='Type here'
-                    placeholderTextColor='#999'
-                    value={
-                      selectedPositionNumber === 'first'
-                        ? caregiverFirstPosition?.familyName
-                        : selectedPositionNumber === 'second'
-                        ? caregiverSecondPosition?.familyName
-                        : caregiverThirdPosition?.familyName
-                    }
-                    onChangeText={(value) => {
-                      selectedPositionNumber === 'first'
-                        ? setCaregiverFirstPosition({
-                            ...caregiverFirstPosition,
-                            familyName: value,
-                          })
-                        : selectedPositionNumber === 'third'
-                        ? setCaregiverThirdPosition({
-                            ...caregiverThirdPosition,
-                            familyName: value,
-                          })
-                        : setCaregiverSecondPosition({
-                            ...caregiverSecondPosition,
-                            familyName: value,
-                          });
-                    }}
-                    autoFocus
-                  />
-                </View>
-              </View>
-
-              <View style={styles.dateContainer}>
-                <View style={styles.dateInput}>
-                  <ThemedText style={styles.dateLabel}>Start Date</ThemedText>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setActiveDatePicker('start');
-                    }}
-                    style={[
-                      styles.inputBorder,
-                      (caregiverFirstPosition?.startDate?.length > 0 ||
-                        caregiverSecondPosition?.startDate?.length > 0) &&
-                        styles.inputBorderActive,
-                    ]}
-                  >
-                    <ThemedText style={styles.dateText}>
-                      {selectedPositionNumber === 'first'
-                        ? caregiverFirstPosition?.startDate || 'MM/DD/YYYY'
-                        : selectedPositionNumber === 'third'
-                        ? caregiverThirdPosition?.startDate || 'MM/DD/YYYY'
-                        : caregiverSecondPosition?.startDate || 'MM/DD/YYYY'}
-                    </ThemedText>
-                  </TouchableOpacity>
-                </View>
-                <View style={styles.dateInput}>
-                  <ThemedText style={styles.dateLabel}>End Date</ThemedText>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setActiveDatePicker('end');
-                    }}
-                    style={[
-                      styles.inputBorder,
-                      (caregiverFirstPosition?.endDate?.length > 0 ||
-                        caregiverSecondPosition?.endDate?.length > 0) &&
-                        styles.inputBorderActive,
-                    ]}
-                  >
-                    <ThemedText style={styles.dateText}>
-                      {selectedPositionNumber === 'first'
-                        ? caregiverFirstPosition?.endDate || 'MM/DD/YYYY'
-                        : selectedPositionNumber === 'third'
-                        ? caregiverThirdPosition?.endDate || 'MM/DD/YYYY'
-                        : caregiverSecondPosition?.endDate || 'MM/DD/YYYY'}
-                    </ThemedText>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              {activeDatePicker === 'start' && (
-                <DateTimePicker
-                  value={new Date()}
-                  mode='date'
-                  display='spinner'
-                  onChange={handleStartDateChange}
-                />
-              )}
-
-              {activeDatePicker === 'end' && (
-                <DateTimePicker
-                  value={new Date()}
-                  mode='date'
-                  display='spinner'
-                  onChange={handleEndDateChange}
-                />
-              )}
-
-              <View style={styles.section}>
-                <ThemedText style={styles.sectionTitle}>
-                  What was your position
-                </ThemedText>
-                <View style={styles.pillsContainer}>
-                  {positionTypes.map((position) => (
-                    <Pill
-                      key={position.id}
-                      label={position.label}
-                      selected={
+              <TouchableOpacity activeOpacity={1}>
+                <TouchableOpacity
+                  onPress={() => {
+                    Keyboard.dismiss();
+                  }}
+                  style={[styles.section, { marginTop: 20 }]}
+                >
+                  <ThemedText style={styles.sectionTitle}>
+                    Name of Family or Business
+                  </ThemedText>
+                  <View style={styles.inputContainer}>
+                    <View style={styles.inputCursor} />
+                    <TextInput
+                      style={styles.input}
+                      placeholder='Type here'
+                      placeholderTextColor='#999'
+                      value={
                         selectedPositionNumber === 'first'
-                          ? caregiverFirstPosition?.position === position.label
-                          : selectedPositionNumber === 'third'
-                          ? caregiverThirdPosition?.position === position.label
-                          : caregiverSecondPosition?.position === position.label
+                          ? caregiverFirstPosition?.familyName
+                          : selectedPositionNumber === 'second'
+                          ? caregiverSecondPosition?.familyName
+                          : caregiverThirdPosition?.familyName
                       }
-                      onPress={() => {
+                      onChangeText={(value) => {
                         selectedPositionNumber === 'first'
                           ? setCaregiverFirstPosition({
                               ...caregiverFirstPosition,
-                              position: position.label,
+                              familyName: value,
                             })
                           : selectedPositionNumber === 'third'
                           ? setCaregiverThirdPosition({
                               ...caregiverThirdPosition,
-                              position: position.label,
+                              familyName: value,
                             })
                           : setCaregiverSecondPosition({
                               ...caregiverSecondPosition,
-                              position: position.label,
+                              familyName: value,
                             });
                       }}
+                      autoFocus
                     />
-                  ))}
-                </View>
-              </View>
+                  </View>
+                </TouchableOpacity>
 
-              <View style={styles.section}>
-                <ThemedText style={styles.sectionTitle}>
-                  What age were the children{' '}
-                  {/* <ThemedText style={styles.selectionCount}>
+                <View style={styles.dateContainer}>
+                  <View style={styles.dateInput}>
+                    <ThemedText style={styles.dateLabel}>Start Date</ThemedText>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setActiveDatePicker('start');
+                      }}
+                      style={[
+                        styles.inputBorder,
+                        (caregiverFirstPosition?.startDate?.length > 0 ||
+                          caregiverSecondPosition?.startDate?.length > 0) &&
+                          styles.inputBorderActive,
+                      ]}
+                    >
+                      <ThemedText style={styles.dateText}>
+                        {selectedPositionNumber === 'first'
+                          ? caregiverFirstPosition?.startDate || 'MM/DD/YYYY'
+                          : selectedPositionNumber === 'third'
+                          ? caregiverThirdPosition?.startDate || 'MM/DD/YYYY'
+                          : caregiverSecondPosition?.startDate || 'MM/DD/YYYY'}
+                      </ThemedText>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.dateInput}>
+                    <ThemedText style={styles.dateLabel}>End Date</ThemedText>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setActiveDatePicker('end');
+                      }}
+                      style={[
+                        styles.inputBorder,
+                        (caregiverFirstPosition?.endDate?.length > 0 ||
+                          caregiverSecondPosition?.endDate?.length > 0) &&
+                          styles.inputBorderActive,
+                      ]}
+                    >
+                      <ThemedText style={styles.dateText}>
+                        {selectedPositionNumber === 'first'
+                          ? caregiverFirstPosition?.endDate || 'MM/DD/YYYY'
+                          : selectedPositionNumber === 'third'
+                          ? caregiverThirdPosition?.endDate || 'MM/DD/YYYY'
+                          : caregiverSecondPosition?.endDate || 'MM/DD/YYYY'}
+                      </ThemedText>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                {activeDatePicker === 'start' && (
+                  <DateTimePicker
+                    value={new Date()}
+                    mode='date'
+                    display='spinner'
+                    onChange={handleStartDateChange}
+                  />
+                )}
+
+                {activeDatePicker === 'end' && (
+                  <DateTimePicker
+                    value={new Date()}
+                    mode='date'
+                    display='spinner'
+                    onChange={handleEndDateChange}
+                  />
+                )}
+
+                <View style={styles.section}>
+                  <ThemedText style={styles.sectionTitle}>
+                    What was your position
+                  </ThemedText>
+                  <View style={styles.pillsContainer}>
+                    {positionTypes.map((position) => (
+                      <Pill
+                        key={position.id}
+                        label={position.label}
+                        selected={
+                          selectedPositionNumber === 'first'
+                            ? caregiverFirstPosition?.position ===
+                              position.label
+                            : selectedPositionNumber === 'third'
+                            ? caregiverThirdPosition?.position ===
+                              position.label
+                            : caregiverSecondPosition?.position ===
+                              position.label
+                        }
+                        onPress={() => {
+                          selectedPositionNumber === 'first'
+                            ? setCaregiverFirstPosition({
+                                ...caregiverFirstPosition,
+                                position: position.label,
+                              })
+                            : selectedPositionNumber === 'third'
+                            ? setCaregiverThirdPosition({
+                                ...caregiverThirdPosition,
+                                position: position.label,
+                              })
+                            : setCaregiverSecondPosition({
+                                ...caregiverSecondPosition,
+                                position: position.label,
+                              });
+                        }}
+                      />
+                    ))}
+                  </View>
+                </View>
+
+                <View style={styles.section}>
+                  <ThemedText style={styles.sectionTitle}>
+                    What age were the children{' '}
+                    {/* <ThemedText style={styles.selectionCount}>
                     (
                     {selectedPositionNumber === 'first'
                       ? caregiverFirstPosition?.ageGroups?.length || 0
@@ -496,201 +505,205 @@ const PastPosition: React.FC = () => {
                       : caregiverThirdPosition?.ageGroups?.length || 0}
                     /10)
                   </ThemedText> */}
-                </ThemedText>
-                <View style={styles.pillsContainer}>
-                  {childAgeGroups.map((age) => (
-                    <Pill
-                      key={age.id}
-                      label={age.label}
-                      selected={
-                        selectedPositionNumber === 'first'
-                          ? caregiverFirstPosition?.ageGroups?.includes(
-                              age.label
-                            )
-                          : selectedPositionNumber === 'second'
-                          ? caregiverSecondPosition?.ageGroups?.includes(
-                              age.label
-                            )
-                          : caregiverThirdPosition?.ageGroups?.includes(
-                              age.label
-                            )
-                      }
-                      onPress={() => {
-                        const currentPosition =
+                  </ThemedText>
+                  <View style={styles.pillsContainer}>
+                    {childAgeGroups.map((age) => (
+                      <Pill
+                        key={age.id}
+                        label={age.label}
+                        selected={
                           selectedPositionNumber === 'first'
-                            ? caregiverFirstPosition
+                            ? caregiverFirstPosition?.ageGroups?.includes(
+                                age.label
+                              )
                             : selectedPositionNumber === 'second'
-                            ? caregiverSecondPosition
-                            : caregiverThirdPosition;
+                            ? caregiverSecondPosition?.ageGroups?.includes(
+                                age.label
+                              )
+                            : caregiverThirdPosition?.ageGroups?.includes(
+                                age.label
+                              )
+                        }
+                        onPress={() => {
+                          const currentPosition =
+                            selectedPositionNumber === 'first'
+                              ? caregiverFirstPosition
+                              : selectedPositionNumber === 'second'
+                              ? caregiverSecondPosition
+                              : caregiverThirdPosition;
 
-                        const currentAgeGroups: string[] = Array.isArray(
-                          currentPosition?.ageGroups
-                        )
-                          ? currentPosition.ageGroups
-                          : [];
+                          const currentAgeGroups: string[] = Array.isArray(
+                            currentPosition?.ageGroups
+                          )
+                            ? currentPosition.ageGroups
+                            : [];
 
-                        let updatedAgeGroups: string[];
+                          let updatedAgeGroups: string[];
 
-                        if (currentAgeGroups.includes(age.label)) {
-                          // Remove if already selected
-                          updatedAgeGroups = currentAgeGroups.filter(
-                            (label: string) => label !== age.label
-                          );
-                        } else {
-                          // Add if not selected and under limit
-                          if (currentAgeGroups.length < 10) {
-                            updatedAgeGroups = [...currentAgeGroups, age.label];
+                          if (currentAgeGroups.includes(age.label)) {
+                            // Remove if already selected
+                            updatedAgeGroups = currentAgeGroups.filter(
+                              (label: string) => label !== age.label
+                            );
                           } else {
-                            // Show alert or handle max selection reached
-                            return;
+                            // Add if not selected and under limit
+                            if (currentAgeGroups.length < 10) {
+                              updatedAgeGroups = [
+                                ...currentAgeGroups,
+                                age.label,
+                              ];
+                            } else {
+                              // Show alert or handle max selection reached
+                              return;
+                            }
                           }
-                        }
 
-                        if (selectedPositionNumber === 'first') {
-                          setCaregiverFirstPosition({
-                            ...caregiverFirstPosition,
-                            ageGroups: updatedAgeGroups,
-                          });
-                        } else if (selectedPositionNumber === 'second') {
-                          setCaregiverSecondPosition({
-                            ...caregiverSecondPosition,
-                            ageGroups: updatedAgeGroups,
-                          });
-                        } else {
-                          setCaregiverThirdPosition({
-                            ...caregiverThirdPosition,
-                            ageGroups: updatedAgeGroups,
-                          });
-                        }
-                      }}
-                    />
-                  ))}
-                </View>
-              </View>
-
-              <View style={[styles.section]}>
-                <ThemedText style={styles.sectionTitle}>
-                  What type of position was it
-                </ThemedText>
-                <View style={styles.pillsContainer}>
-                  {employmentTypes.map((type) => (
-                    <Pill
-                      key={type.id}
-                      label={type.label}
-                      selected={
-                        selectedPositionNumber === 'first'
-                          ? caregiverFirstPosition?.employmentType ===
-                            type.label
-                          : selectedPositionNumber === 'third'
-                          ? caregiverThirdPosition?.employmentType ===
-                            type.label
-                          : caregiverSecondPosition?.employmentType ===
-                            type.label
-                      }
-                      onPress={() => {
-                        selectedPositionNumber === 'first'
-                          ? setCaregiverFirstPosition({
+                          if (selectedPositionNumber === 'first') {
+                            setCaregiverFirstPosition({
                               ...caregiverFirstPosition,
-                              employmentType: type.label,
-                            })
-                          : selectedPositionNumber === 'third'
-                          ? setCaregiverThirdPosition({
-                              ...caregiverThirdPosition,
-                              employmentType: type.label,
-                            })
-                          : setCaregiverSecondPosition({
-                              ...caregiverSecondPosition,
-                              employmentType: type.label,
+                              ageGroups: updatedAgeGroups,
                             });
-                      }}
-                    />
-                  ))}
+                          } else if (selectedPositionNumber === 'second') {
+                            setCaregiverSecondPosition({
+                              ...caregiverSecondPosition,
+                              ageGroups: updatedAgeGroups,
+                            });
+                          } else {
+                            setCaregiverThirdPosition({
+                              ...caregiverThirdPosition,
+                              ageGroups: updatedAgeGroups,
+                            });
+                          }
+                        }}
+                      />
+                    ))}
+                  </View>
                 </View>
-              </View>
 
-              <View style={styles.section}>
-                <ThemedText style={styles.sectionTitle}>
-                  What were your childcare responsibilities{' '}
-                  <ThemedText style={styles.selectionCount}>
-                    (
-                    {selectedPositionNumber === 'first'
-                      ? caregiverFirstPosition?.childCare?.length || 0
-                      : selectedPositionNumber === 'second'
-                      ? caregiverSecondPosition?.childCare?.length || 0
-                      : caregiverThirdPosition?.childCare?.length || 0}
-                    /10)
+                <View style={[styles.section]}>
+                  <ThemedText style={styles.sectionTitle}>
+                    What type of position was it
                   </ThemedText>
-                </ThemedText>
-                <View style={styles.pillsContainer}>
-                  {childcareResponsibilities.map((responsibility) => (
-                    <Pill
-                      key={responsibility.id}
-                      label={responsibility.label}
-                      selected={
-                        selectedPositionNumber === 'first'
-                          ? caregiverFirstPosition?.childCare?.includes(
-                              responsibility.label
-                            )
-                          : selectedPositionNumber === 'second'
-                          ? caregiverSecondPosition?.childCare?.includes(
-                              responsibility.label
-                            )
-                          : caregiverThirdPosition?.childCare?.includes(
-                              responsibility.label
-                            )
-                      }
-                      onPress={() =>
-                        handleResponsibilitySelection(
-                          responsibility.label,
-                          'childcare'
-                        )
-                      }
-                    />
-                  ))}
+                  <View style={styles.pillsContainer}>
+                    {employmentTypes.map((type) => (
+                      <Pill
+                        key={type.id}
+                        label={type.label}
+                        selected={
+                          selectedPositionNumber === 'first'
+                            ? caregiverFirstPosition?.employmentType ===
+                              type.label
+                            : selectedPositionNumber === 'third'
+                            ? caregiverThirdPosition?.employmentType ===
+                              type.label
+                            : caregiverSecondPosition?.employmentType ===
+                              type.label
+                        }
+                        onPress={() => {
+                          selectedPositionNumber === 'first'
+                            ? setCaregiverFirstPosition({
+                                ...caregiverFirstPosition,
+                                employmentType: type.label,
+                              })
+                            : selectedPositionNumber === 'third'
+                            ? setCaregiverThirdPosition({
+                                ...caregiverThirdPosition,
+                                employmentType: type.label,
+                              })
+                            : setCaregiverSecondPosition({
+                                ...caregiverSecondPosition,
+                                employmentType: type.label,
+                              });
+                        }}
+                      />
+                    ))}
+                  </View>
                 </View>
-              </View>
 
-              <View style={[styles.section, { marginBottom: 120 }]}>
-                <ThemedText style={styles.sectionTitle}>
-                  What were your household responsibilities{' '}
-                  <ThemedText style={styles.selectionCount}>
-                    (
-                    {selectedPositionNumber === 'first'
-                      ? caregiverFirstPosition?.household?.length || 0
-                      : selectedPositionNumber === 'second'
-                      ? caregiverSecondPosition?.household?.length || 0
-                      : caregiverThirdPosition?.household?.length || 0}
-                    /10)
+                <View style={styles.section}>
+                  <ThemedText style={styles.sectionTitle}>
+                    What were your childcare responsibilities{' '}
+                    <ThemedText style={styles.selectionCount}>
+                      (
+                      {selectedPositionNumber === 'first'
+                        ? caregiverFirstPosition?.childCare?.length || 0
+                        : selectedPositionNumber === 'second'
+                        ? caregiverSecondPosition?.childCare?.length || 0
+                        : caregiverThirdPosition?.childCare?.length || 0}
+                      /10)
+                    </ThemedText>
                   </ThemedText>
-                </ThemedText>
-                <View style={styles.pillsContainer}>
-                  {householdResponsibilities.map((responsibility) => (
-                    <Pill
-                      key={responsibility.id}
-                      label={responsibility.label}
-                      selected={
-                        selectedPositionNumber === 'first'
-                          ? caregiverFirstPosition?.household?.includes(
-                              responsibility.label
-                            )
-                          : selectedPositionNumber === 'second'
-                          ? caregiverSecondPosition?.household?.includes(
-                              responsibility.label
-                            )
-                          : caregiverThirdPosition?.household?.includes(
-                              responsibility.label
-                            )
-                      }
-                      onPress={() =>
-                        handleResponsibilitySelection(
-                          responsibility.label,
-                          'household'
-                        )
-                      }
-                    />
-                  ))}
+                  <View style={styles.pillsContainer}>
+                    {childcareResponsibilities.map((responsibility) => (
+                      <Pill
+                        key={responsibility.id}
+                        label={responsibility.label}
+                        selected={
+                          selectedPositionNumber === 'first'
+                            ? caregiverFirstPosition?.childCare?.includes(
+                                responsibility.label
+                              )
+                            : selectedPositionNumber === 'second'
+                            ? caregiverSecondPosition?.childCare?.includes(
+                                responsibility.label
+                              )
+                            : caregiverThirdPosition?.childCare?.includes(
+                                responsibility.label
+                              )
+                        }
+                        onPress={() =>
+                          handleResponsibilitySelection(
+                            responsibility.label,
+                            'childcare'
+                          )
+                        }
+                      />
+                    ))}
+                  </View>
                 </View>
-              </View>
+
+                <View style={[styles.section, { marginBottom: 120 }]}>
+                  <ThemedText style={styles.sectionTitle}>
+                    What were your household responsibilities{' '}
+                    <ThemedText style={styles.selectionCount}>
+                      (
+                      {selectedPositionNumber === 'first'
+                        ? caregiverFirstPosition?.household?.length || 0
+                        : selectedPositionNumber === 'second'
+                        ? caregiverSecondPosition?.household?.length || 0
+                        : caregiverThirdPosition?.household?.length || 0}
+                      /10)
+                    </ThemedText>
+                  </ThemedText>
+                  <View style={styles.pillsContainer}>
+                    {householdResponsibilities.map((responsibility) => (
+                      <Pill
+                        key={responsibility.id}
+                        label={responsibility.label}
+                        selected={
+                          selectedPositionNumber === 'first'
+                            ? caregiverFirstPosition?.household?.includes(
+                                responsibility.label
+                              )
+                            : selectedPositionNumber === 'second'
+                            ? caregiverSecondPosition?.household?.includes(
+                                responsibility.label
+                              )
+                            : caregiverThirdPosition?.household?.includes(
+                                responsibility.label
+                              )
+                        }
+                        onPress={() =>
+                          handleResponsibilitySelection(
+                            responsibility.label,
+                            'household'
+                          )
+                        }
+                      />
+                    ))}
+                  </View>
+                </View>
+              </TouchableOpacity>
             </ScrollView>
 
             <LinearGradient

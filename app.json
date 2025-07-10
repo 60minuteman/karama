@@ -3,7 +3,7 @@
     "name": "Karama",
     "slug": "karama",
     "scheme": "karama",
-    "version": "1.0.5",
+    "version": "1.0.7",
     "orientation": "portrait",
     "icon": "./assets/icons/icon.png",
     "userInterfaceStyle": "light",

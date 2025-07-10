@@ -11,6 +11,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   TextInput,
   TextStyle,
@@ -112,111 +114,117 @@ export default function PaymentScreen() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemedView style={styles.container}>
-        <Header variant='back' />
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <ThemedView style={styles.container}>
+          <Header variant='back' />
 
-        <View style={styles.content}>
-          <View style={styles.spacerTop} />
-          <ProgressBar progress={0.95} />
+          <View style={styles.content}>
+            <View style={styles.spacerTop} />
+            <ProgressBar progress={0.95} />
 
-          <View style={styles.mainContent}>
-            <ThemedText style={styles.title}>
-              How would you like to be paid?
-            </ThemedText>
+            <View style={styles.mainContent}>
+              <ThemedText style={styles.title}>
+                How would you like to be paid?
+              </ThemedText>
 
-            <View style={styles.optionsContainer}>
-              {paymentOptions.map((option) => (
-                <Pill
-                  key={option.label}
-                  label={option.label}
-                  icon={option.icon}
-                  selected={caregiverPaymentType === option.label}
-                  onPress={() => setCaregiverPaymentType(option.label)}
-                />
-              ))}
+              <View style={styles.optionsContainer}>
+                {paymentOptions.map((option) => (
+                  <Pill
+                    key={option.label}
+                    label={option.label}
+                    icon={option.icon}
+                    selected={caregiverPaymentType === option.label}
+                    onPress={() => setCaregiverPaymentType(option.label)}
+                  />
+                ))}
+              </View>
+
+              {caregiverPaymentType === 'Hourly' && (
+                <View style={styles.inputContainer}>
+                  <View style={styles.sliderContainer}>
+                    <View style={styles.sliderLabels}>
+                      <ThemedText>$15</ThemedText>
+                      <ThemedText>$20</ThemedText>
+                      <ThemedText>$25</ThemedText>
+                      <ThemedText>$30</ThemedText>
+                      <ThemedText>$35</ThemedText>
+                      <ThemedText>$40</ThemedText>
+                      <ThemedText>$45+</ThemedText>
+                    </View>
+                    <MultiSlider
+                      values={sliderValues}
+                      min={15}
+                      max={45}
+                      step={1}
+                      sliderLength={318}
+                      selectedStyle={{
+                        backgroundColor: Colors.light.primary,
+                      }}
+                      unselectedStyle={{
+                        backgroundColor: '#E8E8E8',
+                      }}
+                      containerStyle={{
+                        height: 40,
+                      }}
+                      trackStyle={{
+                        height: 4,
+                      }}
+                      markerStyle={{
+                        backgroundColor: Colors.light.primary,
+                        height: 20,
+                        width: 20,
+                      }}
+                      onValuesChange={handleSliderChange}
+                    />
+                  </View>
+                </View>
+              )}
+
+              {caregiverPaymentType === 'Salary Base' && (
+                <View style={styles.inputContainer}>
+                  <View
+                    style={[
+                      styles.inputBorder,
+                      (caregiverSalaryAmount?.length || 0) > 0 &&
+                        styles.inputBorderActive,
+                    ]}
+                  >
+                    <TextInput
+                      style={styles.input}
+                      placeholder='50,000'
+                      placeholderTextColor='#999'
+                      value={caregiverSalaryAmount || ''}
+                      onChangeText={handleSalaryChange}
+                      keyboardType='numeric'
+                      autoFocus
+                      maxLength={7}
+                    />
+                  </View>
+                </View>
+              )}
             </View>
 
-            {caregiverPaymentType === 'Hourly' && (
-              <View style={styles.inputContainer}>
-                <View style={styles.sliderContainer}>
-                  <View style={styles.sliderLabels}>
-                    <ThemedText>$15</ThemedText>
-                    <ThemedText>$20</ThemedText>
-                    <ThemedText>$25</ThemedText>
-                    <ThemedText>$30</ThemedText>
-                    <ThemedText>$35</ThemedText>
-                    <ThemedText>$40</ThemedText>
-                    <ThemedText>$45+</ThemedText>
-                  </View>
-                  <MultiSlider
-                    values={sliderValues}
-                    min={15}
-                    max={45}
-                    step={1}
-                    sliderLength={318}
-                    selectedStyle={{
-                      backgroundColor: Colors.light.primary,
-                    }}
-                    unselectedStyle={{
-                      backgroundColor: '#E8E8E8',
-                    }}
-                    containerStyle={{
-                      height: 40,
-                    }}
-                    trackStyle={{
-                      height: 4,
-                    }}
-                    markerStyle={{
-                      backgroundColor: Colors.light.primary,
-                      height: 20,
-                      width: 20,
-                    }}
-                    onValuesChange={handleSliderChange}
-                  />
-                </View>
-              </View>
-            )}
-
-            {caregiverPaymentType === 'Salary Base' && (
-              <View style={styles.inputContainer}>
-                <View
-                  style={[
-                    styles.inputBorder,
-                    (caregiverSalaryAmount?.length || 0) > 0 &&
-                      styles.inputBorderActive,
-                  ]}
-                >
-                  <TextInput
-                    style={styles.input}
-                    placeholder='50,000'
-                    placeholderTextColor='#999'
-                    value={caregiverSalaryAmount || ''}
-                    onChangeText={handleSalaryChange}
-                    keyboardType='numeric'
-                    autoFocus
-                    maxLength={7}
-                  />
-                </View>
-              </View>
-            )}
+            <View style={styles.buttonContainer}>
+              <Button
+                label='Next'
+                onPress={handleNext}
+                variant='compact'
+                disabled={
+                  !caregiverPaymentType ||
+                  (caregiverPaymentType === 'Hourly' &&
+                    (!caregiverHourlyRate?.[0] || !caregiverHourlyRate?.[1])) ||
+                  (caregiverPaymentType === 'Salary Base' &&
+                    !caregiverSalaryAmount)
+                }
+              />
+            </View>
           </View>
-
-          <View style={styles.buttonContainer}>
-            <Button
-              label='Next'
-              onPress={handleNext}
-              variant='compact'
-              disabled={
-                !caregiverPaymentType ||
-                (caregiverPaymentType === 'Hourly' &&
-                  (!caregiverHourlyRate?.[0] || !caregiverHourlyRate?.[1])) ||
-                (caregiverPaymentType === 'Salary Base' &&
-                  !caregiverSalaryAmount)
-              }
-            />
-          </View>
-        </View>
-      </ThemedView>
+        </ThemedView>
+      </KeyboardAvoidingView>
     </GestureHandlerRootView>
   );
 }

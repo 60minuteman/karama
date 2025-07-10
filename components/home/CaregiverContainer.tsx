@@ -186,7 +186,7 @@ const CaregiverContainer = forwardRef<
     },
     componentContainer: {
       width: containerWidth,
-      // padding: containerWidth * 0.02,
+      //padding: containerWidth * 0.02,
       backgroundColor: '#F6F6F6',
       borderRadius: 20,
       marginBottom: containerWidth * 0.03,
