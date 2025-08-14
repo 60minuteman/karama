@@ -49,6 +49,8 @@ export default function Page() {
           What is your highest{'\n'}level of education?
         </ThemedText>
 
+        <ThemedText style={styles.subtitle}>Choose just one option</ThemedText>
+
         <View style={styles.optionsContainer}>
           {educationOptions.map((option) => (
             <Pill
@@ -75,7 +77,7 @@ export default function Page() {
 
       <View style={styles.bottomNav}>
         <Button
-          label='Next'
+          // label='Next'
           onPress={handleNext}
           variant='compact'
           style={styles.nextButton}
@@ -104,7 +106,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
     color: Colors.light.text,
-    marginBottom: 40,
+    // marginBottom: 40,
     marginTop: 20,
   },
   optionsContainer: {
@@ -136,5 +138,14 @@ const styles = StyleSheet.create({
   nextButton: {
     backgroundColor: '#F45B69',
     borderRadius: 100,
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 24,
   },
 });

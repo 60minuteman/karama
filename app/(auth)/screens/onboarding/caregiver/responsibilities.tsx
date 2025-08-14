@@ -52,7 +52,7 @@ const childcareResponsibilities: Responsibility[] = [
   },
   { id: 'feeding' as const, label: '🍼 Feeding', icon: '🍼' },
   { id: 'pottyTraining2' as const, label: '🚽 Potty Training', icon: '🚽' },
-  { id: 'other' as const, label: '➕ Other', icon: '➕' },
+  // { id: 'other' as const, label: '➕ Other', icon: '➕' },
 ];
 
 const householdResponsibilities: Responsibility[] = [
@@ -98,7 +98,7 @@ const householdResponsibilities: Responsibility[] = [
     label: '🍽️ Loading/Unloading Dishwasher',
     icon: '🍽️',
   },
-  { id: 'other2' as const, label: '➕ Other', icon: '➕' },
+  // { id: 'other2' as const, label: '➕ Other', icon: '➕' },
 ];
 
 export default function ResponsibilitiesScreen() {
@@ -249,7 +249,7 @@ export default function ResponsibilitiesScreen() {
         >
           <View style={styles.buttonContainer}>
             <Button
-              label='Next'
+              // label='Next'
               onPress={() => {
                 setOnboardingScreen(
                   '/(auth)/screens/onboarding/caregiver/payment'

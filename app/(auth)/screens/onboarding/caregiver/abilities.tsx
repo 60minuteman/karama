@@ -22,7 +22,7 @@ const abilities = [
   { label: '🏊 Can Swim' as const },
   { label: '💉 COVID Vaccination' as const },
   { label: '👐 CPR' as const },
-  { label: '🏕️ Other' as const },
+  // { label: '🏕️ Other' as const },
 ];
 
 const certifications = [
@@ -32,7 +32,7 @@ const certifications = [
   { label: '🦼 Condition Specific' as const },
   { label: '🍔 Feeding & Swallowing' as const },
   { label: '😇 Registered Behaviour Technician' as const },
-  { label: '📃 Other' as const },
+  // { label: '📃 Other' as const },
 ];
 
 export default function Page() {
@@ -114,6 +114,10 @@ export default function Page() {
           What are your{'\n'}abilities and{'\n'}certifications?
         </ThemedText>
 
+        <ThemedText style={styles.subtitle}>
+          You can choose up to 6 options
+        </ThemedText>
+
         <ScrollView
           style={styles.scrollView}
           showsVerticalScrollIndicator={false}
@@ -177,7 +181,7 @@ export default function Page() {
         <View style={styles.bottomNav}>
           <Button label='Skip' onPress={handleNext} variant='skip' />
           <Button
-            label='Next'
+            // label='Next'
             onPress={handleNext}
             variant='compact'
             disabled={
@@ -217,7 +221,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Bogart-Semibold', // Changed to 'Bogart-Bold' for the header text
     fontWeight: '600',
     color: Colors.light.text,
-    marginBottom: 40,
+    // marginBottom: 40,
     marginTop: 20,
   },
   sectionTitle: {
@@ -249,5 +253,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 20,
     paddingBottom: 40,
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 24,
   },
 });

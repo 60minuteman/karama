@@ -1,5 +1,6 @@
 import ProfileHeader from '@/components/Profile/ProfileHeader';
 import { ThemedView } from '@/components/ThemedView';
+import ProfileCardLoader from '@/components/cards/ProfileCardLoader';
 import { CaregiverContainer } from '@/components/home/CaregiverContainer';
 import { Container } from '@/components/home/Container';
 import { ContainerTwo } from '@/components/home/ContainerTwo';
@@ -178,21 +179,27 @@ const profilePreview = () => {
               role={accountType}
             /> */}
 
-            {currentUser?.data?.role === 'FAMILY' ? (
-              <>
-                <Container
-                  profileData={profileData}
-                  data={profileData}
-                  role={accountType}
-                />
-              </>
+            {submitLike?.isLoading || submitReject?.isLoading ? (
+              <ProfileCardLoader />
             ) : (
               <>
-                <NewFamilyContainer
-                  familyProfile={profileData}
-                  familyProfileLoading={false}
-                  // role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'}
-                />
+                {currentUser?.data?.role === 'FAMILY' ? (
+                  <>
+                    <Container
+                      profileData={profileData}
+                      data={profileData}
+                      role={accountType}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <NewFamilyContainer
+                      familyProfile={profileData}
+                      familyProfileLoading={false}
+                      // role={profile?.family_profile ? 'FAMILY' : 'CAREGIVER'}
+                    />
+                  </>
+                )}
               </>
             )}
           </View>

@@ -37,16 +37,16 @@ export default function FamilyDescriptionScreen() {
     if (family_description?.type) {
       setOnboardingScreen('/(auth)/screens/onboarding/family/number');
       router.push('/(auth)/screens/onboarding/family/number');
-    } 
+    }
   };
 
   const handleAdd = (item: any) => {
     if (item === '💖 Other') {
       setOnboardingScreen(
-        '/(auth)/screens/onboarding/family/otherFamilyDescriptionScreen',
+        '/(auth)/screens/onboarding/family/otherFamilyDescriptionScreen'
       );
       router.push(
-        '/(auth)/screens/onboarding/family/otherFamilyDescriptionScreen',
+        '/(auth)/screens/onboarding/family/otherFamilyDescriptionScreen'
       );
       return;
     }
@@ -93,7 +93,7 @@ export default function FamilyDescriptionScreen() {
 
         <View style={styles.buttonContainer}>
           <Button
-            label='Next'
+            // label='Next'
             onPress={handleNext}
             variant='compact'
             disabled={!family_description?.type}

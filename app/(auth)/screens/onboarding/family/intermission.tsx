@@ -195,7 +195,7 @@ export default function IntermissionScreen() {
 
         <View style={styles.buttonContainer}>
           <Button
-            label='Next'
+            // label='Next'
             onPress={handleSubmit}
             variant='compact'
             style={styles.button}

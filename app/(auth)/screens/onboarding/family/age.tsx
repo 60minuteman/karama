@@ -134,7 +134,7 @@ export default function AgeScreen() {
             <Button label='Skip' onPress={handleSkip} variant='skip' />
             {showAgeRanges && (
               <Button
-                label='Next'
+                // label='Next'
                 onPress={handleNext}
                 variant='compact'
                 disabled={!selected_age_range}

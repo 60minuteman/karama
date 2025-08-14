@@ -71,11 +71,19 @@ export const ProfileCard = ({
   if (!fontsLoaded) {
     return null;
   }
-  // console.log(data, 'show items');
+  console.log(
+    'profile_pc=======',
+    data?.pictures?.find((pic: any) => pic.type === 'PROFILE_PICTURE')?.path
+  );
 
   // Get profile picture with fallback
-  const imageSource = data?.pictures?.[0]?.path
-    ? { uri: data?.pictures?.[0]?.path }
+  const imageSource = data?.pictures?.find(
+    (pic: any) => pic.type === 'PROFILE_PICTURE'
+  )?.path
+    ? {
+        uri: data?.pictures?.find((pic: any) => pic.type === 'PROFILE_PICTURE')
+          ?.path,
+      }
     : require('@/assets/icons/fallback.png');
 
   console.log('data', data?.extra_info?.payment_info);

@@ -21,9 +21,9 @@ type Philosophy =
   | 'Permissive Parenting'
   | 'Authoritative Parenting'
   | 'Baby Led-Weaning'
-  | 'Authoritarian Parenting'
-  | 'Other'
-  | 'None';
+  | 'Authoritarian Parenting';
+// | 'Other';
+// | 'None';
 
 export default function PhilosophyScreen() {
   const router = useRouter();
@@ -46,8 +46,8 @@ export default function PhilosophyScreen() {
     { type: '🌈 Authoritative Parenting', icon: '🌈' },
     { type: '🌈 Baby Led-Weaning', icon: '🌈' },
     { type: '🌈 Authoritarian Parenting', icon: '🌈' },
-    { type: '🌈 Other', icon: '🌈' },
-    { type: '🌈 None', icon: '🚫' },
+    // { type: '🌈 Other', icon: '🌈' },
+    // { type: '🌈 None', icon: '🚫' },
   ];
 
   const togglePhilosophy = (philo: Philosophy) => {
@@ -65,7 +65,9 @@ export default function PhilosophyScreen() {
         ? [philo]
         : family_philosophies.includes(philo)
         ? family_philosophies.filter((p) => p !== philo)
-        : [...family_philosophies, philo];
+        : family_philosophies.length < 4
+        ? [...family_philosophies, philo]
+        : family_philosophies;
       setFamilyPhilosophies(newPhilos);
     }
   };
@@ -89,6 +91,10 @@ export default function PhilosophyScreen() {
         <ThemedText style={styles.title}>
           Do you practice any{'\n'}educational or{'\n'}parenting{'\n'}
           philosophies?
+        </ThemedText>
+
+        <ThemedText style={styles.subtitle}>
+          You can choose up to 4 options
         </ThemedText>
 
         <View style={styles.scrollViewContainer}>
@@ -134,9 +140,9 @@ export default function PhilosophyScreen() {
             style={styles.buttonGradient}
           >
             <View style={styles.buttonContainer}>
-              <Button label='Skip' onPress={handleNext} variant='compact' />
+              <Button label='Skip' onPress={handleNext} variant='skip' />
               <Button
-                label='Next'
+                // label='Next'
                 onPress={handleNext}
                 variant='compact'
                 disabled={family_philosophies.length === 0}
@@ -188,7 +194,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,
-    marginBottom: 40,
+    // marginBottom: 40,
     marginTop: 20,
     fontWeight: '500',
   },
@@ -224,5 +230,14 @@ const styles = StyleSheet.create({
     right: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 16,
+    marginTop: 16,
   },
 });

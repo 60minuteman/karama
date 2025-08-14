@@ -1,4 +1,5 @@
 import { ThemedText } from '@/components/ThemedText';
+import ProfileCardLoader from '@/components/cards/ProfileCardLoader';
 import { HomeNav } from '@/components/home/HomeNav';
 import { ConversationItem } from '@/components/matches/ConversationItem';
 import { EmptyMatches } from '@/components/matches/EmptyMatches';
@@ -45,6 +46,7 @@ export default function Matches() {
   const [filteredMatches, setFilteredMatches] = useState<any>([]);
   const [deletedConversationId, setDeletedConversationId] = useState<any>(null);
   const queryClient = useQueryClient();
+  const [isLoadingRoom, setIsLoadingRoom] = useState<boolean>(false);
 
   // console.log('completeMatches', completeMatches?.data?.matches);
 
@@ -269,8 +271,10 @@ export default function Matches() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView style={styles.safeArea}>
           <ThemedText style={styles.title}>Matches</ThemedText>
-          {isLoadingCompleteMatches || (isLoading && !conversations.length) ? (
-            <MatchesSkeleton />
+          {isLoadingCompleteMatches ||
+          (isLoading && !conversations.length) ||
+          isLoadingRoom ? (
+            <ProfileCardLoader />
           ) : (
             <>
               {filteredMatches?.length < 1 && conversations?.length < 1 ? (
@@ -302,7 +306,11 @@ export default function Matches() {
                         contentContainerStyle={styles.matchesScroll}
                       >
                         {filteredMatches?.map((match: any, index: any) => (
-                          <MatchCircle key={index} match={match} />
+                          <MatchCircle
+                            key={index}
+                            match={match}
+                            setIsLoadingRoom={setIsLoadingRoom}
+                          />
                         ))}
                       </ScrollView>
                     </View>

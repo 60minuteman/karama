@@ -43,7 +43,7 @@ const childcareResponsibilities: Responsibility[] = [
   { id: 'childcareErrands', label: '🛍️ Childcare Errands' },
   { id: 'feeding', label: '🧑‍🍼 Feeding' },
   { id: 'pottyTraining2', label: '🚽 Potty Training' },
-  { id: 'other', label: '🧒🏽 Other' },
+  // { id: 'other', label: '🧒🏽 Other' },
 ];
 
 const householdResponsibilities: Responsibility[] = [
@@ -62,7 +62,7 @@ const householdResponsibilities: Responsibility[] = [
   { id: 'hiringStaff', label: '🗒️ Hiring & Supervising Staff' },
   { id: 'propertyManagement', label: '🏘️ Property Management' },
   { id: 'dishwasher', label: '🍽️ Loading/Unloading Dishwasher' },
-  { id: 'other2', label: '🏙️ Other' },
+  // { id: 'other2', label: '🏙️ Other' },
 ];
 
 export default function ResponsibilitiesScreen() {
@@ -277,6 +277,10 @@ export default function ResponsibilitiesScreen() {
           fulfill?
         </ThemedText>
 
+        <ThemedText style={styles.subtitle2}>
+          You can choose up to 10 options and minimum of 3
+        </ThemedText>
+
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -341,7 +345,7 @@ export default function ResponsibilitiesScreen() {
         >
           <View style={styles.buttonContainer}>
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleSubmit}
               variant='compact'
               disabled={
@@ -381,7 +385,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
     color: '#002140',
-    marginBottom: 16,
+    // marginBottom: 16,
     marginTop: 20,
   },
   subtitle: {
@@ -425,5 +429,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666666',
     fontWeight: '500',
+  },
+
+  subtitle2: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 24,
   },
 });

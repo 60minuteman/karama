@@ -52,6 +52,10 @@ export default function Page() {
           What ages do you{'\n'}have the most{'\n'}experience working{'\n'}with?
         </ThemedText>
 
+        <ThemedText style={styles.subtitle}>
+          You can only choose 3 options
+        </ThemedText>
+
         <View style={styles.optionsContainer}>
           {ageGroups.map((row, rowIndex) => (
             <View key={rowIndex} style={styles.row}>
@@ -70,15 +74,15 @@ export default function Page() {
             </View>
           ))}
         </View>
-        <ThemedText style={styles.validationText}>
-          Please select 1-3 age groups you have experience with
-        </ThemedText>
+        {/* <ThemedText style={styles.validationText}>
+            Please select 1-3 age groups you have experience with
+          </ThemedText> */}
       </View>
 
       <View style={styles.bottomNav}>
         <View style={styles.buttonContainer}>
           <Button
-            label='Next'
+            // label='Next'
             onPress={handleNext}
             variant='compact'
             disabled={!caregiverAgeExperience?.length}
@@ -106,7 +110,7 @@ const styles = StyleSheet.create({
     lineHeight: 44,
     fontWeight: '600',
     color: Colors.light.text,
-    marginBottom: 40,
+    // marginBottom: 40,
     marginTop: 20,
   },
   optionsContainer: {
@@ -134,5 +138,14 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     textAlign: 'center',
     marginTop: 16,
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 24,
   },
 });

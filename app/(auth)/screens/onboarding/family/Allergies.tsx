@@ -20,7 +20,7 @@ const foodAllergies = [
   { id: 'shellfish', label: '🦐 Shellfish' },
   { id: 'soy', label: '🫘 Soy' },
   { id: 'wheat', label: '🌾 Wheat' },
-  { id: 'other_food', label: '🍪 Other' },
+  // { id: 'other_food', label: '🍪 Other' },
 ];
 
 const environmentalAllergies = [
@@ -29,7 +29,7 @@ const environmentalAllergies = [
   { id: 'mold', label: '🍄 Mold' },
   { id: 'animal_dander', label: '🐕 Animal Dander' },
   { id: 'insect_sting', label: '🐝 Insect sting' },
-  { id: 'other_environmental', label: '🌲 Other' },
+  // { id: 'other_environmental', label: '🌲 Other' },
 ];
 
 const otherAllergies = [
@@ -37,7 +37,7 @@ const otherAllergies = [
   { id: 'perfume', label: '🌹 Perfume' },
   { id: 'cleaning_chemicals', label: '💦 Cleaning Chemicals' },
   { id: 'metal', label: '🌑 Metal' },
-  { id: 'other', label: '🪨 Other' },
+  // { id: 'other', label: '🪨 Other' },
 ];
 
 export default function Allergies() {
@@ -289,9 +289,9 @@ export default function Allergies() {
             pointerEvents='none'
           />
           <View style={styles.buttonContainer}>
-            <Button label='Skip' onPress={() => router.back()} variant='skip' />
+            <Button label='Skip' onPress={handleNext} variant='skip' />
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={getTotalSelectedCount() === 0}

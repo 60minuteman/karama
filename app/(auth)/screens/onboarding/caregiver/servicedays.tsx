@@ -28,6 +28,7 @@ export default function ServiceDaysScreen() {
     day: CaregiverDayOfWeek;
     field: 'begin' | 'end';
   } | null>(null);
+  const [tempSelectedTime, setTempSelectedTime] = useState<Date>(new Date());
 
   useEffect(() => {
     console.log(
@@ -41,43 +42,59 @@ export default function ServiceDaysScreen() {
   }, []);
 
   const handleTimeSelect = (event: any, selectedTime?: Date) => {
-    setShowTimePicker(false);
+    // Check if the user cancelled the picker
+    if (event.type === 'dismissed') {
+      setShowTimePicker(false);
+      setActiveField(null);
+      return;
+    }
 
-    if (selectedTime && selectedDay) {
+    // Store the selected time temporarily and confirm automatically
+    if (selectedTime) {
+      setTempSelectedTime(selectedTime);
+      // Auto-confirm the time selection
       const formattedTime = selectedTime.toLocaleTimeString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
         hour12: false,
       });
 
-      const updatedSchedule = caregiverSchedule?.map((day) => {
-        const currentTimeSlot = day.timeSlot || {
-          begin: '00:00',
-          end: '00:00',
-        };
+      if (selectedDay) {
+        const updatedSchedule = caregiverSchedule?.map((day) => {
+          const currentTimeSlot = day.timeSlot || {
+            begin: '00:00',
+            end: '00:00',
+          };
 
-        if (day.day === selectedDay) {
+          if (day.day === selectedDay) {
+            return {
+              ...day,
+              isActive: true,
+              timeSlot: {
+                begin: isSettingBeginTime
+                  ? formattedTime
+                  : currentTimeSlot.begin,
+                end: isSettingBeginTime ? currentTimeSlot.end : formattedTime,
+              },
+            };
+          }
           return {
             ...day,
-            isActive: true,
             timeSlot: {
-              begin: isSettingBeginTime ? formattedTime : currentTimeSlot.begin,
-              end: isSettingBeginTime ? currentTimeSlot.end : formattedTime,
+              begin: currentTimeSlot.begin,
+              end: currentTimeSlot.end,
             },
           };
-        }
-        return {
-          ...day,
-          timeSlot: {
-            begin: currentTimeSlot.begin,
-            end: currentTimeSlot.end,
-          },
-        };
-      });
-      setCaregiverSchedule(updatedSchedule);
-    }
+        });
+        setCaregiverSchedule(updatedSchedule);
+      }
 
-    setActiveField(null);
+      // Close the picker after successful selection with a slight delay
+      setTimeout(() => {
+        setShowTimePicker(false);
+        setActiveField(null);
+      }, 2000);
+    }
   };
 
   const handleTimePress = (day: CaregiverDayOfWeek, isBegin: boolean) => {
@@ -85,6 +102,19 @@ export default function ServiceDaysScreen() {
     setIsSettingBeginTime(isBegin);
     setShowTimePicker(true);
     setActiveField({ day, field: isBegin ? 'begin' : 'end' });
+    // Set initial time based on current selection or default
+    const currentDay = caregiverSchedule?.find((d) => d.day === day);
+    if (currentDay?.timeSlot) {
+      const timeString = isBegin
+        ? currentDay.timeSlot.begin
+        : currentDay.timeSlot.end;
+      const [hours, minutes] = timeString.split(':').map(Number);
+      const initialTime = new Date();
+      initialTime.setHours(hours, minutes, 0, 0);
+      setTempSelectedTime(initialTime);
+    } else {
+      setTempSelectedTime(new Date());
+    }
   };
 
   const formatTimeDisplay = (time: string) => {
@@ -106,10 +136,16 @@ export default function ServiceDaysScreen() {
         <ProgressBar progress={0.8} />
         {showTimePicker && (
           <>
-            <View style={styles.overlay} />
+            <Pressable
+              style={styles.overlay}
+              onPress={() => {
+                setShowTimePicker(false);
+                setActiveField(null);
+              }}
+            />
             <View style={styles.timePickerContainer}>
               <DateTimePicker
-                value={new Date()}
+                value={tempSelectedTime}
                 mode='time'
                 is24Hour={true}
                 display='spinner'
@@ -209,7 +245,7 @@ export default function ServiceDaysScreen() {
           style={styles.buttonContainer}
         >
           <Button
-            label='Next'
+            // label='Next'
             onPress={() => {
               setOnboardingScreen(
                 '/(auth)/screens/onboarding/caregiver/responsibilities'

@@ -26,19 +26,30 @@ export const useOtherStore = create<any>()(
       familyEducation: '',
       prompts: [],
       accountType: 'FAMILY',
-      setAccountType:  (item: string) =>
+      setAccountType: (item: string) =>
         set(() => ({
           accountType: item,
         })),
-     likeProfile: [],
-    addLikeProfile: (item: any) =>
-      set((state: any) => ({
-        likeProfile: [...state.likeProfile, item],
-      })),
+      likeProfile: [],
+      addLikeProfile: (item: any) =>
+        set((state: any) => ({
+          likeProfile: [...state.likeProfile, item],
+        })),
       addPrompts: (item: { category: string; title: string; answer: string }) =>
         set((state: any) => ({
           prompts: [...state.prompts, item],
         })),
+      updatePromptAtIndex: (
+        index: number,
+        item: { category: string; title: string; answer: string }
+      ) =>
+        set((state: any) => {
+          const newPrompts = [...state.prompts];
+          newPrompts[index] = item;
+          return {
+            prompts: newPrompts,
+          };
+        }),
       setFamilyEducation: (item: string) =>
         set(() => ({
           familyEducation: item,

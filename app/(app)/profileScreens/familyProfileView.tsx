@@ -299,6 +299,36 @@ const FamilyProfileView = () => {
                   </View>
                 </View>
               </View>
+
+              {familyProfile?.family_profile?.extra_info?.prompts?.[2]
+                ?.title && (
+                <View style={styles.section}>
+                  <View style={styles.subSection}>
+                    <ThemedText
+                      style={[
+                        styles.pillHeading,
+                        { fontFamily: 'Bogart-Regular' },
+                      ]}
+                    >
+                      {
+                        familyProfile?.family_profile?.extra_info?.prompts?.[2]
+                          ?.title
+                      }
+                    </ThemedText>
+                    <View style={styles.pillContainer}>
+                      <Text
+                        style={{ fontSize: 22, fontFamily: 'Bogart-Regular' }}
+                      >
+                        {
+                          familyProfile?.family_profile?.extra_info
+                            ?.prompts?.[2]?.answer
+                        }
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+              )}
+
               <View style={styles.section}>
                 <View style={styles.subSection}>
                   <ThemedText style={styles.pillHeading}>

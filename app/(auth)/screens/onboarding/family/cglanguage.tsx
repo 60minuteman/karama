@@ -83,7 +83,7 @@ export default function CGLanguageScreen() {
           <View style={styles.buttonContainer}>
             <Button label='Skip' onPress={handleSkip} variant='skip' />
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={!caregiver_language_required}
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 40,
     color: Colors.light.text,
-    marginTop: 20,
+    // marginTop: 20,
   },
   optionsContainer: {
     alignItems: 'flex-end',

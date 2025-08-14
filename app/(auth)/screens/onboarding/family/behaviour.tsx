@@ -21,16 +21,14 @@ type Condition =
   | 'Misophonia'
   | 'Hearing Impaired'
   | 'Vision Impaired'
-  | 'Bipolar'
-  | 'Other';
+  | 'Bipolar';
+// | 'Other';
 
 export default function FamilyBehaviourScreen() {
   const router = useRouter();
   const { family_behaviour, setFamilyBehaviour, setOnboardingScreen } =
     useUserStore();
-    const {
-      otherConditons
-    } = useOtherStore()
+  const { otherConditons } = useOtherStore();
 
   const conditions: Condition[] = [
     'Dyslexia',
@@ -43,7 +41,7 @@ export default function FamilyBehaviourScreen() {
     'Hearing Impaired',
     'Vision Impaired',
     'Bipolar',
-    'Other',
+    // 'Other',
   ];
 
   const handleSelect = (value: 'Yes' | 'No') => {
@@ -54,7 +52,6 @@ export default function FamilyBehaviourScreen() {
   };
 
   // console.log(otherConditons, 'otherConditons') ;
-  
 
   const handleConditionToggle = (condition: Condition) => {
     if (condition === 'Other') {
@@ -74,7 +71,8 @@ export default function FamilyBehaviourScreen() {
     if (
       family_behaviour.has_condition === 'No' ||
       (family_behaviour.has_condition === 'Yes' &&
-        family_behaviour.conditions.length > 0 || otherConditons !== '')
+        family_behaviour.conditions.length > 0) ||
+      otherConditons !== ''
     ) {
       setOnboardingScreen('/(auth)/screens/onboarding/family/hear');
       router.push('/(auth)/screens/onboarding/family/hear');
@@ -84,7 +82,8 @@ export default function FamilyBehaviourScreen() {
   const isNextDisabled =
     !family_behaviour.has_condition ||
     (family_behaviour.has_condition === 'Yes' &&
-      family_behaviour.conditions.length === 0 && otherConditons === '');
+      family_behaviour.conditions.length === 0 &&
+      otherConditons === '');
 
   return (
     <ThemedView style={styles.container}>
@@ -131,13 +130,13 @@ export default function FamilyBehaviourScreen() {
             style={styles.buttonGradient}
           >
             <View style={styles.buttonContainer}>
-              <View style={styles.buttonWrapper}>
+              {/* <View style={styles.buttonWrapper}>
                 {family_behaviour.has_condition === 'Yes' && (
                   <Button label='Skip' onPress={handleNext} variant='skip' />
                 )}
-              </View>
+              </View> */}
               <Button
-                label='Next'
+                // label='Next'
                 onPress={handleNext}
                 variant='compact'
                 disabled={isNextDisabled}

@@ -130,7 +130,7 @@ const PastPosition: React.FC = () => {
   });
 
   const handleNext = () => {
-    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/prompt');
+    // setOnboardingScreen('/(auth)/screens/onboarding/caregiver/prompt');
     router.push('/(auth)/screens/onboarding/caregiver/prompt');
   };
 
@@ -157,8 +157,8 @@ const PastPosition: React.FC = () => {
       position?.endDate?.trim() !== '' &&
       Array.isArray(position?.ageGroups) &&
       position.ageGroups.length > 0 &&
-      childCareArray.length > 0 &&
-      householdArray.length > 0
+      childCareArray.length > 0
+      // householdArray.length > 0
     );
   };
 
@@ -180,7 +180,6 @@ const PastPosition: React.FC = () => {
   };
 
   const handleStartDateChange = (event: any, selectedDate?: Date) => {
-    setActiveDatePicker(null);
     if (selectedDate) {
       const formattedDate = formatDate(selectedDate);
       if (selectedPositionNumber === 'first') {
@@ -199,11 +198,17 @@ const PastPosition: React.FC = () => {
           startDate: formattedDate,
         });
       }
+
+      // Close the picker after successful selection with a slight delay
+      setTimeout(() => {
+        setActiveDatePicker(null);
+      }, 2000);
+    } else {
+      setActiveDatePicker(null);
     }
   };
 
   const handleEndDateChange = (event: any, selectedDate?: Date) => {
-    setActiveDatePicker(null);
     if (selectedDate) {
       const formattedDate = formatDate(selectedDate);
       if (selectedPositionNumber === 'first') {
@@ -222,6 +227,13 @@ const PastPosition: React.FC = () => {
           endDate: formattedDate,
         });
       }
+
+      // Close the picker after successful selection with a slight delay
+      setTimeout(() => {
+        setActiveDatePicker(null);
+      }, 3000);
+    } else {
+      setActiveDatePicker(null);
     }
   };
 
@@ -711,13 +723,13 @@ const PastPosition: React.FC = () => {
               style={styles.buttonGradient}
             >
               <View style={styles.buttonContainer}>
-                <Button
+                {/* <Button
                   label='Skip'
                   onPress={() => router.back()}
                   variant='skip'
-                />
+                /> */}
                 <Button
-                  label='Next'
+                  // label='Next'
                   onPress={handleNext}
                   variant='compact'
                   disabled={!isAllPositionsValid()}
@@ -806,7 +818,7 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
   inputContainer: {

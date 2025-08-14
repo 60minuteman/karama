@@ -10,7 +10,7 @@ import customAxios from '@/services/api/envConfig';
 import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -55,6 +55,7 @@ const prompts: Prompts = {
 
 export default function Prompt() {
   const router = useRouter();
+  const { selectedIndex } = useLocalSearchParams();
   const {
     caregiverPromptCategory,
     setCaregiverPromptCategory,
@@ -63,7 +64,7 @@ export default function Prompt() {
     setOnboardingScreen,
     setCaregiverFirstPromptAnswer,
   } = useUserStore();
-  const { prompts: promptsData } = useOtherStore();
+  const { prompts: promptsData, updatePromptAtIndex } = useOtherStore();
   const getDefaultStartDate = () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -178,7 +179,7 @@ export default function Prompt() {
     caregiverPaymentType === 'Salary Base'
       ? {
           type: caregiverPaymentType,
-          salary: caregiverSalaryAmount || '',
+          salary: parseInt(caregiverSalaryAmount?.replace(/,/g, '') || ''),
           show_method_on_profile: showCaregiverPaymentMethod,
         }
       : {
@@ -366,10 +367,10 @@ export default function Prompt() {
   const currentPrompts = prompts[currentCategory];
 
   const handleAdd = (prompt: string) => {
-    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/promptAnswer');
+    const index = selectedIndex ? parseInt(selectedIndex as string) : 0;
     router.push({
       pathname: '/(auth)/screens/onboarding/caregiver/promptAnswer',
-      params: { prompt },
+      params: { prompt, selectedIndex: index.toString() },
     });
   };
 
@@ -386,6 +387,10 @@ export default function Prompt() {
         <ProgressBar progress={0.9} />
 
         <ThemedText style={styles.title}>Choose your prompt</ThemedText>
+
+        <ThemedText style={styles.subtitle}>
+          You can select up to 2 options
+        </ThemedText>
 
         <View style={styles.categories}>
           {promptCategories?.map((category) => (
@@ -422,21 +427,21 @@ export default function Prompt() {
           </View>
         </ScrollView>
 
-        {/* <LinearGradient
+        <LinearGradient
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
           {promptsData?.length > 1 && (
             <View style={styles.buttonContainer}>
               <Button
-                label='Next'
+                // label='Next'
                 onPress={handleSubmit}
                 loading={createProfile.isPending}
                 variant='compact'
               />
             </View>
           )}
-        </LinearGradient> */}
+        </LinearGradient>
       </View>
     </ThemedView>
   );
@@ -466,7 +471,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
     color: Colors.light.text,
-    marginBottom: 24,
+    // marginBottom: 24,
     marginTop: 20,
   },
   categories: {
@@ -502,5 +507,13 @@ const styles = StyleSheet.create({
     right: 0,
     height: 100,
     paddingHorizontal: 20,
+  },
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 24,
   },
 });

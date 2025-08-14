@@ -68,7 +68,7 @@ export default function CaregiverNameScreen() {
 
           <View style={styles.buttonContainer}>
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant={caregiverName?.trim() ? 'primary' : undefined}
               disabled={!caregiverName?.trim()}

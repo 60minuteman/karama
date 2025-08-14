@@ -25,7 +25,7 @@ export const benefitsOptions = [
     id: 'extra_child_pay' as const,
     label: '👶 Extra Pay For Additional Children',
   },
-  { id: 'other' as const, label: '✨ Other' },
+  // { id: 'other' as const, label: '✨ Other' },
 ];
 
 export default function Benefits() {
@@ -57,7 +57,7 @@ export default function Benefits() {
     // Remove if exists, add if doesn't exist and under 10 items
     const updatedBenefits = prev.includes(benefit.label)
       ? prev.filter((label) => label !== benefit.label)
-      : prev.length < 10
+      : prev.length < 6
       ? [...prev, benefit.label]
       : prev;
 
@@ -79,6 +79,10 @@ export default function Benefits() {
 
         <ThemedText style={styles.title}>
           What benefits do{'\n'}you require?
+        </ThemedText>
+
+        <ThemedText style={styles.subtitle}>
+          You can select up to 6 options
         </ThemedText>
 
         <ScrollView
@@ -115,9 +119,9 @@ export default function Benefits() {
           style={styles.buttonGradient}
         >
           <View style={styles.buttonContainer}>
-            <Button label='Skip' onPress={handleNext} variant='skip' />
+            {/* <Button label='Skip' onPress={handleNext} variant='skip' /> */}
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={caregiverRequiredBenefits?.length === 0}
@@ -153,13 +157,13 @@ const styles = StyleSheet.create({
     fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
     color: Colors.light.text,
-    marginBottom: 20,
+    // marginBottom: 20,
     marginTop: 20,
   },
   benefitsContainer: {
     flexDirection: 'column',
     gap: 12,
-    marginBottom: 32,
+    // marginBottom: 32,
   },
   pillWrapper: {
     alignSelf: 'flex-start',
@@ -175,7 +179,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     paddingVertical: 20,
   },
@@ -186,5 +190,13 @@ const styles = StyleSheet.create({
     right: 0,
     height: 100,
     paddingHorizontal: 20,
+  },
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 24,
   },
 });

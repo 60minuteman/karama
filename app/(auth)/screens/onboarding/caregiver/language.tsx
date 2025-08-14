@@ -1,17 +1,17 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { useState } from 'react';
-import { LinearGradient } from 'expo-linear-gradient';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { Language, useUserStore } from '@/services/state/user';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
-// type Language = 
+// type Language =
 //   | 'Spanish' | 'French' | 'English' | 'German' | 'Hausa' | 'Italian'
 //   | 'Russian' | 'Arabic' | 'Chinese' | 'Korean' | 'Japanese' | 'Yoruba'
 //   | 'Afrikaans' | 'Hindi' | 'Dutch' | 'Estonian' | 'Croatian' | 'Swedish'
@@ -19,27 +19,47 @@ import { Language, useUserStore } from '@/services/state/user';
 
 export default function LanguageScreen() {
   const router = useRouter();
-  const { caregiverLanguages, setCaregiverLanguages, setOnboardingScreen } = useUserStore()
+  const { caregiverLanguages, setCaregiverLanguages, setOnboardingScreen } =
+    useUserStore();
   // const [selectedLanguages, setSelectedLanguages] = useState<Language[]>([]);
 
   const languages: Language[] = [
-    'English', 'Spanish', 'French', 'German', 'Hausa', 'Italian',
-    'Russian', 'Arabic', 'Chinese', 'Korean', 'Japanese', 'Yoruba',
-    'Afrikaans', 'Hindi', 'Dutch', 'Estonian', 'Croatian', 'Swedish',
-    'Portuguese', 'Other'
+    'English',
+    'Spanish',
+    'French',
+    'German',
+    'Hausa',
+    'Italian',
+    'Russian',
+    'Arabic',
+    'Chinese',
+    'Korean',
+    'Japanese',
+    'Yoruba',
+    'Afrikaans',
+    'Hindi',
+    'Dutch',
+    'Estonian',
+    'Croatian',
+    'Swedish',
+    'Portuguese',
+    // 'Other'
   ];
 
   const toggleLanguageSelection = (label: Language) => {
     if (label === 'Other') {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/otherLanguage')
-      router.push('/(auth)/screens/onboarding/family/otherLanguage')
+      setOnboardingScreen('/(auth)/screens/onboarding/family/otherLanguage');
+      router.push('/(auth)/screens/onboarding/family/otherLanguage');
       return;
     }
     const prev = caregiverLanguages ?? [];
-    const updatedLanguages = prev.includes(label)
-      ? prev.filter((item) => item !== label)
-      : [...prev, label];
-    setCaregiverLanguages(updatedLanguages);
+    if (prev.includes(label)) {
+      const updatedLanguages = prev.filter((item) => item !== label);
+      setCaregiverLanguages(updatedLanguages);
+    } else if (prev.length < 6) {
+      const updatedLanguages = [...prev, label];
+      setCaregiverLanguages(updatedLanguages);
+    }
   };
 
   const handleNext = () => {
@@ -51,7 +71,7 @@ export default function LanguageScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+      <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -59,6 +79,10 @@ export default function LanguageScreen() {
 
         <ThemedText style={styles.title}>
           What language(s){'\n'}does your family{'\n'}speak?
+        </ThemedText>
+
+        <ThemedText style={styles.subtitle}>
+          You can choose up to 6 options
         </ThemedText>
 
         <ScrollView
@@ -71,7 +95,7 @@ export default function LanguageScreen() {
               <Pill
                 key={language}
                 label={language}
-                icon="💬"
+                icon='💬'
                 selected={caregiverLanguages?.includes(language)}
                 onPress={() => toggleLanguageSelection(language)}
               />
@@ -88,9 +112,9 @@ export default function LanguageScreen() {
           />
           <View style={styles.buttonContainer}>
             <Button
-              label="Next"
+              // label='Next'
               onPress={handleNext}
-              variant="compact"
+              variant='compact'
               disabled={caregiverLanguages?.length === 0}
             />
           </View>
@@ -123,7 +147,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,
-    marginBottom: 40,
+    // marginBottom: 40,
     fontWeight: '500',
     marginTop: 20,
   },
@@ -153,5 +177,14 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 24,
   },
 });

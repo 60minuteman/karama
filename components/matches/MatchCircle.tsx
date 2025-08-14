@@ -23,9 +23,11 @@ const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 export const MatchCircle = ({
   match,
   onPress,
+  setIsLoadingRoom,
 }: {
   match: any;
   onPress?: () => void;
+  setIsLoadingRoom?: (isLoading: boolean) => void;
 }) => {
   const [progress, setProgress] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -68,6 +70,9 @@ export const MatchCircle = ({
         text2: error?.response?.data?.message || 'Please try again',
       });
     },
+    onSettled: () => {
+      setIsLoadingRoom?.(false);
+    },
   });
 
   // console.log('recipientId', match?.caregiver_profile?.user?.user_id);
@@ -78,6 +83,7 @@ export const MatchCircle = ({
     }
 
     setIsLoading(true);
+    setIsLoadingRoom?.(true);
     createMessage.mutate({
       recipientId: match?.caregiver_profile?.user?.user_id,
       // text: 'Hello',

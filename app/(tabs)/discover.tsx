@@ -179,9 +179,20 @@ export default function DiscoverScreen() {
     useState(false);
   const [hasSkippedProfiles, setHasSkippedProfiles] = useState(false);
   const [isRefetchingProfiles, setIsRefetchingProfiles] = useState(false);
+  const [isProcessingAction, setIsProcessingAction] = useState(false);
+  const [lastCursor, setLastCursor] = useState('');
+  const [pendingActions, setPendingActions] = useState<
+    Array<{
+      type: 'like' | 'reject';
+      profileId: string;
+      profileData: any;
+    }>
+  >([]);
+  const [nextProfileIndex, setNextProfileIndex] = useState(1);
   const containerTwoRef = useRef<ContainerTwoRef>(null);
   const caregiverContainerRef = useRef<CaregiverContainerRef>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const loadingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { setMatchComplete, match_complete } = useStore();
   const { data: currentUser, isLoading: isLoadingCurrentUser } =
     useCurrentUser() as {
@@ -204,7 +215,7 @@ export default function DiscoverScreen() {
     retry: false,
   });
 
-  const { data, isLoading, error, refetch } = useMatchingCaregivers(
+  const { data, isLoading, error, refetch, isFetching } = useMatchingCaregivers(
     cursor,
     userData?.data?.role === 'FAMILY'
       ? '/family-discovery/get-matching-caregivers'
@@ -243,12 +254,34 @@ export default function DiscoverScreen() {
 
         // Reset refetching state
         setIsRefetchingProfiles(false);
+
+        // Clear loading timeout on success
+        if (loadingTimeoutRef.current) {
+          clearTimeout(loadingTimeoutRef.current);
+          loadingTimeoutRef.current = null;
+        }
       },
       onError: (error: any) => {
         console.error('Discovery fetch error:', error);
         setIsRefetchingProfiles(false);
+        // Reset cursor on error to prevent infinite loading
+        setCursor('');
+
+        // Clear loading timeout on error
+        if (loadingTimeoutRef.current) {
+          clearTimeout(loadingTimeoutRef.current);
+          loadingTimeoutRef.current = null;
+        }
       },
     }
+  );
+
+  console.log(
+    'Data=======',
+    isFetching,
+    isLoading,
+    profiles?.length,
+    isRefetchingProfiles
   );
 
   // Periodic profile checking
@@ -260,7 +293,7 @@ export default function DiscoverScreen() {
 
     intervalRef.current = setInterval(() => {
       console.log('=== Periodic Profile Check ===');
-      setIsRefetchingProfiles(true);
+      // setIsRefetchingProfiles(true);
       refetch();
     }, REFETCH_INTERVAL);
 
@@ -270,8 +303,20 @@ export default function DiscoverScreen() {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
       }
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+        loadingTimeoutRef.current = null;
+      }
     };
   }, [token, userData?.role, refetch]);
+
+  // Clean up pending actions when profiles change
+  useEffect(() => {
+    if (profiles.length > 0) {
+      // Clear old pending actions when new profiles are loaded
+      setPendingActions([]);
+    }
+  }, [profiles]);
 
   // Removed profile filtering for simplicity
 
@@ -461,28 +506,60 @@ export default function DiscoverScreen() {
     }
 
     if (showingSkippedProfiles) {
+      console.log('currentIndex last============ 1', currentIndex);
+
       // Handle skipped profiles navigation
       if (currentIndex < skippedProfiles.length - 1) {
+        console.log('currentIndex last============ 2', currentIndex);
         setCurrentIndex(currentIndex + 1);
       } else {
+        console.log('currentIndex last============ 3', currentIndex);
+
         // No more skipped profiles - show empty state
         setCurrentProfile(null);
       }
     } else {
       // Handle regular profiles navigation
+      console.log('currentIndex last============ 4', currentIndex);
       if (currentIndex < profiles.length - 1) {
         // Move to next profile in current batch
         setCurrentIndex(currentIndex + 1);
+        // Prefetch next profile index
+        setNextProfileIndex(Math.min(currentIndex + 2, profiles.length - 1));
       } else {
         // Reached end of current batch - check if we can fetch more
-        const nextCursorFromData = (data as any)?.data?.next_cursor;
+        const lastProfile = profiles[profiles.length - 1];
+        const lastProfileId =
+          userData?.data?.role === 'FAMILY'
+            ? lastProfile?.caregiver_profile?.id
+            : lastProfile?.family_profile?.id;
 
-        if (nextCursorFromData) {
-          // There are more profiles available - fetch next batch
-          console.log('Fetching next batch with cursor:', nextCursorFromData);
-          setIsRefetchingProfiles(true);
-          setCursor(nextCursorFromData);
+        console.log('Last profile in batch:', lastProfile);
+        console.log('Last profile ID for cursor:', lastProfileId);
+
+        if (lastProfileId) {
+          // Use the last profile ID as cursor for next batch
+          console.log(
+            'Fetching next batch with last profile ID:',
+            lastProfileId
+          );
+          console.log('Previous cursor:', lastCursor);
+          refetch();
+          // setIsRefetchingProfiles(true);
+          setLastCursor(cursor); // Store current cursor before updating
+          setCursor(lastProfileId);
           setCurrentIndex(0); // Reset index for new batch
+          setNextProfileIndex(1); // Reset next profile index
+
+          // Set timeout to prevent infinite loading
+          if (loadingTimeoutRef.current) {
+            clearTimeout(loadingTimeoutRef.current);
+          }
+          loadingTimeoutRef.current = setTimeout(() => {
+            console.log('Loading timeout - resetting cursor');
+            setIsRefetchingProfiles(false);
+            setCursor(lastCursor); // Revert to previous cursor
+          }, 10000); // 10 second timeout
         } else {
           // No more profiles available from backend - show skip state
           setCurrentProfile(null);
@@ -508,10 +585,20 @@ export default function DiscoverScreen() {
     },
     onSuccess: (data: any) => {
       console.log('like data', data?.data);
-      moveToNextProfile();
+
+      // Remove from pending actions
+      setPendingActions((prev) =>
+        prev.filter(
+          (action) =>
+            action.type !== 'like' ||
+            action.profileId !== data?.data?.profile_id
+        )
+      );
+
+      // Handle match - show modal even if user has moved on
       if (
         userData?.data?.role === 'FAMILY' &&
-        data?.data?.match.match_status === 'COMPLETED'
+        data?.data?.match?.match_status === 'COMPLETED'
       ) {
         setMatchComplete(data?.data);
         router.push('/(app)/itsAmatch');
@@ -520,7 +607,7 @@ export default function DiscoverScreen() {
 
       if (
         userData?.data?.role === 'CAREGIVER' &&
-        data?.data?.match.match_status === 'COMPLETED'
+        data?.data?.match?.match_status === 'COMPLETED'
       ) {
         setMatchComplete(data?.data);
         router.push('/(app)/profileScreens/caregiverItsAmatch');
@@ -528,21 +615,26 @@ export default function DiscoverScreen() {
       }
     },
     onError: (error: any) => {
-      if (
-        error['response'].data?.message == 'Caregiver already liked' ||
-        error['response'].data?.message == 'Family already liked'
-      ) {
-        return moveToNextProfile();
-      }
-      setCurrentIndex(Math.max(0, currentIndex - 1));
-      console.log(
-        'error["response"].data?.message',
-        error['response'].data?.message
+      console.log('Like API error:', error);
+
+      // Remove from pending actions
+      setPendingActions((prev) =>
+        prev.filter((action) => action.type !== 'like')
       );
+
+      if (
+        error['response']?.data?.message == 'Caregiver already liked' ||
+        error['response']?.data?.message == 'Family already liked'
+      ) {
+        // Already moved to next profile optimistically, no need to move again
+        return;
+      }
+
+      // Don't revert optimistic update - just show toast
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
-        text2: error['response'].data?.message,
+        text2: error['response']?.data?.message || 'Please try again',
       });
     },
   });
@@ -556,14 +648,28 @@ export default function DiscoverScreen() {
       return customAxios.patch(endpoint);
     },
     onSuccess: (data: any) => {
-      moveToNextProfile();
+      console.log('Reject API success:', data);
+
+      // Remove from pending actions
+      setPendingActions((prev) =>
+        prev.filter((action) => action.type !== 'reject')
+      );
+
+      // Optimistic update already moved to next profile, nothing more to do
     },
     onError: (error: any) => {
-      setCurrentIndex(Math.max(0, currentIndex - 1));
+      console.log('Reject API error:', error);
+
+      // Remove from pending actions
+      setPendingActions((prev) =>
+        prev.filter((action) => action.type !== 'reject')
+      );
+
+      // Don't revert optimistic update - just show toast
       Toast.show({
         type: 'error',
         text1: 'Something went wrong',
-        text2: error['response'].data?.message,
+        text2: error['response']?.data?.message || 'Please try again',
       });
     },
   });
@@ -582,6 +688,43 @@ export default function DiscoverScreen() {
     }
     return age;
   };
+
+  // Prefetch next profile data for smooth transitions
+  const prefetchNextProfile = useCallback(() => {
+    if (currentIndex < profiles.length - 1) {
+      const nextProfile = profiles[currentIndex + 1];
+      if (nextProfile) {
+        // Preload next profile data
+        console.log('Prefetching next profile:', nextProfile);
+      }
+    }
+  }, [currentIndex, profiles]);
+
+  // Handle smooth swipe animations
+  const handleSmoothSwipe = useCallback(
+    (direction: 'left' | 'right') => {
+      if (isProcessingAction) return;
+
+      // Trigger swipe animation immediately
+      if (userData?.data?.role === 'FAMILY') {
+        if (direction === 'left') {
+          containerTwoRef.current?.swipeLeft();
+        } else {
+          containerTwoRef.current?.swipeRight();
+        }
+      } else {
+        if (direction === 'left') {
+          caregiverContainerRef.current?.swipeLeft();
+        } else {
+          caregiverContainerRef.current?.swipeRight();
+        }
+      }
+
+      // Prefetch next profile for smooth transition
+      prefetchNextProfile();
+    },
+    [isProcessingAction, userData?.data?.role, prefetchNextProfile]
+  );
 
   // console.log('currentProfile', currentProfile);
 
@@ -759,20 +902,68 @@ export default function DiscoverScreen() {
   // console.log('profiledata', currentProfile?.family_profile?.pictures);
 
   const handleLike = () => {
+    if (isProcessingAction) return; // Prevent multiple rapid clicks
+
+    const currentProfileData = currentProfile;
+    const profileId =
+      userData?.data?.role === 'FAMILY'
+        ? currentProfileData?.caregiver_profile?.id
+        : currentProfileData?.family_profile?.id;
+
+    if (!profileId) return;
+
+    // Add to pending actions for background processing
+    setPendingActions((prev) => [
+      ...prev,
+      {
+        type: 'like',
+        profileId,
+        profileData: currentProfileData,
+      },
+    ]);
+
+    // Optimistic UI update - immediately move to next profile
+    moveToNextProfile();
+
+    // Make API call in background
     submitLike.mutate(
       userData?.data?.role === 'FAMILY'
         ? {
-            caregiver_profile_id: `${currentProfile?.caregiver_profile?.id}`,
-            score: `${currentProfile?.score}`,
+            caregiver_profile_id: `${profileId}`,
+            score: `${currentProfileData?.score}`,
           }
         : {
-            family_profile_id: `${currentProfile?.family_profile?.id}`,
-            score: `${currentProfile?.score}`,
+            family_profile_id: `${profileId}`,
+            score: `${currentProfileData?.score}`,
           }
     );
   };
 
   const handleReject = () => {
+    if (isProcessingAction) return; // Prevent multiple rapid clicks
+
+    const currentProfileData = currentProfile;
+    const profileId =
+      userData?.data?.role === 'FAMILY'
+        ? currentProfileData?.caregiver_profile?.id
+        : currentProfileData?.family_profile?.id;
+
+    if (!profileId) return;
+
+    // Add to pending actions for background processing
+    setPendingActions((prev) => [
+      ...prev,
+      {
+        type: 'reject',
+        profileId,
+        profileData: currentProfileData,
+      },
+    ]);
+
+    // Optimistic UI update - immediately move to next profile
+    moveToNextProfile();
+
+    // Make API call in background
     submitReject.mutate();
   };
 
@@ -792,8 +983,13 @@ export default function DiscoverScreen() {
               { height: '80%', alignItems: 'center' },
             ]}
           >
-            {isLoadingUser || isLoading || isRefetchingProfiles ? (
-              <ProfileCardLoader />
+            {isLoadingUser ||
+            isLoading ||
+            isRefetchingProfiles ||
+            isFetching ? (
+              <>
+                <ProfileCardLoader />
+              </>
             ) : !currentProfile &&
               !hasCheckedSkippedProfiles &&
               !(data as any)?.data?.next_cursor ? (
@@ -850,42 +1046,57 @@ export default function DiscoverScreen() {
               </>
             )}
           </View>
-          {currentProfile && (
-            <>
-              <FloatingButton
-                icon={
-                  <Image
-                    source={require('@/assets/picker/xmark.png')}
-                    style={[styles.icon, styles.xmarkIcon]}
-                  />
-                }
-                style={[styles.rejectButton, { width: buttonWidth }] as any}
-                onPress={() => {
-                  if (userData?.data?.role === 'FAMILY') {
-                    containerTwoRef.current?.swipeLeft();
-                  } else {
-                    caregiverContainerRef.current?.swipeLeft();
+          {currentProfile &&
+            !isFetching &&
+            !isRefetchingProfiles &&
+            !isLoading && (
+              <>
+                <FloatingButton
+                  icon={
+                    <Image
+                      source={require('@/assets/picker/xmark.png')}
+                      style={[
+                        styles.icon,
+                        styles.xmarkIcon,
+                        isProcessingAction && styles.disabledIcon,
+                      ]}
+                    />
                   }
-                }}
-              />
-              <FloatingButton
-                icon={
-                  <Image
-                    source={require('@/assets/picker/heart.png')}
-                    style={[styles.icon, styles.heartIcon]}
-                  />
-                }
-                style={[styles.likeButton, { width: buttonWidth }] as any}
-                onPress={() => {
-                  if (userData?.data?.role === 'FAMILY') {
-                    containerTwoRef.current?.swipeRight();
-                  } else {
-                    caregiverContainerRef.current?.swipeRight();
+                  style={
+                    [
+                      styles.rejectButton,
+                      { width: buttonWidth },
+                      isProcessingAction && styles.disabledButton,
+                    ] as any
                   }
-                }}
-              />
-            </>
-          )}
+                  onPress={() => {
+                    handleSmoothSwipe('left');
+                  }}
+                />
+                <FloatingButton
+                  icon={
+                    <Image
+                      source={require('@/assets/picker/heart.png')}
+                      style={[
+                        styles.icon,
+                        styles.heartIcon,
+                        isProcessingAction && styles.disabledIcon,
+                      ]}
+                    />
+                  }
+                  style={
+                    [
+                      styles.likeButton,
+                      { width: buttonWidth },
+                      isProcessingAction && styles.disabledButton,
+                    ] as any
+                  }
+                  onPress={() => {
+                    handleSmoothSwipe('right');
+                  }}
+                />
+              </>
+            )}
         </View>
         {/* <HomeNav /> */}
       </View>
@@ -943,5 +1154,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
+  },
+  disabledIcon: {
+    opacity: 0.5,
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
 });

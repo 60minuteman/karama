@@ -69,6 +69,20 @@ export default function PaymentScreen() {
     { label: 'Salary Base', icon: '💰' },
   ];
 
+  // Function to check if a price should be highlighted
+  const isPriceHighlighted = (price: number) => {
+    if (!sliderValues || !Array.isArray(sliderValues)) return false;
+
+    // If we have a range (two values), check if the price falls within the range
+    if (sliderValues.length === 2) {
+      const [min, max] = sliderValues;
+      return price >= min && price <= max;
+    }
+
+    // If we have a single value, check for exact match
+    return sliderValues.includes(price);
+  };
+
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/PaymentMethod');
     router.push({
@@ -112,6 +126,14 @@ export default function PaymentScreen() {
     setCaregiverSalaryAmount(formattedText);
   };
 
+  // Format the display value with commas
+  const formatSalaryDisplay = (value: string | null | undefined) => {
+    if (!value) return '';
+    // Remove any existing commas and format with new commas
+    const cleanValue = value.replace(/,/g, '');
+    return cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -147,13 +169,69 @@ export default function PaymentScreen() {
                 <View style={styles.inputContainer}>
                   <View style={styles.sliderContainer}>
                     <View style={styles.sliderLabels}>
-                      <ThemedText>$15</ThemedText>
-                      <ThemedText>$20</ThemedText>
-                      <ThemedText>$25</ThemedText>
-                      <ThemedText>$30</ThemedText>
-                      <ThemedText>$35</ThemedText>
-                      <ThemedText>$40</ThemedText>
-                      <ThemedText>$45+</ThemedText>
+                      <ThemedText
+                        style={
+                          isPriceHighlighted(15)
+                            ? styles.highlightedPrice
+                            : undefined
+                        }
+                      >
+                        $15
+                      </ThemedText>
+                      <ThemedText
+                        style={
+                          isPriceHighlighted(20)
+                            ? styles.highlightedPrice
+                            : undefined
+                        }
+                      >
+                        $20
+                      </ThemedText>
+                      <ThemedText
+                        style={
+                          isPriceHighlighted(25)
+                            ? styles.highlightedPrice
+                            : undefined
+                        }
+                      >
+                        $25
+                      </ThemedText>
+                      <ThemedText
+                        style={
+                          isPriceHighlighted(30)
+                            ? styles.highlightedPrice
+                            : undefined
+                        }
+                      >
+                        $30
+                      </ThemedText>
+                      <ThemedText
+                        style={
+                          isPriceHighlighted(35)
+                            ? styles.highlightedPrice
+                            : undefined
+                        }
+                      >
+                        $35
+                      </ThemedText>
+                      <ThemedText
+                        style={
+                          isPriceHighlighted(40)
+                            ? styles.highlightedPrice
+                            : undefined
+                        }
+                      >
+                        $40
+                      </ThemedText>
+                      <ThemedText
+                        style={
+                          isPriceHighlighted(45)
+                            ? styles.highlightedPrice
+                            : undefined
+                        }
+                      >
+                        $45+
+                      </ThemedText>
                     </View>
                     <MultiSlider
                       values={sliderValues}
@@ -197,7 +275,7 @@ export default function PaymentScreen() {
                       style={styles.input}
                       placeholder='50,000'
                       placeholderTextColor='#999'
-                      value={caregiverSalaryAmount || ''}
+                      value={formatSalaryDisplay(caregiverSalaryAmount)}
                       onChangeText={handleSalaryChange}
                       keyboardType='numeric'
                       autoFocus
@@ -210,7 +288,7 @@ export default function PaymentScreen() {
 
             <View style={styles.buttonContainer}>
               <Button
-                label='Next'
+                // label='Next'
                 onPress={handleNext}
                 variant='compact'
                 disabled={
@@ -321,5 +399,9 @@ const styles = StyleSheet.create({
     height: 20,
     backgroundColor: Colors.light.primary,
     borderRadius: 10,
+  },
+  highlightedPrice: {
+    color: '#FF6B35', // Orange color for highlighted prices
+    fontWeight: 'bold',
   },
 });

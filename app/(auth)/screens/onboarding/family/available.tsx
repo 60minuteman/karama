@@ -91,7 +91,7 @@ export default function AvailabilityScreen() {
         >
           <View style={styles.buttonContainer}>
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={!selected_availability}
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 40,
     color: Colors.light.text,
-    marginTop: 20,
+    // marginTop: 20,
   },
   optionsContainer: {
     flexDirection: 'row',

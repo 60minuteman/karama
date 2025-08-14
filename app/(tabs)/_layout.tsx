@@ -190,13 +190,15 @@ export default function TabsLayout() {
         name='index'
         options={{
           title: 'For You',
-          tabBarIcon: ({ focused }) => (
-            <Image
-              source={focused ? navImages['active-You'] : navImages.You}
-              style={{ width: 24, height: 24 }}
-              resizeMode='contain'
-            />
-          ),
+          href: null,
+
+          // tabBarIcon: ({ focused }) => (
+          //   <Image
+          //     source={focused ? navImages['active-You'] : navImages.You}
+          //     style={{ width: 24, height: 24 }}
+          //     resizeMode='contain'
+          //   />
+          // ),
         }}
       />
       <Tabs.Screen
@@ -243,16 +245,18 @@ export default function TabsLayout() {
       <Tabs.Screen
         name='community'
         options={{
-          title: 'Community',
-          tabBarIcon: ({ focused }) => (
-            <Image
-              source={
-                focused ? navImages['active-Community'] : navImages.Community
-              }
-              style={{ width: 24, height: 24 }}
-              resizeMode='contain'
-            />
-          ),
+          href: null,
+
+          // title: 'Community',
+          // tabBarIcon: ({ focused }) => (
+          //   <Image
+          //     source={
+          //       focused ? navImages['active-Community'] : navImages.Community
+          //     }
+          //     style={{ width: 24, height: 24 }}
+          //     resizeMode='contain'
+          //   />
+          // ),
         }}
       />
       <Tabs.Screen

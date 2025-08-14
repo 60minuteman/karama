@@ -52,7 +52,7 @@ export default function Page() {
                   label={option}
                   onPress={() => {
                     setCaregiverExperienceDuration(option);
-                    handleNext();
+                    // handleNext();
                   }}
                   selected={caregiverExperienceDuration === option}
                   style={styles.option}
@@ -65,7 +65,7 @@ export default function Page() {
 
       <View style={styles.bottomNav}>
         <Button
-          label='Next'
+          // label='Next'
           onPress={handleNext}
           variant='compact'
           style={styles.nextButton}

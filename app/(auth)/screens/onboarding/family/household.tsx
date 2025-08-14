@@ -50,7 +50,7 @@ export default function HouseholdScreen() {
       { label: '🐟 Pescatarian' },
       { label: '🍉 Sugar Free' },
       { label: '🚫 None' },
-      { label: '🥑 Other' },
+      // { label: '🥑 Other' },
     ],
     Rules: [
       { label: '📵 No Screens' },
@@ -65,7 +65,7 @@ export default function HouseholdScreen() {
       { label: '🚭 No Smoking' },
       { label: '☄️ No Throwing Balls' },
       { label: '🛋️ No Jumping On Furniture' },
-      { label: '🎈 Other' },
+      // { label: '🎈 Other' },
     ],
     Religion: [
       { label: '🕌 Islam' },
@@ -75,7 +75,7 @@ export default function HouseholdScreen() {
       { label: '🪷 Hinduism' },
       { label: '⛪️ Christianity' },
       { label: '⚛️ Athesisim' },
-      { label: '📿 Other' },
+      // { label: '📿 Other' },
     ],
   };
   const { otherDiet, otherRule, otherReligion } = useOtherStore();
@@ -112,7 +112,7 @@ export default function HouseholdScreen() {
           (currentSelections.diets?.length || 0) +
           (currentSelections.rules?.length || 0) +
           (currentSelections.religion ? 1 : 0);
-        if (totalSelections >= 10) {
+        if (totalSelections >= 6) {
           return; // Don't add if already at 10 total selections
         }
         currentSelections.diets.push(label);
@@ -126,7 +126,7 @@ export default function HouseholdScreen() {
           (currentSelections.diets?.length || 0) +
           (currentSelections.rules?.length || 0) +
           (currentSelections.religion ? 1 : 0);
-        if (totalSelections >= 10) {
+        if (totalSelections >= 6) {
           return; // Don't add if already at 10 total selections
         }
         currentSelections.rules.push(label);
@@ -138,7 +138,7 @@ export default function HouseholdScreen() {
         (currentSelections.diets?.length || 0) +
         (currentSelections.rules?.length || 0) +
         (currentSelections.religion ? 1 : 0);
-      if (!currentSelections.religion && totalSelections >= 10) {
+      if (!currentSelections.religion && totalSelections >= 6) {
         return; // Don't add if already at 10 total selections
       }
       currentSelections.religion =
@@ -158,9 +158,9 @@ export default function HouseholdScreen() {
 
   const handleNext = () => {
     // Check if religion is selected
-    if (!family_selections.religion) {
-      return; // Don't proceed if no religion is selected
-    }
+    // if (!family_selections.religion) {
+    //   return; // Don't proceed if no religion is selected
+    // }
     setOnboardingScreen('/(auth)/screens/onboarding/family/philosophy');
     router.push('/(auth)/screens/onboarding/family/philosophy');
   };
@@ -174,6 +174,10 @@ export default function HouseholdScreen() {
 
         <ThemedText style={styles.title}>
           Tell us about your{'\n'}household.
+        </ThemedText>
+
+        <ThemedText style={styles.subtitle}>
+          you can choose up to 6 options (religion is compulsory)
         </ThemedText>
 
         <View style={styles.scrollViewContainer}>
@@ -249,15 +253,12 @@ export default function HouseholdScreen() {
             style={styles.buttonGradient}
           >
             <View style={styles.buttonContainer}>
-              <Button label='Skip' onPress={handleNext} variant='compact' />
+              {/* <Button label='Skip' onPress={handleNext} variant='skip' /> */}
               <Button
-                label='Next'
+                // label='Next'
                 onPress={handleNext}
                 variant='compact'
-                disabled={
-                  Object.keys(family_selections).length === 0 ||
-                  !family_selections.religion
-                }
+                disabled={Object.keys(family_selections).length === 0}
               />
             </View>
           </LinearGradient>
@@ -306,7 +307,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,
-    marginBottom: 40,
+    // marginBottom: 40,
     fontWeight: '500',
     marginTop: 20,
   },
@@ -350,6 +351,15 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    // marginBottom: 16,
+    marginTop: 16,
   },
 });

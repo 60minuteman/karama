@@ -30,7 +30,7 @@ const customAxios = axios.create({
 
 const requestHandler = async (request: any) => {
   const token = await AsyncStorage.getItem('token');
-  // console.log('token==========', token);
+  console.log('token==========', token);
   if (token) {
     request.headers.Authorization = `Bearer ${token}`;
   }

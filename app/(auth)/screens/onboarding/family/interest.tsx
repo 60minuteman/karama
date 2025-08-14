@@ -33,7 +33,7 @@ const interests: Record<Category, Interest[]> = {
     { label: '📸 Photography', category: 'Creative' },
     { label: '🎥 Videography', category: 'Creative' },
     { label: '👗 Fashion Design', category: 'Creative' },
-    { label: '👨‍🎨 Other', category: 'Creative' },
+    // { label: '👨‍🎨 Other', category: 'Creative' },
   ],
   Instruments: [
     { label: '🎹 Piano', category: 'Instruments' },
@@ -47,7 +47,7 @@ const interests: Record<Category, Interest[]> = {
     { label: '🪈 Flute', category: 'Instruments' },
     { label: '🎻 Violin', category: 'Instruments' },
     { label: '🪘 Conga', category: 'Instruments' },
-    { label: '🎼 Other', category: 'Instruments' },
+    // { label: '🎼 Other', category: 'Instruments' },
   ],
   Sports: [
     { label: '⛸️ Ice skating', category: 'Sports' },
@@ -79,14 +79,14 @@ const interests: Record<Category, Interest[]> = {
     { label: '🛼 Roller Skating', category: 'Sports' },
     { label: '🛹 Skateboarding', category: 'Sports' },
     { label: '🏇 Horseback Riding', category: 'Sports' },
-    { label: '🏅 Other', category: 'Sports' },
+    // { label: '🏅 Other', category: 'Sports' },
   ],
   STEM: [
     { label: '💻 Coding', category: 'STEM' },
     { label: '🧬 Sciences', category: 'STEM' },
     { label: '🤖 Robotics', category: 'STEM' },
     { label: '🧮 Mathematics', category: 'STEM' },
-    { label: '🔬 Other', category: 'STEM' },
+    // { label: '🔬 Other', category: 'STEM' },
   ],
 };
 
@@ -198,6 +198,10 @@ export default function InterestScreen() {
           What are your{'\n'}children's interests?
         </ThemedText>
 
+        <ThemedText style={styles.subtitle}>
+          You can choose up to 10 options
+        </ThemedText>
+
         <View style={styles.scrollViewContainer}>
           <LinearGradient
             colors={[Colors.light.background, 'rgba(255,255,255,0)']}
@@ -243,9 +247,9 @@ export default function InterestScreen() {
             pointerEvents='none'
           />
           <View style={styles.buttonContainer}>
-            <Button label='Skip' onPress={handleNext} variant='compact' />
+            {/* <Button label='Skip' onPress={handleNext} variant='compact' /> */}
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={
@@ -301,7 +305,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,
-    marginBottom: 40,
+    // marginBottom: 40,
     fontWeight: '500',
     marginTop: 20,
     // color: '#002140',
@@ -334,6 +338,15 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    // marginBottom: 16,
+    marginTop: 24,
   },
 });

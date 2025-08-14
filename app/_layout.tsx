@@ -138,6 +138,19 @@ function RootLayoutNav() {
   console.log('user', user);
   console.log('token', token);
 
+  // useEffect(() => {
+  //   const clearAsyncStorage = async () => {
+  //     try {
+  //       await AsyncStorage.clear();
+  //       console.log('Async storage cleared successfully.');
+  //     } catch (error) {
+  //       console.error('Error clearing async storage:', error);
+  //     }
+  //   };
+
+  //   clearAsyncStorage();
+  // }, []);
+
   if (!hydrated) return null;
 
   return (

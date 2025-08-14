@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { router } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
-import { CaregiverConditionExperience, useUserStore } from '@/services/state/user';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
+import {
+  CaregiverConditionExperience,
+  useUserStore,
+} from '@/services/state/user';
+import { router } from 'expo-router';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 const CONDITIONS = [
   'Dyslexia',
@@ -30,8 +33,7 @@ export default function Page() {
     hasNeuroDivergentExperience,
     setHasNeuroDivergentExperience,
     setOnboardingScreen,
-  }
-    = useUserStore()
+  } = useUserStore();
   // const [selection, setSelection] = useState<'yes' | 'no' | null>(null);
   // const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
 
@@ -43,7 +45,6 @@ export default function Page() {
   //   );
   // };
   const toggleConditionSelection = (label: CaregiverConditionExperience) => {
-  
     const prev = caregiverConditionExperience ?? [];
     const updatedConditions = prev.includes(label)
       ? prev.filter((item) => item !== label)
@@ -52,35 +53,36 @@ export default function Page() {
   };
 
   const handleNext = () => {
-    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/pet')
-    router.push('/(auth)/screens/onboarding/caregiver/pet')
-  }
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/pet');
+    router.push('/(auth)/screens/onboarding/caregiver/pet');
+  };
 
   const handleNoPress = () => {
     setHasNeuroDivergentExperience('no');
     handleNext();
-  }
+  };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
+      <Header variant='back' style={{ fontFamily: 'Bogart-Bold' }} />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.2} />
 
         <ThemedText style={styles.title}>
-          Do you have experience working with neurodivergent or impaired children?
+          Do you have experience working with neurodivergent or impaired
+          children?
         </ThemedText>
 
         <View style={[styles.optionsContainer, { justifyContent: 'flex-end' }]}>
           <Pill
-            label="Yes"
+            label='Yes'
             onPress={() => setHasNeuroDivergentExperience('yes')}
             selected={hasNeuroDivergentExperience === 'yes'}
           />
           <Pill
-            label="No"
+            label='No'
             onPress={handleNoPress}
             selected={hasNeuroDivergentExperience === 'no'}
           />
@@ -103,15 +105,15 @@ export default function Page() {
       </ScrollView>
 
       <View style={styles.bottomNav}>
-        <Button
+        {/* <Button
           label="Skip"
           onPress={handleNext}
           variant="skip"
-        />
+        /> */}
         <Button
-          label="Next"
+          // label='Next'
           onPress={handleNext}
-          variant="compact"
+          variant='compact'
           disabled={!hasNeuroDivergentExperience}
         />
       </View>
@@ -155,9 +157,9 @@ const styles = StyleSheet.create({
   },
   bottomNav: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     padding: 20,
     paddingBottom: 40,
     backgroundColor: Colors.light.background,
-  }
-}); 
+  },
+});

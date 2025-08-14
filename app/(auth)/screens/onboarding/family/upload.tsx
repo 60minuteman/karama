@@ -194,7 +194,7 @@ export default function Page() {
         <View style={styles.bottomNav}>
           <View style={styles.buttonContainer}>
             <Button
-              label='Next'
+              // label='Next'
               onPress={() => uploadMutation.mutate()}
               variant='compact'
               disabled={family_images.length < 4 || uploadMutation.isPending}

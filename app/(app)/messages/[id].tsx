@@ -490,6 +490,8 @@ const styles = StyleSheet.create({
   },
   systemText: {
     fontSize: 14,
+    fontFamily: 'Poppins',
+    fontWeight: 700,
     color: '#999999',
   },
 });

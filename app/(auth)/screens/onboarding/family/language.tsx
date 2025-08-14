@@ -5,45 +5,51 @@ import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
-import { useUserStore } from '@/services/state/user';
+import { Language, useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-const languages = [
-  '💬 English',
-  '💬 Spanish',
-  '💬 French',
-  '💬 German',
-  '💬 Hausa',
-  '💬 Italian',
-  '💬 Russian',
-  '💬 Arabic',
-  '💬 Chinese',
-  '💬 Korean',
-  '💬 Japanese',
-  '💬 Yoruba',
-  '💬 Afrikaans',
-  '💬 Hindi',
-  '💬 Dutch',
-  '💬 Estonian',
-  '💬 Croatian',
-  '💬 Swedish',
-  '💬 Portuguese',
-  '💬 Other',
-] as const;
+const languages: Language[] = [
+  'English',
+  'Spanish',
+  'French',
+  'German',
+  'Hausa',
+  'Italian',
+  'Russian',
+  'Arabic',
+  'Chinese',
+  'Korean',
+  'Japanese',
+  'Yoruba',
+  'Afrikaans',
+  'Hindi',
+  'Dutch',
+  'Estonian',
+  'Croatian',
+  'Swedish',
+  'Portuguese',
+  'Other',
+];
 
 export default function LanguageScreen() {
   const router = useRouter();
   const { family_languages, setFamilyLanguages, setOnboardingScreen } =
     useUserStore();
 
-  const toggleLanguage = (language: (typeof languages)[number]) => {
+  const toggleLanguage = (language: Language) => {
     if (language === 'Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherLanguage');
       router.push('/(auth)/screens/onboarding/family/otherLanguage');
       return;
     }
+
+    // Check if trying to add a new language when already at max (6)
+    if (!family_languages.includes(language) && family_languages.length >= 6) {
+      return; // Don't allow adding more than 6 languages
+    }
+
     const newLanguages = family_languages.includes(language)
       ? family_languages.filter((l) => l !== language)
       : [...family_languages, language];
@@ -69,6 +75,10 @@ export default function LanguageScreen() {
           What language(s){'\n'}does your family{'\n'}speak?
         </ThemedText>
 
+        <ThemedText style={styles.subtitle}>
+          You can choose up to 6 options
+        </ThemedText>
+
         <View style={styles.scrollViewContainer}>
           <LinearGradient
             colors={[Colors.light.background, 'rgba(255,255,255,0)']}
@@ -84,10 +94,13 @@ export default function LanguageScreen() {
               {languages.map((language) => (
                 <Pill
                   key={language}
-                  label={language}
-                  // icon='💬'
+                  label={`💬 ${language}`}
                   selected={family_languages.includes(language)}
                   onPress={() => toggleLanguage(language)}
+                  disabled={
+                    !family_languages.includes(language) &&
+                    family_languages.length >= 6
+                  }
                 />
               ))}
             </View>
@@ -101,7 +114,7 @@ export default function LanguageScreen() {
           />
           <View style={styles.buttonContainer}>
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={family_languages.length === 0}
@@ -130,7 +143,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,
-    marginBottom: 40,
+    marginBottom: 24,
     marginTop: 20,
     fontWeight: '500',
   },
@@ -180,5 +193,13 @@ const styles = StyleSheet.create({
     right: 20,
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    // marginBottom: 24,
+    // marginTop: 10,
   },
 });

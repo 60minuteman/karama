@@ -47,13 +47,14 @@ export const useMatchingCaregivers = (
   endpoint: string,
   options?: any
 ) => {
+  console.log('cursor=====================', cursor);
   return useQuery({
     queryKey: ['matchingCaregivers', cursor],
     queryFn: async () => {
       const response = await customAxios.get(endpoint, {
         params: {
-          cursor,
-          page_size: 10, // Request 10 profiles at a time
+          // cursor,
+          page_size: 20, // Request 10 profiles at a time
         },
         headers: {
           ...options?.headers,

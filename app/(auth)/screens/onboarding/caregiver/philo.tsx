@@ -19,7 +19,7 @@ const PHILOSOPHIES = [
   { label: '🌈 Gentle Parenting' as const, icon: '🌈' },
   { label: '🌈 Permissive Parenting' as const, icon: '🌈' },
   { label: '🌈 Other' as const, icon: '🌈' },
-  { label: '🚫 None' as const, icon: '🚫' },
+  // { label: '🚫 None' as const, icon: '🚫' },
 ];
 
 export default function PhiloScreen() {
@@ -47,10 +47,19 @@ export default function PhiloScreen() {
       router.push('/(auth)/screens/onboarding/caregiver/speak');
     } else {
       const prev = caregiverPhilosophyExperience ?? [];
-      const selectedPhilosophies = prev.includes(philosophy)
-        ? prev.filter((item) => item !== philosophy)
-        : [...prev, philosophy];
-      setCaregiverPhilosophyExperience(selectedPhilosophies);
+      const isSelected = prev.includes(philosophy);
+
+      // If the philosophy is already selected, remove it
+      if (isSelected) {
+        const selectedPhilosophies = prev.filter((item) => item !== philosophy);
+        setCaregiverPhilosophyExperience(selectedPhilosophies);
+      } else {
+        // If not selected, add it if the total selected is less than 4
+        if (prev.length < 4) {
+          const selectedPhilosophies = [...prev, philosophy];
+          setCaregiverPhilosophyExperience(selectedPhilosophies);
+        }
+      }
     }
   };
 
@@ -107,6 +116,10 @@ export default function PhiloScreen() {
           {'\n'}philosophies?
         </ThemedText>
 
+        <ThemedText style={styles.subtitle}>
+          You can select up to 4 options
+        </ThemedText>
+
         <View style={styles.optionsContainer}>
           <Pill label='Yes' selected={true} />
           <Pill label='No' selected={false} />
@@ -133,9 +146,9 @@ export default function PhiloScreen() {
         </ScrollView>
 
         <View style={styles.bottomContainer}>
-          <Button label='Skip' onPress={handleNext} variant='skip' />
+          {/* <Button label='Skip' onPress={handleNext} variant='skip' /> */}
           <Button
-            label='Next'
+            // label='Next'
             onPress={handleNext}
             variant='compact'
             disabled={caregiverPhilosophyExperience?.length === 0}
@@ -163,7 +176,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     lineHeight: 44,
     color: Colors.light.text,
-    marginBottom: 40,
+    // marginBottom: 40,
     fontWeight: '600',
     marginTop: 20,
   },
@@ -189,7 +202,15 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     backgroundColor: Colors.light.background,
+  },
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 24,
   },
 });

@@ -20,17 +20,14 @@ import {
 
 export default function PromptAnswer() {
   const router = useRouter();
-  const { prompt } = useLocalSearchParams();
-   const { 
-      prompts,
-      addPrompts
-    } = useOtherStore();
+  const { prompt, selectedIndex } = useLocalSearchParams();
+  const { prompts, addPrompts, updatePromptAtIndex } = useOtherStore();
   const {
     family_prompt_answer,
     family_prompt,
     setFamilyPromptAnswer,
     setOnboardingScreen,
-    family_prompt_category
+    family_prompt_category,
   } = useUserStore();
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
@@ -63,16 +60,26 @@ export default function PromptAnswer() {
 
   const handleAddPrompt = (answer: string) => {
     if (answer) {
-      addPrompts({
+      const index = selectedIndex ? parseInt(selectedIndex as string) : 0;
+      const promptData = {
         category: family_prompt_category,
-        title: prompt,
+        title: prompt as string,
         answer: answer,
-      });
+      };
+
+      if (index < prompts.length) {
+        // Update existing prompt at index
+        updatePromptAtIndex(index, promptData);
+      } else {
+        // Add new prompt
+        addPrompts(promptData);
+      }
+
       setFamilyPromptAnswer('');
-      setOnboardingScreen(`/(auth)/screens/onboarding/family/${family_prompt_category}`);
-      router.push('/(auth)/screens/onboarding/family/prompt');
+      // setOnboardingScreen('/(auth)/screens/onboarding/family/promptSelection');
+      router.push('/(auth)/screens/onboarding/family/promptSelection');
     }
-  }
+  };
   return (
     <ThemedView style={styles.container}>
       <Header variant='back' />
@@ -100,29 +107,32 @@ export default function PromptAnswer() {
                 textAlignVertical='top'
               />
             </View>
-          {prompts?.length < 2 && (
-
-            <View style={styles.addButtonContainer}>
+            {prompts?.length < 5 && (
+              <View style={styles.addButtonContainer}>
+                <Button
+                  label='Add Another Prompt'
+                  onPress={() => handleAddPrompt(family_prompt_answer)}
+                  variant='compact'
+                  // style={styles.addButton}
+                />
+              </View>
+            )}
+          </View>
+          {/* {prompts?.length > 1 && (
+            <View
+              style={[
+                styles.bottomNav,
+                isKeyboardVisible ? { marginBottom: 10 } : { marginBottom: 40 },
+              ]}
+            >
               <Button
-                label='Add Another Prompt'
-                onPress={() => handleAddPrompt(family_prompt_answer)}
+                // label='Next'
+                onPress={handleNext}
                 variant='compact'
-                // style={styles.addButton}
+                disabled={prompts.length === 0}
               />
             </View>
-          )}
-          </View>
-          {prompts?.length > 1 && (
-              <View
-            style={[
-              styles.bottomNav,
-              isKeyboardVisible ? { marginBottom: 10 } : { marginBottom: 40 },
-            ]}
-          >
-            <Button label='Next' onPress={handleNext} variant='compact' />
-          </View>
-            )
-          }
+          )} */}
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </ThemedView>

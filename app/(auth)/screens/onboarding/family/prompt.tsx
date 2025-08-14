@@ -8,7 +8,7 @@ import { Colors } from '@/constants/Colors';
 import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
@@ -34,6 +34,7 @@ const promptOptions = [
 
 export default function Prompt() {
   const router = useRouter();
+  const { selectedIndex } = useLocalSearchParams();
   const {
     family_prompt,
     setFamilyPrompt,
@@ -41,9 +42,7 @@ export default function Prompt() {
     family_prompt_category,
     setFamilyPromptCategory,
   } = useUserStore();
-  const { 
-    prompts
-  } = useOtherStore();
+  const { prompts, addPrompts, updatePromptAtIndex } = useOtherStore();
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/family/moreInfo');
@@ -60,14 +59,14 @@ export default function Prompt() {
       router.push('/(auth)/screens/onboarding/family/prompt3');
     }
   };
-const handleAdd = (item: any) => {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/promptAnswer');
-      router.push({
-        pathname: '/(auth)/screens/onboarding/family/promptAnswer',
-        params: { prompt: item },
-      });
-};
 
+  const handleAdd = (item: any) => {
+    const index = selectedIndex ? parseInt(selectedIndex as string) : 0;
+    router.push({
+      pathname: '/(auth)/screens/onboarding/family/promptAnswer',
+      params: { prompt: item, selectedIndex: index.toString() },
+    });
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -104,8 +103,9 @@ const handleAdd = (item: any) => {
                 <Pill
                   label={prompt}
                   selected={
-                      prompts.some((item: any) => item.title === prompt) ||
-                      family_prompt === prompt}
+                    prompts.some((item: any) => item.title === prompt) ||
+                    family_prompt === prompt
+                  }
                   onPress={() => handleAdd(prompt)}
                 />
               </View>
@@ -113,20 +113,21 @@ const handleAdd = (item: any) => {
           </View>
         </ScrollView>
 
-        {/* <LinearGradient
+        <LinearGradient
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
           {prompts.length > 1 && (
-             <View style={styles.buttonContainer}>
-            <Button
-              label='Next'
-              onPress={handleNext}
-              variant='compact'
-            />
-          </View>
+            <View style={styles.buttonContainer}>
+              <Button
+                // label='Next'
+                onPress={handleNext}
+                variant='compact'
+                disabled={prompts.length === 0}
+              />
+            </View>
           )}
-        </LinearGradient> */}
+        </LinearGradient>
       </View>
     </ThemedView>
   );

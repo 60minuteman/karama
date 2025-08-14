@@ -6,6 +6,7 @@ import { Pill } from '@/components/ui/Pill';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
+import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
@@ -23,7 +24,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 type Commitment = '📋 Long Term' | '⌛ Short Term';
 
@@ -176,44 +176,52 @@ export default function CommitmentScreen() {
             </View>
 
             {family_commitment.selected_commitment === '⌛ Short Term' ? (
-            <View style={styles.dateContainer}>
-              <View style={styles.dateColumn}>
-                <ThemedText style={styles.dateLabel}>Start Date</ThemedText>
-                <TouchableOpacity 
-                  style={styles.dateInputContainer}
-                  onPress={() => setShowStartDatePicker(true)}
-                >
-                  <Text style={styles.dateInputText}>
-                    {formatDate(family_commitment.start_date)}
-                  </Text>
-                  <Ionicons name="calendar-outline" size={20} color="#666666" />
-                </TouchableOpacity>
-              </View>
+              <View style={styles.dateContainer}>
+                <View style={styles.dateColumn}>
+                  <ThemedText style={styles.dateLabel}>Start Date</ThemedText>
+                  <TouchableOpacity
+                    style={styles.dateInputContainer}
+                    onPress={() => setShowStartDatePicker(true)}
+                  >
+                    <Text style={styles.dateInputText}>
+                      {formatDate(family_commitment.start_date)}
+                    </Text>
+                    <Ionicons
+                      name='calendar-outline'
+                      size={20}
+                      color='#666666'
+                    />
+                  </TouchableOpacity>
+                </View>
 
-              <View style={styles.dateColumn}>
-                <ThemedText style={styles.dateLabel}>End Date</ThemedText>
-                <TouchableOpacity 
-                  style={styles.dateInputContainer}
-                  onPress={() => setShowEndDatePicker(true)}
-                >
-                  <Text style={styles.dateInputText}>
-                    {formatDate(family_commitment.end_date)}
-                  </Text>
-                  <Ionicons name="calendar-outline" size={20} color="#666666" />
-                </TouchableOpacity>
+                <View style={styles.dateColumn}>
+                  <ThemedText style={styles.dateLabel}>End Date</ThemedText>
+                  <TouchableOpacity
+                    style={styles.dateInputContainer}
+                    onPress={() => setShowEndDatePicker(true)}
+                  >
+                    <Text style={styles.dateInputText}>
+                      {formatDate(family_commitment.end_date)}
+                    </Text>
+                    <Ionicons
+                      name='calendar-outline'
+                      size={20}
+                      color='#666666'
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
             ) : (
               <View style={styles.dateColumn}>
                 <ThemedText style={styles.dateLabel}>Start Date</ThemedText>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.dateInputContainer}
                   onPress={() => setShowStartDatePicker(true)}
                 >
                   <Text style={styles.dateInputText}>
                     {formatDate(family_commitment.start_date)}
                   </Text>
-                  <Ionicons name="calendar-outline" size={20} color="#666666" />
+                  <Ionicons name='calendar-outline' size={20} color='#666666' />
                 </TouchableOpacity>
               </View>
             )}
@@ -228,7 +236,7 @@ export default function CommitmentScreen() {
           style={styles.buttonGradient}
         >
           <Button
-            label='Next'
+            // label='Next'
             onPress={handleNext}
             variant='compact'
             disabled={!family_commitment.selected_commitment}
@@ -268,7 +276,7 @@ const styles = StyleSheet.create({
     lineHeight: 42,
     fontFamily: 'Bogart-Semibold',
     color: '#002140',
-    marginTop: 20,
+    // marginTop: 20,
     marginBottom: 40,
   },
   optionsContainer: {
@@ -339,6 +347,7 @@ const styles = StyleSheet.create({
     height: 100,
     paddingHorizontal: 20,
     justifyContent: 'center',
+    alignItems: 'flex-end',
   },
   nextButton: {
     backgroundColor: '#E85B40',

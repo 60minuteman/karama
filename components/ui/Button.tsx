@@ -1,6 +1,13 @@
-import { StyleSheet, TouchableOpacity, View, ActivityIndicator, Dimensions } from 'react-native';
+import ArrowRight from '@/assets/icons/arrowright.svg';
 import { ThemedText } from '@/components/ThemedText';
 import { Colors } from '@/constants/Colors';
+import {
+  ActivityIndicator,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const BUTTON_WIDTH = 342;
 const { width: screenWidth } = Dimensions.get('window');
@@ -11,19 +18,19 @@ type ButtonVariant = 'primary' | 'compact' | 'skip';
 interface ButtonProps {
   onPress: () => void;
   variant?: ButtonVariant;
-  label: string;
+  label?: string;
   disabled?: boolean;
   loading?: boolean;
   icon?: React.ReactNode;
 }
 
-export function Button({ 
-  onPress, 
-  variant = 'primary', 
-  label, 
+export function Button({
+  onPress,
+  variant = 'primary',
+  label,
   disabled = false,
   loading = false,
-  icon
+  icon,
 }: ButtonProps) {
   const buttonVariant = disabled ? 'disabled' : variant;
 
@@ -34,22 +41,31 @@ export function Button({
       style={[
         styles.button,
         styles[buttonVariant],
-        (variant === 'compact' || variant === 'skip') && styles.compactButton
+        (variant === 'compact' || variant === 'skip') && styles.compactButton,
       ]}
     >
       <View style={styles.content}>
         {icon && <View style={styles.iconContainer}>{icon}</View>}
         {loading ? (
-          <ActivityIndicator color={variant === 'secondary' ? Colors.light.primary : Colors.light.white} />
+          <ActivityIndicator
+            color={
+              variant === 'secondary'
+                ? Colors.light.primary
+                : Colors.light.white
+            }
+          />
         ) : (
-          <ThemedText 
-            style={[
-              styles.label,
-              styles[`${buttonVariant}Text`]
-            ]}
-          >
-            {label}
-          </ThemedText>
+          <>
+            {label ? (
+              <ThemedText
+                style={[styles.label, styles[`${buttonVariant}Text`]]}
+              >
+                {label}
+              </ThemedText>
+            ) : (
+              <ArrowRight />
+            )}
+          </>
         )}
       </View>
     </TouchableOpacity>
@@ -143,5 +159,5 @@ const styles = StyleSheet.create({
   },
   skipText: {
     color: Colors.light.text,
-  }
+  },
 });

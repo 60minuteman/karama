@@ -35,7 +35,7 @@ const PETS: { label: PetType; emoji: string }[] = [
   { label: '🦕 Dinosaur', emoji: '🦕' },
   { label: '🐘 Baby Elephant', emoji: '🐘' },
   { label: '🦄 Unicorn', emoji: '🦄' },
-  { label: '🐾 Other', emoji: '🐾' },
+  // { label: '🐾 Other', emoji: '🐾' },
 ];
 
 export default function Page() {
@@ -65,7 +65,7 @@ export default function Page() {
       setCaregiverPetExperience(filtered.filter((p) => p !== pet));
     } else {
       // Only add if we haven't reached the limit of 10
-      if (filtered.length < 10) {
+      if (filtered.length < 6) {
         setCaregiverPetExperience([...filtered, pet]);
       }
     }
@@ -83,7 +83,7 @@ export default function Page() {
           What pets can you{'\n'}work with?
         </ThemedText>
         <ThemedText style={styles.subtitle}>
-          Select 1-10 pets ({caregiverPetExperience?.length ?? 0}/10)
+          You can choose up to 6 options
         </ThemedText>
       </View>
 
@@ -117,7 +117,7 @@ export default function Page() {
         <View style={styles.bottomNav}>
           <Button label='Skip' onPress={handleNext} variant='skip' />
           <Button
-            label='Next'
+            // label='Next'
             onPress={handleNext}
             variant='compact'
             disabled={caregiverPetExperience?.length === 0}
@@ -151,13 +151,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
     color: Colors.light.text,
-    marginBottom: 20,
+    // marginBottom: 20,
     marginTop: 20,
   },
   subtitle: {
+    fontFamily: 'Poppins-Regular',
     fontSize: 16,
-    color: Colors.light.text,
-    marginBottom: 40,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 24,
   },
   petsContainer: {
     flexDirection: 'row',

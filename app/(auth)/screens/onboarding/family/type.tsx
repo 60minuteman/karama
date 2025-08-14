@@ -121,7 +121,7 @@ export default function TypeScreen() {
         >
           <View style={styles.buttonContainer}>
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={!selected_types || selected_types.length === 0}

@@ -55,6 +55,8 @@ export default function Page() {
           What are your{'\n'}pronouns?
         </ThemedText>
 
+        <ThemedText style={styles.subtitle}>Choose just one option</ThemedText>
+
         <View style={styles.optionsContainer}>
           {pronounOptions.map((option) => (
             <Pill
@@ -78,9 +80,9 @@ export default function Page() {
       </View>
 
       <View style={styles.bottomNav}>
-        <Button label='Skip' onPress={handleNext} variant='skip' />
+        {/* <Button label='Skip' onPress={handleNext} variant='skip' /> */}
         <Button
-          label='Next'
+          // label='Next'
           onPress={handleNext}
           variant='compact'
           disabled={!caregiverPronouns}
@@ -107,7 +109,7 @@ const styles = StyleSheet.create({
     lineHeight: 44,
     fontWeight: '600',
     color: Colors.light.text,
-    marginBottom: 40,
+    // marginBottom: 40,
     marginTop: 20,
   },
   optionsContainer: {
@@ -131,9 +133,18 @@ const styles = StyleSheet.create({
   },
   bottomNav: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     padding: 20,
     paddingBottom: 40,
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 38,
+    marginTop: 38,
   },
 });

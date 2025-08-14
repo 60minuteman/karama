@@ -40,14 +40,12 @@ export default function Prompt2() {
   const { family_prompt, setFamilyPrompt, setOnboardingScreen } =
     useUserStore();
 
-  const { 
-     prompts
-   } = useOtherStore();
- 
-   const handleNext = () => {
-     setOnboardingScreen('/(auth)/screens/onboarding/family/moreInfo');
-     router.push('/(auth)/screens/onboarding/family/moreInfo');
-   };
+  const { prompts } = useOtherStore();
+
+  const handleNext = () => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/moreInfo');
+    router.push('/(auth)/screens/onboarding/family/moreInfo');
+  };
 
   const handleCategoryPress = (categoryId: string) => {
     if (categoryId === 'get_to_know') {
@@ -59,13 +57,13 @@ export default function Prompt2() {
     }
   };
 
-   const handleAdd = (item: any) => {
-      setOnboardingScreen('/(auth)/screens/onboarding/family/promptAnswer');
-      router.push({
-        pathname: '/(auth)/screens/onboarding/family/promptAnswer',
-        params: { prompt: item },
-      });
-};
+  const handleAdd = (item: any) => {
+    setOnboardingScreen('/(auth)/screens/onboarding/family/promptAnswer');
+    router.push({
+      pathname: '/(auth)/screens/onboarding/family/promptAnswer',
+      params: { prompt: item },
+    });
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -115,15 +113,16 @@ export default function Prompt2() {
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
-          {/* {prompts.length > 1 && (
-                      <View style={styles.buttonContainer}>
-                     <Button
-                       label='Next'
-                       onPress={handleNext}
-                       variant='compact'
-                     />
-                   </View>
-                   )} */}
+          {prompts.length > 1 && (
+            <View style={styles.buttonContainer}>
+              <Button
+                // label='Next'
+                onPress={handleNext}
+                variant='compact'
+                disabled={prompts.length === 0}
+              />
+            </View>
+          )}
         </LinearGradient>
       </View>
     </ThemedView>

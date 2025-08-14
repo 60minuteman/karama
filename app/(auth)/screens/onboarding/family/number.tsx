@@ -98,7 +98,7 @@ export default function FamilyNumberScreen() {
 
         <View style={[styles.buttonContainer, { paddingHorizontal: 22 }]}>
           <Button
-            label='Next'
+            // label='Next'
             onPress={handleNext}
             variant='compact'
             disabled={totalChildren === 0}

@@ -62,13 +62,15 @@ export const Position = ({
 
   return (
     <View style={styles.container}>
-      <View style={[dynamicStyles.componentContainer, styles.imageContainer]}>
-        <Image
-          data={data?.pictures?.[3]?.path}
-          resizeMode='cover'
-          resizeMethod='scale'
-        />
-      </View>
+      {data?.pictures?.[4]?.path && (
+        <View style={[dynamicStyles.componentContainer, styles.imageContainer]}>
+          <Image
+            data={data?.pictures?.[4]?.path}
+            resizeMode='cover'
+            resizeMethod='scale'
+          />
+        </View>
+      )}
       <View style={styles.section}>
         <ThemedText style={styles.sectionTitle}>My Past positions</ThemedText>
         <ThemedText style={styles.subtitle}>Tap to view</ThemedText>

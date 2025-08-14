@@ -98,7 +98,7 @@ export default function MoreInfo() {
     family_payment?.selected_type === 'Salary Base'
       ? {
           type: family_payment?.selected_type,
-          salary: salary_amount || '',
+          salary: parseInt(salary_amount.replace(/,/g, '')) || '',
           show_method_on_profile: family_payment_method?.show_on_profile,
         }
       : {
@@ -164,7 +164,7 @@ export default function MoreInfo() {
           >
             <Button label='Skip' onPress={() => router.back()} variant='skip' />
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleSubmit}
               variant='compact'
               loading={submit.isPending}

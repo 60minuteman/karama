@@ -75,6 +75,10 @@ export default function TraitScreen() {
           {'\n'}have ?
         </ThemedText>
 
+        <ThemedText style={styles.subtitle}>
+          You can choose up to 3 options
+        </ThemedText>
+
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
@@ -92,9 +96,9 @@ export default function TraitScreen() {
               ))}
             </View>
 
-            <ThemedText style={styles.selectionCount}>
-              {selected_traits.length}/3 traits selected
-            </ThemedText>
+            {/* <ThemedText style={styles.selectionCount}>
+              {selected_traits.length}/4 traits selected
+            </ThemedText> */}
 
             <View style={styles.dealbreakerContainer}>
               <ThemedText style={styles.dealbreakerText}>
@@ -117,9 +121,9 @@ export default function TraitScreen() {
           style={styles.buttonGradient}
         >
           <View style={styles.buttonContainer}>
-            <Button label='Skip' onPress={handleSkip} variant='skip' />
+            {/* <Button label='Skip' onPress={handleSkip} variant='skip' /> */}
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={selected_traits.length === 0}
@@ -159,7 +163,7 @@ const styles = StyleSheet.create({
     lineHeight: 42,
     fontFamily: 'Poppins',
     fontWeight: '600',
-    marginBottom: 20,
+    // marginBottom: 20,
     color: Colors.light.text,
     marginTop: 20,
   },
@@ -204,6 +208,15 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 16,
+    marginTop: 16,
   },
 });

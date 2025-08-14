@@ -33,7 +33,7 @@ export const Religion = ({
     Judaism: '✡️',
     Hinduism: '🕉️',
     Sikhism: '🪔',
-    Other: '🙏',
+    // Other: '🙏',
     None: '❌',
   };
 

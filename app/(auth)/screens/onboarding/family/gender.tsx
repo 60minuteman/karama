@@ -19,9 +19,7 @@ export default function GenderScreen() {
     setFamilyGenderPreference,
     setOnboardingScreen,
   } = useUserStore();
-  const {
-    otherGender
-  } = useOtherStore()
+  const { otherGender } = useOtherStore();
   const [showGenderOptions, setShowGenderOptions] = useState(false);
 
   const genderOptions = [
@@ -34,7 +32,7 @@ export default function GenderScreen() {
     'Cisgender Male',
     'Cisgender Female',
     'Gender Fluid',
-    'Other',
+    // 'Other',
   ];
 
   const handleResponse = (response: 'yes' | 'no') => {

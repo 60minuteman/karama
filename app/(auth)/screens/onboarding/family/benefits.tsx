@@ -32,16 +32,22 @@ export default function BenefitsScreen() {
 
   const toggleBenefit = (label: string) => {
     const currentBenefits = selected_benefits ?? [];
-    const updatedBenefits = currentBenefits.includes(label)
-      ? currentBenefits.filter((benefit) => benefit !== label)
-      : [...currentBenefits, label];
+    const isBenefitSelected = currentBenefits.includes(label);
+    let updatedBenefits;
+
+    if (isBenefitSelected) {
+      updatedBenefits = currentBenefits.filter((benefit) => benefit !== label);
+    } else if (currentBenefits.length <= 6) {
+      updatedBenefits = [...currentBenefits, label];
+    }
 
     setFamilyBenefits({ selected_benefits: updatedBenefits });
   };
 
   const handleNext = () => {
-    setOnboardingScreen('/(auth)/screens/onboarding/family/prompt');
-    router.push('/(auth)/screens/onboarding/family/prompt');
+    // setOnboardingScreen('/(auth)/screens/onboarding/family/prompt');
+    // router.push('/(auth)/screens/onboarding/family/prompt');
+    router.push('/(auth)/screens/onboarding/family/promptSelection');
   };
 
   return (
@@ -55,6 +61,10 @@ export default function BenefitsScreen() {
         <ScrollView style={styles.mainContent}>
           <ThemedText style={styles.title}>
             What benefits do you{'\n'}offer to caregivers?
+          </ThemedText>
+
+          <ThemedText style={styles.subtitle}>
+            you can choose up to 6 options
           </ThemedText>
 
           <View style={styles.optionsContainer}>
@@ -85,7 +95,7 @@ export default function BenefitsScreen() {
         <View style={styles.buttonContainer}>
           <Button label='Skip' onPress={handleNext} variant='skip' />
           <Button
-            label='Next'
+            // label='Next'
             onPress={handleNext}
             variant='compact'
             disabled={selected_benefits?.length === 0}
@@ -119,6 +129,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#002140',
     marginTop: 20,
+    // marginBottom: 16,
   },
   optionsContainer: {
     flexDirection: 'column',
@@ -142,5 +153,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 20,
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 16,
   },
 });

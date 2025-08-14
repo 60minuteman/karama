@@ -62,6 +62,10 @@ export default function EducationScreen() {
               caregiver to have?
             </ThemedText>
 
+            <ThemedText style={styles.subtitle}>
+              You can choose up to 1 option
+            </ThemedText>
+
             <View style={styles.optionsContainer}>
               {educationOptions.map((option) => (
                 <View key={option.label} style={styles.pillWrapper}>
@@ -72,9 +76,9 @@ export default function EducationScreen() {
                     onPress={() => {
                       setFamilyEducation(option.label);
                       setSelected(option.label);
-                      router.push(
-                        '/(auth)/screens/onboarding/family/requirements'
-                      );
+                      // router.push(
+                      //   '/(auth)/screens/onboarding/family/requirements'
+                      // );
                     }}
                   />
                 </View>
@@ -98,9 +102,9 @@ export default function EducationScreen() {
           style={styles.buttonGradient}
         >
           <View style={styles.buttonContainer}>
-            <Button label='Skip' onPress={handleSkip} variant='skip' />
+            {/* <Button label='Skip' onPress={handleSkip} variant='skip' /> */}
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={!selected}
@@ -140,9 +144,9 @@ const styles = StyleSheet.create({
     lineHeight: 42,
     fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    marginBottom: 40,
+    // marginBottom: 40,
     color: Colors.light.text,
-    marginTop: 20,
+    // marginTop: 20,
   },
   optionsContainer: {
     flexDirection: 'column',
@@ -175,6 +179,15 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 24,
   },
 });

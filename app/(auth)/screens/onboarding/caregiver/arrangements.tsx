@@ -57,14 +57,16 @@ export default function ArrangementsScreen() {
               What type of{'\n'}arrangement do you{'\n'}prefer?
             </ThemedText>
 
+            <ThemedText style={styles.subtitle}>
+              Choose just one option
+            </ThemedText>
+
             <View style={styles.optionsContainer}>
               {arrangementOptions.map((option) => (
                 <Pill
                   key={option.label}
                   label={option.label}
-                  selected={
-                    caregiverPreferredArrangement === option.label
-                  }
+                  selected={caregiverPreferredArrangement === option.label}
                   onPress={() =>
                     setCaregiverPreferredArrangement(
                       option.label as CaregiverPreferredArrangement
@@ -94,7 +96,7 @@ export default function ArrangementsScreen() {
         >
           <View style={styles.buttonContainer}>
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={!caregiverPreferredArrangement}
@@ -134,9 +136,9 @@ const styles = StyleSheet.create({
     lineHeight: 42,
     fontFamily: 'Bogart-Semibold',
     fontWeight: '600',
-    marginBottom: 40,
+    // marginBottom: 40,
     color: Colors.light.text,
-    marginTop: 20,
+    // marginTop: 20,
   },
   optionsContainer: {
     flexDirection: 'row',
@@ -168,5 +170,14 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 24,
   },
 });

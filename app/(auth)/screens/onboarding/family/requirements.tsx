@@ -18,8 +18,8 @@ type Requirement =
   | '⛑️ First Aid'
   | '🏊 Can Swim'
   | '💉 COVID Vaccination'
-  | '👐 CPR'
-  | '🏕️ Other';
+  | '👐 CPR';
+// | '🏕️ Other';
 
 type Certification =
   | '🤟 Sign Language'
@@ -27,8 +27,8 @@ type Certification =
   | '🦽 Special Needs'
   | '🦼 Condition Specific'
   | '🍔 Feeding & Swallowing'
-  | '😇 Registered Behaviour Technician'
-  | '📄 Other';
+  | '😇 Registered Behaviour Technician';
+// | '📄 Other';
 
 export default function RequirementsScreen() {
   const router = useRouter();
@@ -63,7 +63,7 @@ export default function RequirementsScreen() {
     { label: '🏊 Can Swim' },
     { label: '💉 COVID Vaccination' },
     { label: '👐 CPR' },
-    { label: '🏕️ Other' },
+    // { label: '🏕️ Other' },
   ];
 
   const certifications: Array<{ label: Certification }> = [
@@ -73,7 +73,7 @@ export default function RequirementsScreen() {
     { label: '🦼 Condition Specific' },
     { label: '🍔 Feeding & Swallowing' },
     { label: '😇 Registered Behaviour Technician' },
-    { label: '📄 Other' },
+    // { label: '📄 Other' },
   ];
 
   const toggleRequirement = (req: Requirement) => {
@@ -146,6 +146,10 @@ export default function RequirementsScreen() {
 
         <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
           What requirements do you need caregivers to have?
+        </ThemedText>
+
+        <ThemedText style={styles.subtitle}>
+          You can choose up to 6 options
         </ThemedText>
 
         <ScrollView
@@ -221,9 +225,9 @@ export default function RequirementsScreen() {
           style={styles.buttonGradient}
         >
           <View style={styles.buttonContainer}>
-            <Button label='Skip' onPress={handleSkip} variant='skip' />
+            {/* <Button label='Skip' onPress={handleSkip} variant='skip' /> */}
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={
@@ -265,7 +269,7 @@ const styles = StyleSheet.create({
     lineHeight: 42,
     fontFamily: 'Poppins',
     fontWeight: '600',
-    marginBottom: 40,
+    // marginBottom: 40,
     color: Colors.light.text,
     marginTop: 20,
   },
@@ -307,6 +311,15 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 24,
   },
 });

@@ -205,7 +205,7 @@ export default function Page() {
       <View style={styles.bottomNav}>
         <View style={styles.buttonContainer}>
           <Button
-            label='Next'
+            // label='Next'
             onPress={() => uploadImages.mutate()}
             variant='compact'
             disabled={caregiverImages?.length < 4 || uploadImages.isPending}

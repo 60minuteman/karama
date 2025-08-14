@@ -87,7 +87,7 @@ export default function FamilyNameScreen() {
           {!keyboardVisible ? (
             <View style={styles.buttonContainer}>
               <Button
-                label='Next'
+                // label='Next'
                 onPress={handleNext}
                 variant={familyName?.trim() ? 'primary' : undefined}
                 disabled={!familyName?.trim()}
@@ -96,7 +96,7 @@ export default function FamilyNameScreen() {
           ) : (
             <View style={styles.buttonContainerKeyboard}>
               <Button
-                label='Next'
+                // label='Next'
                 onPress={handleNext}
                 variant={familyName?.trim() ? 'primary' : undefined}
                 disabled={!familyName?.trim()}

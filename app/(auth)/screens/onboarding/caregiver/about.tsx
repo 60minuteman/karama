@@ -85,7 +85,7 @@ export default function AboutScreen() {
       { label: '🐟 Pescatarian', category: 'Diet' },
       { label: '🍉 Sugar Free', category: 'Diet' },
       { label: '🚫 None', category: 'Diet' },
-      { label: '🥑 Other', category: 'Diet' },
+      // { label: '🥑 Other', category: 'Diet' },
     ],
     Religion: [
       { label: '🕌 Islam', category: 'Religion' },
@@ -95,7 +95,7 @@ export default function AboutScreen() {
       { label: '🪷 Hinduism', category: 'Religion' },
       { label: '⛪️ Christianity', category: 'Religion' },
       { label: '⚛️ Athesisim', category: 'Religion' },
-      { label: '📿 Other', category: 'Religion' },
+      // { label: '📿 Other', category: 'Religion' },
     ],
   };
 
@@ -201,8 +201,8 @@ export default function AboutScreen() {
           Tell us about{'\n'}yourself.
         </ThemedText>
 
-        <ThemedText style={styles.selectionLimit}>
-          Select 3-10 traits total (Religion is required)
+        <ThemedText style={styles.subtitle}>
+          You can select up to 10 options (religion is compulsory)
         </ThemedText>
 
         <View style={styles.scrollViewContainer}>
@@ -280,13 +280,13 @@ export default function AboutScreen() {
           <View style={styles.buttonContainer}>
             <Button label='Skip' onPress={handleSkip} variant='skip' />
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={
                 !caregiverReligion?.length ||
                 getTotalSelections() < 3 ||
-                getTotalSelections() > 10
+                getTotalSelections() >= 10
               }
             />
           </View>
@@ -390,7 +390,16 @@ const styles = StyleSheet.create({
   selectionLimit: {
     fontSize: 14,
     color: '#666',
-    marginBottom: 16,
+    // marginBottom: 16,
     textAlign: 'center',
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    // marginBottom: 24,
+    // marginTop: 24,
   },
 });

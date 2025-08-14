@@ -19,7 +19,7 @@ const sources = [
   'Press',
   'Events',
   'App Store',
-  'Other',
+  // 'Other',
 ] as const;
 
 export default function HearScreen() {
@@ -29,15 +29,13 @@ export default function HearScreen() {
     setFamilySelectedSource,
     setOnboardingScreen,
   } = useUserStore();
-  const {
-    otherHear
-  } = useOtherStore()
+  const { otherHear } = useOtherStore();
 
   const handleNext = () => {
     if (otherHear !== '' && family_selected_source === 'Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherHear');
       router.push('/(auth)/screens/onboarding/family/otherHear');
-    }else {
+    } else {
       setOnboardingScreen('/(auth)/screens/onboarding/family/zipCode');
       router.push('/(auth)/screens/onboarding/family/zipCode');
     }
@@ -47,10 +45,10 @@ export default function HearScreen() {
     if (item === 'Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/family/otherHear');
       router.push('/(auth)/screens/onboarding/family/otherHear');
-      return
+      return;
     }
     setFamilySelectedSource(item);
-  }
+  };
 
   return (
     <ThemedView style={styles.container}>
@@ -77,7 +75,7 @@ export default function HearScreen() {
 
         <View style={styles.buttonContainer}>
           <Button
-            label='Next'
+            // label='Next'
             onPress={handleNext}
             variant='compact'
             disabled={!family_selected_source}

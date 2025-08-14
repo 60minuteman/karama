@@ -16,6 +16,7 @@ interface ResponsibilitiesProps {
   }>;
   data: any;
   role?: any;
+  certification?: boolean;
 }
 
 export const Responsibilities = ({
@@ -40,6 +41,7 @@ export const Responsibilities = ({
   ],
   data,
   role,
+  certification,
 }: ResponsibilitiesProps) => {
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -127,8 +129,8 @@ export const Responsibilities = ({
             )}
           </View>
 
-          <View style={styles.spacer} />
-          {data?.abilities_and_certifications?.certifications?.length > 0 && (
+          {/* <View style={styles.spacer} /> */}
+          {/* {data?.abilities_and_certifications?.certifications?.length > 0 && (
             <>
               <ThemedText style={styles.sectionTitle}>
                 Certifications
@@ -141,7 +143,7 @@ export const Responsibilities = ({
                 )}
               </View>
             </>
-          )}
+          )} */}
         </View>
       )}
     </View>

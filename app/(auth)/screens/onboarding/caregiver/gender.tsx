@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { router } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { useFonts } from 'expo-font';
-import { Bogart_400Regular, Bogart_500Medium, Bogart_600SemiBold } from '@expo-google-fonts/bogart';
+import { router } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+// import { Bogart_400Regular, Bogart_500Medium, Bogart_600SemiBold } from '@expo-google-fonts/bogart';
 import { useUserStore } from '@/services/state/user';
 
 const genderOptions = [
@@ -18,34 +18,35 @@ const genderOptions = [
   ['Transgender', 'Male'],
   ['Female', 'Prefer not to say'],
   ['Cisgender Male', 'Gender Fluid'],
-  ['Other']
+  // ['Other']
 ] as const;
 
 export default function Page() {
-  const { caregiverGender, setCaregiverGender, setOnboardingScreen } = useUserStore()
+  const { caregiverGender, setCaregiverGender, setOnboardingScreen } =
+    useUserStore();
   const [selectedGender, setSelectedGender] = useState<string | null>(null);
   const [fontsLoaded] = useFonts({
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
   });
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/pronouns');
-    router.push('/(auth)/screens/onboarding/caregiver/pronouns')
+    router.push('/(auth)/screens/onboarding/caregiver/pronouns');
   };
-  useEffect(()=>{
-    console.log(caregiverGender)
-  },[caregiverGender]);
+  useEffect(() => {
+    console.log(caregiverGender);
+  }, [caregiverGender]);
 
   const handleAdd = (option: string) => {
     if (option === 'Other') {
       setOnboardingScreen('/(auth)/screens/onboarding/caregiver/otherGender');
-      router.push('/(auth)/screens/onboarding/caregiver/otherGender')
+      router.push('/(auth)/screens/onboarding/caregiver/otherGender');
       return;
     }
     setCaregiverGender(option as any);
   };
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" style={{ fontFamily: 'Bogart-Bold' }} />
+      <Header variant='back' style={{ fontFamily: 'Bogart-Bold' }} />
 
       <View style={styles.content}>
         <View style={styles.spacerTop} />
@@ -54,6 +55,8 @@ export default function Page() {
         <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
           What best describes{'\n'}your gender?
         </ThemedText>
+
+        <ThemedText style={styles.subtitle}>Choose just one option</ThemedText>
 
         <View style={styles.optionsContainer}>
           {genderOptions.map((row, rowIndex) => (
@@ -64,7 +67,9 @@ export default function Page() {
                   label={option}
                   onPress={() => handleAdd(option)}
                   selected={caregiverGender === option}
-                  variant={caregiverGender === option ? 'highlighted' : undefined}
+                  variant={
+                    caregiverGender === option ? 'highlighted' : undefined
+                  }
                 />
               ))}
             </View>
@@ -73,15 +78,11 @@ export default function Page() {
       </View>
 
       <View style={styles.bottomNav}>
+        {/* <Button label='Skip' onPress={handleNext} variant='skip' /> */}
         <Button
-          label="Skip"
+          // label='Next'
           onPress={handleNext}
-          variant="skip"
-        />
-        <Button
-          label="Next"
-          onPress={handleNext}
-          variant="compact"
+          variant='compact'
           disabled={!caregiverGender}
         />
       </View>
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Bogart',
     fontWeight: '600',
     color: Colors.light.text,
-    marginBottom: 40,
+    // marginBottom: 40,
     marginTop: 20,
   },
   optionsContainer: {
@@ -120,9 +121,18 @@ const styles = StyleSheet.create({
   },
   bottomNav: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     padding: 20,
     paddingBottom: 40,
-  }
-}); 
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 38,
+    marginTop: 38,
+  },
+});

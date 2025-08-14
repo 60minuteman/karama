@@ -6,6 +6,7 @@ import { Pill } from '@/components/ui/Pill';
 import { ProgressBar } from '@/components/ui/ProgressBar';
 import { Colors } from '@/constants/Colors';
 import { CaregiverCommitment, useUserStore } from '@/services/state/user';
+import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker, {
   DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
@@ -23,7 +24,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 
 const SHORT_TERM = 'Short Term' as const;
 const LONG_TERM = 'Long Term' as const;
@@ -32,7 +32,7 @@ export default function CommitmentScreen() {
   const router = useRouter();
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-  
+
   const {
     caregiverCommitmentType,
     setCaregiverCommitmentType,
@@ -59,7 +59,7 @@ export default function CommitmentScreen() {
 
   const commitmentOptions = [
     { label: SHORT_TERM, displayLabel: '⌛ Short Term' },
-    { label: LONG_TERM, displayLabel: '📋 Long Term' }
+    { label: LONG_TERM, displayLabel: '📋 Long Term' },
   ];
 
   const handleNext = () => {
@@ -140,7 +140,11 @@ export default function CommitmentScreen() {
               What do you expect{'\n'}in terms of{'\n'}commitment?
             </ThemedText>
 
-            <View style={styles.optionsContainer} >
+            <ThemedText style={styles.subtitle}>
+              Choose just one option
+            </ThemedText>
+
+            <View style={styles.optionsContainer}>
               {commitmentOptions.map((option) => (
                 <Pill
                   key={option.label}
@@ -167,41 +171,49 @@ export default function CommitmentScreen() {
               <View style={styles.dateContainer}>
                 <View style={styles.dateColumn}>
                   <ThemedText style={styles.dateLabel}>Start Date</ThemedText>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.dateInputContainer}
                     onPress={() => setShowStartDatePicker(true)}
                   >
                     <Text style={styles.dateInputText}>
                       {formatDate(caregiverCommitmentStartDate)}
                     </Text>
-                    <Ionicons name="calendar-outline" size={20} color="#666666" />
+                    <Ionicons
+                      name='calendar-outline'
+                      size={20}
+                      color='#666666'
+                    />
                   </TouchableOpacity>
                 </View>
 
                 <View style={styles.dateColumn}>
                   <ThemedText style={styles.dateLabel}>End Date</ThemedText>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.dateInputContainer}
                     onPress={() => setShowEndDatePicker(true)}
                   >
                     <Text style={styles.dateInputText}>
                       {formatDate(caregiverCommitmentEndDate)}
                     </Text>
-                    <Ionicons name="calendar-outline" size={20} color="#666666" />
+                    <Ionicons
+                      name='calendar-outline'
+                      size={20}
+                      color='#666666'
+                    />
                   </TouchableOpacity>
                 </View>
               </View>
             ) : (
               <View style={styles.dateColumn}>
                 <ThemedText style={styles.dateLabel}>Start Date</ThemedText>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.dateInputContainer}
                   onPress={() => setShowStartDatePicker(true)}
                 >
                   <Text style={styles.dateInputText}>
                     {formatDate(caregiverCommitmentStartDate)}
                   </Text>
-                  <Ionicons name="calendar-outline" size={20} color="#666666" />
+                  <Ionicons name='calendar-outline' size={20} color='#666666' />
                 </TouchableOpacity>
               </View>
             )}
@@ -216,7 +228,7 @@ export default function CommitmentScreen() {
           style={styles.buttonGradient}
         >
           <Button
-            label='Next'
+            // label='Next'
             onPress={handleNext}
             variant='compact'
             disabled={!caregiverCommitmentType}
@@ -255,8 +267,8 @@ const styles = StyleSheet.create({
     lineHeight: 42,
     fontFamily: 'Bogart-Semibold',
     color: '#002140',
-    marginTop: 20,
-    marginBottom: 40,
+    // marginTop: 20,
+    // marginBottom: 40,
   },
   optionsContainer: {
     flexDirection: 'row',
@@ -313,5 +325,13 @@ const styles = StyleSheet.create({
   dealbreakerText: {
     fontSize: 16,
     color: '#666666',
+  },
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 24,
   },
 });

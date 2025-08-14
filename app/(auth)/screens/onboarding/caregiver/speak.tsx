@@ -1,17 +1,21 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
 export default function SpeakScreen() {
-  const {caregiverLanguageMatch,setCaregiverLanguageMatch,setOnboardingScreen}=useUserStore()
+  const {
+    caregiverLanguageMatch,
+    setCaregiverLanguageMatch,
+    setOnboardingScreen,
+  } = useUserStore();
   const router = useRouter();
   // const [preference, setPreference] = useState<string | null>(null);
 
@@ -28,27 +32,28 @@ export default function SpeakScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-      
+      <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.85} />
-        
+
         <ThemedText style={styles.title}>
-          Would you like to{'\n'}work with families{'\n'}that speak the same{'\n'}language(s) as{'\n'}yourself?
+          Would you like to{'\n'}work with families{'\n'}that speak the same
+          {'\n'}language(s) as{'\n'}yourself?
         </ThemedText>
 
         <View style={styles.optionsContainer}>
           <View style={styles.pillWrapper}>
             <Pill
-              label="Yes, required"
+              label='Yes, required'
               onPress={() => handlePillPress(true)}
               selected={caregiverLanguageMatch === true}
             />
           </View>
           <View style={styles.pillWrapper}>
             <Pill
-              label="Not required"
+              label='Not required'
               onPress={() => handlePillPress(false)}
               selected={caregiverLanguageMatch === false}
             />
@@ -56,12 +61,12 @@ export default function SpeakScreen() {
         </View>
 
         <View style={styles.bottomContainer}>
-          <Button
+          {/* <Button
             label="Skip"
             onPress={handleNext}
             variant="skip"
             style={styles.skipButton}
-          />
+          /> */}
         </View>
       </View>
     </ThemedView>
@@ -105,4 +110,4 @@ const styles = StyleSheet.create({
   skipButton: {
     alignSelf: 'flex-start',
   },
-}); 
+});

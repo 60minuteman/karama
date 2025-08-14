@@ -6,7 +6,7 @@ const icons = {
     { label: 'Moms', icon: '👩👩' },
     { label: 'Dads', icon: '👨👨' },
     { label: 'Guardian', icon: '🦹' },
-    { label: 'Other', icon: '💝' },
+    // { label: 'Other', icon: '💝' },
   ],
   ages: [
     { label: 'Expecting', icon: '🐣' },
@@ -39,7 +39,7 @@ const icons = {
     { label: 'Dinosaur', icon: '🦕' },
     { label: 'Baby Elephant', icon: '🐘' },
     { label: 'Unicorn', icon: '🦄' },
-    { label: 'Other', icon: '🐾' },
+    // { label: 'Other', icon: '🐾' },
     { label: 'None', icon: '⛔' },
   ],
   creative: [
@@ -60,7 +60,7 @@ const icons = {
     { label: 'Photography', icon: '📸' },
     { label: 'Videography', icon: '📹' },
     { label: 'Fashion Design', icon: '💎' },
-    { label: 'Other', icon: '🎨' },
+    // { label: 'Other', icon: '🎨' },
   ],
   instruments: [
     { label: 'Piano', icon: '🎹' },
@@ -74,7 +74,7 @@ const icons = {
     { label: 'Flute', icon: '🎼' },
     { label: 'Violin', icon: '🎻' },
     { label: 'Conga', icon: '🥁' },
-    { label: 'Other', icon: '🎵' },
+    // { label: 'Other', icon: '🎵' },
   ],
   sports: [
     { label: 'Ice skating', icon: '⛸️' },
@@ -106,14 +106,14 @@ const icons = {
     { label: 'Roller skate', icon: '🛼' },
     { label: 'Skateboarding', icon: '🛹' },
     { label: 'Horseback Riding', icon: '🏇' },
-    { label: 'Other', icon: '🎯' },
+    // { label: 'Other', icon: '🎯' },
   ],
   stem: [
     { label: 'Coding', icon: '💻' },
     { label: 'Sciences', icon: '🧬' },
     { label: 'Robotics', icon: '🤖' },
     { label: 'Mathematics', icon: '📊' },
-    { label: 'Other', icon: '🔬' },
+    // { label: 'Other', icon: '🔬' },
   ],
   diet: [
     { label: 'Vegan', icon: '🥬' },
@@ -124,7 +124,7 @@ const icons = {
     { label: 'Pescatarian', icon: '🐟' },
     { label: 'Sugar Free', icon: '🍬' },
     { label: 'None', icon: '⛔' },
-    { label: 'Other', icon: '🥑' },
+    // { label: 'Other', icon: '🥑' },
   ],
   rules: [
     { label: 'No Screens', icon: '📱' },
@@ -139,7 +139,7 @@ const icons = {
     { label: 'No Smoking', icon: '😤' },
     { label: 'No Throwing Balls', icon: '🔴' },
     { label: 'No Jumping On Furniture', icon: '🛋️' },
-    { label: 'Other', icon: '🎯' },
+    // { label: 'Other', icon: '🎯' },
   ],
   religion: [
     { label: 'Islam', icon: '🕌' },
@@ -149,7 +149,7 @@ const icons = {
     { label: 'Hinduism', icon: '🕉️' },
     { label: 'Christianity', icon: '✝️' },
     { label: 'Athesisim', icon: '🧬' },
-    { label: 'Other', icon: '🙏' },
+    // { label: 'Other', icon: '🙏' },
   ],
   foodAllergies: [
     { label: 'Milk', icon: '🥛' },
@@ -160,7 +160,7 @@ const icons = {
     { label: 'Shellfish', icon: '🦐' },
     { label: 'Soy', icon: '🫘' },
     { label: 'Wheat', icon: '🌾' },
-    { label: 'Other', icon: '🍽️' },
+    // { label: 'Other', icon: '🍽️' },
   ],
   environmentalAllergies: [
     { label: 'Pollen', icon: '🌸' },
@@ -168,14 +168,14 @@ const icons = {
     { label: 'Mold', icon: '🍄' },
     { label: 'Animal Dander', icon: '🐕' },
     { label: 'Insect sting', icon: '🐝' },
-    { label: 'Other', icon: '🌲' },
+    // { label: 'Other', icon: '🌲' },
   ],
   otherAllergies: [
     { label: 'Latex', icon: '🧤' },
     { label: 'Perfume', icon: '🌹' },
     { label: 'Cleaning Chemicals', icon: '💧' },
     { label: 'Metal', icon: '⚙️' },
-    { label: 'Other', icon: '➕' },
+    // { label: 'Other', icon: '➕' },
   ],
   caregiverTypes: [
     { label: 'Night Nurse', icon: '🌙' },

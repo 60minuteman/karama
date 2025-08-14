@@ -59,7 +59,7 @@ const pets: { type: PetType }[] = [
   { type: '🦕 Dinosaur' },
   { type: '🐘 Baby Elephant' },
   { type: '🦄 Unicorn' },
-  { type: '🐾 Other' },
+  // { type: '🐾 Other' },
 ];
 
 export default function PetScreen() {
@@ -92,7 +92,7 @@ export default function PetScreen() {
         ? [pet]
         : family_pets.includes(pet)
         ? family_pets.filter((p) => p !== pet)
-        : family_pets.length >= 10
+        : family_pets.length >= 6
         ? family_pets
         : [...family_pets, pet];
       setFamilyPets(newPets);
@@ -114,6 +114,10 @@ export default function PetScreen() {
 
         <ThemedText style={[styles.title, { fontFamily: 'Bogart-Semibold' }]}>
           What pets are{'\n'}a part of your{'\n'}family?
+        </ThemedText>
+
+        <ThemedText style={styles.subtitle2}>
+          You can choose up to 6 options
         </ThemedText>
 
         <ThemedText style={styles.subtitle}>
@@ -149,9 +153,9 @@ export default function PetScreen() {
             style={styles.buttonGradient}
           >
             <View style={styles.buttonContainer}>
-              <Button label='Skip' onPress={handleNext} variant='skip' />
+              {/* <Button label='Skip' onPress={handleNext} variant='skip' /> */}
               <Button
-                label='Next'
+                // label='Next'
                 onPress={handleNext}
                 variant='compact'
                 disabled={family_pets.length === 0}
@@ -187,8 +191,8 @@ const styles = StyleSheet.create({
   subtitle: {
     fontFamily: 'Poppins',
     fontSize: 16,
-    color: Colors.light.text,
-    marginBottom: 40,
+    color: '#261D2A80',
+    marginBottom: 24,
   },
   scrollViewContainer: {
     flex: 1,
@@ -231,6 +235,15 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
+  },
+
+  subtitle2: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 16,
+    marginTop: 16,
   },
 });

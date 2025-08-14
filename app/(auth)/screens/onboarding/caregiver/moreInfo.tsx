@@ -61,8 +61,13 @@ export default function MoreInfo() {
         </View>
 
         <View style={styles.bottomNav}>
-          <Button label='Skip' onPress={() => router.back()} variant='skip' />
-          <Button label='Next' onPress={handleNext} variant='compact' />
+          <Button label='Skip' onPress={handleNext} variant='skip' />
+          <Button
+            // label='Next'
+            onPress={handleNext}
+            variant='compact'
+            disabled={!caregiverMoreInfo}
+          />
         </View>
       </ThemedView>
     </KeyboardAvoidingView>

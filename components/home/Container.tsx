@@ -21,6 +21,7 @@ import {
   useWindowDimensions,
   View,
 } from 'react-native';
+import { CertificationCaregiver } from '../cards/CertificationCaregiver';
 import ProfileCardLoader from '../cards/ProfileCardLoader';
 
 interface ContainerProps {
@@ -210,7 +211,6 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
           </>
         )}
         <View style={styles.spacer} />
-
         <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>
           <Interests
@@ -219,6 +219,27 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
             interests={profileData.interests}
           />
         </View>
+
+        {role === 'CAREGIVER' && (
+          <>
+            {data?.prompts?.[1]?.title && (
+              <View style={styles.section}>
+                <View style={styles.subSection}>
+                  <ThemedText style={{ fontFamily: 'Bogart-Regular' }}>
+                    {data?.prompts?.[1]?.title}
+                  </ThemedText>
+                  <View style={styles.pillContainer}>
+                    <Text
+                      style={{ fontSize: 22, fontFamily: 'Bogart-Regular' }}
+                    >
+                      {data?.prompts?.[1]?.answer}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            )}
+          </>
+        )}
 
         <View style={styles.spacer} />
         <View style={dynamicStyles.componentContainer}>
@@ -236,13 +257,17 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
           <Responsibilities data={data} role={role} />
         </View>
 
+        <View style={dynamicStyles.componentContainer}>
+          <CertificationCaregiver data={data} role={role} />
+        </View>
+
         <View style={styles.spacer} />
-        {data?.pictures?.[4]?.path && (
+        {data?.pictures?.[5]?.path && (
           <View
             style={[dynamicStyles.componentContainer, styles.imageContainer]}
           >
             <Image
-              data={data?.pictures?.[4]?.path}
+              data={data?.pictures?.[5]?.path}
               resizeMode='cover'
               resizeMethod='scale'
             />
@@ -294,26 +319,7 @@ const Container = forwardRef<ContainerRef, ContainerProps>(
                 data={data}
               />
             </View>
-            {role === 'CAREGIVER' && (
-              <>
-                {data?.prompts?.[1]?.title && (
-                  <View style={styles.section}>
-                    <View style={styles.subSection}>
-                      <ThemedText style={{ fontFamily: 'Bogart-Regular' }}>
-                        {data?.prompts?.[1]?.title}
-                      </ThemedText>
-                      <View style={styles.pillContainer}>
-                        <Text
-                          style={{ fontSize: 22, fontFamily: 'Bogart-Regular' }}
-                        >
-                          {data?.prompts?.[1]?.answer}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                )}
-              </>
-            )}
+
             <View style={styles.spacer} />
             <View style={dynamicStyles.componentContainer}>
               <Position

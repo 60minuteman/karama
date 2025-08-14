@@ -51,6 +51,8 @@ export default function PositionScreen() {
           What positions are{'\n'}you open to{'\n'}considering?
         </ThemedText>
 
+        {/* <ThemedText style={styles.subtitle}>Choose just one option</ThemedText> */}
+
         <View style={styles.positionsContainer}>
           {POSITIONS.map((position) => (
             <View key={position.label} style={styles.pillWrapper}>
@@ -69,7 +71,7 @@ export default function PositionScreen() {
 
         <View style={styles.bottomContainer}>
           <Button
-            label='Next'
+            // label='Next'
             onPress={handleNext}
             variant='compact'
             disabled={caregiverPreferredPositions?.length === 0}
@@ -113,5 +115,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 50,
     right: 20,
+  },
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 24,
+    marginTop: 24,
   },
 });

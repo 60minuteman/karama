@@ -1,16 +1,16 @@
-import { useRouter } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
-import { useState } from 'react';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
-import { Colors } from '@/constants/Colors';
-import { Header } from '@/components/ui/Header';
-import { ProgressBar } from '@/components/ui/ProgressBar';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
+import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { useUserStore } from '@/services/state/user';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 
-type Source = 
+type Source =
   | 'TikTok'
   | 'Instagram'
   | 'Facebook'
@@ -22,7 +22,8 @@ type Source =
 
 export default function HearScreen() {
   const router = useRouter();
-  const {caregiverReferral,setCaregiverReferral,setOnboardingScreen} = useUserStore();
+  const { caregiverReferral, setCaregiverReferral, setOnboardingScreen } =
+    useUserStore();
   // const [selectedSource, setSelectedSource] = useState<Source | null>(null);
 
   const sources: Source[] = [
@@ -33,27 +34,29 @@ export default function HearScreen() {
     'Family & Friends',
     'Press',
     'Events',
-    'App Store'
+    'App Store',
   ];
 
   const handleNext = () => {
     if (caregiverReferral) {
-      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/zipCode')
+      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/zipCode');
       router.push('/(auth)/screens/onboarding/caregiver/zipCode');
     }
   };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+      <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
 
       <View style={styles.content}>
         <View style={styles.spacer} />
         <ProgressBar progress={0.8} />
-        
+
         <ThemedText style={styles.title}>
           How did you hear{'\n'}about us?
         </ThemedText>
+
+        <ThemedText style={styles.subtitle}>Choose just one option</ThemedText>
 
         <View style={styles.pillsContainer}>
           {sources.map((source) => (
@@ -68,9 +71,9 @@ export default function HearScreen() {
 
         <View style={styles.buttonContainer}>
           <Button
-            label="Next"
+            // label='Next'
             onPress={handleNext}
-            variant="compact"
+            variant='compact'
             disabled={!caregiverReferral}
           />
         </View>
@@ -96,7 +99,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     lineHeight: 40,
     color: Colors.light.text,
-    marginBottom: 40,
+    // marginBottom: 40,
     fontWeight: '500',
     marginTop: 20,
   },
@@ -112,5 +115,14 @@ const styles = StyleSheet.create({
     right: 20,
     flexDirection: 'row',
     justifyContent: 'flex-end',
+  },
+
+  subtitle: {
+    fontFamily: 'Poppins-Regular',
+    fontSize: 16,
+    lineHeight: 20,
+    color: '#261D2A4D',
+    marginBottom: 38,
+    marginTop: 38,
   },
 });

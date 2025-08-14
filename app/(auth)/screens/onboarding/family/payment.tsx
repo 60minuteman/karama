@@ -65,6 +65,22 @@ export default function PaymentScreen() {
     { label: 'Salary Base', icon: '💰' },
   ];
 
+  // Function to check if a price should be highlighted
+  const isPriceHighlighted = (price: number) => {
+    if (!sliderValues || !Array.isArray(sliderValues)) return false;
+
+    // If we have a range (two values), check if the price falls within the range
+    if (sliderValues.length === 2) {
+      const [min, max] = sliderValues;
+      return price >= min && price <= max;
+    }
+
+    // If we have a single value, check for exact match
+    return sliderValues.includes(price);
+  };
+
+  console.log('selected_type', parseInt(salary_amount.replace(/,/g, '')));
+
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/family/PaymentMethod');
     router.push({
@@ -125,13 +141,69 @@ export default function PaymentScreen() {
               <View style={styles.inputContainer}>
                 <View style={styles.sliderContainer}>
                   <View style={styles.sliderLabels}>
-                    <ThemedText>$15</ThemedText>
-                    <ThemedText>$20</ThemedText>
-                    <ThemedText>$25</ThemedText>
-                    <ThemedText>$30</ThemedText>
-                    <ThemedText>$35</ThemedText>
-                    <ThemedText>$40</ThemedText>
-                    <ThemedText>$45+</ThemedText>
+                    <ThemedText
+                      style={
+                        isPriceHighlighted(15)
+                          ? styles.highlightedPrice
+                          : undefined
+                      }
+                    >
+                      $15
+                    </ThemedText>
+                    <ThemedText
+                      style={
+                        isPriceHighlighted(20)
+                          ? styles.highlightedPrice
+                          : undefined
+                      }
+                    >
+                      $20
+                    </ThemedText>
+                    <ThemedText
+                      style={
+                        isPriceHighlighted(25)
+                          ? styles.highlightedPrice
+                          : undefined
+                      }
+                    >
+                      $25
+                    </ThemedText>
+                    <ThemedText
+                      style={
+                        isPriceHighlighted(30)
+                          ? styles.highlightedPrice
+                          : undefined
+                      }
+                    >
+                      $30
+                    </ThemedText>
+                    <ThemedText
+                      style={
+                        isPriceHighlighted(35)
+                          ? styles.highlightedPrice
+                          : undefined
+                      }
+                    >
+                      $35
+                    </ThemedText>
+                    <ThemedText
+                      style={
+                        isPriceHighlighted(40)
+                          ? styles.highlightedPrice
+                          : undefined
+                      }
+                    >
+                      $40
+                    </ThemedText>
+                    <ThemedText
+                      style={
+                        isPriceHighlighted(45)
+                          ? styles.highlightedPrice
+                          : undefined
+                      }
+                    >
+                      $45+
+                    </ThemedText>
                   </View>
                   <MultiSlider
                     values={sliderValues}
@@ -175,12 +247,28 @@ export default function PaymentScreen() {
                     placeholder='50,000'
                     placeholderTextColor='#999'
                     value={salary_amount}
-                    onChangeText={(text) =>
-                      setFamilyPayment({ salary_amount: text })
-                    }
+                    onChangeText={(text) => {
+                      // Remove all non-numeric characters except commas
+                      const cleanText = text.replace(/[^0-9,]/g, '');
+
+                      // If the input is empty, allow it
+                      if (cleanText === '') {
+                        setFamilyPayment({ salary_amount: '' });
+                        return;
+                      }
+
+                      // Remove existing commas and format properly
+                      const numericValue = cleanText.replace(/,/g, '');
+                      const formattedValue = numericValue.replace(
+                        /\B(?=(\d{3})+(?!\d))/g,
+                        ','
+                      );
+
+                      setFamilyPayment({ salary_amount: formattedValue });
+                    }}
                     keyboardType='numeric'
                     autoFocus
-                    maxLength={7}
+                    maxLength={15}
                   />
                 </View>
               </View>
@@ -194,7 +282,7 @@ export default function PaymentScreen() {
             ]}
           >
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={!selected_type}
@@ -268,5 +356,9 @@ const styles = StyleSheet.create({
   },
   button: {
     alignSelf: 'flex-end',
+  },
+  highlightedPrice: {
+    color: '#FF6B35', // Orange color for highlighted prices
+    fontWeight: 'bold',
   },
 });

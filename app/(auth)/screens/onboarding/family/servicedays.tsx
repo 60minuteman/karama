@@ -35,45 +35,64 @@ export default function ServiceDaysScreen() {
     day: DayOfWeek;
     field: 'begin' | 'end';
   } | null>(null);
+  const [tempSelectedTime, setTempSelectedTime] = useState<Date>(new Date());
 
   console.log('family_schedule', family_schedule);
 
   const handleTimeSelect = (event: any, selectedTime?: Date) => {
-    setShowTimePicker(false);
-    if (selectedTime && selectedDay) {
+    // Check if the user cancelled the picker
+    if (event.type === 'dismissed') {
+      setShowTimePicker(false);
+      setActiveField(null);
+      return;
+    }
+
+    // Store the selected time temporarily and confirm automatically
+    if (selectedTime) {
+      setTempSelectedTime(selectedTime);
+      // Auto-confirm the time selection
       const formattedTime = selectedTime.toLocaleTimeString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
         hour12: false, // Changed to 12-hour format
       });
 
-      const updatedSchedule = family_schedule.map((day) => {
-        const currentTimeSlot = day.timeSlot || {
-          begin: '00:00',
-          end: '00:00',
-        };
+      if (selectedDay) {
+        const updatedSchedule = family_schedule.map((day) => {
+          const currentTimeSlot = day.timeSlot || {
+            begin: '00:00',
+            end: '00:00',
+          };
 
-        if (day.day === selectedDay) {
+          if (day.day === selectedDay) {
+            return {
+              ...day,
+              isActive: true,
+              timeSlot: {
+                begin: isSettingBeginTime
+                  ? formattedTime
+                  : currentTimeSlot.begin,
+                end: isSettingBeginTime ? currentTimeSlot.end : formattedTime,
+              },
+            };
+          }
           return {
             ...day,
-            isActive: true,
             timeSlot: {
-              begin: isSettingBeginTime ? formattedTime : currentTimeSlot.begin,
-              end: isSettingBeginTime ? currentTimeSlot.end : formattedTime,
+              begin: currentTimeSlot.begin,
+              end: currentTimeSlot.end,
             },
           };
-        }
-        return {
-          ...day,
-          timeSlot: {
-            begin: currentTimeSlot.begin,
-            end: currentTimeSlot.end,
-          },
-        };
-      });
-      setFamilySchedule(updatedSchedule);
+        });
+        setFamilySchedule(updatedSchedule);
+      }
+
+      // Close the picker after successful selection with a slight delay
+      setTimeout(() => {
+        setShowTimePicker(false);
+        setActiveField(null);
+      }, 3000);
     }
-    setActiveField(null);
   };
 
   const handleTimePress = (day: DayOfWeek, isBegin: boolean) => {
@@ -81,6 +100,19 @@ export default function ServiceDaysScreen() {
     setIsSettingBeginTime(isBegin);
     setShowTimePicker(true);
     setActiveField({ day, field: isBegin ? 'begin' : 'end' });
+    // Set initial time based on current selection or default
+    const currentDay = family_schedule.find((d) => d.day === day);
+    if (currentDay?.timeSlot) {
+      const timeString = isBegin
+        ? currentDay.timeSlot.begin
+        : currentDay.timeSlot.end;
+      const [hours, minutes] = timeString.split(':').map(Number);
+      const initialTime = new Date();
+      initialTime.setHours(hours, minutes, 0, 0);
+      setTempSelectedTime(initialTime);
+    } else {
+      setTempSelectedTime(new Date());
+    }
   };
 
   const handleNext = () => {
@@ -100,10 +132,16 @@ export default function ServiceDaysScreen() {
 
         {showTimePicker && (
           <>
-            <View style={styles.overlay} />
+            <Pressable
+              style={styles.overlay}
+              onPress={() => {
+                setShowTimePicker(false);
+                setActiveField(null);
+              }}
+            />
             <View style={styles.timePickerContainer}>
               <DateTimePicker
-                value={new Date()}
+                value={tempSelectedTime}
                 mode='time'
                 is24Hour={false} // Changed to 12-hour format
                 display='spinner'
@@ -216,7 +254,7 @@ export default function ServiceDaysScreen() {
           style={styles.buttonContainer}
         >
           <Button
-            label='Next'
+            // label='Next'
             onPress={handleNext}
             variant='compact'
             disabled={!hasActiveDays}

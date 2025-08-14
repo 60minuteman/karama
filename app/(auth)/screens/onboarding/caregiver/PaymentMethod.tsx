@@ -92,9 +92,9 @@ const PaymentMethod: React.FC<PaymentMethodProps> = ({ onNext }) => {
         </ScrollView>
 
         <View style={styles.buttonContainer}>
-          <Button label='Skip' onPress={() => router.back()} variant='skip' />
+          {/* <Button label='Skip' onPress={() => router.back()} variant='skip' /> */}
           <Button
-            label='Next'
+            // label='Next'
             onPress={handleNext}
             variant='compact'
             disabled={!caregiverPaymentMethod}
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     paddingVertical: 20,
   },

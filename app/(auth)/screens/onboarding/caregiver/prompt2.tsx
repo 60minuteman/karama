@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
-import { Colors } from '@/constants/Colors';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
 import { Button } from '@/components/ui/Button';
 import { Header } from '@/components/ui/Header';
 import { Pill } from '@/components/ui/Pill';
-import { LinearGradient } from 'expo-linear-gradient';
+import { ProgressBar } from '@/components/ui/ProgressBar';
+import { Colors } from '@/constants/Colors';
 import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 export const promptCategories = [
   { id: 'get_to_know', label: 'Get to know Me', primary: true },
@@ -19,12 +19,12 @@ export const promptCategories = [
 
 export const promptOptions = [
   'If I could plan a playdate I would',
-  'When I\'m sad I like',
+  "When I'm sad I like",
   'An important member of the family is',
   'I dont like veggies but',
   'Let me tell you about myself',
   'My favorite food is',
-  'Okay here\'s the deal',
+  "Okay here's the deal",
   'The funniest thing about me is',
   'Did you know',
   'Something cool I can do is',
@@ -37,12 +37,8 @@ export const promptOptions = [
 export default function Prompt2() {
   const router = useRouter();
   const [selectedPrompt, setSelectedPrompt] = useState<string>('');
-  const { 
-      prompts
-    } = useOtherStore();
-     const {
-        setOnboardingScreen,
-      } = useUserStore();
+  const { prompts } = useOtherStore();
+  const { setOnboardingScreen } = useUserStore();
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/caregiver/moreInfo');
@@ -58,25 +54,22 @@ export default function Prompt2() {
   };
 
   const handleAdd = (item: any) => {
-      setOnboardingScreen('/(auth)/screens/onboarding/caregiver/promptAnswer');
-      router.push({
-        pathname: '/(auth)/screens/onboarding/caregiver/promptAnswer',
-        params: { prompt: item },
-      });
-};
-
+    setOnboardingScreen('/(auth)/screens/onboarding/caregiver/promptAnswer');
+    router.push({
+      pathname: '/(auth)/screens/onboarding/caregiver/promptAnswer',
+      params: { prompt: item },
+    });
+  };
 
   return (
     <ThemedView style={styles.container}>
-      <Header variant="back" titleStyle={{ fontFamily: 'Bogart-Bold' }} />
-      
+      <Header variant='back' titleStyle={{ fontFamily: 'Bogart-Bold' }} />
+
       <View style={styles.content}>
         <View style={styles.spacerTop} />
         <ProgressBar progress={0.9} />
 
-        <ThemedText style={styles.title}>
-          Choose your prompt.
-        </ThemedText>
+        <ThemedText style={styles.title}>Choose your prompt.</ThemedText>
 
         <View style={styles.categories}>
           {promptCategories.map((category) => (
@@ -102,8 +95,10 @@ export default function Prompt2() {
               <View key={index} style={styles.pillWrapper}>
                 <Pill
                   label={prompt}
-                   selected={prompts.some((item: any) => item.title === prompt) ||
-                      selectedPrompt === prompt}
+                  selected={
+                    prompts.some((item: any) => item.title === prompt) ||
+                    selectedPrompt === prompt
+                  }
                   onPress={() => handleAdd(prompt)}
                 />
               </View>
@@ -111,20 +106,21 @@ export default function Prompt2() {
           </View>
         </ScrollView>
 
-        {/* <LinearGradient
+        <LinearGradient
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
-           {prompts.length > 1 && (
-                    <View style={styles.buttonContainer}>
-                      <Button
-                        label="Next"
-                        onPress={handleNext}
-                        variant="compact"
-                      />
-                    </View>
-                    )}
-        </LinearGradient> */}
+          {prompts.length > 1 && (
+            <View style={styles.buttonContainer}>
+              <Button
+                // label='Next'
+                onPress={handleNext}
+                variant='compact'
+                disabled={prompts.length === 0}
+              />
+            </View>
+          )}
+        </LinearGradient>
       </View>
     </ThemedView>
   );
@@ -190,5 +186,5 @@ const styles = StyleSheet.create({
     right: 0,
     height: 100,
     paddingHorizontal: 20,
-  }
+  },
 });

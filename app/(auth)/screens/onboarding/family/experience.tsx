@@ -91,7 +91,7 @@ export default function ExperienceScreen() {
           <View style={styles.buttonContainer}>
             <Button label='Skip' onPress={handleSkip} variant='skip' />
             <Button
-              label='Next'
+              // label='Next'
               onPress={handleNext}
               variant='compact'
               disabled={!selected_experience}
