@@ -41,62 +41,6 @@ export default function ServiceDaysScreen() {
     );
   }, []);
 
-  const handleTimeSelect = (event: any, selectedTime?: Date) => {
-    // Check if the user cancelled the picker
-    if (event.type === 'dismissed') {
-      setShowTimePicker(false);
-      setActiveField(null);
-      return;
-    }
-
-    // Store the selected time temporarily and confirm automatically
-    if (selectedTime) {
-      setTempSelectedTime(selectedTime);
-      // Auto-confirm the time selection
-      const formattedTime = selectedTime.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      });
-
-      if (selectedDay) {
-        const updatedSchedule = caregiverSchedule?.map((day) => {
-          const currentTimeSlot = day.timeSlot || {
-            begin: '00:00',
-            end: '00:00',
-          };
-
-          if (day.day === selectedDay) {
-            return {
-              ...day,
-              isActive: true,
-              timeSlot: {
-                begin: isSettingBeginTime
-                  ? formattedTime
-                  : currentTimeSlot.begin,
-                end: isSettingBeginTime ? currentTimeSlot.end : formattedTime,
-              },
-            };
-          }
-          return {
-            ...day,
-            timeSlot: {
-              begin: currentTimeSlot.begin,
-              end: currentTimeSlot.end,
-            },
-          };
-        });
-        setCaregiverSchedule(updatedSchedule);
-      }
-
-      // Close the picker after successful selection with a slight delay
-      setTimeout(() => {
-        setShowTimePicker(false);
-        setActiveField(null);
-      }, 2000);
-    }
-  };
-
   const handleTimePress = (day: CaregiverDayOfWeek, isBegin: boolean) => {
     setSelectedDay(day);
     setIsSettingBeginTime(isBegin);
@@ -144,13 +88,87 @@ export default function ServiceDaysScreen() {
               }}
             />
             <View style={styles.timePickerContainer}>
-              <DateTimePicker
-                value={tempSelectedTime}
-                mode='time'
-                is24Hour={true}
-                display='spinner'
-                onChange={handleTimeSelect}
-              />
+              <View style={styles.timePickerContent}>
+                <DateTimePicker
+                  value={tempSelectedTime}
+                  mode='time'
+                  is24Hour={true}
+                  display='spinner'
+                  onChange={(event, selectedTime) => {
+                    if (selectedTime) {
+                      setTempSelectedTime(selectedTime);
+                    }
+                  }}
+                  style={styles.dateTimePicker}
+                />
+              </View>
+              <View style={styles.timePickerButtons}>
+                <Pressable
+                  style={[styles.timePickerButton, styles.cancelButton]}
+                  onPress={() => {
+                    setShowTimePicker(false);
+                    setActiveField(null);
+                  }}
+                >
+                  <ThemedText style={styles.cancelButtonText}>
+                    Cancel
+                  </ThemedText>
+                </Pressable>
+
+                <Pressable
+                  style={[styles.timePickerButton, styles.confirmButton]}
+                  onPress={() => {
+                    // Confirm the time selection
+                    const formattedTime = tempSelectedTime.toLocaleTimeString(
+                      'en-US',
+                      {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false,
+                      }
+                    );
+
+                    if (selectedDay) {
+                      const updatedSchedule = caregiverSchedule?.map((day) => {
+                        const currentTimeSlot = day.timeSlot || {
+                          begin: '00:00',
+                          end: '00:00',
+                        };
+
+                        if (day.day === selectedDay) {
+                          return {
+                            ...day,
+                            isActive: true,
+                            timeSlot: {
+                              begin: isSettingBeginTime
+                                ? formattedTime
+                                : currentTimeSlot.begin,
+                              end: isSettingBeginTime
+                                ? currentTimeSlot.end
+                                : formattedTime,
+                            },
+                          };
+                        }
+                        return {
+                          ...day,
+                          timeSlot: {
+                            begin: currentTimeSlot.begin,
+                            end: currentTimeSlot.end,
+                          },
+                        };
+                      });
+                      setCaregiverSchedule(updatedSchedule);
+                    }
+
+                    setShowTimePicker(false);
+                    setActiveField(null);
+                  }}
+                >
+                  <ThemedText style={styles.confirmButtonText}>
+                    Confirm
+                  </ThemedText>
+                </Pressable>
+              </View>
             </View>
           </>
         )}
@@ -391,7 +409,7 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     backgroundColor: 'white',
     paddingTop: 20,
-    paddingBottom: 40,
+    paddingBottom: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     shadowColor: '#000',
@@ -399,9 +417,18 @@ const styles = StyleSheet.create({
       width: 0,
       height: -2,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  timePickerContent: {
+    paddingVertical: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dateTimePicker: {
+    width: '100%',
+    height: 80,
   },
   overlay: {
     position: 'absolute',
@@ -411,5 +438,41 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     zIndex: 999,
+  },
+  timePickerButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 0,
+    gap: 16,
+  },
+  timePickerButton: {
+    flex: 1,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  cancelButton: {
+    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  confirmButton: {
+    backgroundColor: Colors.light.primary,
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#666666',
+    fontFamily: 'Bogart-Semibold',
+  },
+  confirmButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#FFFFFF',
+    fontFamily: 'Bogart-Semibold',
   },
 });

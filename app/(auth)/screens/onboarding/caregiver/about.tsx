@@ -111,6 +111,14 @@ export default function AboutScreen() {
     );
   };
 
+  const canSelectMorePersonality = () => {
+    return (caregiverPersonality?.length || 0) < 3;
+  };
+
+  const canSelectMoreDiet = () => {
+    return (caregiverDiet?.length || 0) < 3;
+  };
+
   const canSelectMore = () => {
     return getTotalSelections() < 10;
   };
@@ -119,8 +127,8 @@ export default function AboutScreen() {
     const prev = caregiverPersonality ?? [];
     const willBeSelected = !prev.includes(item);
 
-    // Check if adding this selection would exceed the limit
-    if (willBeSelected && !canSelectMore()) {
+    // Check if adding this selection would exceed the personality limit of 3
+    if (willBeSelected && !canSelectMorePersonality()) {
       return;
     }
 
@@ -151,8 +159,8 @@ export default function AboutScreen() {
     const prev = caregiverDiet ?? [];
     const willBeSelected = !prev.includes(item);
 
-    // Check if adding this selection would exceed the limit
-    if (willBeSelected && !canSelectMore()) {
+    // Check if adding this selection would exceed the diet limit of 3
+    if (willBeSelected && !canSelectMoreDiet()) {
       return;
     }
 
@@ -202,7 +210,8 @@ export default function AboutScreen() {
         </ThemedText>
 
         <ThemedText style={styles.subtitle}>
-          You can select up to 10 options (religion is compulsory)
+          You can select up to 3 personality traits, 3 diet preferences, and
+          religion is optional
         </ThemedText>
 
         <View style={styles.scrollViewContainer}>
@@ -241,6 +250,13 @@ export default function AboutScreen() {
                     />
                   ))}
                 </View>
+                {(category === 'Personality' || category === 'Diet') && (
+                  <ThemedText style={styles.selectionLimit}>
+                    {category === 'Personality'
+                      ? `${caregiverPersonality?.length || 0}/3 selected`
+                      : `${caregiverDiet?.length || 0}/3 selected`}
+                  </ThemedText>
+                )}
                 {category !== 'Religion' && (
                   <View style={styles.switchContainer}>
                     <ThemedText style={styles.switchLabel}>
@@ -278,16 +294,12 @@ export default function AboutScreen() {
             pointerEvents='none'
           />
           <View style={styles.buttonContainer}>
-            <Button label='Skip' onPress={handleSkip} variant='skip' />
+            {/* <Button label='Skip' onPress={handleSkip} variant='skip' /> */}
             <Button
               // label='Next'
               onPress={handleNext}
               variant='compact'
-              disabled={
-                !caregiverReligion?.length ||
-                getTotalSelections() < 3 ||
-                getTotalSelections() >= 10
-              }
+              disabled={getTotalSelections() < 2 || getTotalSelections() >= 10}
             />
           </View>
         </View>
@@ -385,13 +397,14 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   },
   selectionLimit: {
     fontSize: 14,
     color: '#666',
-    // marginBottom: 16,
     textAlign: 'center',
+    marginTop: 8,
+    fontFamily: 'Poppins',
   },
 
   subtitle: {

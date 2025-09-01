@@ -15,6 +15,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -125,6 +126,7 @@ const PastPosition: React.FC = () => {
   const [activeDatePicker, setActiveDatePicker] = useState<
     'start' | 'end' | null
   >(null);
+  const [tempSelectedDate, setTempSelectedDate] = useState<Date>(new Date());
   const [fontsLoaded] = useFonts({
     'Bogart-Bold': require('@/assets/fonts/bogart/bogart-bold.otf'),
   });
@@ -181,59 +183,13 @@ const PastPosition: React.FC = () => {
 
   const handleStartDateChange = (event: any, selectedDate?: Date) => {
     if (selectedDate) {
-      const formattedDate = formatDate(selectedDate);
-      if (selectedPositionNumber === 'first') {
-        setCaregiverFirstPosition({
-          ...caregiverFirstPosition,
-          startDate: formattedDate,
-        });
-      } else if (selectedPositionNumber === 'second') {
-        setCaregiverSecondPosition({
-          ...caregiverSecondPosition,
-          startDate: formattedDate,
-        });
-      } else {
-        setCaregiverThirdPosition({
-          ...caregiverThirdPosition,
-          startDate: formattedDate,
-        });
-      }
-
-      // Close the picker after successful selection with a slight delay
-      setTimeout(() => {
-        setActiveDatePicker(null);
-      }, 2000);
-    } else {
-      setActiveDatePicker(null);
+      setTempSelectedDate(selectedDate);
     }
   };
 
   const handleEndDateChange = (event: any, selectedDate?: Date) => {
     if (selectedDate) {
-      const formattedDate = formatDate(selectedDate);
-      if (selectedPositionNumber === 'first') {
-        setCaregiverFirstPosition({
-          ...caregiverFirstPosition,
-          endDate: formattedDate,
-        });
-      } else if (selectedPositionNumber === 'second') {
-        setCaregiverSecondPosition({
-          ...caregiverSecondPosition,
-          endDate: formattedDate,
-        });
-      } else {
-        setCaregiverThirdPosition({
-          ...caregiverThirdPosition,
-          endDate: formattedDate,
-        });
-      }
-
-      // Close the picker after successful selection with a slight delay
-      setTimeout(() => {
-        setActiveDatePicker(null);
-      }, 3000);
-    } else {
-      setActiveDatePicker(null);
+      setTempSelectedDate(selectedDate);
     }
   };
 
@@ -405,6 +361,25 @@ const PastPosition: React.FC = () => {
                     <ThemedText style={styles.dateLabel}>Start Date</ThemedText>
                     <TouchableOpacity
                       onPress={() => {
+                        // Set initial date based on current selection or default to today
+                        const currentDate =
+                          selectedPositionNumber === 'first'
+                            ? caregiverFirstPosition?.startDate
+                            : selectedPositionNumber === 'third'
+                            ? caregiverThirdPosition?.startDate
+                            : caregiverSecondPosition?.startDate;
+
+                        if (currentDate && currentDate !== 'MM/DD/YYYY') {
+                          const [month, day, year] = currentDate.split('/');
+                          const date = new Date(
+                            parseInt(year),
+                            parseInt(month) - 1,
+                            parseInt(day)
+                          );
+                          setTempSelectedDate(date);
+                        } else {
+                          setTempSelectedDate(new Date());
+                        }
                         setActiveDatePicker('start');
                       }}
                       style={[
@@ -427,6 +402,25 @@ const PastPosition: React.FC = () => {
                     <ThemedText style={styles.dateLabel}>End Date</ThemedText>
                     <TouchableOpacity
                       onPress={() => {
+                        // Set initial date based on current selection or default to today
+                        const currentDate =
+                          selectedPositionNumber === 'first'
+                            ? caregiverFirstPosition?.endDate
+                            : selectedPositionNumber === 'third'
+                            ? caregiverThirdPosition?.endDate
+                            : caregiverSecondPosition?.endDate;
+
+                        if (currentDate && currentDate !== 'MM/DD/YYYY') {
+                          const [month, day, year] = currentDate.split('/');
+                          const date = new Date(
+                            parseInt(year),
+                            parseInt(month) - 1,
+                            parseInt(day)
+                          );
+                          setTempSelectedDate(date);
+                        } else {
+                          setTempSelectedDate(new Date());
+                        }
                         setActiveDatePicker('end');
                       }}
                       style={[
@@ -446,24 +440,6 @@ const PastPosition: React.FC = () => {
                     </TouchableOpacity>
                   </View>
                 </View>
-
-                {activeDatePicker === 'start' && (
-                  <DateTimePicker
-                    value={new Date()}
-                    mode='date'
-                    display='spinner'
-                    onChange={handleStartDateChange}
-                  />
-                )}
-
-                {activeDatePicker === 'end' && (
-                  <DateTimePicker
-                    value={new Date()}
-                    mode='date'
-                    display='spinner'
-                    onChange={handleEndDateChange}
-                  />
-                )}
 
                 <View style={styles.section}>
                   <ThemedText style={styles.sectionTitle}>
@@ -738,6 +714,98 @@ const PastPosition: React.FC = () => {
             </LinearGradient>
           </View>
         </KeyboardAvoidingView>
+
+        {/* Date Picker Modal - Outside of ScrollView for proper positioning */}
+        {activeDatePicker && (
+          <>
+            <Pressable
+              style={styles.overlay}
+              onPress={() => {
+                setActiveDatePicker(null);
+              }}
+            />
+            <View style={styles.datePickerContainer}>
+              <View style={styles.datePickerHeader}>
+                <View style={styles.dragHandle} />
+                <ThemedText style={styles.datePickerTitle}>
+                  Select {activeDatePicker === 'start' ? 'Start' : 'End'} Date
+                </ThemedText>
+              </View>
+              <View style={styles.datePickerContent}>
+                <DateTimePicker
+                  value={tempSelectedDate}
+                  mode='date'
+                  display='spinner'
+                  onChange={
+                    activeDatePicker === 'start'
+                      ? handleStartDateChange
+                      : handleEndDateChange
+                  }
+                  style={styles.dateTimePicker}
+                />
+              </View>
+              <View style={styles.datePickerButtons}>
+                <Pressable
+                  style={[styles.datePickerButton, styles.cancelButton]}
+                  onPress={() => {
+                    setActiveDatePicker(null);
+                  }}
+                >
+                  <ThemedText style={styles.cancelButtonText}>
+                    Cancel
+                  </ThemedText>
+                </Pressable>
+
+                <Pressable
+                  style={[styles.datePickerButton, styles.confirmButton]}
+                  onPress={() => {
+                    const formattedDate = formatDate(tempSelectedDate);
+                    if (activeDatePicker === 'start') {
+                      if (selectedPositionNumber === 'first') {
+                        setCaregiverFirstPosition({
+                          ...caregiverFirstPosition,
+                          startDate: formattedDate,
+                        });
+                      } else if (selectedPositionNumber === 'second') {
+                        setCaregiverSecondPosition({
+                          ...caregiverSecondPosition,
+                          startDate: formattedDate,
+                        });
+                      } else {
+                        setCaregiverThirdPosition({
+                          ...caregiverThirdPosition,
+                          startDate: formattedDate,
+                        });
+                      }
+                    } else if (activeDatePicker === 'end') {
+                      if (selectedPositionNumber === 'first') {
+                        setCaregiverFirstPosition({
+                          ...caregiverFirstPosition,
+                          endDate: formattedDate,
+                        });
+                      } else if (selectedPositionNumber === 'second') {
+                        setCaregiverSecondPosition({
+                          ...caregiverSecondPosition,
+                          endDate: formattedDate,
+                        });
+                      } else {
+                        setCaregiverThirdPosition({
+                          ...caregiverThirdPosition,
+                          endDate: formattedDate,
+                        });
+                      }
+                    }
+                    setActiveDatePicker(null);
+                  }}
+                >
+                  <ThemedText style={styles.confirmButtonText}>
+                    Confirm
+                  </ThemedText>
+                </Pressable>
+              </View>
+            </View>
+          </>
+        )}
       </ThemedView>
     </TouchableWithoutFeedback>
   );
@@ -852,6 +920,109 @@ const styles = StyleSheet.create({
   selectionCount: {
     fontSize: 14,
     color: Colors.light.primary,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 999,
+  },
+  datePickerContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    backgroundColor: 'white',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 8,
+    height: 300,
+  },
+  datePickerHeader: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 8,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#F0F0F0',
+    alignItems: 'center',
+  },
+  dragHandle: {
+    width: 40,
+    height: 4,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 2,
+    marginBottom: 12,
+  },
+  datePickerTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#002140',
+    textAlign: 'center',
+    // fontFamily: 'Bogart-Semibold',
+  },
+  datePickerContent: {
+    paddingVertical: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 80,
+  },
+  dateTimePicker: {
+    width: '100%',
+    height: 80,
+  },
+  datePickerButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 20,
+    gap: 16,
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
+    zIndex: 1001,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+  },
+  datePickerButton: {
+    flex: 1,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 8,
+    minWidth: 120,
+  },
+  cancelButton: {
+    backgroundColor: '#F5F5F5',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+  },
+  confirmButton: {
+    backgroundColor: Colors.light.primary,
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#666666',
+    fontFamily: 'Bogart-Semibold',
+  },
+  confirmButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#FFFFFF',
+    fontFamily: 'Bogart-Semibold',
   },
 });
 

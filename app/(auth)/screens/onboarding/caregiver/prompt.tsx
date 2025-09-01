@@ -431,7 +431,7 @@ export default function Prompt() {
           colors={['rgba(255,255,255,0)', 'rgba(255,255,255,1)']}
           style={styles.buttonGradient}
         >
-          {promptsData?.length > 1 && (
+          {/* {promptsData?.length > 1 && (
             <View style={styles.buttonContainer}>
               <Button
                 // label='Next'
@@ -440,7 +440,7 @@ export default function Prompt() {
                 variant='compact'
               />
             </View>
-          )}
+          )} */}
         </LinearGradient>
       </View>
     </ThemedView>

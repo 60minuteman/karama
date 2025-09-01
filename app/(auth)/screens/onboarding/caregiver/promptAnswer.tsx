@@ -369,7 +369,7 @@ export default function PromptAnswer() {
             />
           </View>
 
-          {prompts?.length < 2 && (
+          {prompts?.length < 4 && (
             <View style={styles.addButtonContainer}>
               <Button
                 label='Add Another Prompt'

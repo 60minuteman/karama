@@ -419,7 +419,8 @@ const PromptSelection = () => {
           // label='Next'
           onPress={handleSubmit}
           variant='compact'
-          disabled={prompts.length < 2}
+          disabled={prompts.length < 3}
+          loading={createProfile.isPending}
         />
       </View>
     </ThemedView>

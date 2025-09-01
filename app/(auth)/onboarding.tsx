@@ -4,9 +4,11 @@ import { Button } from '@/components/ui/Button';
 import { Colors } from '@/constants/Colors';
 import { useOnboarding } from '@/hooks/useOnboarding';
 import { useUserStore } from '@/services/state/user';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Video } from 'expo-av';
 import Constants from 'expo-constants';
 import { useRouter } from 'expo-router';
+import { useEffect } from 'react';
 import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -32,6 +34,18 @@ export default function OnboardingScreen() {
     // router.push('/(auth)/pet');
     router.push('/(auth)/signInPhone');
   };
+
+  // useEffect(() => {
+  //   const clearAsyncStorage = async () => {
+  //     try {
+  //       await AsyncStorage.clear();
+  //       console.log('AsyncStorage cleared successfully on onboarding screen.');
+  //     } catch (e) {
+  //       console.error('Failed to clear AsyncStorage:', e);
+  //     }
+  //   };
+  //   clearAsyncStorage();
+  // }, []);
 
   const handlePreview = () => {
     router.push('/preview');
