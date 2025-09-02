@@ -35,41 +35,37 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     // Ensure everything is ready before attempting navigation
     if (!rootNavigation?.isReady || !hydrated || !rootSegments) return;
 
-    // Add a longer initial delay to ensure complete mounting
-    const timer = setTimeout(() => {
-      // Double-check navigation readiness
-      if (!rootNavigation.isReady) return;
+    const inAuthGroup = rootSegments[0] === '(auth)';
+    const inPreviewGroup = rootSegments[0] === 'preview';
 
-      const inAuthGroup = rootSegments[0] === '(auth)';
-      const inPreviewGroup = rootSegments[0] === 'preview';
+    console.log('user', user);
+    console.log('onboarding_screen', !onboarding_screen);
+    console.log('inAuthGroup', inAuthGroup);
+    console.log('inPreviewGroup', inPreviewGroup);
 
-      console.log('user', user);
-      console.log('onboarding_screen', !onboarding_screen);
-      console.log('inAuthGroup', inAuthGroup);
-      console.log('inPreviewGroup', inPreviewGroup);
-
-      try {
-        // Skip auth protection for preview screens (dev only)
-        if (inPreviewGroup) {
-          return;
-        }
-
-        if (user && !onboarding_screen && inAuthGroup) {
-          // Redirect away from auth group if authenticated
-          router.replace('/(tabs)/discover');
-        } else if (
-          (!user && !inAuthGroup) ||
-          (onboarding_screen && !inAuthGroup)
-        ) {
-          // Redirect to auth group if not authenticated
-          router.replace('/(auth)/onboarding');
-        }
-      } catch (error) {
-        console.error('Navigation error:', error);
+    try {
+      // Skip auth protection for preview screens (dev only)
+      if (inPreviewGroup) {
+        return;
       }
-    }, 0); // Increased delay to 100ms
 
-    return () => clearTimeout(timer);
+      if (user && !onboarding_screen && inAuthGroup) {
+        // Redirect away from auth group if authenticated
+        router.replace('/(tabs)/discover');
+      } else if (
+        (!user && !inAuthGroup) ||
+        (onboarding_screen && !inAuthGroup)
+      ) {
+        // Redirect to auth group if not authenticated
+        router.replace('/(auth)/onboarding');
+      }
+    } catch (error) {
+      console.error('Navigation error:', error);
+      // Fallback navigation on error
+      if (!user && !inAuthGroup) {
+        router.replace('/(auth)/onboarding');
+      }
+    }
   }, [
     user,
     rootNavigation?.isReady,
@@ -84,7 +80,14 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoggedIn(true);
     } catch (error) {
       console.error('Error signing in:', error);
-      throw error;
+      // Retry once on failure
+      try {
+        await AsyncStorage.setItem('userToken', token);
+        setIsLoggedIn(true);
+      } catch (retryError) {
+        console.error('Retry failed for sign in:', retryError);
+        throw retryError;
+      }
     }
   };
 
@@ -96,7 +99,16 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       router.replace('/(auth)');
     } catch (error) {
       console.error('Error signing out:', error);
-      throw error;
+      // Continue with logout even if AsyncStorage fails
+      try {
+        await logout();
+        setIsLoggedIn(false);
+        router.replace('/(auth)');
+      } catch (logoutError) {
+        console.error('Logout failed:', logoutError);
+        // Force navigation to auth screen
+        router.replace('/(auth)');
+      }
     }
   };
 

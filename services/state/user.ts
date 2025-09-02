@@ -2,6 +2,65 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+// Utility function for retrying async operations
+const retryAsyncOperation = async <T>(
+  operation: () => Promise<T>,
+  maxRetries: number = 3,
+  delay: number = 1000
+): Promise<T> => {
+  let lastError: Error;
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error as Error;
+      console.warn(`Operation failed (attempt ${attempt}/${maxRetries}):`, error);
+      
+      if (attempt < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, delay * attempt));
+      }
+    }
+  }
+  
+  throw lastError!;
+};
+
+// Utility function for validating state before persistence
+const validateState = (state: any): boolean => {
+  try {
+    // Basic validation checks
+    if (state === null || typeof state !== 'object') {
+      return false;
+    }
+    
+    // Check for circular references
+    const seen = new WeakSet();
+    const checkCircular = (obj: any): boolean => {
+      if (obj !== null && typeof obj === 'object') {
+        if (seen.has(obj)) {
+          return false; // Circular reference detected
+        }
+        seen.add(obj);
+        
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            if (!checkCircular(obj[key])) {
+              return false;
+            }
+          }
+        }
+      }
+      return true;
+    };
+    
+    return checkCircular(state);
+  } catch (error) {
+    console.error('State validation failed:', error);
+    return false;
+  }
+};
+
 type Requirement =
   | 'Can Travel'
   | 'Able To Drive'
@@ -649,14 +708,16 @@ interface UserState {
   setFamilyAllergies: (allergies: Partial<FamilyAllergies>) => void;
   setFamilyPromptCategory: (category: string | null) => void;
   setFamilyImages: (images: string[]) => void;
+  clearCaregiverData: () => void;
+  clearFamilyData: () => void;
+  switchUserType: (type: 'family' | 'caregiver') => void;
   logout: () => Promise<void>;
   resetOnboarding: () => void;
-  clearCaregiverData: () => void;
 }
 
 export const useUserStore = create<UserState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       token: null,
       isLoading: false,
@@ -939,13 +1000,15 @@ export const useUserStore = create<UserState>()(
       setToken: async (token: string | null) => {
         try {
           if (token) {
-            await AsyncStorage.setItem('token', token);
+            await retryAsyncOperation(() => AsyncStorage.setItem('token', token));
           } else {
-            await AsyncStorage.removeItem('token');
+            await retryAsyncOperation(() => AsyncStorage.removeItem('token'));
           }
           set({ token });
         } catch (error) {
-          console.error('Error setting token:', error);
+          console.error('Error setting token after retries:', error);
+          // Still set the token in state even if storage fails
+          set({ token });
         }
       },
 
@@ -1412,16 +1475,21 @@ export const useUserStore = create<UserState>()(
 
       logout: async () => {
         try {
-          // Clear AsyncStorage
-          await AsyncStorage.removeItem('token');
-          await AsyncStorage.removeItem('user-storage');
+          // Clear AsyncStorage with retry mechanism
+          await retryAsyncOperation(() => AsyncStorage.removeItem('token'));
+          await retryAsyncOperation(() => AsyncStorage.removeItem('user-storage'));
           // Reset all state
           set({
             user: null,
             token: null,
           });
         } catch (error) {
-          console.error('Error during logout:', error);
+          console.error('Error during logout after retries:', error);
+          // Still reset state even if storage clearing fails
+          set({
+            user: null,
+            token: null,
+          });
         }
       },
 
@@ -1559,13 +1627,435 @@ export const useUserStore = create<UserState>()(
           caregiverMoreInfo: '',
           caregiverImages: [],
         }),
+
+      clearFamilyData: () =>
+        set({
+          familyName: null,
+          family_description: null,
+          family_age_groups: defaultAgeGroups,
+          family_behaviour: {
+            has_condition: null,
+            conditions: [],
+          },
+          family_selected_source: null,
+          family_zipcode: '',
+          family_keyboard_height: 0,
+          family_languages: [],
+          family_pets: [],
+          family_interests: {
+            creative_interests: [],
+            instrument_interests: [],
+            sport_interests: [],
+            stem_interests: [],
+          },
+          family_household_selections: {
+            Diet: [],
+            Rules: [],
+            Religion: [],
+          },
+          family_household_visibility: {
+            Diet: false,
+            Rules: false,
+            Religion: false,
+          },
+          family_selections: {},
+          family_show_diet: false,
+          family_show_rules: false,
+          family_show_religion: false,
+          family_philosophies: [],
+          family_show_philosophy: false,
+          family_gender_preference: {
+            has_preference: null,
+            selected_gender: null,
+            is_dealbreaker: false,
+          },
+          caregiver_type: {
+            selected_types: [],
+            is_dealbreaker: false,
+          },
+          caregiver_traits: {
+            selected_traits: [],
+            is_dealbreaker: false,
+          },
+          caregiver_age: {
+            has_preference: null,
+            selected_age_range: null,
+            is_dealbreaker: false,
+          },
+          caregiver_experience: {
+            selected_experience: null,
+            is_dealbreaker: false,
+          },
+          caregiver_language_required: null,
+          caregiver_requirements: {
+            selected_requirements: [],
+            selected_certifications: [],
+            requirements_dealbreaker: false,
+            certifications_dealbreaker: false,
+          },
+          family_availability: {
+            selected_availability: null,
+            is_dealbreaker: false,
+          },
+          family_arrangement: {
+            selected_arrangement: null,
+            is_dealbreaker: false,
+          },
+          family_commitment: {
+            selected_commitment: null,
+            start_date: new Date(),
+            end_date: new Date(),
+          },
+          family_schedule: [
+            {
+              day: 'Mon',
+              timeSlot: { begin: '00:00', end: '00:00' },
+              isActive: false,
+            },
+            {
+              day: 'Tue',
+              timeSlot: { begin: '00:00', end: '00:00' },
+              isActive: false,
+            },
+            {
+              day: 'Wed',
+              timeSlot: { begin: '00:00', end: '00:00' },
+              isActive: false,
+            },
+            {
+              day: 'Thu',
+              timeSlot: { begin: '00:00', end: '00:00' },
+              isActive: false,
+            },
+            {
+              day: 'Fri',
+              timeSlot: { begin: '00:00', end: '00:00' },
+              isActive: false,
+            },
+            {
+              day: 'Sat',
+              timeSlot: { begin: '00:00', end: '00:00' },
+              isActive: false,
+            },
+            {
+              day: 'Sun',
+              timeSlot: { begin: '00:00', end: '00:00' },
+              isActive: false,
+            },
+          ],
+          family_responsibilities: [],
+          family_payment: {
+            selected_type: null,
+            hourly_rate: [15, 15],
+            salary_amount: '50,000',
+            has_interacted: false,
+          },
+          family_payment_method: {
+            selected_method: '',
+            show_on_profile: false,
+          },
+          family_benefits: {
+            selected_benefits: [],
+            show_on_profile: false,
+          },
+          family_prompt: '',
+          family_prompt_answer: '',
+          family_more_info: '',
+          family_has_allergies: null,
+          family_allergies: {
+            food: [],
+            environmental: [],
+            other: [],
+          },
+          family_prompt_category: 'get_to_know',
+          family_images: [],
+        }),
+
+      switchUserType: (newType: 'family' | 'caregiver') => {
+        const currentType = get().selectedType;
+        if (currentType && currentType !== newType) {
+          // Clear data from the previous user type
+          if (currentType === 'caregiver') {
+            get().clearCaregiverData();
+          } else {
+            get().clearFamilyData();
+          }
+        }
+        set({ selectedType: newType });
+      },
     }),
     {
       name: 'user-storage',
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => (state) => {
-        state?.setHydrated();
+        try {
+          if (state) {
+            // Convert ISO strings back to Date objects
+            if (state.family_commitment) {
+              if (typeof state.family_commitment.start_date === 'string') {
+                state.family_commitment.start_date = new Date(state.family_commitment.start_date);
+              }
+              if (typeof state.family_commitment.end_date === 'string') {
+                state.family_commitment.end_date = new Date(state.family_commitment.end_date);
+              }
+            }
+            if (typeof state.caregiverCommitmentStartDate === 'string') {
+              state.caregiverCommitmentStartDate = new Date(state.caregiverCommitmentStartDate);
+            }
+            if (typeof state.caregiverCommitmentEndDate === 'string') {
+              state.caregiverCommitmentEndDate = new Date(state.caregiverCommitmentEndDate);
+            }
+            state.setHydrated();
+          }
+        } catch (error) {
+          console.error('Error during rehydration:', error);
+          // Set hydrated to true even if there's an error to prevent app from hanging
+          if (state) {
+            state.setHydrated();
+          }
+        }
       },
+
+      partialize: (state) => {
+        try {
+          // Validate state before serialization
+          if (!validateState(state)) {
+            console.error('Invalid state detected, skipping persistence');
+            return {};
+          }
+          
+          // Only persist essential data to reduce storage size and improve performance
+          const {
+            user,
+            token,
+            selectedType,
+            onboarding_screen,
+            steps,
+            // Family data
+            familyName,
+            family_description,
+            family_age_groups,
+            family_behaviour,
+            family_selected_source,
+            family_zipcode,
+            family_languages,
+            family_pets,
+            family_interests,
+            family_household_selections,
+            family_household_visibility,
+            family_selections,
+            family_show_diet,
+            family_show_rules,
+            family_show_religion,
+            family_philosophies,
+            family_show_philosophy,
+            family_gender_preference,
+            caregiver_type,
+            caregiver_traits,
+            caregiver_age,
+            caregiver_experience,
+            caregiver_language_required,
+            caregiver_requirements,
+            family_availability,
+            family_arrangement,
+            family_commitment,
+            family_schedule,
+            family_responsibilities,
+            family_payment,
+            family_payment_method,
+            family_benefits,
+            family_prompt,
+            family_prompt_answer,
+            family_more_info,
+            family_has_allergies,
+            family_allergies,
+            family_prompt_category,
+            family_images,
+            // Caregiver data
+            caregiverName,
+            caregiverDob,
+            caregiverGender,
+            caregiverPronouns,
+            caregiverShowPronouns,
+            caregiverReferral,
+            caregiverLocation,
+            caregiverPositionType,
+            caregiverExperienceDuration,
+            caregiverEducation,
+            caregiverShowEducation,
+            caregiverAbilities,
+            caregiverCertifications,
+            caregiverLanguages,
+            caregiverAgeExperience,
+            caregiverChildrenCount,
+            hasNeuroDivergentExperience,
+            caregiverConditionExperience,
+            hasPetExperience,
+            caregiverPetExperience,
+            caregiverCreativeInterests,
+            caregiverInstrumentInterests,
+            caregiverSportInterest,
+            caregiverStemInterests,
+            caregiverPersonality,
+            showCaregiverPersonality,
+            caregiverRules,
+            caregiverDiet,
+            showCaregiverDiet,
+            caregiverReligion,
+            showCaregiverReligion,
+            hasPhilosophyExperience,
+            caregiverPhilosophyExperience,
+            caregiverLanguageMatch,
+            caregiverPreferredPositions,
+            caregiverPreferredArrangement,
+            isDealBreaker,
+            caregiverCommitmentType,
+            caregiverCommitmentStartDate,
+            caregiverCommitmentEndDate,
+            caregiverSchedule,
+            caregiverChildcareResponsibilities,
+            caregiverHouseholdResponsibilities,
+            caregiverHourlyRate,
+            caregiverSalaryAmount,
+            caregiverPaymentType,
+            caregiverPaymentMethod,
+            showCaregiverPaymentMethod,
+            caregiverRequiredBenefits,
+            showCaregiverRequiredBenefit,
+            caregiverFirstPosition,
+            caregiverSecondPosition,
+            caregiverThirdPosition,
+            caregiverPromptCategory,
+            caregiverFirstPrompt,
+            caregiverFirstPromptAnswer,
+            caregiverMoreInfo,
+            caregiverImages,
+          } = state;
+          
+          // Convert Date objects to ISO strings for proper serialization
+          const serializedState = {
+            user,
+            token,
+            selectedType,
+            onboarding_screen,
+            steps,
+            familyName,
+            family_description,
+            family_age_groups,
+            family_behaviour,
+            family_selected_source,
+            family_zipcode,
+            family_languages,
+            family_pets,
+            family_interests,
+            family_household_selections,
+            family_household_visibility,
+            family_selections,
+            family_show_diet,
+            family_show_rules,
+            family_show_religion,
+            family_philosophies,
+            family_show_philosophy,
+            family_gender_preference,
+            caregiver_type,
+            caregiver_traits,
+            caregiver_age,
+            caregiver_experience,
+            caregiver_language_required,
+            caregiver_requirements,
+            family_availability,
+            family_arrangement,
+            family_commitment: family_commitment ? {
+              ...family_commitment,
+              start_date: family_commitment.start_date instanceof Date ? family_commitment.start_date.toISOString() : family_commitment.start_date,
+              end_date: family_commitment.end_date instanceof Date ? family_commitment.end_date.toISOString() : family_commitment.end_date,
+            } : null,
+            family_schedule,
+            family_responsibilities,
+            family_payment,
+            family_payment_method,
+            family_benefits,
+            family_prompt,
+            family_prompt_answer,
+            family_more_info,
+            family_has_allergies,
+            family_allergies,
+            family_prompt_category,
+            family_images,
+            caregiverName,
+            caregiverDob,
+            caregiverGender,
+            caregiverPronouns,
+            caregiverShowPronouns,
+            caregiverReferral,
+            caregiverLocation,
+            caregiverPositionType,
+            caregiverExperienceDuration,
+            caregiverEducation,
+            caregiverShowEducation,
+            caregiverAbilities,
+            caregiverCertifications,
+            caregiverLanguages,
+            caregiverAgeExperience,
+            caregiverChildrenCount,
+            hasNeuroDivergentExperience,
+            caregiverConditionExperience,
+            hasPetExperience,
+            caregiverPetExperience,
+            caregiverCreativeInterests,
+            caregiverInstrumentInterests,
+            caregiverSportInterest,
+            caregiverStemInterests,
+            caregiverPersonality,
+            showCaregiverPersonality,
+            caregiverRules,
+            caregiverDiet,
+            showCaregiverDiet,
+            caregiverReligion,
+            showCaregiverReligion,
+            hasPhilosophyExperience,
+            caregiverPhilosophyExperience,
+            caregiverLanguageMatch,
+            caregiverPreferredPositions,
+            caregiverPreferredArrangement,
+            isDealBreaker,
+            caregiverCommitmentType,
+            caregiverCommitmentStartDate: caregiverCommitmentStartDate instanceof Date ? caregiverCommitmentStartDate.toISOString() : caregiverCommitmentStartDate,
+            caregiverCommitmentEndDate: caregiverCommitmentEndDate instanceof Date ? caregiverCommitmentEndDate.toISOString() : caregiverCommitmentEndDate,
+            caregiverSchedule,
+            caregiverChildcareResponsibilities,
+            caregiverHouseholdResponsibilities,
+            caregiverHourlyRate,
+            caregiverSalaryAmount,
+            caregiverPaymentType,
+            caregiverPaymentMethod,
+            showCaregiverPaymentMethod,
+            caregiverRequiredBenefits,
+            showCaregiverRequiredBenefit,
+            caregiverFirstPosition,
+            caregiverSecondPosition,
+            caregiverThirdPosition,
+            caregiverPromptCategory,
+            caregiverFirstPrompt,
+            caregiverFirstPromptAnswer,
+            caregiverMoreInfo,
+            caregiverImages,
+          };
+          
+          return serializedState;
+        } catch (error) {
+          console.error('Error during state serialization:', error);
+          // Return minimal state on error to prevent complete failure
+          return {
+            user: state?.user || null,
+            token: state?.token || null,
+            selectedType: state?.selectedType || null,
+            onboarding_screen: state?.onboarding_screen || null,
+            steps: state?.steps || '',
+          };
+        }
+      },
+
     }
   )
 );

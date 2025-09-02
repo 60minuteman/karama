@@ -32,7 +32,17 @@ export default function PromptAnswer() {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
   useEffect(() => {
-    setFamilyPromptAnswer('');
+    // Only clear the answer if this is a new prompt (not editing existing)
+    const index = selectedIndex ? parseInt(selectedIndex as string) : 0;
+    const existingPrompt = prompts[index];
+    
+    if (!existingPrompt) {
+      // This is a new prompt, clear the answer
+      setFamilyPromptAnswer('');
+    } else {
+      // This is editing an existing prompt, load the existing answer
+      setFamilyPromptAnswer(existingPrompt.answer || '');
+    }
 
     const keyboardDidShowListener = Keyboard.addListener(
       'keyboardDidShow',
@@ -51,7 +61,7 @@ export default function PromptAnswer() {
       keyboardDidHideListener.remove();
       keyboardDidShowListener.remove();
     };
-  }, []);
+  }, [selectedIndex, prompts]);
 
   const handleNext = () => {
     setOnboardingScreen('/(auth)/screens/onboarding/family/moreInfo');

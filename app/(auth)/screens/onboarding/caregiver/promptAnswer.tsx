@@ -278,8 +278,18 @@ export default function PromptAnswer() {
   };
 
   useEffect(() => {
-    setCaregiverFirstPromptAnswer('');
-  }, []);
+    // Only clear the answer if this is a new prompt (not editing existing)
+    const index = selectedIndex ? parseInt(selectedIndex as string) : 0;
+    const existingPrompt = prompts[index];
+    
+    if (!existingPrompt) {
+      // This is a new prompt, clear the answer
+      setCaregiverFirstPromptAnswer('');
+    } else {
+      // This is editing an existing prompt, load the existing answer
+      setCaregiverFirstPromptAnswer(existingPrompt.answer || '');
+    }
+  }, [selectedIndex, prompts]);
 
   console.log(
     'TO Create PROFIELEEE',

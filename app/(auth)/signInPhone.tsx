@@ -197,7 +197,7 @@ export default function PhoneNumberScreen() {
 
         <View style={styles.bottomContainer}>
           <TouchableOpacity
-            style={styles.textContainer}
+            style={styles.forgotPasswordContainer}
             onPress={() => router.push('/(auth)/ForgotPassword')}
           >
             <ThemedText style={styles.redText}>Forgot Password ?</ThemedText>
@@ -287,6 +287,13 @@ const styles = StyleSheet.create({
   bottomContainer: {
     alignItems: 'center',
     gap: 24,
+    width: '100%',
+  },
+  forgotPasswordContainer: {
+    alignSelf: 'flex-start',
+    marginLeft: 0,
+    marginTop: -20,
+    marginBottom: 0,
   },
   redText: {
     fontWeight: 500,

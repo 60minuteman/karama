@@ -1,58 +1,81 @@
 // components/ErrorBoundary.tsx
-import { router } from 'expo-router';
-import React, { Component, ReactNode } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import NotFound from '../assets/icons/NotFound.svg';
+import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { Colors } from '@/constants/Colors';
 
-interface ErrorBoundaryProps {
+interface Props {
   children: ReactNode;
+  fallback?: ReactNode;
 }
 
-interface ErrorBoundaryState {
+interface State {
   hasError: boolean;
-  errorMessage: string;
+  error?: Error;
+  errorInfo?: ErrorInfo;
 }
 
-export default class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
-  constructor(props: ErrorBoundaryProps) {
+export default class ErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
     super(props);
-    this.state = {
-      hasError: false,
-      errorMessage: '',
-    };
+    this.state = { hasError: false };
   }
 
-  static getDerivedStateFromError(error: Error) {
-    // Update state so the next render shows the fallback UI.
-    return { hasError: true, errorMessage: error.message };
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    // You can log the error to an error reporting service here
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    this.setState({
+      error,
+      errorInfo,
+    });
   }
+
+  handleRetry = () => {
+    this.setState({ hasError: false, error: undefined, errorInfo: undefined });
+  };
 
   handleReset = () => {
-    // this.setState({ hasError: false, errorMessage: '' });
-    router.push('/(tabs)/discover');
-    // router.push('/(home)/settings');
+    // Clear any problematic state and retry
+    this.setState({ hasError: false, error: undefined, errorInfo: undefined });
+    // You could also clear AsyncStorage or reset app state here if needed
   };
 
   render() {
     if (this.state.hasError) {
+      if (this.props.fallback) {
+        return this.props.fallback;
+      }
+
       return (
         <View style={styles.container}>
-          <NotFound width={200} height={200} />
-          {/* <Text style={styles.title}>Page not found</Text> */}
-          <Text style={styles.subtitle}>
-            The screen you're looking for is not available at the moment
+          <Text style={styles.title}>Something went wrong</Text>
+          <Text style={styles.message}>
+            We encountered an unexpected error. Please try again.
           </Text>
-          <TouchableOpacity style={styles.button} onPress={this.handleReset}>
-            <Text style={styles.buttonText}>Go back</Text>
-          </TouchableOpacity>
+          
+          {__DEV__ && this.state.error && (
+            <View style={styles.devInfo}>
+              <Text style={styles.devTitle}>Development Info:</Text>
+              <Text style={styles.errorText}>{this.state.error.toString()}</Text>
+              {this.state.errorInfo && (
+                <Text style={styles.stackText}>
+                  {this.state.errorInfo.componentStack}
+                </Text>
+              )}
+            </View>
+          )}
+          
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.retryButton} onPress={this.handleRetry}>
+              <Text style={styles.buttonText}>Try Again</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity style={styles.resetButton} onPress={this.handleReset}>
+              <Text style={styles.resetButtonText}>Reset</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       );
     }
@@ -66,32 +89,72 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#FFFFFF',
+    padding: 20,
+    backgroundColor: Colors.light.background,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333333',
-    marginTop: 24,
+    color: Colors.light.text,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  message: {
+    fontSize: 16,
+    color: Colors.light.text,
+    textAlign: 'center',
+    marginBottom: 32,
+    lineHeight: 24,
+  },
+  devInfo: {
+    backgroundColor: 'rgba(255, 0, 0, 0.1)',
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 32,
+    width: '100%',
+  },
+  devTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: 'red',
     marginBottom: 8,
   },
-  subtitle: {
-    fontSize: 16,
-    color: '#666666',
-    textAlign: 'center',
-    marginBottom: 24,
-    paddingHorizontal: 32,
+  errorText: {
+    fontSize: 12,
+    color: 'red',
+    marginBottom: 8,
   },
-  button: {
-    backgroundColor: '#ED5E4A',
+  stackText: {
+    fontSize: 10,
+    color: 'red',
+    fontFamily: 'monospace',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  retryButton: {
+    backgroundColor: Colors.light.primary,
+    paddingHorizontal: 24,
     paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 25,
+    borderRadius: 8,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: Colors.light.background,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
+  },
+  resetButton: {
+    backgroundColor: 'transparent',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.light.primary,
+  },
+  resetButtonText: {
+    color: Colors.light.primary,
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

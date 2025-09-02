@@ -13,7 +13,8 @@ export default function BridgeScreen() {
     useUserStore();
 
   const handleSelection = (type: 'family' | 'caregiver') => {
-    setSelectedType(type);
+    // Use the new switchUserType function to properly clean up data
+    switchUserType(type);
     setSteps('');
     setTimeout(() => {
       if (type === 'family') {
