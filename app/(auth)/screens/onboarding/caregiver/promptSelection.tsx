@@ -11,6 +11,7 @@ import { useOtherStore } from '@/services/state/other';
 import { useUserStore } from '@/services/state/user';
 import { router, useLocalSearchParams, useRouter } from 'expo-router';
 import {
+  Image,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -18,6 +19,9 @@ import {
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
+
+const addIcon = require('@/assets/images/add.png');
+const cancelIcon = require('@/assets/images/cancel.png');
 
 const PromptSelection = () => {
   const { prompts } = useOtherStore();
@@ -334,26 +338,59 @@ const PromptSelection = () => {
         <View style={styles.promptContainer}>
           <TouchableOpacity
             onPress={() => handleSelectPrompt(0)}
-            style={styles.promptInput}
+            style={[
+              styles.promptInput,
+              prompts[0]?.title || prompts[0]?.answer
+                ? styles.promptInputFilled
+                : null,
+            ]}
           >
             <View style={{ flex: 1, paddingTop: 10 }}>
-              <ThemedText style={styles.promptTitle}>
-                {prompts.length > 0
+              <ThemedText
+                style={[
+                  styles.promptTitle,
+                  !prompts[0]?.title && styles.promptTitlePlaceholder,
+                ]}
+              >
+                {prompts[0]?.title
                   ? prompts[0].title
                   : 'Click to select a prompt'}
               </ThemedText>
               <View style={styles.textInput}>
-                <ThemedText style={styles.inputText}>
-                  {prompts.length > 0
+                <ThemedText
+                  style={[
+                    styles.inputText,
+                    !prompts[0]?.answer && styles.inputTextPlaceholder,
+                  ]}
+                >
+                  {prompts[0]?.answer
                     ? prompts[0].answer
                     : 'Click to select a prompt'}
                 </ThemedText>
               </View>
             </View>
             <View style={styles.addButtonContainer}>
-              <View style={styles.addButton}>
-                <ThemedText style={styles.plusSign}>+</ThemedText>
-              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  if (prompts.length > 0) {
+                    updatePromptAtIndex(0, {
+                      category: prompts[0]?.category || '',
+                      title: '',
+                      answer: '',
+                    });
+                  }
+                }}
+                activeOpacity={0.7}
+              >
+                <Image
+                  source={
+                    prompts[0]?.title || prompts[0]?.answer
+                      ? cancelIcon
+                      : addIcon
+                  }
+                  style={styles.addIcon}
+                />
+              </TouchableOpacity>
             </View>
           </TouchableOpacity>
         </View>
@@ -361,26 +398,59 @@ const PromptSelection = () => {
         <View style={styles.promptContainer}>
           <TouchableOpacity
             onPress={() => handleSelectPrompt(1)}
-            style={styles.promptInput}
+            style={[
+              styles.promptInput,
+              prompts[1]?.title || prompts[1]?.answer
+                ? styles.promptInputFilled
+                : null,
+            ]}
           >
             <View style={{ flex: 1, paddingTop: 10 }}>
-              <ThemedText style={styles.promptTitle}>
-                {prompts.length > 1
+              <ThemedText
+                style={[
+                  styles.promptTitle,
+                  !prompts[1]?.title && styles.promptTitlePlaceholder,
+                ]}
+              >
+                {prompts[1]?.title
                   ? prompts[1].title
                   : 'Click to select a prompt'}
               </ThemedText>
               <View style={styles.textInput}>
-                <ThemedText style={styles.inputText}>
-                  {prompts.length > 1
+                <ThemedText
+                  style={[
+                    styles.inputText,
+                    !prompts[1]?.answer && styles.inputTextPlaceholder,
+                  ]}
+                >
+                  {prompts[1]?.answer
                     ? prompts[1].answer
                     : 'Click to select a prompt'}
                 </ThemedText>
               </View>
             </View>
             <View style={styles.addButtonContainer}>
-              <View style={styles.addButton}>
-                <ThemedText style={styles.plusSign}>+</ThemedText>
-              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  if (prompts.length > 1) {
+                    updatePromptAtIndex(1, {
+                      category: prompts[1]?.category || '',
+                      title: '',
+                      answer: '',
+                    });
+                  }
+                }}
+                activeOpacity={0.7}
+              >
+                <Image
+                  source={
+                    prompts[1]?.title || prompts[1]?.answer
+                      ? cancelIcon
+                      : addIcon
+                  }
+                  style={styles.addIcon}
+                />
+              </TouchableOpacity>
             </View>
           </TouchableOpacity>
         </View>
@@ -388,26 +458,59 @@ const PromptSelection = () => {
         <View style={styles.promptContainer}>
           <TouchableOpacity
             onPress={() => handleSelectPrompt(2)}
-            style={styles.promptInput}
+            style={[
+              styles.promptInput,
+              prompts[2]?.title || prompts[2]?.answer
+                ? styles.promptInputFilled
+                : null,
+            ]}
           >
             <View style={{ flex: 1, paddingTop: 10 }}>
-              <ThemedText style={styles.promptTitle}>
-                {prompts.length > 2
+              <ThemedText
+                style={[
+                  styles.promptTitle,
+                  !prompts[2]?.title && styles.promptTitlePlaceholder,
+                ]}
+              >
+                {prompts[2]?.title
                   ? prompts[2].title
                   : 'Click to select a prompt'}
               </ThemedText>
               <View style={styles.textInput}>
-                <ThemedText style={styles.inputText}>
-                  {prompts.length > 2
+                <ThemedText
+                  style={[
+                    styles.inputText,
+                    !prompts[2]?.answer && styles.inputTextPlaceholder,
+                  ]}
+                >
+                  {prompts[2]?.answer
                     ? prompts[2].answer
                     : 'Click to select a prompt'}
                 </ThemedText>
               </View>
             </View>
             <View style={styles.addButtonContainer}>
-              <View style={styles.addButton}>
-                <ThemedText style={styles.plusSign}>+</ThemedText>
-              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  if (prompts.length > 2) {
+                    updatePromptAtIndex(2, {
+                      category: prompts[2]?.category || '',
+                      title: '',
+                      answer: '',
+                    });
+                  }
+                }}
+                activeOpacity={0.7}
+              >
+                <Image
+                  source={
+                    prompts[2]?.title || prompts[2]?.answer
+                      ? cancelIcon
+                      : addIcon
+                  }
+                  style={styles.addIcon}
+                />
+              </TouchableOpacity>
             </View>
           </TouchableOpacity>
         </View>
@@ -497,6 +600,10 @@ const styles = StyleSheet.create({
     borderColor: '#00000017',
     // backgroundColor: 'red',
   },
+  promptInputFilled: {
+    borderWidth: 0,
+    borderColor: 'transparent',
+  },
   placeholderText: {
     flex: 1,
   },
@@ -532,29 +639,40 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   inputText: {
-    fontFamily: 'Poppins-Medium',
-    fontWeight: '500',
-    fontStyle: 'italic',
+    fontFamily: 'Poppins-SemiBold',
+    fontWeight: '600',
+    // fontStyle: 'italic',
     fontSize: 16,
     letterSpacing: 0,
+    color: '#261D2AE5',
+  },
+  inputTextPlaceholder: {
     color: '#261D2A80',
   },
   promptTitle: {
-    fontFamily: 'Poppins-Regular',
-    fontWeight: '400',
-    fontStyle: 'italic',
-    fontSize: 14,
+    fontFamily: 'Poppins-Medium',
+    fontWeight: '500',
+    fontSize: 16,
     // lineHeight: 14,
     letterSpacing: 0,
-    color: '#999999',
+    color: '#261D2A80',
     // marginTop: 5,
     // marginBottom: 4,
+  },
+  promptTitlePlaceholder: {
+    color: '#261D2A80',
   },
   addButtonContainer: {
     // backgroundColor: 'red',
     position: 'absolute',
-    right: 5,
-    top: 5,
+    right: 3,
+    top: 3,
+  },
+
+  addIcon: {
+    width: 28,
+    height: 28,
+    resizeMode: 'contain',
   },
 
   buttonContainer: {

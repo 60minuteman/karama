@@ -177,8 +177,10 @@ export default function AboutScreen() {
       );
       return;
     }
-    // For religion, we only want to allow one selection
-    setCaregiverReligion([item]);
+    // Allow toggling: if tapping the selected religion again, unselect it
+    const prev = caregiverReligion ?? [];
+    const isAlreadySelected = prev.includes(item);
+    setCaregiverReligion(isAlreadySelected ? [] : [item]);
   };
 
   const handleNext = () => {

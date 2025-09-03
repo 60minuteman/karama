@@ -90,7 +90,10 @@ export default function PhiloScreen() {
             />
             <Pill
               label='No'
-              onPress={() => setHasPhilosophyExperience('no')}
+              onPress={() => {
+                setHasPhilosophyExperience('no');
+                setCaregiverPhilosophyExperience([]);
+              }}
               selected={hasPhilosophyExperience === 'no'}
             />
           </View>
@@ -122,7 +125,7 @@ export default function PhiloScreen() {
 
         <View style={styles.optionsContainer}>
           <Pill label='Yes' selected={true} />
-          <Pill label='No' selected={false} />
+          <Pill label='No' selected={false} onPress={handleNext} />
         </View>
 
         <ScrollView

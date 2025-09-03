@@ -12,7 +12,7 @@ import { usePreventScreenCapture } from 'expo-screen-capture';
 import * as SplashScreenExpo from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -154,8 +154,17 @@ function RootLayoutNav() {
   // Show loading state while hydrating
   if (!hydrated) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: Colors.light.background }}>
-        <Text style={{ fontSize: 16, color: Colors.light.text }}>Loading...</Text>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: Colors.light.background,
+        }}
+      >
+        <Text style={{ fontSize: 16, color: Colors.light.text }}>
+          Loading...
+        </Text>
       </View>
     );
   }

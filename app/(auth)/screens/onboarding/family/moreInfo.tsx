@@ -162,7 +162,7 @@ export default function MoreInfo() {
               isKeyboardVisible ? { marginBottom: -10 } : { marginBottom: 40 },
             ]}
           >
-            <Button label='Skip' onPress={() => router.back()} variant='skip' />
+            {/* <Button label='Skip' onPress={handleSubmit} variant='skip' /> */}
             <Button
               // label='Next'
               onPress={handleSubmit}

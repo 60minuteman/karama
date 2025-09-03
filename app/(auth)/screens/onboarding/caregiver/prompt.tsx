@@ -16,6 +16,9 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { benefitsOptions } from './benefits';
 
+const addIcon = require('@/assets/images/add.png');
+const cancelIcon = require('@/assets/images/cancel.png');
+
 // Add these type definitions at the top
 type PromptCategory = 'get_to_know' | 'childcare';
 

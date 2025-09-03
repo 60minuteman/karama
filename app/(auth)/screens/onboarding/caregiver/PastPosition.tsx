@@ -133,7 +133,7 @@ const PastPosition: React.FC = () => {
 
   const handleNext = () => {
     // setOnboardingScreen('/(auth)/screens/onboarding/caregiver/prompt');
-    router.push('/(auth)/screens/onboarding/caregiver/prompt');
+    router.push('/(auth)/screens/onboarding/caregiver/promptSelection');
   };
 
   // Validation function to check if a position has all necessary fields

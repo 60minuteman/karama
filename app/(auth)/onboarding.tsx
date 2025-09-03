@@ -24,7 +24,7 @@ export default function OnboardingScreen() {
 
     if (onboarding_screen) {
       // return router.push(onboarding_screen);
-      return router.push('/(auth)/screens/onboarding/family/benefits');
+      return router.push('/(auth)/bridge');
     }
     // Always go to phone number screen first
     router.push('/(auth)/phoneNumber');
