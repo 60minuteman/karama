@@ -67,6 +67,7 @@ export default function PhoneNumberScreen() {
       // Always proceed to verification, whether user exists or not
       router.push({
         pathname: '/(auth)/verification',
+        //pathname: '/(auth)/createPassword',
         params: {
           isChecked: isChecked ? '1' : '0',
           phoneNumber: phoneNumber,

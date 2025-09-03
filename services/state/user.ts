@@ -1000,9 +1000,9 @@ export const useUserStore = create<UserState>()(
       setToken: async (token: string | null) => {
         try {
           if (token) {
-            await retryAsyncOperation(() => AsyncStorage.setItem('token', token));
+            await retryAsyncOperation(() => AsyncStorage.setItem('userToken', token));
           } else {
-            await retryAsyncOperation(() => AsyncStorage.removeItem('token'));
+            await retryAsyncOperation(() => AsyncStorage.removeItem('userToken'));
           }
           set({ token });
         } catch (error) {
@@ -1476,7 +1476,7 @@ export const useUserStore = create<UserState>()(
       logout: async () => {
         try {
           // Clear AsyncStorage with retry mechanism
-          await retryAsyncOperation(() => AsyncStorage.removeItem('token'));
+          await retryAsyncOperation(() => AsyncStorage.removeItem('userToken'));
           await retryAsyncOperation(() => AsyncStorage.removeItem('user-storage'));
           // Reset all state
           set({

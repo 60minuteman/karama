@@ -57,6 +57,16 @@ const NewPassword = () => {
   }
 
   const handleCreatePassword = () => {
+    // Validate required parameters
+    if (!phoneNumber) {
+      Toast.show({
+        type: 'error',
+        text1: 'Missing required information',
+        text2: 'Please try again',
+      });
+      return;
+    }
+
     if (containsUppercaseAndNumber(password)) {
       createPassword.mutate({
         phone_number: `+1${phoneNumber}`,

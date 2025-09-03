@@ -33,7 +33,7 @@ export default function Page() {
       while (quality > 0.1) {
         const result = await ImageManipulator.manipulateAsync(
           compressedUri,
-          [], // no operations, just compression
+          [{ resize: { width: 1024 } }], // Resize to max 1024px width for better compression
           {
             compress: quality,
             format: ImageManipulator.SaveFormat.JPEG,
@@ -41,10 +41,11 @@ export default function Page() {
         );
 
         // Check file size (approximate calculation)
-        // For JPEG, we can estimate size based on quality and dimensions
         const response = await fetch(result.uri);
         const blob = await response.blob();
         const fileSizeInMB = blob.size / (1024 * 1024);
+
+        console.log(`Compressed image size: ${fileSizeInMB.toFixed(2)}MB with quality: ${quality}`);
 
         if (fileSizeInMB <= 5) {
           return result.uri;
@@ -72,7 +73,8 @@ export default function Page() {
 
       const formData = new FormData();
       compressedImages.forEach((uri, index) => {
-        const fileName = uri.split('/').pop() || `image${index}.jpg`;
+        // Name images according to upload position (1-6)
+        const fileName = `family_image_${index + 1}.jpg`;
 
         formData.append('files', {
           uri,

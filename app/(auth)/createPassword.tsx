@@ -32,7 +32,7 @@ const CreatePassword = () => {
     },
     onSuccess: async (response: any) => {
       try {
-        if (response?.data?.data?.token) {
+        if (response?.data?.data?.token && response?.data?.data?.user) {
           const newToken = response.data.data.token;
           const userData = response.data.data.user;
 
@@ -50,7 +50,7 @@ const CreatePassword = () => {
           // Navigate to bridge screen
           router.replace('/(auth)/bridge');
         } else {
-          throw new Error('No token received');
+          throw new Error('Invalid response structure - missing token or user data');
         }
       } catch (error) {
         console.error('Error in password creation:', error);
@@ -81,6 +81,16 @@ const CreatePassword = () => {
   }
 
   const handleCreatePassword = () => {
+    // Validate required parameters
+    if (!phoneNumber || !isChecked) {
+      Toast.show({
+        type: 'error',
+        text1: 'Missing required information',
+        text2: 'Please try again',
+      });
+      return;
+    }
+
     if (containsUppercaseAndNumber(password)) {
       createPassword.mutate({
         phone_number: `+1${phoneNumber}`,

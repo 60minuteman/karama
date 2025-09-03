@@ -39,7 +39,7 @@ export default function Page() {
       while (quality > 0.1) {
         const result = await ImageManipulator.manipulateAsync(
           compressedUri,
-          [{ resize: { width: 1024 } }], // Resize to max 1024px width
+          [{ resize: { width: 1024 } }], // Resize to max 1024px width for better compression
           {
             compress: quality,
             format: ImageManipulator.SaveFormat.JPEG,
@@ -84,7 +84,8 @@ export default function Page() {
       );
 
       compressedImages.forEach((uri, index) => {
-        const fileName = uri.split('/').pop() || `image${index}.jpg`;
+        // Name images according to upload position (1-6)
+        const fileName = `caregiver_image_${index + 1}.jpg`;
 
         formData.append('files', {
           uri,

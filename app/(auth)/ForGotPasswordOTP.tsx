@@ -67,6 +67,16 @@ const ForGotPasswordOTP = () => {
 
   const handleResend = async () => {
     if (canResend) {
+      // Validate required parameters
+      if (!phoneNumber) {
+        Toast.show({
+          type: 'error',
+          text1: 'Missing phone number',
+          text2: 'Please try again',
+        });
+        return;
+      }
+      
       // const  user = await signUp(`karama${phoneNumber}@mail.com`, `karama${phoneNumber}@mail.com`, 'karama')
 
       phoneVerification.mutate({
@@ -80,6 +90,11 @@ const ForGotPasswordOTP = () => {
 
   const verify = useMutation({
     mutationFn: (data: any) => {
+      // Validate required parameters
+      if (!phoneNumber) {
+        throw new Error('Phone number is required');
+      }
+      
       return customAxios.post(`/auth/password/forgot-password/verify`, {
         phone_number: `+1${phoneNumber}`,
         code: data.code,
